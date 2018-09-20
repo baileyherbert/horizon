@@ -34,7 +34,7 @@ class Handler
      * @param Response $response
      * @param Exception $exception
      */
-    public function render(Response $response, Exception $exception)
+    public function render(Response $response = null, Exception $exception)
     {
         $reflect = new \ReflectionClass($exception);
         $shortName = $reflect->getShortName();
