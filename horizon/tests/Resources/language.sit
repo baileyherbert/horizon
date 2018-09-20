@@ -1,0 +1,19 @@
+# This is a SIT file.
+
+@name Language Name
+@version 1.2.3
+@author The Horizon Project                                                     # Test comment
+
+@var "UpdateToken"                      "5qN3vol4uXnGnVzZLqqr96ueX5Z2N2Za"      # Test comment
+@var "PurchaseEnabled"                  true                                    # Test comment
+@var "UserId"                           15669103.6                              # Test comment
+
+@namespace horizon.index                                                        # Test comment
+
+    "Original text..."                  "Translated text!"
+    "This has a {{ variable }}."        "The {{ variable }} is working."
+    "This has a {{ nested.variable }}." "The {{ nested.variable }} is working."
+
+    "This is case-insensitive."         "It works."     /i
+    "This  ignores  excess spaces."     "It works.."    /x
+    "And  this is  both  in  one."      "It works..."   /ix

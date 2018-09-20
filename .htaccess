@@ -1,0 +1,35 @@
+# Horizon Routing
+
+<IfModule mod_env.c>
+    SetEnv HORIZON_ENVIRONMENT production
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Redirect the index to the route loader.
+    # If this rule doesn't work, then the index will load with fallback routing.
+    RewriteRule ^index\.php$ route.php [L]
+
+    # Route to public files.
+    RewriteRule ^images/(.*)$ app/public/images/$1 [L,QSA,NC]
+    RewriteRule ^scripts/(.*)$ app/public/scripts/$1 [L,QSA,NC]
+    RewriteRule ^styles/(.*)$ app/public/styles/$1 [L,QSA,NC]
+    RewriteRule ^files/(.*)$ app/public/files/$1 [L,QSA,NC]
+
+    # Send the request to the Horizon router.
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule . route.php [L]
+
+    # Hide sensitive files.
+    RedirectMatch 404 (.git|tests|.AbiSuite|nbproject|.idea|.vs|vendor)
+    RedirectMatch 404 \.md
+
+    # Prevent access to distribution files.
+    RedirectMatch 403 \.hzbackup
+    RedirectMatch 403 \.hzpack
+    RedirectMatch 403 \.hztmp\.php
+</IfModule>
+
+DirectoryIndex index.php

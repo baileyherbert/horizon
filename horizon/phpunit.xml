@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpunit bootstrap="vendor/autoload.php"
+         color="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         stopOnFailure="false"
+         syntaxCheck="false">
+    <testsuite>
+        <testsuite name="Horizon Framework">
+            <directory>horizon/tests</directory>
+        </testsuite>
+    </testsuite>
+    <php>
+        <env name="HORIZON_ENVIRONMENT" value="test" />
+    </php>
+</phpunit>

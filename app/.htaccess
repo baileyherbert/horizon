@@ -1,0 +1,13 @@
+# Horizon Routing
+
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RedirectMatch 404 (composer.lock|composer.json|phpunit.xml)
+    RedirectMatch 404 vendor
+    RedirectMatch 404 translations
+    RedirectMatch 404 views
+    RedirectMatch 404 src
+    RedirectMatch 404 routes
+    RedirectMatch 404 config
+</IfModule>
