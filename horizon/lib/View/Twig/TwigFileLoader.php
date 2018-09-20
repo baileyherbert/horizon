@@ -8,6 +8,7 @@ use Twig_Source;
 use Horizon\Framework\Kernel;
 
 use Horizon\View\ViewException;
+use Horizon\Extend\Extension;
 
 class TwigFileLoader extends Twig_Loader_Filesystem
 {
@@ -24,8 +25,9 @@ class TwigFileLoader extends Twig_Loader_Filesystem
     public function getSourceContext($name)
     {
         $path = $this->findTemplate($name);
+        $extension = Kernel::getExtensionBinding();
 
-        return new Twig_Source($this->compileHorizonTags(file_get_contents($path), $name), $name, $path);
+        return new Twig_Source($this->compileHorizonTags(file_get_contents($path), $name, $extension), $name, $path);
     }
 
     public function findTemplate($name)
@@ -39,9 +41,9 @@ class TwigFileLoader extends Twig_Loader_Filesystem
         return $path;
     }
 
-    public function compileHorizonTags($text, $templateFileName)
+    public function compileHorizonTags($text, $templateFileName, Extension $extension = null)
     {
-        return (new TwigPrecompiler())->precompile($text, $templateFileName);
+        return (new TwigPrecompiler($extension))->precompile($text, $templateFileName);
     }
 
 }

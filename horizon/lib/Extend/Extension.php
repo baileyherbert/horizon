@@ -15,12 +15,27 @@ class Extension
     /**
      * @var string
      */
+    protected $directoryName;
+
+    /**
+     * @var string
+     */
     protected $configPath;
 
     /**
      * @var array
      */
     protected $config;
+
+    /**
+     * @var string
+     */
+    protected $publicMapRoute = '/extensions/%s/';
+
+    /**
+     * @var string
+     */
+    protected $publicMapLegacy = '/app/extensions/%s/';
 
     /**
      * Constructs a new Extension instance.
@@ -30,6 +45,7 @@ class Extension
     public function __construct($path)
     {
         $this->path = $path;
+        $this->directoryName = basename($path);
         $this->configPath = Path::join($path, 'extension.json');
 
         if (!file_exists($this->configPath)) {
@@ -61,6 +77,11 @@ class Extension
     public function getVersion()
     {
         return $this->config['version'];
+    }
+
+    public function getPath()
+    {
+        return $this->path;
     }
 
     public function hasSourceDirectory()
@@ -173,7 +194,7 @@ class Extension
             }
             else {
                 if (class_exists($provider)) {
-                    $o = new $provider;
+                    $o = new $provider($this);
                     $objects[] = $o;
                     $this->config['providers'][$type][$i] = $o;
                 }
@@ -232,6 +253,34 @@ class Extension
         );
 
         return $defaults;
+    }
+
+    /**
+     * Gets a path to an extension's asset when rewrite routing is enabled.
+     *
+     * @param string $assetName The full name of the asset (e.g. 'styles/name.css').
+     * @return string
+     */
+    public function getMappedPublicRoute($assetName)
+    {
+        $asset = ltrim($assetName, '/');
+        $base = trim(sprintf($this->publicMapRoute, $this->directoryName), '/');
+
+        return '/' . $base . '/' . $asset;
+    }
+
+    /**
+     * Gets a path to an extension's asset when rewrite routing is disabled.
+     *
+     * @param string $assetName The full name of the asset (e.g. 'styles/name.css').
+     * @return string
+     */
+    public function getMappedLegacyRoute($assetName)
+    {
+        $asset = ltrim($assetName, '/');
+        $base = trim(sprintf($this->publicMapLegacy, $this->directoryName), '/');
+
+        return '/' . $base . '/' . $asset;
     }
 
 }

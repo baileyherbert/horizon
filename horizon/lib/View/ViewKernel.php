@@ -2,10 +2,17 @@
 
 namespace Horizon\View;
 
+use Horizon\Extend\Extension;
+
 trait ViewKernel
 {
 
     private static $files = array();
+
+    /**
+     * @var Extension
+     */
+    private static $extension;
 
     /**
      * Retrieves the full path to a template file, or null if it doesn't exist.
@@ -17,11 +24,16 @@ trait ViewKernel
     {
         $path = null;
 
+        // Reset the extension binding
+        static::$extension = null;
+
+        // Check all view providers for an existing file
         foreach (static::getProviders('views') as $provider) {
             $templatePath = $provider($name);
 
             if ($templatePath !== null) {
                 $path = $templatePath;
+                static::$extension = $provider->getExtension();
             }
         }
 
@@ -29,27 +41,14 @@ trait ViewKernel
     }
 
     /**
-     * Retrieves the full path to a template file, or null if it doesn't exist.
+     * Gets the extension which is currently bound to the view kernel, or null if none is bound. Typically, a bound
+     * extension will be the extension who provided the last requested view file.
      *
-     * @param string $name
-     * @return string|null
+     * @return Extension
      */
-    public static function getTranslationFiles()
+    public static function getExtensionBinding()
     {
-        $path = null;
-        $providers = static::getProviders('views');
-
-        for ($i = count($providers) - 1; $i >= 0; $i--) {
-            $provider = $providers[$i];
-            $templatePath = $provider($name);
-
-            if ($templatePath !== null) {
-                $path = $templatePath;
-                break;
-            }
-        }
-
-        return $path;
+        return static::$extension;
     }
 
 }

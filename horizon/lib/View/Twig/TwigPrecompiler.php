@@ -11,11 +11,27 @@ use Horizon\Http\MiniRequest;
 use Horizon\Routing\RouteLoader;
 use Horizon\Routing\RouteParameterBinder;
 
+use Horizon\Extend\Extension;
+
 class TwigPrecompiler
 {
 
+    /**
+     * @var Extension
+     */
+    private $extension;
     private $translateNamespaces = array();
     private $templateFileName;
+
+    /**
+     * Constructs a new precompiler instance, optionally binding the template to an extension.
+     *
+     * @param Extension $extension
+     */
+    public function __construct(Extension $extension = null)
+    {
+        $this->extension = $extension;
+    }
 
     /**
      * Prepares the string for the Twig compiler by compiling Horizon statements.
@@ -215,11 +231,21 @@ class TwigPrecompiler
         return Path::getRelative($currentPath, $toPath, $_SERVER['SUBDIRECTORY']);
     }
 
-    public function tagPublic($relativePath)
+    public function tagPublic($relativePath, $scope = null)
     {
         $request = Kernel::getRequest();
         $currentPath = $request->path();
         $root = rtrim(Path::getRelative($currentPath, '/', $_SERVER['SUBDIRECTORY']), '/');
+
+        if ($scope == 'this' || $scope == 'ext' || $scope == 'extension') {
+            if (!is_null($this->extension)) {
+                $relative = ltrim($relativePath, '/');
+                $publicPathLegacy = sprintf('%s/%s', $root, ltrim($this->extension->getMappedLegacyRoute($relative), '/'));
+                $publicPathRouted = sprintf('%s/%s', $root, ltrim($this->extension->getMappedPublicRoute($relative), '/'));
+
+                return (USE_LEGACY_ROUTING) ? $publicPathLegacy : $publicPathRouted;
+            }
+        }
 
         if (USE_LEGACY_ROUTING) {
             return $root . '/app/public/' . ltrim($relativePath, '/');
@@ -228,24 +254,24 @@ class TwigPrecompiler
         return $root . '/' . ltrim($relativePath, '/');
     }
 
-    public function tagImage($relativePath)
+    public function tagImage($relativePath, $scope = null)
     {
-        return $this->tagPublic('/images/' . ltrim($relativePath, '/'));
+        return $this->tagPublic('/images/' . ltrim($relativePath, '/'), $scope);
     }
 
-    public function tagFile($relativePath)
+    public function tagFile($relativePath, $scope = null)
     {
-        return $this->tagPublic('/files/' . ltrim($relativePath, '/'));
+        return $this->tagPublic('/files/' . ltrim($relativePath, '/'), $scope);
     }
 
-    public function tagScript($relativePath)
+    public function tagScript($relativePath, $scope = null)
     {
-        return $this->tagPublic('/scripts/' . ltrim($relativePath, '/'));
+        return $this->tagPublic('/scripts/' . ltrim($relativePath, '/'), $scope);
     }
 
-    public function tagStyle($relativePath)
+    public function tagStyle($relativePath, $scope = null)
     {
-        return $this->tagPublic('/styles/' . ltrim($relativePath, '/'));
+        return $this->tagPublic('/styles/' . ltrim($relativePath, '/'), $scope);
     }
 
     public function tagRuntime()
