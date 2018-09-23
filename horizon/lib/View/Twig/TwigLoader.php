@@ -80,7 +80,7 @@ class TwigLoader
         $environment = new Twig_Environment($this->loader, $options);
 
         // Add extensions
-        $this->addExtensions($environment, (new TwigExtensionLoader($this))->getExtensions());
+        $this->addExtensions($environment, (new TwigExtensionLoader($this->loader))->getExtensions());
 
         return $environment;
     }

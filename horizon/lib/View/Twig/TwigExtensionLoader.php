@@ -10,16 +10,16 @@ class TwigExtensionLoader
 {
 
     /**
-     * @var TwigLoader
+     * @var TwigFileLoader
      */
     protected $loader;
 
     /**
      * Constructs a new TwigExtensionLoader instance.
      *
-     * @param TwigLoader $loader
+     * @param TwigFileLoader $loader
      */
-    public function __construct(TwigLoader $loader = null)
+    public function __construct(TwigFileLoader $loader)
     {
         $this->loader = $loader;
     }
@@ -72,7 +72,7 @@ class TwigExtensionLoader
             }
             else {
                 if (class_exists($className)) {
-                    $extension = new $className(Kernel::getExtensionBinding());
+                    $extension = new $className($this->loader);
 
                     if ($extension instanceof \Twig_Extension) {
                         $extensions[] = $extension;

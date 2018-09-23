@@ -11,6 +11,7 @@ use Horizon\Routing\RouteParameterBinder;
 use Horizon\Routing\RouteLoader;
 use Horizon\Http\MiniRequest;
 use Horizon\Utils\Path;
+use Horizon\Utils\Str;
 
 class HorizonExtension extends ViewExtension
 {
@@ -50,22 +51,20 @@ class HorizonExtension extends ViewExtension
         );
     }
 
-    protected function getPublicAssetPath($relativePath, $scope = null)
+    protected function getPublicAssetPath($relativePath, $extensionId = null)
     {
         $request = Kernel::getRequest();
         $currentPath = $request->path();
         $root = rtrim(Path::getRelative($currentPath, '/', $_SERVER['SUBDIRECTORY']), '/');
 
-        $fromExtension = ($scope === 'ext' || $scope === 'extension' || $scope === 'e');
+        $fromExtension = is_string($extensionId) ? $this->getExtension($extensionId) : null;
 
-        if ($fromExtension) {
-            if (!is_null($this->getExtension())) {
-                $relative = ltrim($relativePath, '/');
-                $publicPathLegacy = sprintf('%s/%s', $root, ltrim($this->getExtension()->getMappedLegacyRoute($relative), '/'));
-                $publicPathRouted = sprintf('%s/%s', $root, ltrim($this->getExtension()->getMappedPublicRoute($relative), '/'));
+        if (!is_null($fromExtension)) {
+            $relative = ltrim($relativePath, '/');
+            $publicPathLegacy = sprintf('%s/%s', $root, ltrim($fromExtension->getMappedLegacyRoute($relative), '/'));
+            $publicPathRouted = sprintf('%s/%s', $root, ltrim($fromExtension->getMappedPublicRoute($relative), '/'));
 
-                return (USE_LEGACY_ROUTING) ? $publicPathLegacy : $publicPathRouted;
-            }
+            return (USE_LEGACY_ROUTING) ? $publicPathLegacy : $publicPathRouted;
         }
 
         if (USE_LEGACY_ROUTING) {
@@ -100,6 +99,10 @@ class HorizonExtension extends ViewExtension
     protected function twigLink()
     {
         return new Twig_SimpleFunction('link', function ($toPath) {
+            if (Str::startsWith($toPath, array('//', 'http://', 'https://'))) {
+                return $toPath;
+            }
+
             $request = Kernel::getRequest();
             return $request->getLinkTo($toPath);
         });
@@ -109,8 +112,12 @@ class HorizonExtension extends ViewExtension
     {
         $handler = $this;
 
-        return new Twig_SimpleFunction('public', function ($relativePath, $scope = null) use ($handler) {
-            return $handler->getPublicAssetPath($relativePath, $scope);
+        return new Twig_SimpleFunction('public', function ($relativePath, $extensionId = null) use ($handler) {
+            if (Str::startsWith($relativePath, array('//', 'http://', 'https://'))) {
+                return $relativePath;
+            }
+
+            return $handler->getPublicAssetPath($relativePath, $extensionId);
         });
     }
 
@@ -118,8 +125,12 @@ class HorizonExtension extends ViewExtension
     {
         $handler = $this;
 
-        return new Twig_SimpleFunction('image', function ($relativePath, $scope = null) use ($handler) {
-            return $handler->getPublicAssetPath('/images/' . ltrim($relativePath, '/'), $scope);
+        return new Twig_SimpleFunction('image', function ($relativePath, $extensionId = null) use ($handler) {
+            if (Str::startsWith($relativePath, array('//', 'http://', 'https://'))) {
+                return $relativePath;
+            }
+
+            return $handler->getPublicAssetPath('/images/' . ltrim($relativePath, '/'), $extensionId);
         });
     }
 
@@ -127,8 +138,12 @@ class HorizonExtension extends ViewExtension
     {
         $handler = $this;
 
-        return new Twig_SimpleFunction('file', function ($relativePath, $scope = null) use ($handler) {
-            return $handler->getPublicAssetPath('/files/' . ltrim($relativePath, '/'), $scope);
+        return new Twig_SimpleFunction('file', function ($relativePath, $extensionId = null) use ($handler) {
+            if (Str::startsWith($relativePath, array('//', 'http://', 'https://'))) {
+                return $relativePath;
+            }
+
+            return $handler->getPublicAssetPath('/files/' . ltrim($relativePath, '/'), $extensionId);
         });
     }
 
@@ -136,8 +151,12 @@ class HorizonExtension extends ViewExtension
     {
         $handler = $this;
 
-        return new Twig_SimpleFunction('script', function ($relativePath, $scope = null) use ($handler) {
-            return $handler->getPublicAssetPath('/scripts/' . ltrim($relativePath, '/'), $scope);
+        return new Twig_SimpleFunction('script', function ($relativePath, $extensionId = null) use ($handler) {
+            if (Str::startsWith($relativePath, array('//', 'http://', 'https://'))) {
+                return $relativePath;
+            }
+
+            return $handler->getPublicAssetPath('/scripts/' . ltrim($relativePath, '/'), $extensionId);
         });
     }
 
@@ -145,8 +164,12 @@ class HorizonExtension extends ViewExtension
     {
         $handler = $this;
 
-        return new Twig_SimpleFunction('style', function ($relativePath, $scope = null) use ($handler) {
-            return $handler->getPublicAssetPath('/styles/' . ltrim($relativePath, '/'), $scope);
+        return new Twig_SimpleFunction('style', function ($relativePath, $extensionId = null) use ($handler) {
+            if (Str::startsWith($relativePath, array('//', 'http://', 'https://'))) {
+                return $relativePath;
+            }
+
+            return $handler->getPublicAssetPath('/styles/' . ltrim($relativePath, '/'), $extensionId);
         });
     }
 

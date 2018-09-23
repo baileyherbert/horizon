@@ -9,33 +9,35 @@ use Twig_Extension;
 use Twig_Extension_GlobalsInterface;
 use Horizon\Utils\Str;
 use Horizon\Extend\Extension;
+use Horizon\View\Twig\TwigFileLoader;
 
 class ViewExtension extends Twig_Extension implements Twig_Extension_GlobalsInterface
 {
 
     /**
-     * @var Extension
+     * @var TwigFileLoader
      */
-    private $extension;
+    private $loader;
 
     /**
      * Constructs a new ViewExtension instance.
      *
-     * @param Extension $extension
+     * @param TwigFileLoader $loader
      */
-    public function __construct(Extension $extension = null)
+    public function __construct(TwigFileLoader $loader)
     {
-        $this->extension = $extension;
+        $this->loader = $loader;
     }
 
     /**
-     * Gets the extension instance responsible for loading the current view, or null if it's a global view.
+     * Gets the extension instance by its hash id or null.
      *
+     * @param string $id
      * @return Extension|null
      */
-    protected function getExtension()
+    protected function getExtension($id)
     {
-        return $this->extension;
+        return $this->loader->getExtension($id);
     }
 
     /**

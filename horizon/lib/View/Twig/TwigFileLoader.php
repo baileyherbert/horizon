@@ -14,6 +14,27 @@ class TwigFileLoader extends Twig_Loader_Filesystem
 {
 
     /**
+     * @var Twig_Source
+     */
+    private $source;
+
+    /**
+     * @var string
+     */
+    private $path;
+
+    /**
+     * @var Extension[]
+     */
+    private $extensions;
+
+    /**
+     * @var \Twig_Environment
+     */
+    private $environment;
+
+    /**
+     * @param \Twig_Environment $environment The Twig environment
      * @param string|array $paths A path or an array of paths where to look for templates
      * @param string|null $rootPath The root path common to all relative paths (null for getcwd())
      */
@@ -24,9 +45,10 @@ class TwigFileLoader extends Twig_Loader_Filesystem
 
     public function getSourceContext($name)
     {
-        $path = $this->findTemplate($name);
+        $this->path = $this->findTemplate($name);
+        $this->source = new Twig_Source($this->compileHorizonTags(file_get_contents($this->path), $name), $name, $this->path);
 
-        return new Twig_Source($this->compileHorizonTags(file_get_contents($path), $name), $name, $path);
+        return $this->source;
     }
 
     public function findTemplate($name)
@@ -37,12 +59,28 @@ class TwigFileLoader extends Twig_Loader_Filesystem
             throw new ViewException(sprintf('View "%s" not found in any provider.', $name));
         }
 
+        $this->extensions[md5($name)] = Kernel::getExtensionBinding();
+
         return $path;
     }
 
     public function compileHorizonTags($text, $templateFileName)
     {
-        return (new TwigTranspiler())->precompile($text, $templateFileName);
+        return (new TwigTranspiler($this))->precompile($text, $templateFileName);
+    }
+
+    /**
+     * Gets the extension instance associated with the specified ID. If there is no extension, returns null.
+     *
+     * @return Extension|null
+     */
+    public function getExtension($id)
+    {
+        if (isset($this->extensions[$id])) {
+            return $this->extensions[$id];
+        }
+
+        return null;
     }
 
 }
