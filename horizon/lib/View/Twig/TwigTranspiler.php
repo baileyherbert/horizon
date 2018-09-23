@@ -245,7 +245,7 @@ class TwigTranspiler
                 }
             }
 
-            if (!empty($insertCharacter)) {
+            if ($insertCharacter !== '') {
                 $result .= $insertCharacter;
             }
 
