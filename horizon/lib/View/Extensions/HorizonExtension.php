@@ -39,15 +39,7 @@ class HorizonExtension extends ViewExtension
             'image' => 'image',
             'file' => 'file',
             'script' => 'script',
-            'style' => 'style',
-            'include' => function($template) { return "{% include $template %}"; },
-            'extend' => function($template) { return "{% extends $template %}"; },
-            'section' => function($template) {
-                $name = trim($template, chr(34) . chr(39));
-
-                return "{% block $name %}";
-            },
-            'endsection' => function($template) { return "{% endblock %}"; }
+            'style' => 'style'
         );
     }
 
