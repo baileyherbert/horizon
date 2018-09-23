@@ -6,6 +6,9 @@ use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Horizon\Http\Cookie\Session;
 use Horizon\Routing\Route;
+use Horizon\Routing\RouteLoader;
+use Horizon\Routing\RouteParameterBinder;
+use Horizon\Utils\Path;
 
 class Request extends SymfonyRequest
 {
@@ -255,6 +258,38 @@ class Request extends SymfonyRequest
     public function isLegacyRoutingAllowed()
     {
         return true;
+    }
+
+    /**
+     * Gets a link to the specified path from the current request. If the path matches a route, then the route will be
+     * used and a fallback path will be outputted if applicable. This will also apply any subdirectories which the
+     * framework resides in to the beginning of the path.
+     *
+     * @param string $toPath
+     * @return string
+     */
+    public function getLinkTo($toPath)
+    {
+        $currentPath = $this->path();
+
+        if (USE_LEGACY_ROUTING) {
+            $request = MiniRequest::simple($toPath);
+            $router = RouteLoader::getRouter();
+            $route = $router->match($request);
+
+            if ($route !== null) {
+                if ($route->fallback() !== null) {
+                    $parameters = (new RouteParameterBinder($route))->bind($request);
+                    $toPath = $route->fallback();
+
+                    if (!empty($parameters)) {
+                        $toPath .= '?' . http_build_query($parameters);
+                    }
+                }
+            }
+        }
+
+        return Path::getRelative($currentPath, $toPath, $_SERVER['SUBDIRECTORY']);
     }
 
 }
