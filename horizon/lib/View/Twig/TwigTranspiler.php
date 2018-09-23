@@ -90,6 +90,7 @@ class TwigTranspiler
         $this->extensionReferenceHash = md5($templateFileName);
 
         $value = $this->compileStatements($value);
+        $value = $this->compileVariables($value);
         $translated = (new TwigTranslator())->compile($value, $this->translateNamespaces);
 
         return ltrim($translated);
@@ -246,6 +247,86 @@ class TwigTranspiler
                     }
 
                     $word = '';
+                }
+            }
+
+            if ($insertCharacter !== '') {
+                $result .= $insertCharacter;
+            }
+
+            $i++;
+        }
+
+        return $result;
+    }
+
+    protected function compileVariables($value)
+    {
+        $result = '';
+        $i = 0;
+
+        $inBrackets = false;
+        $inOuterString = false;
+
+        $inString = false;
+        $disableString = false;
+        $stringCharacter = '';
+        $word = '';
+
+        while ($i < strlen($value)) {
+            $char = $value[$i];
+            $insertCharacter = $char;
+
+            $previous = (isset($value[$i - 1])) ? $value[$i - 1] : null;
+            $next = (isset($value[$i + 1])) ? $value[$i + 1] : null;
+
+            if (!$inBrackets) {
+                if ($char === chr(123) && $previous === chr(123)) {
+                    $inBrackets = true;
+                }
+            }
+
+            if ($inBrackets) {
+                if ($inString) {
+                    if ($char === chr(92)) {
+                        $disableString = !$disableString;
+                    }
+                    else if ($char !== chr(34) && $char !== chr(39)) {
+                        $disableString = false;
+                    }
+                }
+
+                if (!$disableString) {
+                    if (!$inString && ($char === chr(34) || $char === chr(39))) {
+                        $inString = true;
+                        $stringCharacter = $char;
+                    }
+                    else if ($inString && $char === $stringCharacter) {
+                        $inString = false;
+                        $stringCharacter = false;
+                    }
+                }
+
+                if ($char === chr(125) && $next === chr(125)) {
+                    $inBrackets = false;
+                }
+            }
+
+            if ($inBrackets && !$inString) {
+                if ($char === chr(36)) {
+                    $insertCharacter = '';
+                }
+
+                if ($char === chr(43)) {
+                    $insertCharacter = '~';
+                }
+
+                if ($char === chr(45) && $next === chr(62)) {
+                    $insertCharacter = '.';
+                }
+
+                if ($char === chr(62) && $previous === chr(45)) {
+                    $insertCharacter = '';
                 }
             }
 
