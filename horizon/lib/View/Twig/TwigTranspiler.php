@@ -143,6 +143,8 @@ class TwigTranspiler
                 return $transpiler($arguments);
             }
         }
+
+        return $match[0];
     }
 
     /**
@@ -219,8 +221,10 @@ class TwigTranspiler
                 $insertCharacter = chr(126);
             }
 
-            if (!$inString && $char === chr(36) && ($previous === chr(32) || $previous === chr(44) || $previous === chr(43))) {
-                $insertCharacter = '';
+            if (!$inString && $char === chr(36)) {
+                if ($previous === null || !$disableString) {
+                    $insertCharacter = '';
+                }
             }
 
             if (!$inString) {
