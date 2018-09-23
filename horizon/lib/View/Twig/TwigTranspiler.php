@@ -18,11 +18,6 @@ class TwigTranspiler
 {
 
     /**
-     * @var Extension
-     */
-    private $extension;
-
-    /**
      * @var ViewExtension[]
      */
     private $extensions;
@@ -43,14 +38,18 @@ class TwigTranspiler
     private $templateFileName;
 
     /**
+     * @var string
+     */
+    private $extensionReferenceHash;
+
+    /**
      * Constructs a new precompiler instance, optionally binding the template to an extension.
      *
-     * @param Extension $extension
+     * @param TwigFileLoader $loader
      */
-    public function __construct(Extension $extension = null)
+    public function __construct(TwigFileLoader $loader)
     {
-        $this->extension = $extension;
-        $this->extensions = (new TwigExtensionLoader())->getExtensions();
+        $this->extensions = (new TwigExtensionLoader($loader))->getExtensions();
         $this->transpilers = $this->findTranspilers();
     }
 
@@ -88,6 +87,7 @@ class TwigTranspiler
     public function precompile($value, $templateFileName = null)
     {
         $this->templateFileName = $templateFileName;
+        $this->extensionReferenceHash = md5($templateFileName);
 
         $value = $this->compileStatements($value);
         $translated = (new TwigTranslator())->compile($value, $this->translateNamespaces);
@@ -190,6 +190,7 @@ class TwigTranspiler
         $inString = false;
         $disableString = false;
         $stringCharacter = '';
+        $word = '';
 
         while ($i < strlen($arguments)) {
             $char = $arguments[$i];
@@ -220,6 +221,28 @@ class TwigTranspiler
 
             if (!$inString && $char === chr(36) && ($previous === chr(32) || $previous === chr(44) || $previous === chr(43))) {
                 $insertCharacter = '';
+            }
+
+            if (!$inString) {
+                if (preg_match('/[a-zA-z]/', $char)) {
+                    $word .= $char;
+
+                    if (strlen($arguments) == $i + 1) {
+                        if ($word == 'this') {
+                            $result = substr($result, 0, -3) . "'" . $this->extensionReferenceHash . "'";
+                            break;
+                        }
+                    }
+                }
+                else {
+                    if (!empty($word)) {
+                        if ($word == 'this') {
+                            $result = substr($result, 0, -4) . "'" . $this->extensionReferenceHash . "'";
+                        }
+                    }
+
+                    $word = '';
+                }
             }
 
             if (!empty($insertCharacter)) {
