@@ -43,7 +43,19 @@ class Str
      */
     public static function startsWith($haystack, $needle)
     {
-        return (substr($haystack, 0, strlen($needle))) == $needle;
+        if (is_string($needle)) {
+            return (substr($haystack, 0, strlen($needle))) == $needle;
+        }
+
+        if (is_array($needle)) {
+            foreach ($needle as $n) {
+                if ((substr($haystack, 0, strlen($n))) == $n) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
