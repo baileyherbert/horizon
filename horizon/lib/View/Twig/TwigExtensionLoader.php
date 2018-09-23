@@ -4,9 +4,25 @@ namespace Horizon\View\Twig;
 
 use Horizon;
 use Horizon\Utils\Path;
+use Horizon\Framework\Kernel;
 
 class TwigExtensionLoader
 {
+
+    /**
+     * @var TwigLoader
+     */
+    protected $loader;
+
+    /**
+     * Constructs a new TwigExtensionLoader instance.
+     *
+     * @param TwigLoader $loader
+     */
+    public function __construct(TwigLoader $loader = null)
+    {
+        $this->loader = $loader;
+    }
 
     /**
      * Loads all extensions in the application and returns an array of instances.
@@ -56,7 +72,7 @@ class TwigExtensionLoader
             }
             else {
                 if (class_exists($className)) {
-                    $extension = new $className;
+                    $extension = new $className(Kernel::getExtensionBinding());
 
                     if ($extension instanceof \Twig_Extension) {
                         $extensions[] = $extension;
