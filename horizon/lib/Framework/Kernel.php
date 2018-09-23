@@ -53,7 +53,9 @@ class Kernel
     protected static function initErrorHandling()
     {
         set_error_handler(function($severity, $message, $file, $line) {
-            throw new \ErrorException($message, 0, $severity, $file, $line);
+            if ($severity !== E_USER_DEPRECATED) {
+                throw new \ErrorException($message, 0, $severity, $file, $line);
+            }
         });
 
         set_exception_handler(function($exception) {
