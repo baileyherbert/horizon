@@ -81,14 +81,18 @@ class BladeExtension extends ViewExtension
      */
     public function transpileForEach($args)
     {
-        if (preg_match('/^\$([\w.]+)\s+as\s+\$([\w]+)$/', $args, $matches)) {
+        if (preg_match('/^\$([\w.>-]+)\s+as\s+\$([\w]+)$/', $args, $matches)) {
             $this->endings[] = 'endfor';
-            return "{% for {$matches[2]} in {$matches[1]} %}";
+
+            $array = str_replace('->', '.', $matches[1]);
+            return "{% for {$matches[2]} in {$array} %}";
         }
 
-        if (preg_match('/^\$([\w.]+)\s+as\s+\$([\w]+)\s*=>\s*\$([\w]+)$/', $args, $matches)) {
+        if (preg_match('/^\$([\w.>-]+)\s+as\s+\$([\w]+)\s*=>\s*\$([\w]+)$/', $args, $matches)) {
             $this->endings[] = 'endfor';
-            return "{% for {$matches[2]}, {$matches[3]} in {$matches[1]} %}";
+
+            $array = str_replace('->', '.', $matches[1]);
+            return "{% for {$matches[2]}, {$matches[3]} in {$array} %}";
         }
 
         throw new \Exception(sprintf('Invalid format in @foreach: %s', $args));
@@ -191,6 +195,15 @@ class BladeExtension extends ViewExtension
                     else if ($char === chr(38) && $previous === chr(38)) {
                         $insert = '';
                     }
+                    else if ($char === chr(124) && $next === chr(124)) {
+                        $insert = 'or';
+                    }
+                    else if ($char === chr(124) && $previous === chr(124)) {
+                        $insert = '';
+                    }
+                    else if ($char === chr(33) && $next !== chr(61)) {
+                        $insert = 'not ';
+                    }
                 }
 
                 if ($char === chr(36)) {
@@ -277,10 +290,22 @@ class BladeExtension extends ViewExtension
                         'args' => $filterArgs
                     );
 
-                    $insert = $var . '|' . $filterName;
+                    if ($filterName == 'empty') {
+                        $not = false;
 
-                    if (count($filterArgs) > 0) {
-                        $insert .= '(' . implode(', ', $filterArgs) . ')';
+                        if (substr($statement, -4, -1) == "not") {
+                            $statement = substr($statement, 0, -4);
+                            $not = true;
+                        }
+
+                        $insert = "$var is " . ($not ? "not " : "") . "empty";
+                    }
+                    else {
+                        $insert = $var . '|' . $filterName;
+
+                        if (count($filterArgs) > 0) {
+                            $insert .= '(' . implode(', ', $filterArgs) . ')';
+                        }
                     }
                 }
                 else if (!$isParenthesis) {
@@ -348,7 +373,8 @@ class BladeExtension extends ViewExtension
             'trim' => 'trim',
             'upper' => 'upper',
             'strtoupper' => 'upper',
-            'url_encode' => 'url_encode'
+            'url_encode' => 'url_encode',
+            'empty' => 'empty'
         );
 
         return (isset($filters[$name])) ? $filters[$name] : null;
