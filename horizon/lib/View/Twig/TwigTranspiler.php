@@ -89,8 +89,10 @@ class TwigTranspiler
         $this->templateFileName = $templateFileName;
         $this->extensionReferenceHash = md5($templateFileName);
 
+        $value = $this->correctWhitespace($value);
         $value = $this->compileStatements($value);
         $value = $this->compileVariables($value);
+
         $translated = (new TwigTranslator())->compile($value, $this->translateNamespaces);
 
         return ltrim($translated);
@@ -161,9 +163,7 @@ class TwigTranspiler
         if (substr($value, 0, 1) != "(") return array();
         if (substr($value, -1) != ")") return array();
 
-        $value = trim($value, '()');
-
-        return $value;
+        return substr($value, 1, -1);
     }
 
     /**
@@ -328,6 +328,18 @@ class TwigTranspiler
                 if ($char === chr(62) && $previous === chr(45)) {
                     $insertCharacter = '';
                 }
+
+                if ($char === chr(124) && $next === chr(124)) {
+                    $insertCharacter = 'or';
+                }
+
+                if ($char === chr(124) && $previous === chr(124)) {
+                    $insertCharacter = '';
+                }
+
+                if ($char === chr(33) && $next !== chr(61)) {
+                    $insertCharacter = 'not ';
+                }
             }
 
             if ($insertCharacter !== '') {
@@ -338,6 +350,51 @@ class TwigTranspiler
         }
 
         return $result;
+    }
+
+    protected function correctWhitespace($str)
+    {
+        $lines = explode("\n", $str);
+        $newLines = array();
+        $correctionIndent = null;
+
+        foreach ($lines as $line) {
+            $trimmed = trim($line);
+            $indented = strlen($line) - strlen($trimmed);
+
+            if (preg_match('/^{#.+#}$/', $trimmed)) {
+                continue;
+            }
+
+            if (preg_match('/^@(\w+)\s*\(/', $trimmed)) {
+                $newLines[] = $trimmed;
+                $correctionIndent = $indented;
+
+                if (preg_match('/^@section/', $trimmed) || preg_match('/^@block/', $trimmed)) {
+                    $correctionIndent = null;
+                }
+            }
+            else if (preg_match('/^@(\w+)/', $trimmed)) {
+                $newLines[] = $trimmed;
+            }
+            else {
+                if ($correctionIndent !== null) {
+                    if ($indented == ($correctionIndent + 1) || $indented == ($correctionIndent + 4)) {
+                        $correctBy = $indented - $correctionIndent;
+                        $line = substr($line, $correctBy);
+                    }
+                    else {
+                        if ($indented <= $correctionIndent) {
+                            $correctionIndent = null;
+                        }
+                    }
+                }
+
+                $newLines[] = $line;
+            }
+        }
+
+        return implode("\n", $newLines);
     }
 
 }
