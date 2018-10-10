@@ -22,6 +22,10 @@ class TranslationProvider extends ServiceProvider
     {
         $translationsPath = Path::join(Horizon::APP_DIR, 'translations');
 
+        if (!file_exists($translationsPath)) {
+            return array();
+        }
+
         return $this->getPaths($translationsPath);
     }
 
