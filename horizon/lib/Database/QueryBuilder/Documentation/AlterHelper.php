@@ -29,8 +29,9 @@ namespace Horizon\Database\QueryBuilder\Documentation;
  * @method string compile() Gets the query as a prepared string.
  * @method array getParameters() Gets an array of parameter values for prepared statements.
  *
- * @method object|int|bool exec() Executes the query.
- * @method object[]|Model[] get() Fetches all rows in the query as objects, or models if configured.
+ * @method object|int|bool exec() Executes the query, returning the number of affected rows.
+ * @method object[]|\Horizon\Database\Model[] get() Fetches all rows in the query as objects, or models if configured.
+ * @method object|\Horizon\Database\Model first() Fetches the first row in the query as an object, or a model if configured.
  */
 class AlterHelper
 {
