@@ -27,11 +27,11 @@ class ExtensionProvider extends ServiceProvider
     {
         $extensionsDir = Path::join(Horizon::APP_DIR, 'extensions');
 
-        if (!file_exists($extensionsDir)) return;
-        if (!is_null($this->extensions)) return;
-
         $this->extensions = array();
         $this->failed = array();
+
+        if (!file_exists($extensionsDir)) return;
+        if (!is_null($this->extensions)) return;
 
         $dir = new \DirectoryIterator($extensionsDir);
 
