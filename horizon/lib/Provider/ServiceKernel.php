@@ -76,11 +76,9 @@ trait ServiceKernel
                     }
                 }
             }
-
-            return $providers;
         }
 
-        return array();
+        return $providers;
     }
 
 }
