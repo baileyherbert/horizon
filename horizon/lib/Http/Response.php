@@ -4,6 +4,7 @@ namespace Horizon\Http;
 
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Horizon\View\Template;
+use Horizon\Utils\Str;
 
 class Response extends SymfonyResponse
 {
@@ -80,6 +81,10 @@ class Response extends SymfonyResponse
      */
     public function redirect($to, $code = 302)
     {
+        if (Str::startsWith($to, '/') && !Str::startsWith($to, '//')) {
+            $to = '/' . trim($_SERVER['SUBDIRECTORY'], '/') . $to;
+        }
+
         $this->setStatusCode($code);
         $this->setHeader('Location', $to);
     }

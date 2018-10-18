@@ -106,12 +106,14 @@ trait HttpKernel
         $root = Path::parse(str_replace('\\', '/', $rootPath));
         $uri = Path::parse($requestUri);
         $shifted = '';
-
-        foreach ($uri as $node) {
+		
+		for ($i = count($uri) - 1; $i >= 0; $i--) {
+			$node = $uri[$i];
+			
             if ($node->directory) {
                 if (!empty($root) && Arr::last($root)->name == $node->name) {
-                    $shifted .= '/' . $node->name;
-                    array_pop($root);
+                    $shifted = '/' . $node->name . $shifted;
+					array_pop($root);
                 }
             }
         }

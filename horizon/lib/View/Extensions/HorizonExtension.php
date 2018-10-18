@@ -47,7 +47,7 @@ class HorizonExtension extends ViewExtension
     {
         $request = Kernel::getRequest();
         $currentPath = $request->path();
-        $root = rtrim(Path::getRelative($currentPath, '/', $_SERVER['SUBDIRECTORY']), '/');
+        $root = rtrim($_SERVER['SUBDIRECTORY'], '/');
 
         $fromExtension = is_string($extensionId) ? $this->getExtension($extensionId) : null;
 
@@ -62,8 +62,8 @@ class HorizonExtension extends ViewExtension
         if (USE_LEGACY_ROUTING) {
             return $root . '/app/public/' . ltrim($relativePath, '/');
         }
-
-        return $root . '/' . ltrim($relativePath, '/');
+		
+        return '/' . ltrim($root . '/', '/') . ltrim($relativePath, '/');
     }
 
     protected function twigCsrf()
