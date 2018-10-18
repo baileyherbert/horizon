@@ -21,7 +21,7 @@ class Handler
      *
      * @param Exception $exception
      */
-    public function report(Exception $exception)
+    public function report($exception)
     {
         if (method_exists($exception, 'report')) {
             $exception['report']();
@@ -34,7 +34,7 @@ class Handler
      * @param Response $response
      * @param Exception $exception
      */
-    public function render(Response $response = null, Exception $exception)
+    public function render(Response $response = null, $exception)
     {
         $reflect = new \ReflectionClass($exception);
         $shortName = $reflect->getShortName();
