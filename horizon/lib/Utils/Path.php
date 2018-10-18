@@ -16,9 +16,9 @@ class Path
         $paths = func_get_args();
         $path = array_shift($paths);
 
-        foreach ($paths as $segment) {
+        foreach ($paths as $i => $segment) {
             while (strlen($segment) > 0 && substr($segment, 0, 1) == '\\' || substr($segment, 0, 1) == '/') {
-                $segment = substr($segment, 1);
+				$segment = substr($segment, 1);
             }
 
             if (empty($segment)) {
@@ -84,7 +84,7 @@ class Path
                 continue;
             }
 
-            if ($part == '') {
+            if ($part == '' && $i != 0) {
                 unset($parts[$i]);
                 continue;
             }
