@@ -1,4 +1,6 @@
 .idea/
 horizon/vendor/
+app/vendor/
+app/extensions/*/vendor/
 .vscode/
 .vs/
