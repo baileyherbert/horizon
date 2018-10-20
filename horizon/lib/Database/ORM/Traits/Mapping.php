@@ -8,6 +8,7 @@ use Horizon\Database\ORM\Relationship;
 use Horizon\Database\QueryBuilder;
 use Horizon\Framework\Kernel;
 use Horizon\Database\Exception\DatabaseException;
+use Horizon\Database\Cache;
 
 trait Mapping
 {
@@ -83,11 +84,14 @@ trait Mapping
             $builder = \DB::insert()->into($this->getTable())->values($this->changes);
             $returned = $builder->exec();
 
-            if (!isset($this->changes[$keyName])) {
-                $this->changes[$keyName] = $returned;
-            }
+            // Save the new row id
+            $this->changes[$keyName] = $returned;
 
-            $this->emit('inserted');
+            // Save the instance to cache
+            Cache::setModelInstance($this, $this, $returned);
+
+            // Emit the inserted event
+            $this->emit('inserted', $returned);
         }
         else {
             $builder = \DB::update()->table($this->getTable())->values($this->changes);
@@ -99,6 +103,9 @@ trait Mapping
 
         foreach ($this->changes as $key => $value) {
             $this->storage[$key] = $value;
+
+            // Emit a property-set event
+            $this->emit('property', $key, $value);
         }
 
         $this->emit('saved', $this->changes);

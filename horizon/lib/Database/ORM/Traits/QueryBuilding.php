@@ -6,6 +6,7 @@ use DB;
 use Horizon\Database\QueryBuilder\Documentation\SelectHelper;
 use Horizon\Database\QueryBuilder\Documentation\UpdateHelper;
 use Horizon\Http\Exception\HttpResponseException;
+use Horizon\Database\Cache;
 
 trait QueryBuilding
 {
@@ -55,10 +56,22 @@ trait QueryBuilding
         $table = $o->getTable();
         $keyName = $o->getPrimaryKey();
 
+        $cache = Cache::getModelInstance($o, $primaryKey);
+
+        if (!is_null($cache)) {
+            return $cache;
+        }
+
         $builder = DB::select()->from($table)->where($keyName, '=', $primaryKey)->limit(1);
         $builder->setModel(get_class($o));
+        $row = $builder->first();
 
-        return $builder->first();
+        // Cache the new model instance
+        if (!is_null($row)) {
+            Cache::setModelInstance($o, $row);
+        }
+
+        return $row;
     }
 
     /**
