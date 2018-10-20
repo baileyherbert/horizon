@@ -86,11 +86,15 @@ trait Mapping
             if (!isset($this->changes[$keyName])) {
                 $this->changes[$keyName] = $returned;
             }
+
+            $this->emit('inserted');
         }
         else {
             $builder = \DB::update()->table($this->getTable())->values($this->changes);
             $builder->where($keyName, '=', $keyValue);
             $builder->exec();
+
+            $this->emit('updated');
         }
 
         foreach ($this->changes as $key => $value) {
