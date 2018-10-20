@@ -121,7 +121,7 @@ trait Mapping
         $builder->where($keyName, '=', $keyValue);
         $builder->exec();
 
-        $this->emit('deleted', $name, $value);
+        $this->emit('deleted');
         $this->storage = array();
 
         return $oldData;
