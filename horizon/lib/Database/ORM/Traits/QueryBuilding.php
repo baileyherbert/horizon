@@ -71,15 +71,7 @@ trait QueryBuilding
      */
     public static function findOrFail($primaryKey, $code = 404)
     {
-        $o = (new static);
-
-        $table = $o->getTable();
-        $keyName = $o->getPrimaryKey();
-
-        $builder = DB::select()->from($table)->where($keyName, '=', $primaryKey)->limit(1);
-        $builder->setModel(get_class($o));
-
-        $model = $builder->first();
+        $model = static::find($primaryKey);
 
         if (is_null($model)) {
             throw new HttpResponseException($code);
