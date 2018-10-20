@@ -117,11 +117,7 @@ class Cache
 
         // Listen for primary key changes
         $instance->on('property', function($propName, $propValue) use ($model, $id, $instance) {
-            echo 'Got a property change: ' . $propName . ' -> ' . $propValue . PHP_EOL;
-
             if ($propName == $instance->getPrimaryKey()) {
-                echo 'The primary key is changing... let us update this in cache.' . PHP_EOL;
-
                 static::removeModelInstance($model, $id);
                 static::setModelInstance($model, $instance, $propValue);
             }
