@@ -62,7 +62,7 @@ class HorizonExtension extends ViewExtension
         if (USE_LEGACY_ROUTING) {
             return $root . '/app/public/' . ltrim($relativePath, '/');
         }
-		
+
         return '/' . ltrim($root . '/', '/') . ltrim($relativePath, '/');
     }
 
@@ -70,7 +70,11 @@ class HorizonExtension extends ViewExtension
     {
         return new Twig_SimpleFunction('csrf', function () {
             return '<input type="hidden" name="csrf" value="{{ csrf() | e(\'html_attr\') }}">';
-        });
+        }, array(
+            'is_safe' => array(
+                'html'
+            )
+        ));
     }
 
     protected function twigLang()
