@@ -179,7 +179,11 @@ class ControllerDispatcher
      */
     protected function getCommonParameter($name)
     {
-        return $this->route->parameter($name);
+        $param = $this->route->parameter($name);
+        if (!is_null($param)) return $param;
+
+        $param = $this->request->get($name);
+        return $param;
     }
 
     /**
