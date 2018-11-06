@@ -82,7 +82,7 @@ class Response extends SymfonyResponse
     public function redirect($to, $code = 302)
     {
         if (Str::startsWith($to, '/') && !Str::startsWith($to, '//')) {
-            $to = '/' . trim($_SERVER['SUBDIRECTORY'], '/') . $to;
+            $to = '/' . trim($_SERVER['SUBDIRECTORY'], '/') . ltrim($to, '/');
         }
 
         $this->setStatusCode($code);
