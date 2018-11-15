@@ -2,6 +2,10 @@
 
 namespace Horizon\Routing;
 
+use Horizon\Framework\Kernel;
+use Horizon\Http\Request;
+use Horizon\Http\Response;
+
 class Controller
 {
 
@@ -13,6 +17,26 @@ class Controller
     public function getMiddleware()
     {
         return array();
+    }
+
+    /**
+     * Gets the Request instance for this controller.
+     *
+     * @return Request
+     */
+    public function getRequest()
+    {
+        return Kernel::getRequest();
+    }
+
+    /**
+     * Gets the Response instance for this controller.
+     *
+     * @return Response
+     */
+    public function getResponse()
+    {
+        return Kernel::getResponse();
     }
 
 }
