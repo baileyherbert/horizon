@@ -43,7 +43,7 @@ class Response extends SymfonyResponse
      *
      * @param mixed $data
      */
-    public function write($data = '')
+    protected function writeObject($data = '')
     {
         if (is_bool($data)) {
             $data = $data ? 'true' : 'false';
@@ -65,11 +65,46 @@ class Response extends SymfonyResponse
     }
 
     /**
+     * Writes to the response content.
+     *
+     * @param mixed $data
+     */
+    public function write()
+    {
+        $args = func_get_args();
+
+        if (empty($args)) {
+            $args = array('');
+        }
+
+        foreach ($args as $i => $arg) {
+            $this->writeObject($arg);
+
+            if ($i < (count($args) - 1)) {
+                $this->writeObject(' ');
+            }
+        }
+    }
+
+    /**
      * Writes a new line to the response content.
      */
-    public function writeLine($data = '')
+    public function writeLine()
     {
-        $this->write($data);
+        $args = func_get_args();
+
+        if (empty($args)) {
+            $args = array('');
+        }
+
+        foreach ($args as $i => $arg) {
+            $this->write($arg);
+
+            if ($i < (count($args) - 1)) {
+                $this->write(' ');
+            }
+        }
+
         $this->write("\n");
     }
 
