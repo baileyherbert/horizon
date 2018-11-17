@@ -19,7 +19,6 @@
         "symfony/polyfill-php55": "^1.8",
         "phpseclib/phpseclib": "^2.0",
         "twig/twig": "1.35.3",
-        "myclabs/deep-copy": "1.6.1",
         "guzzlehttp/guzzle": "^5.3"
     },
     "require-dev": {
