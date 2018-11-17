@@ -127,6 +127,10 @@ class Path
 
         // For an identical path, return it without any modification
         if ($currentPath == $targetPath) {
+			if (!Str::startsWith($targetPath, '/' . $subdirectory)) {
+				$targetPath = '/' . ltrim($subdirectory . $targetPath, '/');
+			}
+
             return $targetPath;
         }
 
