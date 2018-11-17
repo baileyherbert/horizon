@@ -1,3 +1,3 @@
 <?php
 
-Route::get('/', 'App\\Http\\Controllers\\Welcome')->fallback('index.php');
+Route::get('/', 'App\Welcome')->fallback('index.php');

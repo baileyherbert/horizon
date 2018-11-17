@@ -1,6 +1,6 @@
-@namespace horizon.welcome
+@namespace horizon.start
 
-    "Heading1"          "Hello world!"
-    "Paragraph1"        "Horizon is working! Now you can get started."
-    "{{ runtime() }}"   "Page loaded in {{ runtime() }} seconds."
+    "Title"            "Start · Horizon Framework"
+    "Heading"          "Horizon is ready to go!"
+    "Paragraph"        "Now you can start coding your new application."
 
