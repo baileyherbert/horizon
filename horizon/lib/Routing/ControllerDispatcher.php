@@ -119,7 +119,7 @@ class ControllerDispatcher
             $class = $param->getClass() ? $param->getClass()->name : null;
 
             if (!is_null($class)) {
-                $parameters[] = $this->getTypedParameter($class);
+                $parameters[] = $this->getTypedParameter($class, $name);
             }
             else {
                 $parameters[] = $this->getCommonParameter($name);
@@ -159,13 +159,21 @@ class ControllerDispatcher
      *
      * @return mixed
      */
-    protected function getTypedParameter($className)
+    protected function getTypedParameter($className, $name)
     {
         $objects = array($this->request, $this->response);
 
         foreach ($objects as $object) {
             if ($object instanceof $className) {
                 return $object;
+            }
+        }
+
+        $attribute = $this->request->getAttribute($name);
+
+        if (!is_null($attribute) && is_object($attribute)) {
+            if ($attribute instanceof $className) {
+                return $attribute;
             }
         }
 
@@ -183,7 +191,10 @@ class ControllerDispatcher
         if (!is_null($param)) return $param;
 
         $param = $this->request->get($name);
-        return $param;
+        if (!is_null($param)) return $param;
+
+        $attribute = $this->request->getAttribute($name);
+        return $attribute;
     }
 
     /**
