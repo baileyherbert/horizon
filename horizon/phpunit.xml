@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<phpunit bootstrap="vendor/autoload.php"
+<phpunit bootstrap="bootstrap/test.php"
          color="true"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
@@ -8,11 +8,12 @@
          syntaxCheck="false">
     <testsuite>
         <testsuite name="Horizon Framework">
-            <directory>tests</directory>
+            <directory>./tests</directory>
             <directory>../app/tests</directory>
         </testsuite>
     </testsuite>
     <php>
         <env name="HORIZON_ENVIRONMENT" value="test" />
+        <env name="HORIZON_TEST" value="1" />
     </php>
 </phpunit>
