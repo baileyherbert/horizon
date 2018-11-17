@@ -8,7 +8,8 @@
          syntaxCheck="false">
     <testsuite>
         <testsuite name="Horizon Framework">
-            <directory>horizon/tests</directory>
+            <directory>tests</directory>
+            <directory>../app/tests</directory>
         </testsuite>
     </testsuite>
     <php>
