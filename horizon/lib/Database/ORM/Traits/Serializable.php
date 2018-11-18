@@ -137,6 +137,30 @@ trait Serializable
             }
         }
 
+        // Serialization converters
+        $methods = $class->getMethods(\ReflectionMethod::IS_PUBLIC | \ReflectionMethod::IS_PROTECTED);
+
+        foreach ($methods as $method) {
+            if (preg_match('/^serialize(\w+)$/i', $method->name, $matches)) {
+                $propName = $matches[1];
+                $fullName = 'serialize' . $propName;
+                $found = false;
+
+                foreach ($permitted as $i => $v) {
+                    if (strcasecmp($i, $propName) === 0) {
+                        $permitted[$i] = call_user_method($fullName, $this, $v);
+                        $found = true;
+                        break;
+                    }
+                }
+
+                if (!$found) {
+                    $propNameLower = lcfirst($propName);
+                    $permitted[$propNameLower] = call_user_method($fullName, $this, null);
+                }
+            }
+        }
+
         return $permitted;
     }
 
