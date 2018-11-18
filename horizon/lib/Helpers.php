@@ -25,7 +25,7 @@ function config($key, $default = null)
  *
  * @param string $templateFile
  * @param array $context
- * @return string
+ * @return void
  */
 function view($templateFile, array $context = array())
 {
@@ -36,6 +36,23 @@ function view($templateFile, array $context = array())
     }
 
     return $response->view($templateFile, $context);
+}
+
+/**
+ * Redirects the current response object.
+ *
+ * @param string $to
+ * @param int $code
+ */
+function redirect($to, $code = 302)
+{
+    $response = Kernel::getResponse();
+
+    if (is_null($response)) {
+        throw new HorizonException(0x0008, sprintf('Cannot redirect to target: %s', $to));
+    }
+
+    return $response->redirect($to, $code);
 }
 
 /**
