@@ -4,8 +4,7 @@
     "version": "1.0.0",
     "autoload": {
         "psr-4": {
-            "Horizon\\": "lib",
-            "App\\": "../app/src"
+            "Horizon\\": "lib"
         },
         "files": [
           "lib/Horizon.php",

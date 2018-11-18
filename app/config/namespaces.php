@@ -11,6 +11,6 @@
 
 return array(
     'map' => array(
-        'App\\' => '/app'
+        'App\\' => '/app/src'
     )
 );
