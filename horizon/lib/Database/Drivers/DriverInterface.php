@@ -43,6 +43,6 @@ interface DriverInterface
     /**
      * Closes the connection.
      */
-    public static function close();
+    public function close();
 
 }

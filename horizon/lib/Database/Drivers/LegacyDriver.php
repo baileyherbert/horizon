@@ -176,7 +176,7 @@ class LegacyDriver implements DriverInterface
     /**
      * Closes the connection.
      */
-    public static function close()
+    public function close()
     {
         @mysql_close($this->handle);
     }
