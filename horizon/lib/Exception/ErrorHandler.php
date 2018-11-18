@@ -69,7 +69,13 @@ class ErrorHandler implements ErrorHandlerInterface
      */
     public function report(HorizonError $error)
     {
+        $originalException = $error->getException();
 
+        if (!is_null($originalException)) {
+            if (method_exists($originalException, 'report')) {
+                call_user_method('report', $originalException, $error);
+            }
+        }
     }
 
     /**
