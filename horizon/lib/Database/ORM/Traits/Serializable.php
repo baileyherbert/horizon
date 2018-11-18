@@ -37,6 +37,14 @@ trait Serializable
     protected $casts = array();
 
     /**
+     * An array containing column names. If specified, the columns in the serialization output will follow the same order
+     * from top to bottom. Any columns not included will resume their normal order, after specified columns.
+     *
+     * @var string[]
+     */
+    protected $order = array();
+
+    /**
      * Tests whether the column or relationship name can be serialized.
      *
      * @param string $name
@@ -159,6 +167,27 @@ trait Serializable
                     $permitted[$propNameLower] = call_user_method($fullName, $this, null);
                 }
             }
+        }
+
+        // Reorder columns
+        if (!empty($this->order)) {
+            $ordered = array();
+
+            foreach ($this->order as $colName) {
+                foreach ($permitted as $i => $v) {
+                    if (strcasecmp($i, $colName) === 0) {
+                        $ordered[$i] = $v;
+                    }
+                }
+            }
+
+            foreach ($permitted as $i => $v) {
+                if (!isset($ordered[$i])) {
+                    $ordered[$i] = $v;
+                }
+            }
+
+            $permitted = $ordered;
         }
 
         return $permitted;

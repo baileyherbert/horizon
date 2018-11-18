@@ -50,7 +50,7 @@ class Response extends SymfonyResponse
         }
 
         if (is_array($data)) {
-            $data = json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+            $data = json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         }
 
         if (is_object($data)) {
