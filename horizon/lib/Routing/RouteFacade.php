@@ -28,11 +28,18 @@ class RouteFacade
      *
      * @param string $uri
      * @param Closure|array|string $action
+     * @param string|null $fallback Path to a php file, relative to the root directory, to use for fallback routing.
      * @return Route
      */
-    public static function get($uri, $action)
+    public static function get($uri, $action, $fallback = null)
     {
-        return static::router()->createGetRoute($uri, $action);
+        $route = static::router()->createGetRoute($uri, $action);
+
+        if (!is_null($fallback)) {
+            $route->fallback($fallback);
+        }
+
+        return $route;
     }
 
     /**
@@ -40,11 +47,18 @@ class RouteFacade
      *
      * @param string $uri
      * @param Closure|array|string $action
+     * @param string|null $fallback Path to a php file, relative to the root directory, to use for fallback routing.
      * @return Route
      */
-    public static function post($uri, $action)
+    public static function post($uri, $action, $fallback = null)
     {
-        return static::router()->createPostRoute($uri, $action);
+        $route = static::router()->createPostRoute($uri, $action);
+
+        if (!is_null($fallback)) {
+            $route->fallback($fallback);
+        }
+
+        return $route;
     }
 
     /**
@@ -52,11 +66,18 @@ class RouteFacade
      *
      * @param string $uri
      * @param Closure|array|string $action
+     * @param string|null $fallback Path to a php file, relative to the root directory, to use for fallback routing.
      * @return Route
      */
-    public static function put($uri, $action)
+    public static function put($uri, $action, $fallback = null)
     {
-        return static::router()->createPutRoute($uri, $action);
+        $route = static::router()->createPutRoute($uri, $action);
+
+        if (!is_null($fallback)) {
+            $route->fallback($fallback);
+        }
+
+        return $route;
     }
 
     /**
@@ -64,11 +85,18 @@ class RouteFacade
      *
      * @param string $uri
      * @param Closure|array|string $action
+     * @param string|null $fallback Path to a php file, relative to the root directory, to use for fallback routing.
      * @return Route
      */
-    public static function patch($uri, $action)
+    public static function patch($uri, $action, $fallback = null)
     {
-        return static::router()->createPatchRoute($uri, $action);
+        $route = static::router()->createPatchRoute($uri, $action);
+
+        if (!is_null($fallback)) {
+            $route->fallback($fallback);
+        }
+
+        return $route;
     }
 
     /**
@@ -76,11 +104,18 @@ class RouteFacade
      *
      * @param string $uri
      * @param Closure|array|string $action
+     * @param string|null $fallback Path to a php file, relative to the root directory, to use for fallback routing.
      * @return Route
      */
-    public static function delete($uri, $action)
+    public static function delete($uri, $action, $fallback = null)
     {
-        return static::router()->createDeleteRoute($uri, $action);
+        $route = static::router()->createDeleteRoute($uri, $action);
+
+        if (!is_null($fallback)) {
+            $route->fallback($fallback);
+        }
+
+        return $route;
     }
 
     /**
@@ -88,11 +123,18 @@ class RouteFacade
      *
      * @param string $uri
      * @param Closure|array|string $action
+     * @param string|null $fallback Path to a php file, relative to the root directory, to use for fallback routing.
      * @return Route
      */
-    public static function options($uri, $action)
+    public static function options($uri, $action, $fallback = null)
     {
-        return static::router()->createOptionsRoute($uri, $action);
+        $route = static::router()->createOptionsRoute($uri, $action);
+
+        if (!is_null($fallback)) {
+            $route->fallback($fallback);
+        }
+
+        return $route;
     }
 
     /**
@@ -100,11 +142,18 @@ class RouteFacade
      *
      * @param string $uri
      * @param Closure|array|string $action
+     * @param string|null $fallback Path to a php file, relative to the root directory, to use for fallback routing.
      * @return Route
      */
-    public static function any($uri, $action)
+    public static function any($uri, $action, $fallback = null)
     {
-        return static::router()->createAnyRoute($uri, $action);
+        $route = static::router()->createAnyRoute($uri, $action);
+
+        if (!is_null($fallback)) {
+            $route->fallback($fallback);
+        }
+
+        return $route;
     }
 
     /**
@@ -113,11 +162,18 @@ class RouteFacade
      * @param string[] $methods
      * @param string $uri
      * @param Closure|array|string $action
+     * @param string|null $fallback Path to a php file, relative to the root directory, to use for fallback routing.
      * @return Route
      */
-    public static function match(array $methods, $uri, $action)
+    public static function match(array $methods, $uri, $action, $fallback = null)
     {
-        return static::router()->createMatchRoute($uri, $action);
+        $route = static::router()->createMatchRoute($uri, $action);
+
+        if (!is_null($fallback)) {
+            $route->fallback($fallback);
+        }
+
+        return $route;
     }
 
     /**
@@ -127,11 +183,18 @@ class RouteFacade
      * @param string $uri
      * @param string $view
      * @param array $variables
+     * @param string|null $fallback Path to a php file, relative to the root directory, to use for fallback routing.
      * @return Route
      */
-    public static function view($uri, $view, array $variables = array())
+    public static function view($uri, $view, array $variables = array(), $fallback = null)
     {
-        return static::router()->createViewRoute($uri, $view, $variables);
+        $route = static::router()->createViewRoute($uri, $view, $variables);
+
+        if (!is_null($fallback)) {
+            $route->fallback($fallback);
+        }
+
+        return $route;
     }
 
     /**
@@ -142,11 +205,18 @@ class RouteFacade
      * @param string $uri
      * @param Route|string $to
      * @param int $code
+     * @param string|null $fallback Path to a php file, relative to the root directory, to use for fallback routing.
      * @return Route
      */
-    public static function redirect($uri, $to, $code = 302)
+    public static function redirect($uri, $to, $code = 302, $fallback = null)
     {
-        return static::router()->createRedirectRoute($uri, $to, $code);
+        $route = static::router()->createRedirectRoute($uri, $to, $code);
+
+        if (!is_null($fallback)) {
+            $route->fallback($fallback);
+        }
+
+        return $route;
     }
 
     /**
