@@ -22,6 +22,10 @@ class UpdateCollection implements \Iterator
      */
     public function __construct(array $versions = null)
     {
+        usort($versions, function($v1, $v2) {
+            return $v1->isNewerThan($v2->getVersion()) ? 1 : -1;
+        });
+
         $this->versions = $versions;
     }
 
