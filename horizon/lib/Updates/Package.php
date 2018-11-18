@@ -138,18 +138,25 @@ class Package
         $logger->info('Creating a compressed backup of those files...');
 
         $backup = new ZipArchive();
-        $backup->markEncrypted();
 
-        if ($backup->isDecryptable()) {
-            $logger->info('Encryption is confirmed, backed up files will be ciphered.');
-            $logger->warn('This backup will be encrypted with Horizon FastEncrypt.');
-            $logger->warn('The key for this encryption relies heavily on your filesystem and is not very secure.');
+        if ($encrypt) {
+            $backup->markEncrypted();
+
+            if ($backup->isDecryptable()) {
+                $logger->info('Encryption is confirmed, backed up files will be ciphered.');
+                $logger->warn('This backup will be encrypted with Horizon FastEncrypt.');
+                $logger->warn('The key for this encryption relies heavily on your filesystem and is not very secure.');
+            }
+            else {
+                $logger->error('Cannot proceed with backup because the encryption module is faulty.');
+                $logger->error('Encryption was enabled on the compressed archive, yet a test decryption failed.');
+
+                throw new UpdateException('Cannot create backup: encryption failed');
+            }
         }
         else {
-            $logger->error('Cannot proceed with backup because the encryption module is faulty.');
-            $logger->error('Encryption was enabled on the compressed archive, yet a test decryption failed.');
-
-            throw new UpdateException('Cannot create backup: encryption failed');
+            $logger->info('Encryption was disabled, so the backup archive will not be protected.');
+            $logger->warn('In the future, consider adding some basic protection using Horizon\'s built-in automatic encryption.');
         }
 
         foreach ($affected as $relativePath) {
@@ -157,10 +164,15 @@ class Package
             $horizonPath = ltrim(str_replace('\\', '/', Str::stripBeginning($absolutePath, \Horizon::ROOT_DIR)), '/');
 
             if (file_exists($absolutePath)) {
-                $cipher = FastEncrypt::encrypt(file_get_contents($absolutePath, $horizonPath));
+                $contents = file_get_contents($absolutePath, $horizonPath);
+
+                if ($encrypt) {
+                    $contents = FastEncrypt::encrypt($contents);
+                }
+
                 $backup->createFile($cipher, $horizonPath);
 
-                $logger->info('Backed up file:', $horizonPath, '(cipher size: ' . strlen($cipher) . ')');
+                $logger->info('Backed up file:', $horizonPath, '(' . ($encrypt ? 'cipher' : 'file') . ' size: ' . strlen($contents) . ')');
             }
         }
 
