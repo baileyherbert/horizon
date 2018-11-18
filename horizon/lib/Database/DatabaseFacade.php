@@ -12,6 +12,7 @@ use Horizon\Database\QueryBuilder\Documentation\InsertHelper;
 use Horizon\Database\QueryBuilder\Documentation\SelectHelper;
 use Horizon\Database\QueryBuilder\Documentation\ShowHelper;
 use Horizon\Database\QueryBuilder\Documentation\UpdateHelper;
+use Horizon\Database\Exception\DatabaseException;
 
 class DatabaseFacade
 {
@@ -127,6 +128,54 @@ class DatabaseFacade
     protected static function getDatabase()
     {
         return Kernel::getDatabase();
+    }
+
+    /**
+     * Starts a transaction.
+     *
+     * @return bool
+     */
+    public static function transaction()
+    {
+        try {
+            static::query('START TRANSACTION;');
+            return true;
+        }
+        catch (DatabaseException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Commits the current transaction.
+     *
+     * @return bool
+     */
+    public static function commit()
+    {
+        try {
+            static::query('COMMIT;');
+            return true;
+        }
+        catch (DatabaseException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Rolls back the current transaction.
+     *
+     * @return bool
+     */
+    public static function rollback()
+    {
+        try {
+            static::query('ROLLBACK;');
+            return true;
+        }
+        catch (DatabaseException $e) {
+            return false;
+        }
     }
 
 }
