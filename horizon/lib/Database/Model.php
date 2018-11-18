@@ -7,7 +7,7 @@ use Horizon\Events\EventEmitter;
 /**
  * Represents a row of data in the database.
  */
-class Model extends EventEmitter
+class Model extends EventEmitter implements \JsonSerializable
 {
 
     use ORM\Traits\Mapping;
@@ -37,6 +37,15 @@ class Model extends EventEmitter
     public function __toString()
     {
         return $this->toJson();
+    }
+
+    /**
+     * Returns the serialization array for the model.
+     *
+     * @return array
+     */
+    public function jsonSerialize() {
+        return $this->toArray();
     }
 
 }
