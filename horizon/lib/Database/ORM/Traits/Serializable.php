@@ -156,7 +156,7 @@ trait Serializable
 
                 foreach ($permitted as $i => $v) {
                     if (strcasecmp($i, $propName) === 0) {
-                        $permitted[$i] = call_user_method($fullName, $this, $v);
+                        $permitted[$i] = call_user_func(array($this, $fullName), $this, $v);
                         $found = true;
                         break;
                     }
@@ -164,7 +164,7 @@ trait Serializable
 
                 if (!$found) {
                     $propNameLower = lcfirst($propName);
-                    $permitted[$propNameLower] = call_user_method($fullName, $this, null);
+                    $permitted[$propNameLower] = call_user_func(array($this, $fullName), $this, null);
                 }
             }
         }
