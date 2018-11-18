@@ -106,10 +106,10 @@ trait HttpKernel
         $root = Path::parse(str_replace('\\', '/', $rootPath));
         $uri = Path::parse($requestUri);
         $shifted = '';
-		
+
 		for ($i = count($uri) - 1; $i >= 0; $i--) {
 			$node = $uri[$i];
-			
+
             if ($node->directory) {
                 if (!empty($root) && Arr::last($root)->name == $node->name) {
                     $shifted = '/' . $node->name . $shifted;
@@ -169,18 +169,6 @@ trait HttpKernel
         }
         catch (HttpResponseException $e) {
             static::showErrorPage($e->getCode(), $e->getMessage());
-        }
-        catch (Exception $e) {
-            if (config('app.log_errors')) {
-                error_log(sprintf('HttpKernel: %s in route %s (stage %s)', $e->getMessage(), $route->getUri(), $stage));
-            }
-
-            if (config('app.display_errors')) {
-                throw $e;
-            }
-            else {
-                static::showErrorPage(500);
-            }
         }
     }
 
@@ -290,7 +278,7 @@ trait HttpKernel
      *
      * @param int $code
      */
-    protected static function showErrorPage($code)
+    public static function showErrorPage($code)
     {
         $errorFilePaths = array(
             Horizon::APP_DIR . SLASH . 'errors' . SLASH . $code . '.html',

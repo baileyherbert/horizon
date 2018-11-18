@@ -10,33 +10,6 @@
 return array(
 
     /*
-        Determines whether errors in the framework or app will be displayed in detail in the response. This is
-        not recommended in a production environment because some errors and exceptions could potentially contain
-        sensitive details.
-
-        Available values:
-
-            - true          Errors and exceptions will be included in the output.
-            - false         Errors and exceptions will be silently ignored if possible.
-
-        Default value: false
-    */
-    'display_errors' => true,
-
-    /*
-        Determines whether errors in the framework or app will be logged to the filesystem. Errors are always logged
-        to the 'app' directory of the framework.
-
-        Available values:
-
-            - true          Errors and exceptions will be logged.
-            - false         Errors and exceptions will not be logged.
-
-        Default value: true
-    */
-    'log_errors' => false,
-
-    /*
         Determines the timezone of the application. For best results, this should match the timezone of the database
         server configured for the application, but it isn't required.
 

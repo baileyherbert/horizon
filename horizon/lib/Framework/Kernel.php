@@ -14,7 +14,8 @@ use Horizon\Http\HttpKernel;
 
 use Horizon\Utils\TimeProfiler;
 use Horizon\Utils\Path;
-use Horizon\Exception\Handler;
+use Horizon\Exception\ErrorHandler;
+use Horizon\Exception\ErrorMiddleware;
 
 class Kernel
 {
@@ -53,53 +54,18 @@ class Kernel
     protected static function initErrorHandling()
     {
         set_error_handler(function($severity, $message, $file, $line) {
-            if ($severity !== E_USER_DEPRECATED) {
-                throw new \ErrorException($message, 0, $severity, $file, $line);
-            }
+            ErrorMiddleware::executeRuntimeError($severity, $message, $file, $line);
         });
 
         set_exception_handler(function($exception) {
-            $handler = new Handler();
-
-            if (class_exists('App\Exception\Handler')) {
-                $tmp = new \App\Exception\Handler();
-
-                if ($tmp instanceof Handler) {
-                    $handler = $tmp;
-                }
-            }
-
-            $handler->report($exception);
-
-            if (config('app.display_errors')) {
-                $handler->render(static::getResponse(), $exception);
-            }
-            else {
-                static::getResponse()->send();
-                terminate();
-            }
+            ErrorMiddleware::executeException($exception);
         });
 
         register_shutdown_function(function() {
             $error = error_get_last();
 
-            if ($error['type'] === E_ERROR) {
-                $ex = new \ErrorException($error['message'], 0, E_ERROR, $error['file'], $error['line']);
-                $handler = new Handler();
-
-                if (class_exists('App\Exception\Handler')) {
-                    $tmp = new \App\Exception\Handler();
-
-                    if ($tmp instanceof Handler) {
-                        $handler = $tmp;
-                    }
-                }
-
-                $handler->report($ex);
-
-                if (config('app.display_errors')) {
-                    $handler->render(static::getResponse(), $ex);
-                }
+            if (!is_null($error)) {
+                ErrorMiddleware::executeShutdownError($error['type'], $error['message'], $error['file'], $error['line']);
             }
         });
     }
@@ -192,7 +158,11 @@ class Kernel
      */
     public static function close()
     {
+        if (!is_null(static::$database)) {
+            static::getDatabase()->close();
+        }
 
+        die;
     }
 
 }

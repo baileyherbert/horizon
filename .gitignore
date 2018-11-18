@@ -4,3 +4,4 @@ app/vendor/
 app/extensions/*/vendor/
 .vscode/
 .vs/
+error_log
