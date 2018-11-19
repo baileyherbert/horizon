@@ -59,6 +59,30 @@ class Str
     }
 
     /**
+     * Checks whether the $haystack starts with the $needle. This is sensitive to whitespace but not character casing.
+     *
+     * @param string $haystack
+     * @param string $needle
+     * @return bool
+     */
+    public static function startsWithIgnoreCase($haystack, $needle)
+    {
+        if (is_string($needle)) {
+            return strcasecmp((substr($haystack, 0, strlen($needle))), $needle) === 0;
+        }
+
+        if (is_array($needle)) {
+            foreach ($needle as $n) {
+                if (strcasecmp((substr($haystack, 0, strlen($n))), $n) === 0) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Checks whether the $haystack ends with the $needle. This is sensitive to character casing and whitespace.
      *
      * @param string $haystack
@@ -68,6 +92,18 @@ class Str
     public static function endsWith($haystack, $needle)
     {
         return (substr($haystack, -strlen($needle))) == $needle;
+    }
+
+    /**
+     * Checks whether the $haystack ends with the $needle. This is sensitive to whitespace but not character casing.
+     *
+     * @param string $haystack
+     * @param string $needle
+     * @return bool
+     */
+    public static function endsWithIgnoreCase($haystack, $needle)
+    {
+        return strcasecmp((substr($haystack, -strlen($needle))), $needle) === 0;
     }
 
     /**
