@@ -3,7 +3,6 @@
 namespace Horizon\Database;
 
 use Horizon\Framework\Kernel;
-
 use Horizon\Database\QueryBuilder\Documentation\AlterHelper;
 use Horizon\Database\QueryBuilder\Documentation\CreateHelper;
 use Horizon\Database\QueryBuilder\Documentation\DeleteHelper;
@@ -14,29 +13,14 @@ use Horizon\Database\QueryBuilder\Documentation\ShowHelper;
 use Horizon\Database\QueryBuilder\Documentation\UpdateHelper;
 use Horizon\Database\Exception\DatabaseException;
 
-class DatabaseFacade
+class DatabaseConnection
 {
 
-    /**
-     * @var DatabaseConnection[]
-     */
-    protected static $connections = array();
+    private $name;
 
-    /**
-     * Selects which database connection to use.
-     *
-     * @param string $name
-     * @return DatabaseConnection
-     */
-    public static function connection($name = null)
+    public function __construct($name)
     {
-        if (isset(static::$connections[$name])) {
-            return static::$connections[$name];
-        }
-
-        static::$connections[$name] = new DatabaseConnection($name);
-
-        return static::$connections[$name];
+        $this->name = $name;
     }
 
     /**
@@ -56,9 +40,9 @@ class DatabaseFacade
      * @param array $bindings
      * @return array|int|bool
      */
-    public static function query($statement, array $bindings = array())
+    public function query($statement, array $bindings = array())
     {
-        return static::connection()->query($statement, $bindings);
+        return $this->getDatabase()->query($statement, $bindings);
     }
 
     /**
@@ -66,9 +50,9 @@ class DatabaseFacade
      *
      * @return AlterHelper
      */
-    public static function alter()
+    public function alter()
     {
-        return static::connection()->alter();
+        return $this->getDatabase()->createQueryBuilder('ALTER');
     }
 
     /**
@@ -76,9 +60,9 @@ class DatabaseFacade
      *
      * @return CreateHelper
      */
-    public static function create()
+    public function create()
     {
-        return static::connection()->create();
+        return $this->getDatabase()->createQueryBuilder('CREATE');
     }
 
     /**
@@ -86,9 +70,9 @@ class DatabaseFacade
      *
      * @return DeleteHelper
      */
-    public static function delete()
+    public function delete()
     {
-        return static::connection()->delete();
+        return $this->getDatabase()->createQueryBuilder('DELETE');
     }
 
     /**
@@ -96,9 +80,9 @@ class DatabaseFacade
      *
      * @return DropHelper
      */
-    public static function drop()
+    public function drop()
     {
-        return static::connection()->drop();
+        return $this->getDatabase()->createQueryBuilder('DROP');
     }
 
     /**
@@ -106,9 +90,9 @@ class DatabaseFacade
      *
      * @return InsertHelper
      */
-    public static function insert()
+    public function insert()
     {
-        return static::connection()->insert();
+        return $this->getDatabase()->createQueryBuilder('INSERT');
     }
 
     /**
@@ -116,9 +100,9 @@ class DatabaseFacade
      *
      * @return SelectHelper
      */
-    public static function select()
+    public function select()
     {
-        return static::connection()->select();
+        return $this->getDatabase()->createQueryBuilder('SELECT');
     }
 
     /**
@@ -126,9 +110,9 @@ class DatabaseFacade
      *
      * @return ShowHelper
      */
-    public static function show()
+    public function show()
     {
-        return static::connection()->show();
+        return $this->getDatabase()->createQueryBuilder('SHOW');
     }
 
     /**
@@ -136,9 +120,9 @@ class DatabaseFacade
      *
      * @return UpdateHelper
      */
-    public static function update()
+    public function update()
     {
-        return static::connection()->update();
+        return $this->getDatabase()->createQueryBuilder('UPDATE');
     }
 
     /**
@@ -147,9 +131,9 @@ class DatabaseFacade
      *
      * @return Database
      */
-    public static function getDatabase()
+    public function getDatabase()
     {
-        return static::connection()->getDatabase();
+        return Kernel::getDatabase($this->name);
     }
 
     /**
@@ -157,10 +141,10 @@ class DatabaseFacade
      *
      * @return bool
      */
-    public static function transaction()
+    public function transaction()
     {
         try {
-            static::query('START TRANSACTION;');
+            $this->query('START TRANSACTION;');
             return true;
         }
         catch (DatabaseException $e) {
@@ -173,10 +157,10 @@ class DatabaseFacade
      *
      * @return bool
      */
-    public static function commit()
+    public function commit()
     {
         try {
-            static::query('COMMIT;');
+            $this->query('COMMIT;');
             return true;
         }
         catch (DatabaseException $e) {
@@ -189,10 +173,10 @@ class DatabaseFacade
      *
      * @return bool
      */
-    public static function rollback()
+    public function rollback()
     {
         try {
-            static::query('ROLLBACK;');
+            $this->query('ROLLBACK;');
             return true;
         }
         catch (DatabaseException $e) {

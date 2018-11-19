@@ -20,7 +20,7 @@ trait QueryBuilding
     {
         $o = (new static);
 
-        $builder = DB::select()->from($o->getTable());
+        $builder = DB::connection($o->getConnection())->select()->from($o->getTable());
         $builder->setModel(get_class($o));
 
         return $builder->get();
@@ -37,7 +37,7 @@ trait QueryBuilding
     {
         $o = (new static);
 
-        $builder = DB::select()->from($o->getTable())->where($column, $operator, $equals);
+        $builder = DB::connection($o->getConnection())->select()->from($o->getTable())->where($column, $operator, $equals);
         $builder->setModel(get_class($o));
 
         return $builder;
@@ -62,7 +62,7 @@ trait QueryBuilding
             return $cache;
         }
 
-        $builder = DB::select()->from($table)->where($keyName, '=', $primaryKey)->limit(1);
+        $builder = DB::connection($o->getConnection())->select()->from($table)->where($keyName, '=', $primaryKey)->limit(1);
         $builder->setModel(get_class($o));
         $row = $builder->first();
 
@@ -107,7 +107,7 @@ trait QueryBuilding
         $table = $o->getTable();
         $keyName = $o->getPrimaryKey();
 
-        $builder = DB::insert()->into($table)->values($values);
+        $builder = DB::connection($o->getConnection())->insert()->into($table)->values($values);
         $id = $builder->exec();
 
         if (!$id) {

@@ -158,10 +158,7 @@ class Kernel
      */
     public static function close()
     {
-        if (!is_null(static::$database)) {
-            static::getDatabase()->close();
-        }
-
+        static::closeDatabase();
         die;
     }
 

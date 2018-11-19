@@ -11,79 +11,65 @@
 
 return array(
 
-    /*
-        The hostname or address of the database server.
-        Default value: 'localhost'
-    */
-    'host' => 'localhost',
+    'main' => array(
+        'host' => 'localhost',
+        'database' => 'database',
+        'username' => 'root',
+        'password' => '',
 
-    /*
-        The name of the database.
-    */
-    'database' => 'database',
+        /*
+            The default character set for the database.
+            Recommended value: 'utf8mb4'
+        */
+        'charset' => 'utf8mb4',
 
-    /*
-        The name of the user. This user must have permission to access the database above.
-    */
-    'username' => 'root',
+        /*
+            The default character set collation for the database.
+            Recommended value: 'utf8mb4_unicode_ci'
+        */
+        'collation' => 'utf8mb4_unicode_ci',
 
-    /*
-        The password of the user. Leave blank if no password is set.
-    */
-    'password' => '',
+        /*
+            A prefix to apply to table names. This can help isolate tables in a shared database. Leave blank to disable.
+        */
+        'prefix' => '',
 
-    /*
-        The default character set for the database.
-        Recommended value: 'utf8mb4'
-    */
-    'charset' => 'utf8mb4',
+        /*
+            Determines whether query logging is enabled by default. This can use a large amount of memory in applications
+            which run large amounts of queries, but can be used to identify slow queries in debugging.
 
-    /*
-        The default character set collation for the database.
-        Recommended value: 'utf8mb4_unicode_ci'
-    */
-    'collation' => 'utf8mb4_unicode_ci',
+            Recommended value: false
+        */
+        'query_logging' => true,
 
-    /*
-        A prefix to apply to table names. This can help isolate tables in a shared database. Leave blank to disable.
-    */
-    'prefix' => '',
+        /*
+            Determines whether model objects loaded via the Horizon ORM will be cached in memory. This can prevent repeated
+            queries and improve performance, but may use more memory depending on the number of objects.
 
-    /*
-        Determines whether query logging is enabled by default. This can use a large amount of memory in applications
-        which run large amounts of queries, but can be used to identify slow queries in debugging.
+            Recommended value: true
+        */
+        'cache' => true,
 
-        Recommended value: false
-    */
-    'query_logging' => true,
+        /*
+            Horizon supports the MySQLi, PDO, and MySQL extensions, and will automatically detect and use them in that order.
+            However, you may wish to prioritize a certain driver. If the specified driver is available on the system, it will
+            be preferred above any others. If it is not available on the system, the next best available driver will be used
+            instead.
 
-    /*
-        Determines whether model objects loaded via the Horizon ORM will be cached in memory. This can prevent repeated
-        queries and improve performance, but may use more memory depending on the number of objects.
+            Available options:
 
-        Recommended value: true
-    */
-    'cache' => true,
+                - 'mysqli'      The mysql improved extension from PHP. Uses secure prepared statements.
+                - 'pdo'         The PDO extension from PECL. Uses secure prepared statements.
+                - 'mysql'       The legacy mysql extension from PHP. Uses real escaping.
+                - 'none'        No preference, best available driver is used.
 
-    /*
-        Horizon supports the MySQLi, PDO, and MySQL extensions, and will automatically detect and use them in that order.
-        However, you may wish to prioritize a certain driver. If the specified driver is available on the system, it will
-        be preferred above any others. If it is not available on the system, the next best available driver will be used
-        instead.
+            Disclaimer: The 'mysql' extension does not support prepared statements and has been deprecated since PHP 5.5.
+            Its usage should generally be avoided, but if the application uses Horizon's query builder, it will use real
+            escaping to implement psuedo-prepared statements.
 
-        Available options:
-
-            - 'mysqli'      The mysql improved extension from PHP. Uses secure prepared statements.
-            - 'pdo'         The PDO extension from PECL. Uses secure prepared statements.
-            - 'mysql'       The legacy mysql extension from PHP. Uses real escaping.
-            - 'none'        No preference, best available driver is used.
-
-        Disclaimer: The 'mysql' extension does not support prepared statements and has been deprecated since PHP 5.5.
-        Its usage should generally be avoided, but if the application uses Horizon's query builder, it will use real
-        escaping to implement psuedo-prepared statements.
-
-        Recommended value: 'mysqli'
-    */
-    'preferred_driver' => 'mysqli'
+            Recommended value: 'mysqli'
+        */
+        'preferred_driver' => 'mysqli'
+    )
 
 );

@@ -9,6 +9,10 @@ use Horizon\Database\QueryBuilder;
 use Horizon\Framework\Kernel;
 use Horizon\Database\Exception\DatabaseException;
 use Horizon\Database\Cache;
+use Horizon\Database\ORM\Relationships\OneToOneRelationship;
+use Horizon\Database\ORM\Relationships\OneToManyRelationship;
+use Horizon\Database\ORM\Relationships\BelongsToManyRelationship;
+use Horizon\Database\ORM\Relationships\BelongsToOneRelationship;
 
 trait Mapping
 {
@@ -20,6 +24,13 @@ trait Mapping
     protected $incrementing = true;
     protected $storage = array();
     protected $changes = array();
+
+    /**
+     * Name of database connection to use for this model.
+     *
+     * @var string|null
+     */
+    protected $connection = null;
 
     /**
      * Gets the name of the table for this instance.
@@ -81,7 +92,7 @@ trait Mapping
         }
 
         if (is_null($keyValue)) {
-            $builder = \DB::insert()->into($this->getTable())->values($this->changes);
+            $builder = \DB::connection($this->getConnection())->insert()->into($this->getTable())->values($this->changes);
             $returned = $builder->exec();
 
             // Save the new row id
@@ -94,7 +105,7 @@ trait Mapping
             $this->emit('inserted', $returned);
         }
         else {
-            $builder = \DB::update()->table($this->getTable())->values($this->changes);
+            $builder = \DB::connection($this->getConnection())->update()->table($this->getTable())->values($this->changes);
             $builder->where($keyName, '=', $keyValue);
             $builder->exec();
 
@@ -124,7 +135,7 @@ trait Mapping
         $keyName = $this->getPrimaryKey();
         $keyValue = $this->getPrimaryKeyValue();
 
-        $builder = \DB::delete()->from($this->getTable());
+        $builder = \DB::connection($this->getConnection())->delete()->from($this->getTable());
         $builder->where($keyName, '=', $keyValue);
         $builder->exec();
 
@@ -172,6 +183,13 @@ trait Mapping
                 return;
             }
         }
+        else if ($value instanceof Model && method_exists($this, $name)) {
+            $relationship = $this->$name();
+
+            if ($relationship instanceof OneToOneRelationship || $relationship instanceof BelongsToOneRelationship) {
+                $relationship->set($value);
+            }
+        }
 
         if (method_exists($this, $setterName)) {
             $value = $this->$setterName($value);
@@ -179,6 +197,27 @@ trait Mapping
 
         $this->emit('changed', $name, $value);
         $this->changes[$name] = $value;
+    }
+
+    /**
+     * Gets the name of the connection this model uses, or null if default.
+     *
+     * @return string|null
+     */
+    public function getConnection()
+    {
+        return $this->connection;
+    }
+
+    /**
+     * Sets the name of the connection this model uses. Set to NULL for default.
+     *
+     * @param string|null $name
+     * @return void
+     */
+    public function setConnection($name)
+    {
+        $this->connection = $name;
     }
 
     /**
