@@ -16,7 +16,7 @@ class RouteFacade
      * Gets the router instance.
      *
      * @internal
-     * @return Route
+     * @return Router
      */
     protected static function router()
     {
@@ -211,6 +211,37 @@ class RouteFacade
     public static function redirect($uri, $to, $code = 302, $fallback = null)
     {
         $route = static::router()->createRedirectRoute($uri, $to, $code);
+
+        if (!is_null($fallback)) {
+            $route->fallback($fallback);
+        }
+
+        return $route;
+    }
+
+    /**
+     * Registers a new TCP proxy route with the router. All traffic to this route will be forwarded to the specified
+     * address and port as an HTTP connection, with all request information sent as originally received locally.
+     * If the timeout reaches before the connection completes, the user will receive a 504 Gateway Timeout error.
+     *
+     * Data received from the remote server will be forwarded to the response, including any headers or status codes.
+     *
+     * The $address will be formatted to HTTP if not done already. If it already has query arguments, they will be
+     * appended to if the current request has query arguments, overwriting as necessary.
+     *
+     * For HTTPS addresses, a valid SSL certificate is required on the remote server, and the default CA bundle will be
+     * applied if $caBundle is not specified.
+     *
+     * @param string $uri
+     * @param string $address Hostname, URL, or IP address.
+     * @param int $port Port number of the remote server (HTTP = 80, HTTPS = 443, custom is allowed).
+     * @param string|null $caBundle Path relative to the framework's root directory to a CA bundle for SSL peer validation.
+     * @param int $timeout Number of seconds to wait before timing out the request.
+     * @return Route
+     */
+    public static function tcp($uri, $address, $port = 80, $timeout = 30, $caBundle = null, $fallback = null)
+    {
+        $route = static::router()->createTcpProxyRoute($uri, $address, $port, $caBundle, $timeout);
 
         if (!is_null($fallback)) {
             $route->fallback($fallback);

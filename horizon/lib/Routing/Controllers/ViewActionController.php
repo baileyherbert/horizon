@@ -4,7 +4,6 @@ namespace Horizon\Routing\Controllers;
 
 use Horizon\Http\Response;
 
-
 class ViewActionController
 {
 
