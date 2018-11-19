@@ -33,6 +33,9 @@ class BladeExtension extends ViewExtension
             'if' => array($this, 'transpileIf'),
             'elseif' => array($this, 'transpileElseIf'),
 
+            'verbatim' => array($this, 'transpileVerbatim'),
+            'unescaped' => array($this, 'transpileUnescaped'),
+
             'end' => array($this, 'transpileEnd'),
             'endfor' => array($this, 'transpileEnd'),
             'endforeach' => array($this, 'transpileEnd'),
@@ -135,6 +138,30 @@ class BladeExtension extends ViewExtension
         $this->endings[] = 'endif';
 
         return "{% elseif {$meat} %}";
+    }
+
+    /**
+     * Transpiles @verbatim tags.
+     *
+     * @return string
+     */
+    public function transpileVerbatim()
+    {
+        $this->endings[] = 'endverbatim';
+
+        return "{% verbatim %}";
+    }
+
+    /**
+     * Transpiles @unescaped tags.
+     *
+     * @return string
+     */
+    public function transpileUnescaped()
+    {
+        $this->endings[] = 'endautoescape';
+
+        return "{% autoescape false %}";
     }
 
     protected function transpileConditionLogic($str)

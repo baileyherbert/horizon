@@ -39,7 +39,8 @@ class HorizonExtension extends ViewExtension
             'image' => 'image',
             'file' => 'file',
             'script' => 'script',
-            'style' => 'style'
+            'style' => 'style',
+            'json' => 'json'
         );
     }
 
@@ -166,6 +167,13 @@ class HorizonExtension extends ViewExtension
             }
 
             return $handler->getPublicAssetPath('/styles/' . ltrim($relativePath, '/'), $extensionId);
+        });
+    }
+
+    protected function twigJson()
+    {
+        return new Twig_SimpleFunction('json', function ($data) {
+            return json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         });
     }
 
