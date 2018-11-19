@@ -46,16 +46,40 @@ class ControllerDispatcher
         $action = $this->getCallable();
 
         if (is_callable($action)) {
-            $parameters = $this->populateParameters($action);
+            $this->init($action);
 
-            if (is_string($action)) {
-                $action = $this->createInstance($action);
+            if (!$this->response->isHalted()) {
+                $parameters = $this->populateParameters($action);
+
+                if (is_string($action)) {
+                    $action = $this->createInstance($action);
+                }
+
+                return call_user_func_array($action, $parameters);
             }
-
-            return call_user_func_array($action, $parameters);
         }
 
         return null;
+    }
+
+    private function init($action)
+    {
+        if (is_string($action)) {
+            $action = $this->createInstance($action);
+        }
+
+        if (!is_array($action)) {
+            return;
+        }
+
+        $className = $action[0];
+
+        if (method_exists($className, 'init')) {
+            $action = array($className, 'init');
+            $parameters = $this->populateParameters($action);
+
+            return call_user_func_array($action, $parameters);
+        }
     }
 
     /**
