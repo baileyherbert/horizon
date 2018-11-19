@@ -95,4 +95,18 @@ interface DriverInterface
      */
     public function all();
 
+    /**
+     * Gets the current CSRF token.
+     *
+     * @return string
+     */
+    public function csrf();
+
+    /**
+     * Releases the current CSRF token and generates a new one.
+     *
+     * @return string
+     */
+    public function renew();
+
 }

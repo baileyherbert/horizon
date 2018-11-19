@@ -1,3 +1,5 @@
 <?php
 
-Route::get('/', 'App\Welcome', 'index.php');
+Route::middleware('Horizon\Http\Middleware\VerifyCsrfToken');
+
+Route::any('/', 'App\Welcome', 'index.php');

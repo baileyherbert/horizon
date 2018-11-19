@@ -339,4 +339,28 @@ class CookieDriver implements DriverInterface
         return $this->sessionData;
     }
 
+    /**
+     * Gets the current CSRF token.
+     *
+     * @return string
+     */
+    public function csrf()
+    {
+        if (!isset($_SESSION[$this->token . '_sectoken'])) {
+            $this->renew();
+        }
+
+        return $_SESSION[$this->token . '_sectoken'];
+    }
+
+    /**
+     * Releases the current CSRF token and generates a new one.
+     *
+     * @return string
+     */
+    public function renew()
+    {
+        $_SESSION[$this->token . '_sectoken'] = bin2hex(\phpseclib\Crypt\Random::string(16));
+    }
+
 }

@@ -164,4 +164,24 @@ class Session extends EventEmitter
         return $this->driver->all();
     }
 
+    /**
+     * Gets the current CSRF token.
+     *
+     * @return string
+     */
+    public function csrf()
+    {
+        return $this->driver->csrf();
+    }
+
+    /**
+     * Releases the current CSRF token and generates a new one.
+     *
+     * @return string
+     */
+    public function renew()
+    {
+        return $this->driver->renew();
+    }
+
 }

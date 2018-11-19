@@ -30,6 +30,7 @@ class HorizonExtension extends ViewExtension
     {
         return array(
             'csrf' => 'csrf',
+            'token' => 'csrf_token',
             '__' => '__',
             'local' => '__',
             'localize' => '__',
@@ -70,12 +71,20 @@ class HorizonExtension extends ViewExtension
     protected function twigCsrf()
     {
         return new Twig_SimpleFunction('csrf', function () {
-            return '<input type="hidden" name="csrf" value="{{ csrf() | e(\'html_attr\') }}">';
+            $token = Kernel::getRequest()->session()->csrf();
+            return '<input type="hidden" name="_token" value="' . $token . '">';
         }, array(
             'is_safe' => array(
                 'html'
             )
         ));
+    }
+
+    protected function twigCsrfToken()
+    {
+        return new Twig_SimpleFunction('csrf_token', function () {
+            return Kernel::getRequest()->session()->csrf();
+        });
     }
 
     protected function twigLang()

@@ -10,7 +10,7 @@ class Welcome extends Controller
 
     public function __invoke(Response $response)
     {
-        $response->view('start');
+        view('start');
     }
 
 }
