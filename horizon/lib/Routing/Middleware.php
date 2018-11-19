@@ -4,6 +4,7 @@ namespace Horizon\Routing;
 
 use Horizon\Http\Request;
 use Horizon\Http\Response;
+use Horizon\Framework\Kernel;
 
 class Middleware
 {
