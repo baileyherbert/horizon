@@ -41,6 +41,15 @@ class OneToOneRelationship extends Relationship
         }
     }
 
+    public function set(Model $model)
+    {
+        $localKey = $this->localKey;
+        $foreignKey = $this->foreignKey;
+
+        $model->$foreignKey = $this->model->$localKey;
+        $model->save();
+    }
+
     public function attach(Model $model)
     {
         $foreignKey = $this->foreignKey;

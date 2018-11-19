@@ -43,6 +43,15 @@ class BelongsToOneRelationship extends Relationship
         }
     }
 
+    public function set(Model $model)
+    {
+        $localKey = $this->localKey;
+        $foreignKey = $this->foreignKey;
+
+        $this->model->$localKey = $model->$foreignKey;
+        $this->model->save();
+    }
+
     public function attach($model)
     {
         $id = (is_object($model)) ? $model->getPrimaryKeyValue() : $model;
