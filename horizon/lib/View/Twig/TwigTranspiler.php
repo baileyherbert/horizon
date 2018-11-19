@@ -484,7 +484,7 @@ class TwigTranspiler
                     $correctionIndent = null;
                 }
             }
-            else if (preg_match('/^@(\w+)/', $trimmed)) {
+            else if (preg_match('/^@(\w+)\s*\(/', $trimmed) || preg_match('/^@(end)/', $trimmed)) {
                 $newLines[] = $trimmed;
             }
             else {
