@@ -10,4 +10,5 @@ Options -Indexes
     RedirectMatch 404 src
     RedirectMatch 404 routes
     RedirectMatch 404 config
+    RedirectMatch 404 error_log
 </IfModule>
