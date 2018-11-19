@@ -258,13 +258,13 @@ trait HttpKernel
     /**
      * Renders output to the page.
      */
-    protected static function output()
+    protected static function output($skipErrorPage = false)
     {
         static::$response->halt();
         static::$response->prepare(static::$request);
         static::$response->send();
 
-        if (!static::$response->getContent() && static::$response->getStatusCode() != 200) {
+        if (!static::$response->getContent() && static::$response->getStatusCode() != 200 && !$skipErrorPage) {
             static::showErrorPage(static::$response->getStatusCode());
         }
 
@@ -296,13 +296,14 @@ trait HttpKernel
                 $contents = file_get_contents($path);
                 $contents = str_replace('{{ path }}', $requestPath, $contents);
 
-                static::$response->setStatusCode($code);
                 static::$response->setContent($contents);
-                static::output();
 
                 break;
             }
         }
+
+        static::$response->setStatusCode($code);
+        static::output(true);
     }
 
 }
