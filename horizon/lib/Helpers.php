@@ -44,7 +44,7 @@ function view($templateFile, array $context = array())
  * @param string $to
  * @param int $code
  */
-function redirect($to, $code = 302)
+function redirect($to = null, $code = 302)
 {
     $response = Kernel::getResponse();
 

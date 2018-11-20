@@ -114,8 +114,12 @@ class Response extends SymfonyResponse
      * @param string $to
      * @param int $code
      */
-    public function redirect($to, $code = 302)
+    public function redirect($to = null, $code = 302)
     {
+        if ($to == null) {
+            $to = \Horizon\Framework\Kernel::getRequest()->getRequestUri();
+        }
+
         if (Str::startsWith($to, '/') && !Str::startsWith($to, '//')) {
             $to = '/' . ltrim(trim($_SERVER['SUBDIRECTORY'], '/') . '/' . ltrim($to, '/'), '/');
         }
