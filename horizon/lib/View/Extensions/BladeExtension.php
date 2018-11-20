@@ -84,18 +84,18 @@ class BladeExtension extends ViewExtension
      */
     public function transpileForEach($args)
     {
-        if (preg_match('/^\$([\w.>-]+)\s+as\s+\$([\w]+)$/', $args, $matches)) {
+        if (preg_match('/^\$([\w.>-]+)\s*(\([^)]*\))?\s+as\s+\$([\w]+)$/', $args, $matches)) {
             $this->endings[] = 'endfor';
 
-            $array = str_replace('->', '.', $matches[1]);
-            return "{% for {$matches[2]} in {$array} %}";
+            $array = str_replace('->', '.', $matches[1]) . (isset($matches[2]) ? $matches[2] : '');
+            return "{% for {$matches[3]} in {$array} %}";
         }
 
-        if (preg_match('/^\$([\w.>-]+)\s+as\s+\$([\w]+)\s*=>\s*\$([\w]+)$/', $args, $matches)) {
+        if (preg_match('/^\$([\w.>-]+)\s*(\([^)]*\))?\s+as\s+\$([\w]+)\s*=>\s*\$([\w]+)$/', $args, $matches)) {
             $this->endings[] = 'endfor';
 
-            $array = str_replace('->', '.', $matches[1]);
-            return "{% for {$matches[2]}, {$matches[3]} in {$array} %}";
+            $array = str_replace('->', '.', $matches[1]) . (isset($matches[2]) ? $matches[2] : '');
+            return "{% for {$matches[3]}, {$matches[4]} in {$array} %}";
         }
 
         throw new \Exception(sprintf('Invalid format in @foreach: %s', $args));
