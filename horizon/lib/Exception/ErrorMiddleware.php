@@ -41,10 +41,10 @@ class ErrorMiddleware
     /**
      * Handles an uncaught exception.
      *
-     * @param Exception $exception
+     * @param Exception|Error $exception
      * @return void
      */
-    public static function executeException(Exception $exception)
+    public static function executeException($exception)
     {
         $reflect = new \ReflectionClass($exception);
         $shortName = $reflect->getShortName();
