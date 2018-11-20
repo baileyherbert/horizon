@@ -74,7 +74,7 @@ class ErrorMiddleware
         $errorHandler = static::getErrorHandler();
 
         // Report the error
-        forward_static_call(array($errorHandler, 'report'), $error);
+        call_user_func(array($errorHandler, 'report'), $error);
 
         // Log the error
         if (static::canLog($error)) {
