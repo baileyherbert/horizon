@@ -4,9 +4,8 @@ namespace Horizon\Http\Cookie;
 
 use Horizon;
 use Horizon\Exception\HorizonException;
-use Horizon\Events\EventEmitter;
 
-class Session extends EventEmitter
+class Session
 {
 
     private $sessionData = array();
