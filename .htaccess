@@ -17,6 +17,11 @@
     RewriteRule ^styles/(.*)$ app/public/styles/$1 [L,QSA,NC]
     RewriteRule ^files/(.*)$ app/public/files/$1 [L,QSA,NC]
 
+    # Route to essential files.
+    RewriteRule ^favicon.ico$ app/public/favicon.ico [L,QSA,NC]
+    RewriteRule ^robots.txt$ app/public/robots.txt [L,QSA,NC]
+    RewriteRule ^sitemap.xml$ app/public/sitemap.xml [L,QSA,NC]
+
     # Send the request to the Horizon router.
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
