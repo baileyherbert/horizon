@@ -11,6 +11,7 @@ use Horizon\Http\Exception\HttpResponseException;
 use Horizon\Utils\TimeProfiler;
 use Horizon\Utils\Path;
 use Horizon\Utils\Arr;
+use Horizon\Exception\ErrorMiddleware;
 
 trait HttpKernel
 {
@@ -168,7 +169,7 @@ trait HttpKernel
             static::output();
         }
         catch (HttpResponseException $e) {
-            static::showErrorPage($e->getCode(), $e->getMessage());
+            ErrorMiddleware::getErrorHandler()->http($e);
         }
     }
 
@@ -237,7 +238,7 @@ trait HttpKernel
             }
         }
         catch (HttpResponseException $e) {
-            static::showErrorPage($e->getCode(), $e->getMessage());
+            ErrorMiddleware::getErrorHandler()->http($e);
         }
 
     }

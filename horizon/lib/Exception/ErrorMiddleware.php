@@ -167,11 +167,11 @@ class ErrorMiddleware
     }
 
     /**
-     * Gets the active error handler class as a string.
+     * Gets the current error handler object.
      *
      * @return ErrorHandlerInterface
      */
-    private static function getErrorHandler()
+    public static function getErrorHandler()
     {
         $errorHandler = config('errors.handler', 'Horizon\Exception\ErrorHandler');
 

@@ -2,8 +2,22 @@
 
 namespace Horizon\Exception;
 
+use Horizon\Http\Exception\HttpResponseException;
+use Horizon\Framework\Kernel;
+
 class ErrorHandler implements ErrorHandlerInterface
 {
+
+    /**
+     * Handles an HTTP exception. The default behavior is to show a matching error page.
+     *
+     * @param HttpResponseException $ex
+     * @return void
+     */
+    public function http(HttpResponseException $ex)
+    {
+        Kernel::showErrorPage($ex->getCode(), $ex->getMessage());
+    }
 
     /**
      * Renders the specified error to the screen. This is only called if error displaying is enabled. An error renderer

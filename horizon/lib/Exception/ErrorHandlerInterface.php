@@ -2,8 +2,18 @@
 
 namespace Horizon\Exception;
 
+use Horizon\Http\Exception\HttpResponseException;
+
 interface ErrorHandlerInterface
 {
+
+    /**
+     * Handles an HTTP exception. The default behavior is to show a matching error page.
+     *
+     * @param HttpResponseException $ex
+     * @return void
+     */
+    public function http(HttpResponseException $ex);
 
     /**
      * Renders the specified error to the screen. This is only called if error displaying is enabled. An error renderer
