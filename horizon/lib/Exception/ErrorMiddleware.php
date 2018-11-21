@@ -4,6 +4,7 @@ namespace Horizon\Exception;
 
 use Exception;
 use Horizon\Framework\Kernel;
+use Horizon\Http\Exception\HttpResponseException;
 
 class ErrorMiddleware
 {
@@ -90,7 +91,7 @@ class ErrorMiddleware
         if (static::canTerminate($error)) {
             // If the error wasn't rendered, let's render the 500 error page
             if (!static::canRender($error)) {
-                Kernel::showErrorPage(500);
+                static::getErrorHandler()->http(new HttpResponseException(500));
             }
 
             terminate();
