@@ -54,7 +54,9 @@ trait HttpKernel
      */
     protected static function makeResponse()
     {
-        static::$response = new Response();
+        if (is_null(static::$response)) {
+            static::$response = new Response();
+        }
     }
 
     /**
@@ -140,12 +142,13 @@ trait HttpKernel
      */
     protected static function match()
     {
+        static::makeResponse();
         $route = RouteLoader::getRouter()->match(static::$request);
 
         // Show a 404 if not found
         if (is_null($route)) {
             if (!static::testDirectoryRedirect()) {
-                return static::showErrorPage(404);
+                return ErrorMiddleware::getErrorHandler()->http(new HttpResponseException(404, 'router'));
             }
 
             return;
@@ -218,8 +221,6 @@ trait HttpKernel
      */
     protected static function executeMiddleware()
     {
-        static::makeResponse();
-
         $middlewares = static::$request->getRoute()->middleware();
 
         try {
