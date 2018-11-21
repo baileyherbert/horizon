@@ -50,6 +50,7 @@ class RouteLoader
     {
         // Get the directory
         $routeDirectory = dirname($filePath);
+        $priorDirectory = static::$currentDirectory;
         static::$currentDirectory = $routeDirectory;
 
         // Check that the file exists
@@ -62,6 +63,9 @@ class RouteLoader
 
         // Execute the file
         require $filePath;
+
+        // Reset the current directory
+        static::$currentDirectory = $priorDirectory;
     }
 
     /**
