@@ -359,6 +359,14 @@ class TwigTranspiler
                 if ($char === chr(33) && $next !== chr(61)) {
                     $insertCharacter = 'not ';
                 }
+
+                if ($char === chr(38) && $next === chr(38)) {
+                    $insertCharacter = 'and';
+                }
+
+                if ($char === chr(38) && $previous === chr(38)) {
+                    $insertCharacter = '';
+                }
             }
 
             if ($insertCharacter !== '') {
