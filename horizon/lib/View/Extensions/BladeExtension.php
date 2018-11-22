@@ -135,7 +135,6 @@ class BladeExtension extends ViewExtension
     public function transpileElseIf($args)
     {
         $meat = $this->transpileConditionLogic($args);
-        $this->endings[] = 'endif';
 
         return "{% elseif {$meat} %}";
     }
