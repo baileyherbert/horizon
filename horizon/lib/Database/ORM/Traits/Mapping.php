@@ -161,7 +161,7 @@ trait Mapping
         }
 
         if (array_key_exists($name, $this->storage)) {
-            $getterName = 'get' . $name;
+            $getterName = '__get' . str_replace('_', '', $name);
             $value = $this->storage[$name];
 
             if (method_exists($this, $getterName)) {
@@ -176,7 +176,7 @@ trait Mapping
 
     public function __set($name, $value)
     {
-        $setterName = 'set' . $name;
+        $setterName = '__set' . str_replace('_', '', $name);
 
         if (array_key_exists($name, $this->storage)) {
             if ($value === $this->__get($name)) {
