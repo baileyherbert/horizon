@@ -324,14 +324,25 @@ class RouteFacade
      * the app/routes directory.
      *
      * @param string $fileName
+     * @param bool $reset Enable to clear all previous middleware and groups before loading the file.
      */
-    public static function load($fileName)
+    public static function load($fileName, $reset = false)
     {
         if (!Str::endsWith($fileName, '.php')) {
             $fileName .= '.php';
         }
 
-        RouteLoader::loadRouteFile(Path::join(RouteLoader::getLastDirectory(), $fileName));
+        RouteLoader::loadRouteFile(Path::join(RouteLoader::getLastDirectory(), $fileName), $reset);
+    }
+
+    /**
+     * Clears all middleware, groups, prefixes, and settings for new rules created after calling this method.
+     *
+     * @return void
+     */
+    public static function reset()
+    {
+        RouteLoader::reset();
     }
 
 }

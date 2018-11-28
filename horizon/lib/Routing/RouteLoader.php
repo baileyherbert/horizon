@@ -46,11 +46,10 @@ class RouteLoader
      *
      * @param string $filePath
      */
-    public static function loadRouteFile($filePath)
+    public static function loadRouteFile($filePath, $reset = false)
     {
         // Get the directory
         $routeDirectory = dirname($filePath);
-        $priorDirectory = static::$currentDirectory;
         static::$currentDirectory = $routeDirectory;
 
         // Check that the file exists
@@ -58,14 +57,22 @@ class RouteLoader
             throw new HorizonException(0x0005, $filePath);
         }
 
-        // Tell the router to generate a new top level group
-        static::getRouter()->resetMainGroup();
+        // Reset if requested
+        if ($reset) static::reset();
 
         // Execute the file
         require $filePath;
+    }
 
-        // Reset the current directory
-        static::$currentDirectory = $priorDirectory;
+    /**
+     * Clears the router's current state.
+     *
+     * @return void
+     */
+    public static function reset()
+    {
+        // Tell the router to generate a new top level group
+        static::getRouter()->resetMainGroup();
     }
 
     /**
