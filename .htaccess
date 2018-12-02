@@ -28,7 +28,7 @@
     RewriteRule . route.php [L]
 
     # Hide sensitive files.
-    RedirectMatch 404 (.git|tests|.AbiSuite|nbproject|.idea|.vs|vendor)
+    RedirectMatch 404 (\.git|tests|\.AbiSuite|nbproject|\.idea|\.vs|vendor)
     RedirectMatch 404 \.md
 
     # Prevent access to distribution files.
