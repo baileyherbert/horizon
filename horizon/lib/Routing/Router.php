@@ -64,7 +64,15 @@ class Router
             $methods[$i] = strtoupper($method);
         }
 
-        $route = new Route($methods, $this->applyGroupProperty('prefix', $uri), $action, $this->currentGroup);
+        $uri = $this->applyGroupProperty('prefix', $uri);
+
+        foreach ($this->routes as $i => $route) {
+            if ($route->getUri() == $uri && empty(array_diff($route->getMethods(), $methods))) {
+                unset($this->routes[$i]);
+            }
+        }
+
+        $route = new Route($methods, $uri, $action, $this->currentGroup);
         $this->routes[] = $route;
 
         return $route;
