@@ -199,6 +199,10 @@ class LanguageParser
         $translatedText = $this->parseQuotedString($components[2]);
         $flags = array();
 
+        if ($translatedText == "%") {
+            $translatedText = $originalText;
+        }
+
         // Extract flags
         if (count($components) == 4) {
             $joinedFlags = substr($components[3], 1);
