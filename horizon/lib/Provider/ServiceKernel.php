@@ -66,7 +66,11 @@ trait ServiceKernel
 
         foreach ($providers as $provider) {
             if ($provider instanceof ServiceProvider) {
-                $response[] = $provider();
+                $returned = $provider();
+
+                foreach ($returned as $item) {
+                    $response[] = $item;
+                }
             }
         }
 
