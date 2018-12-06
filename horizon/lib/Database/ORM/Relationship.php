@@ -11,7 +11,7 @@ class Relationship extends SelectHelper
     /**
      * @var SelectHelper
      */
-    protected $query;
+    public $query;
 
     /**
      * Sets a condition rows must match to be selected.
