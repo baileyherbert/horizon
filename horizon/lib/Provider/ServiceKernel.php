@@ -55,6 +55,25 @@ trait ServiceKernel
     }
 
     /**
+     * Gets an array of provided objects for the specified service type.
+     *
+     * @param string $type
+     * @return array
+     */
+    public static function getProvided($type = null) {
+        $providers = static::getProviders($type);
+        $response = array();
+
+        foreach ($providers as $provider) {
+            if ($provider instanceof ServiceProvider) {
+                $response[] = $provider();
+            }
+        }
+
+        return $response;
+    }
+
+    /**
      * Fetches providers from the configuration file.
      *
      * @return array[]
