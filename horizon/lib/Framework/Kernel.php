@@ -36,10 +36,11 @@ class Kernel
 
         static::initErrorHandling();
         static::configure();
+        static::initAutoloader();
         static::initProviders();
         static::loadExtensions();
-        static::initAutoloader();
         static::loadExtensionVendors();
+        static::initExtensionAutoloaders();
         static::loadRoutes();
         static::initLanguageBucket();
         static::prepareHttp();
@@ -84,7 +85,7 @@ class Kernel
     }
 
     /**
-     * Initializes the autoloader for extensions and configured namespaces.
+     * Initializes the autoloader for configured namespaces.
      */
     protected static function initAutoloader()
     {
@@ -97,6 +98,41 @@ class Kernel
 
             $mapping[$namespace] = $relativePath;
         }
+
+        // Autoload
+        spl_autoload_register(function($className) use ($mapping) {
+            $className = ltrim($className, '\\');
+
+            foreach ($mapping as $prefix => $mount) {
+                $len = strlen($prefix);
+
+                if (strncmp($prefix, $className, $len) !== 0) {
+                    continue;
+                }
+
+                $relativeClass = substr($className, $len);
+                $file = Path::join($mount, str_replace('\\', DIRECTORY_SEPARATOR, $relativeClass) . '.php');
+
+                if (file_exists($file)) {
+                    require $file;
+                }
+            }
+        });
+
+        // App vendor
+        $autoloadPath = Path::join(Horizon::APP_DIR, 'vendor/autoload.php');
+
+        if (file_exists($autoloadPath)) {
+            require $autoloadPath;
+        }
+    }
+
+    /**
+     * Initializes the autoloader for extensions.
+     */
+    protected static function initExtensionAutoloaders()
+    {
+        $mapping = array();
 
         // Get extension namespaces
         $extensions = static::getExtensionNamespaces();
@@ -128,13 +164,6 @@ class Kernel
                 }
             }
         });
-
-        // App vendor
-        $autoloadPath = Path::join(Horizon::APP_DIR, 'vendor/autoload.php');
-
-        if (file_exists($autoloadPath)) {
-            require $autoloadPath;
-        }
     }
 
     /**
