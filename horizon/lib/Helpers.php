@@ -43,13 +43,18 @@ function view($templateFile, array $context = array())
  *
  * @param string $to
  * @param int $code
+ * @param bool $halt
  */
-function redirect($to = null, $code = 302)
+function redirect($to = null, $code = 302, $halt = true)
 {
     $response = Kernel::getResponse();
 
     if (is_null($response)) {
         throw new HorizonException(0x0008, sprintf('Cannot redirect to target: %s', $to));
+    }
+
+    if ($halt) {
+        $response->halt();
     }
 
     return $response->redirect($to, $code);
