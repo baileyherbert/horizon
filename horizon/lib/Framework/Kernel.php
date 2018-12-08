@@ -11,6 +11,7 @@ use Horizon\Provider\ServiceKernel;
 use Horizon\Translation\TranslationKernel;
 use Horizon\View\ViewKernel;
 use Horizon\Http\HttpKernel;
+use Horizon\Console\ConsoleKernel;
 
 use Horizon\Utils\TimeProfiler;
 use Horizon\Utils\Path;
@@ -26,6 +27,7 @@ class Kernel
     use TranslationKernel;
     use ViewKernel;
     use HttpKernel;
+    use ConsoleKernel;
 
     /**
      * Starts the framework init process.
@@ -33,6 +35,10 @@ class Kernel
     public static function boot()
     {
         TimeProfiler::start('kernel');
+
+        if (defined('CONSOLE_MODE')) {
+            return static::bootConsole();
+        }
 
         static::initErrorHandling();
         static::configure();
