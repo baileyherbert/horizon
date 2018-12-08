@@ -13,11 +13,13 @@
     },
     "require": {
         "php": ">=5.4.0",
-        "symfony/http-foundation": "2.8.41",
-        "symfony/routing": "2.8.41",
+        "symfony/http-foundation": "^2.8",
+        "symfony/routing": "^2.8",
+        "symfony/console": "^2.8",
+        "symfony/debug": "^2.8",
         "symfony/polyfill-php55": "^1.8",
+        "twig/twig": "^1.35",
         "phpseclib/phpseclib": "^2.0",
-        "twig/twig": "1.35.3",
         "guzzlehttp/guzzle": "^5.3"
     },
     "require-dev": {
