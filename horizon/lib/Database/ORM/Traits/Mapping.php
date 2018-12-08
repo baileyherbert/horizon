@@ -96,7 +96,9 @@ trait Mapping
             $returned = $builder->exec();
 
             // Save the new row id
-            $this->changes[$keyName] = $returned;
+            if (!array_key_exists($keyName, $this->changes)) {
+                $this->changes[$keyName] = $returned;
+            }
 
             // Save the instance to cache
             Cache::setModelInstance($this, $this, $returned);
