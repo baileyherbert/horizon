@@ -48,6 +48,9 @@ class RouteLoader
      */
     public static function loadRouteFile($filePath, $reset = false)
     {
+        // Store the previous directory
+        $previous = static::$currentDirectory;
+
         // Get the directory
         $routeDirectory = dirname($filePath);
         static::$currentDirectory = $routeDirectory;
@@ -62,6 +65,9 @@ class RouteLoader
 
         // Execute the file
         require $filePath;
+
+        // Reset the directory
+        static::$currentDirectory = $previous;
     }
 
     /**
