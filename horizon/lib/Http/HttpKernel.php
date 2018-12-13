@@ -163,6 +163,7 @@ trait HttpKernel
         // Execute the page
         try {
             static::loadLanguages();
+            static::executeBootstrapper();
             static::executeMiddleware();
 
             $stage = 'controller';
@@ -214,6 +215,16 @@ trait HttpKernel
         }
 
         return false;
+    }
+
+    /**
+     * Runs bootstrap scripts with a priority value of 3.
+     *
+     * @return void
+     */
+    protected static function executeBootstrapper()
+    {
+        static::runBootScripts(3);
     }
 
     /**

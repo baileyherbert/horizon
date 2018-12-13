@@ -197,7 +197,7 @@ class Kernel
      * @param int $priority
      * @return void
      */
-    private static function runBootScripts($priority)
+    protected static function runBootScripts($priority)
     {
         $classes = config('app.bootstrap', array());
 
