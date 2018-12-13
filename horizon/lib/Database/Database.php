@@ -291,7 +291,7 @@ class Database extends EventEmitter
             $this->log[] = array(
                 'query' => $statement,
                 'prepared' => !empty($bindings),
-                'bindings' => count($bindings),
+                'bindings' => $bindings,
                 'reused' => false,
                 'duration' => $millisTaken
             );
