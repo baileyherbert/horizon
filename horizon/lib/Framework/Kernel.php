@@ -43,15 +43,18 @@ class Kernel
         static::initErrorHandling();
         static::configure();
         static::initAutoloader();
+        static::runBootScripts(0);
         static::initProviders();
         static::loadExtensions();
         static::loadExtensionVendors();
         static::initExtensionAutoloaders();
         static::loadRoutes();
         static::initLanguageBucket();
+        static::runBootScripts(1);
         static::prepareHttp();
         static::prepareSubdirectory();
         static::makeRequest();
+        static::runBootScripts(2);
         static::match();
     }
 
@@ -184,6 +187,33 @@ class Kernel
                 foreach ($files as $file) {
                     RouteLoader::loadRouteFile($file);
                 }
+            }
+        }
+    }
+
+    /**
+     * Runs boot scripts with the specified priority (0 to 2).
+     *
+     * @param int $priority
+     * @return void
+     */
+    private static function runBootScripts($priority)
+    {
+        $classes = config('app.bootstrap', array());
+
+        foreach ($classes as $action => $p) {
+            if ($p == $priority) {
+                if (is_string($action)) {
+                    if (strpos($action, '::') !== false) {
+                        list($className, $methodName) = explode('::', $action, 2);
+                        $action = array(new $className(), $methodName);
+                    }
+                    else {
+                        $action = array(new $className(), '__invoke');
+                    }
+                }
+
+                call_user_func_array($action, array());
             }
         }
     }
