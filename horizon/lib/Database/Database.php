@@ -38,7 +38,7 @@ class Database extends EventEmitter
     public function __construct(array $config)
     {
         $this->config = $config;
-        $this->loggingEnabled = config('database.query_logging', false);
+        $this->loggingEnabled = $config['query_logging'] == true;
 
         $this->doQueryLog();
         $this->loadDriver();
