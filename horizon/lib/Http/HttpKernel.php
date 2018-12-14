@@ -12,6 +12,7 @@ use Horizon\Utils\TimeProfiler;
 use Horizon\Utils\Path;
 use Horizon\Utils\Arr;
 use Horizon\Exception\ErrorMiddleware;
+use Horizon\Console\ConsoleResponse;
 
 trait HttpKernel
 {
@@ -25,6 +26,11 @@ trait HttpKernel
      * @var Response
      */
     protected static $response;
+
+    /**
+     * @var ConsoleResponse
+     */
+    protected static $consoleResponse;
 
     /**
      * @var string
@@ -46,6 +52,10 @@ trait HttpKernel
      */
     public static function getRequest()
     {
+        if (defined('CONSOLE_MODE')) {
+            throw new Exception('Cannot retrieve HTTP Request instance in console mode.');
+        }
+
         return static::$request;
     }
 
@@ -66,6 +76,14 @@ trait HttpKernel
      */
     public static function getResponse()
     {
+        if (defined('CONSOLE_MODE')) {
+            if (!isset(static::$consoleResponse)) {
+                static::$consoleResponse = new ConsoleResponse();
+            }
+
+            return static::$consoleResponse;
+        }
+
         return static::$response;
     }
 
