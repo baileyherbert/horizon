@@ -22,7 +22,7 @@ class ViewProvider extends ServiceProvider
 
         $viewPath = Path::join(Horizon::APP_DIR, 'views', $viewName);
 
-        if (file_exists($viewPath)) {
+        if (file_exists($viewPath) && is_file($viewPath)) {
             return $viewPath;
         }
 
