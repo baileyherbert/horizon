@@ -67,7 +67,9 @@ class Router
         $uri = $this->applyGroupProperty('prefix', $uri);
 
         foreach ($this->routes as $i => $route) {
-            if ($route->getUri() == $uri && empty(array_diff($route->getMethods(), $methods))) {
+            $diff = array_diff($route->getMethods(), $methods);
+
+            if ($route->getUri() == $uri && empty($diff)) {
                 unset($this->routes[$i]);
             }
         }
