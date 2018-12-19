@@ -4,7 +4,7 @@ namespace Horizon\Database\QueryBuilder\Documentation;
 
 /**
  * @method SelectHelper columns(string $name, ...) Sets the columns to select.
- * @method SelectHelper count() Sets the column to COUNT(*).
+ * @method int count() Sets the column to COUNT(*).
  *
  * @method SelectHelper from(string $tableName, ...) Sets the table to select from.
  *
@@ -13,6 +13,7 @@ namespace Horizon\Database\QueryBuilder\Documentation;
  * @method SelectHelper where(string $column, string $operator, mixed $equals) Creates a match condition.
  * @method SelectHelper orWhere(string $column, string $operator, mixed $equals) Creates a match condition.
  * @method SelectHelper andWhere(string $column, string $operator, mixed $equals) Creates a match condition.
+ * @method SelectHelper whereMatch(string $column, string $against, string $mode) Creates a full-text match condition.
  *
  * @method SelectHelper enclose(callable $callback) Encloses statements in parenthesis.
  * @method SelectHelper andEnclose(callable $callback) Encloses statements in parenthesis.

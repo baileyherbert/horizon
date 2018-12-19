@@ -32,6 +32,11 @@ class Select implements CommandInterface
     protected $wheres = array();
 
     /**
+     * @var array|null A fulltext search to calculate the relevancy score with.
+     */
+    protected $scoreColumn = null;
+
+    /**
      * @var array Positions of parenthesis in the where statements.
      */
     protected $enclosures = array();
@@ -114,6 +119,12 @@ class Select implements CommandInterface
             $compiled[] = StringBuilder::formatColumnName($name);
         }
 
+        if (!is_null($this->scoreColumn)) {
+            $where = $this->scoreColumn;
+
+            $compiled[] = sprintf('MATCH(%s) AGAINST (%s IN %s MODE) as score', $where['column'], StringBuilder::formatFulltextValue($where['against']), $where['mode']);
+        }
+
         return implode(', ', $compiled);
     }
 
@@ -150,6 +161,11 @@ class Select implements CommandInterface
         $compiled = array('WHERE');
 
         foreach ($this->wheres as $i => $where) {
+            if (isset($where['fulltext'])) {
+                $compiled[] = sprintf('MATCH(%s) AGAINST (%s IN %s MODE)', $where['column'], StringBuilder::formatFulltextValue($where['against']), $where['mode']);
+                continue;
+            }
+
             $column = StringBuilder::formatColumnName($where['column']);
             $operator = StringBuilder::formatOperator($where['operator']);
             $separator = $where['separator'];
@@ -427,6 +443,30 @@ class Select implements CommandInterface
     public function orWhere($column, $operator, $equals)
     {
         return $this->where($column, $operator, $equals, 'OR');
+    }
+
+    /**
+     * Sets a condition rows must match to be selected.
+     *
+     * @param string $column
+     * @param string $against
+     * @param string $mode
+     * @return $this
+     */
+    public function whereMatch($column, $against, $mode = 'boolean', $separator = 'AND')
+    {
+        $this->wheres[] = array(
+            'fulltext' => true,
+            'column' => $column,
+            'against' => $against,
+            'mode' => strtoupper($mode),
+            'separator' => $separator,
+            'reference' => false
+        );
+
+        $this->scoreColumn = $this->wheres[count($this->wheres) - 1];
+
+        return $this;
     }
 
     /**

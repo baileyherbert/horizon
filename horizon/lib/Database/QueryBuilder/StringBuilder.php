@@ -108,6 +108,19 @@ class StringBuilder
     }
 
     /**
+     * Formats a value for use in an AGAINST (...) full-text query segment. The returned string contains surrounding
+     * single quotes.
+     *
+     * @param string $value
+     * @return string
+     */
+    public static function formatFulltextValue($value)
+    {
+        $value = str_replace("'", "\\'", $value);
+        return sprintf("'%s'", $value);
+    }
+
+    /**
      * Generates a string of types (such as isssissddsdsii) from an array. Useful for prepared statement automation.
      *
      * @param array $bindings

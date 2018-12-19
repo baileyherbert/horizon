@@ -14,7 +14,7 @@ trait QueryBuilding
     /**
      * Gets all rows. Careful!
      *
-     * @return SelectHelper
+     * @return static[]
      */
     public static function all()
     {
