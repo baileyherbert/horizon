@@ -1,6 +1,6 @@
 <?php
 
-namespace Horizon\Utils;
+namespace Horizon\Support;
 
 class Arr
 {

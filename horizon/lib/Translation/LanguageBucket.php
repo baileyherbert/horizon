@@ -5,7 +5,7 @@ namespace Horizon\Translation;
 use Horizon\Translation\Language;
 use Horizon\Translation\Language\Definition;
 use Horizon\Translation\Language\NamespaceDefinition;
-use Horizon\Utils\Arr;
+use Horizon\Support\Arr;
 
 class LanguageBucket
 {

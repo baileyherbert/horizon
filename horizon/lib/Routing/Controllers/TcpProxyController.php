@@ -5,9 +5,9 @@ namespace Horizon\Routing\Controllers;
 use Horizon\Http\Request;
 use Horizon\Http\Response;
 use Horizon\Routing\Controller;
-use Horizon\Utils\Str;
+use Horizon\Support\Str;
 use GuzzleHttp\Client;
-use Horizon\Utils\Path;
+use Horizon\Support\Path;
 use Horizon\Http\Exception\HttpResponseException;
 
 class TcpProxyController extends Controller

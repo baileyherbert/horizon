@@ -3,7 +3,7 @@
 namespace Horizon\Provider\Services;
 
 use Horizon;
-use Horizon\Utils\Path;
+use Horizon\Support\Path;
 use Horizon\Provider\ServiceProvider;
 use Horizon\Extend\Extension;
 

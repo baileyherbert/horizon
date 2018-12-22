@@ -2,9 +2,9 @@
 
 namespace Horizon\Updates;
 
-use Horizon\Utils\ZipArchive;
+use Horizon\Support\Archive;
 use Horizon\Updates\UpdateException;
-use Horizon\Utils\Str;
+use Horizon\Support\Str;
 use Horizon\Encryption\FastEncrypt;
 
 class Package
@@ -16,7 +16,7 @@ class Package
     protected $version;
 
     /**
-     * @var ZipArchive
+     * @var \Horizon\Support\Archive
      */
     protected $payload;
 
@@ -39,7 +39,7 @@ class Package
         $this->version = $version;
 
         // Add the payload
-        $this->payload = ZipArchive::fromString($files['payload']);
+        $this->payload = Archive::fromString($files['payload']);
         unset($files['payload']);
 
         // Handle archive error
@@ -84,7 +84,7 @@ class Package
     /**
      * Gets the specified archive for staging.
      *
-     * @return ZipArchive
+     * @return \Horizon\Support\Archive
      */
     public function getArchive($type)
     {
@@ -126,7 +126,8 @@ class Package
      * write the archive to a file or save it in any way.
      *
      * @param bool $encrypt
-     * @return ZipArchive
+     *
+     * @return Archive
      */
     public function createBackup($encrypt = true)
     {
@@ -137,7 +138,7 @@ class Package
         $logger->info('This update will modify or delete', count($affected), 'files.');
         $logger->info('Creating a compressed backup of those files...');
 
-        $backup = new ZipArchive();
+        $backup = new Archive();
 
         if ($encrypt) {
             $backup->markEncrypted();

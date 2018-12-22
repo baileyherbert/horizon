@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Horizon\Utils\Path;
+use Horizon\Support\Path;
 
 class PathTest extends TestCase
 {

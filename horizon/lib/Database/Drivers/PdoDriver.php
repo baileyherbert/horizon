@@ -7,7 +7,7 @@ use Horizon\Database\Exception\DatabaseDriverException;
 use Horizon\Database\Exception\DatabaseException;
 use Horizon\Database\QueryBuilder\StringBuilder;
 
-use Horizon\Utils\Str;
+use Horizon\Support\Str;
 
 use PDO;
 use PDOException;

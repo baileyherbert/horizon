@@ -4,8 +4,8 @@ namespace Horizon\View\Twig;
 
 use Horizon\Framework\Kernel;
 
-use Horizon\Utils\Path;
-use Horizon\Utils\TimeProfiler;
+use Horizon\Support\Path;
+use Horizon\Support\Profiler;
 
 use Horizon\Http\MiniRequest;
 use Horizon\Routing\RouteLoader;

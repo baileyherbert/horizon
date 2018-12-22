@@ -5,7 +5,7 @@ namespace Horizon\Updates\Commands;
 use Horizon\Updates\Script;
 use Horizon\Updates\Command;
 use Horizon\Updates\CommandException;
-use Horizon\Utils\Str;
+use Horizon\Support\Str;
 
 class ExecuteFile extends Command
 {

@@ -3,7 +3,7 @@
 namespace Horizon\Extend;
 
 use Horizon;
-use Horizon\Utils\Path;
+use Horizon\Support\Path;
 use Horizon\Framework\Kernel;
 
 use DirectoryIterator;

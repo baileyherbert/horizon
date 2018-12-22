@@ -8,7 +8,7 @@ use Horizon\Database\Exception\DatabaseDriverException;
 use mysqli;
 use Horizon\Database\QueryBuilder\StringBuilder;
 use Horizon\Database\Exception\DatabaseException;
-use Horizon\Utils\Str;
+use Horizon\Support\Str;
 
 class ImprovedDriver implements DriverInterface
 {

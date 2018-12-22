@@ -2,7 +2,7 @@
 
 namespace Horizon\Database\QueryBuilder\Commands\Traits;
 
-use Horizon\Utils\Str;
+use Horizon\Support\Str;
 
 trait HasTableOptions
 {

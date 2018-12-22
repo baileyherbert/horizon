@@ -2,8 +2,8 @@
 
 namespace Horizon\Routing;
 
-use Horizon\Utils\Str;
-use Horizon\Utils\Path;
+use Horizon\Support\Str;
+use Horizon\Support\Path;
 use Closure;
 
 /**

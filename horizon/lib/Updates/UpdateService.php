@@ -3,7 +3,7 @@
 namespace Horizon\Updates;
 
 use Horizon\Framework\Kernel;
-use Horizon\Utils\Path;
+use Horizon\Support\Path;
 use Horizon\Logging\Logger;
 
 class UpdateService

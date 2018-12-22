@@ -6,9 +6,9 @@ use Horizon\Updates\Script;
 use Horizon\Updates\Command;
 use Horizon\Updates\CommandException;
 use Horizon\Enum\File\FileOperationType;
-use Horizon\Utils\Path;
-use Horizon\Utils\ZipArchive;
-use Horizon\Utils\Str;
+use Horizon\Support\Path;
+use Horizon\Support\Archive;
+use Horizon\Support\Str;
 
 class Extract extends Command
 {
@@ -63,7 +63,7 @@ class Extract extends Command
     }
 
     /**
-     * @return ZipArchive
+     * @return \Horizon\Support\Archive
      */
     protected function getStagedArchive()
     {

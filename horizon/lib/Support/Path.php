@@ -1,6 +1,9 @@
 <?php
 
-namespace Horizon\Utils;
+namespace Horizon\Support;
+
+use Horizon\Support\Arr;
+use Horizon\Support\Str;
 
 class Path
 {
@@ -152,7 +155,7 @@ class Path
             }
             elseif ($node->name == '..') {
                 if (!empty($path)) {
-                    if (Arr::last($path)->file) {
+                    if (\Horizon\Support\Arr::last($path)->file) {
                         array_pop($path);
                     }
 

@@ -5,7 +5,7 @@ namespace Horizon\Updates\Commands;
 use Horizon\Updates\Script;
 use Horizon\Updates\Command;
 use Horizon\Updates\CommandException;
-use Horizon\Utils\ZipArchive;
+use Horizon\Support\Archive;
 
 class StageArchive extends Command
 {
@@ -50,9 +50,9 @@ class StageArchive extends Command
     }
 
     /**
-     * Gets the ZipArchive instance for the archive.
+     * Gets the Archive instance for the archive.
      *
-     * @return ZipArchive
+     * @return Archive
      */
     public function getZipArchive()
     {

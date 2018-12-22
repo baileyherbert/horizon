@@ -5,8 +5,8 @@ namespace Horizon\Database\QueryBuilder\Commands;
 use Horizon\Database\QueryBuilder;
 use Horizon\Database\QueryBuilder\StringBuilder;
 use Horizon\Database\QueryBuilder\ColumnDefinition;
-use Horizon\Utils\Str;
-use Horizon\Utils\Arr;
+use Horizon\Support\Str;
+use Horizon\Support\Arr;
 use Horizon\Database\Exception\QueryBuilderException;
 
 class Alter implements CommandInterface

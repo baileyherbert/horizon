@@ -8,9 +8,9 @@ use Exception;
 use Horizon;
 use Horizon\Exception\HorizonException;
 use Horizon\Http\Exception\HttpResponseException;
-use Horizon\Utils\TimeProfiler;
-use Horizon\Utils\Path;
-use Horizon\Utils\Arr;
+use Horizon\Support\Profiler;
+use Horizon\Support\Path;
+use Horizon\Support\Arr;
 use Horizon\Exception\ErrorMiddleware;
 use Horizon\Console\ConsoleResponse;
 
@@ -299,7 +299,7 @@ trait HttpKernel
             static::showErrorPage(static::$response->getStatusCode());
         }
 
-        TimeProfiler::stop('kernel');
+        Profiler::stop('kernel');
 
         static::close();
     }

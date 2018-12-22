@@ -8,7 +8,7 @@ use Horizon\Http\Cookie\Session;
 use Horizon\Routing\Route;
 use Horizon\Routing\RouteLoader;
 use Horizon\Routing\RouteParameterBinder;
-use Horizon\Utils\Path;
+use Horizon\Support\Path;
 
 class Request extends SymfonyRequest
 {

@@ -2,7 +2,7 @@
 
 namespace Horizon\Extend;
 
-use Horizon\Utils\Path;
+use Horizon\Support\Path;
 
 class Extension
 {

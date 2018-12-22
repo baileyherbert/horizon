@@ -4,7 +4,7 @@ namespace Horizon\Http;
 
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Horizon\View\Template;
-use Horizon\Utils\Str;
+use Horizon\Support\Str;
 
 class Response extends SymfonyResponse
 {

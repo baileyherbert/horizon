@@ -7,7 +7,7 @@ use Horizon\Framework\Kernel;
 use Twig_SimpleFunction;
 use Twig_Extension;
 use Twig_Extension_GlobalsInterface;
-use Horizon\Utils\Str;
+use Horizon\Support\Str;
 use Horizon\Extend\Extension;
 use Horizon\View\Twig\TwigFileLoader;
 

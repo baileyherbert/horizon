@@ -7,7 +7,7 @@ use Twig_Environment;
 
 use Horizon;
 use Horizon\Exception\HorizonException;
-use Horizon\Utils\Path;
+use Horizon\Support\Path;
 
 use Horizon\View\Template;
 use Horizon\View\Theme;

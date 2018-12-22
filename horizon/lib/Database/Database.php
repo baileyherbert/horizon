@@ -5,7 +5,7 @@ namespace Horizon\Database;
 use Horizon\Events\EventEmitter;
 use Horizon\Database\Drivers\DriverInterface;
 use Horizon\Database\Exception\DatabaseException;
-use Horizon\Utils\TimeProfiler;
+use Horizon\Support\Profiler;
 
 class Database extends EventEmitter
 {
@@ -145,13 +145,13 @@ class Database extends EventEmitter
     public function query($statement, array $bindings = array())
     {
         // Start timing the query
-        TimeProfiler::start('horizon:database:query');
+        Profiler::start('horizon:database:query');
 
         // Run the query on the driver
         $returned = $this->driver->query($statement, $bindings);
 
         // Stop timing and get the number of milliseconds taken
-        $timeTaken = TimeProfiler::stop('horizon:database:query');
+        $timeTaken = Profiler::stop('horizon:database:query');
 
         // Emit
         $this->emit('query', $statement, $bindings, $timeTaken);

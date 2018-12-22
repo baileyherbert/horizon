@@ -5,13 +5,13 @@ namespace Horizon\View\Extensions;
 use Horizon\Framework\Kernel;
 
 use Twig_SimpleFunction;
-use Horizon\Utils\TimeProfiler;
+use Horizon\Support\Profiler;
 use Horizon\View\ViewExtension;
 use Horizon\Routing\RouteParameterBinder;
 use Horizon\Routing\RouteLoader;
 use Horizon\Http\MiniRequest;
-use Horizon\Utils\Path;
-use Horizon\Utils\Str;
+use Horizon\Support\Path;
+use Horizon\Support\Str;
 
 class HorizonExtension extends ViewExtension
 {
@@ -98,7 +98,7 @@ class HorizonExtension extends ViewExtension
     protected function twigRuntime()
     {
         return new Twig_SimpleFunction('runtime', function () {
-            return TimeProfiler::time('kernel');
+            return Profiler::time('kernel');
         });
     }
 

@@ -3,7 +3,7 @@
 namespace Horizon\Provider;
 
 use Horizon;
-use Horizon\Utils\Path;
+use Horizon\Support\Path;
 
 trait ServiceKernel
 {

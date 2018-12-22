@@ -13,8 +13,8 @@ use Horizon\View\ViewKernel;
 use Horizon\Http\HttpKernel;
 use Horizon\Console\ConsoleKernel;
 
-use Horizon\Utils\TimeProfiler;
-use Horizon\Utils\Path;
+use Horizon\Support\Profiler;
+use Horizon\Support\Path;
 use Horizon\Exception\ErrorHandler;
 use Horizon\Exception\ErrorMiddleware;
 
@@ -34,7 +34,7 @@ class Kernel
      */
     public static function boot()
     {
-        TimeProfiler::start('kernel');
+        Profiler::start('kernel');
 
         if (defined('CONSOLE_MODE')) {
             return static::bootConsole();

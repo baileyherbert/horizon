@@ -1,8 +1,8 @@
 <?php
 
-namespace Horizon\Utils;
+namespace Horizon\Support;
 
-class TimeProfiler
+class Profiler
 {
 
     protected static $profiles = array();

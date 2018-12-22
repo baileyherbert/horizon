@@ -1,11 +1,10 @@
 <?php
 
-namespace Horizon\Utils;
+namespace Horizon\Support;
 
 use Horizon\Encryption\FastEncrypt;
 
-
-class ZipArchive
+class Archive
 {
 	/**
 	 * Compressed data.
@@ -67,7 +66,7 @@ class ZipArchive
 	protected $localEncryption;
 
 	/**
-	 * Constructs a new ZipArchive instance.
+	 * Constructs a new Archive instance.
 	 *
 	 * @param string|null $path
 	 * @param string $baseDir
@@ -570,11 +569,12 @@ class ZipArchive
 	 * Constructs a new archive from raw data in a string.
 	 *
 	 * @param string $raw
-	 * @return ZipArchive
+	 *
+	 * @return Archive
 	 */
 	public static function fromString($raw)
 	{
-		return new ZipArchive(null, '.', $raw);
+		return new Archive(null, '.', $raw);
 	}
 
 	public function __toString()

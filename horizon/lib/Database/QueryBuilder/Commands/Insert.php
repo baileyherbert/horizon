@@ -3,9 +3,9 @@
 namespace Horizon\Database\QueryBuilder\Commands;
 
 use Horizon\Database\QueryBuilder;
-use Horizon\Utils\Str;
+use Horizon\Support\Str;
 use Horizon\Database\QueryBuilder\StringBuilder;
-use Horizon\Utils\Arr;
+use Horizon\Support\Arr;
 use Horizon\Database\Exception\QueryBuilderException;
 
 class Insert implements CommandInterface

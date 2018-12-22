@@ -2,8 +2,8 @@
 
 namespace Horizon\Updates;
 
-use Horizon\Utils\Path;
-use Horizon\Utils\ZipArchive;
+use Horizon\Support\Path;
+use Horizon\Support\Archive;
 use GuzzleHttp\Exception\ServerException;
 use Exception;
 use GuzzleHttp\Exception\ClientException;

@@ -2,10 +2,10 @@
 
 namespace Horizon\Updates;
 
-use Horizon\Utils\Path;
+use Horizon\Support\Path;
 use GuzzleHttp\Client;
 use GuzzleHttp\Message\ResponseInterface;
-use Horizon\Utils\Str;
+use Horizon\Support\Str;
 
 class Repository
 {
