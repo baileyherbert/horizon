@@ -9,11 +9,12 @@ class HorizonTest extends TestCase
     public function testConstants()
     {
         $this->assertNotNull(Core::version());
+        $this->assertEquals('jupiter', Core::edition());
 
         $this->assertNotNull(Core::path());
         $this->assertNotNull(Core::path('vendor'));
 
-        $this->assertFileExists(Core::path('composer.json'));
+        $this->assertFileExists(Core::path('horizon/composer.json'));
     }
 
     public function testEnvironment()
