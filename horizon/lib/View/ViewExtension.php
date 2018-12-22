@@ -8,7 +8,7 @@ use Twig_SimpleFunction;
 use Twig_Extension;
 use Twig_Extension_GlobalsInterface;
 use Horizon\Support\Str;
-use Horizon\Extend\Extension;
+use Horizon\Extension\Extension;
 use Horizon\View\Twig\TwigFileLoader;
 
 class ViewExtension extends Twig_Extension implements Twig_Extension_GlobalsInterface

@@ -2,7 +2,8 @@
 
 namespace Horizon\View;
 
-use Horizon\Extend\Extension;
+use Horizon\Extension\Extension;
+use Horizon\Framework\Application;
 
 trait ViewKernel
 {
@@ -27,13 +28,9 @@ trait ViewKernel
         // Reset the extension binding
         static::$extension = null;
 
-        // Check all view providers for an existing file
-        foreach (static::getProviders('views') as $provider) {
-            $templatePath = $provider($name);
-
-            if ($templatePath !== null) {
-                $path = $templatePath;
-                static::$extension = $provider->getExtension();
+        foreach (Application::resolve('Horizon\View\ViewLoader') as $loader) {
+            if (!is_null($path = $loader->resolve($name))) {
+                static::$extension = $loader->getExtension();
             }
         }
 

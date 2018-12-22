@@ -2,14 +2,17 @@
 
 use Horizon\Framework\Kernel;
 use Horizon\Exception\HorizonException;
+use Horizon\Framework\Application;
 
-// Aliases
+// Facade aliases
 class Route extends \Horizon\Routing\RouteFacade {};
 class Database extends \Horizon\Database\DatabaseFacade {};
 class DB extends \Horizon\Database\DatabaseFacade {};
 
 /**
- * Configuration helper for getting config values.
+ * Gets the value of a configuration entry at the specified key path. The path should be in dot notation, with
+ * the first segment containing the name of the configuration file. If the file or key path does not exist, the
+ * default value is returned.
  *
  * @param string $key
  * @param mixed|null $default
@@ -17,7 +20,12 @@ class DB extends \Horizon\Database\DatabaseFacade {};
  */
 function config($key, $default = null)
 {
-    return Horizon::config($key, $default);
+    try {
+        return Application::config($key, $default);
+    }
+    catch (HorizonException $e) {
+        return $default;
+    }
 }
 
 /**
@@ -26,6 +34,7 @@ function config($key, $default = null)
  * @param string $templateFile
  * @param array $context
  * @return void
+ * @throws HorizonException
  */
 function view($templateFile, array $context = array())
 {
@@ -35,7 +44,7 @@ function view($templateFile, array $context = array())
         throw new HorizonException(0x0008, sprintf('Cannot render template file: %s', $templateFile));
     }
 
-    return $response->view($templateFile, $context);
+    $response->view($templateFile, $context);
 }
 
 /**
@@ -44,6 +53,8 @@ function view($templateFile, array $context = array())
  * @param string $to
  * @param int $code
  * @param bool $halt
+ * @return void
+ * @throws HorizonException
  */
 function redirect($to = null, $code = 302, $halt = true)
 {
@@ -57,23 +68,7 @@ function redirect($to = null, $code = 302, $halt = true)
         $response->halt();
     }
 
-    return $response->redirect($to, $code);
-}
-
-/**
- * Gets or sets the theme name to use for view template rendering.
- * If the first argument $name is provided, sets the theme to that value. Otherwise, returns the current theme.
- *
- * @param string|null $name
- * @return string|null
- */
-function theme($name = null)
-{
-    if (is_null($name)) {
-        return Kernel::getTheme();
-    }
-
-    Kernel::setTheme($name);
+    $response->redirect($to, $code);
 }
 
 /**
@@ -85,6 +80,20 @@ function theme($name = null)
  * @return string
  */
 function __($text, $variables = array())
+{
+    $bucket = Kernel::getLanguageBucket();
+    return $bucket->translate($text, $variables);
+}
+
+/**
+ * Translates the specified text using the language bucket from the kernel, replacing the provided variables if
+ * applicable. If no translation is available, returns the provided text (with variables still replaced).
+ *
+ * @param string $text
+ * @param array $variables
+ * @return string
+ */
+function translate($text, $variables = array())
 {
     $bucket = Kernel::getLanguageBucket();
     return $bucket->translate($text, $variables);

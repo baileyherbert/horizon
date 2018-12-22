@@ -2,6 +2,7 @@
 
 namespace Horizon\Updates;
 
+use Horizon\Framework\Application;
 use Horizon\Framework\Kernel;
 use Horizon\Support\Path;
 use Horizon\Logging\Logger;
@@ -75,17 +76,7 @@ class UpdateService
     public static function getRepositories()
     {
         if (is_null(static::$repositories)) {
-            static::$repositories = array();
-
-            foreach (Kernel::getProviders('updates') as $provider) {
-                $repos = $provider();
-
-                foreach ($repos as $repo) {
-                    if ($repo instanceof Repository) {
-                        static::$repositories[] = $repo;
-                    }
-                }
-            }
+            static::$repositories = Application::resolve('Horizon\Updates\Repository');
         }
 
         return static::$repositories;

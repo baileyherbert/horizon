@@ -10,24 +10,10 @@
 
 return array(
 
-    'views' => array(
-        'Horizon\Provider\Services\ViewProvider'
-    ),
-
-    'translations' => array(
-        'Horizon\Provider\Services\TranslationProvider'
-    ),
-
-    'routes' => array(
-        'Horizon\Provider\Services\RoutingProvider'
-    ),
-
-    'updates' => array(
-        'Horizon\Provider\Services\UpdateProvider'
-    ),
-
-    'extensions' => array(
-        'Horizon\Provider\Services\ExtensionProvider'
-    )
+    'Horizon\Routing\RoutingServiceProvider',
+    'Horizon\View\ViewServiceProvider',
+    'Horizon\Extension\ExtensionServiceProvider',
+    'Horizon\Translation\TranslationServiceProvider',
+    'Horizon\Updates\UpdateServiceProvider'
 
 );

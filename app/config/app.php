@@ -60,6 +60,11 @@ return array(
 
         Default value: true
     */
-    'view_cache' => false
+    'view_cache' => false,
+
+    /*
+        The current version of the application.
+    */
+    'version' => '1.0',
 
 );

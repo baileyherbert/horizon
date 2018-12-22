@@ -1,6 +1,6 @@
 <?php
 
-namespace Horizon\Extend;
+namespace Horizon\Extension;
 
 use Horizon\Support\Path;
 
@@ -49,21 +49,21 @@ class Extension
         $this->configPath = Path::join($path, 'extension.json');
 
         if (!file_exists($this->configPath)) {
-            throw new ExtensionException('Error loading extension: extension.json is missing');
+            throw new Exception('Error loading extension: extension.json is missing');
         }
 
         $this->config = @json_decode(file_get_contents($this->configPath), true);
 
         if (json_last_error() != JSON_ERROR_NONE) {
-            throw new ExtensionException('Error loading extension: extension.json is not valid JSON');
+            throw new Exception('Error loading extension: extension.json is not valid JSON');
         }
 
         if (!isset($this->config['name'])) {
-            throw new ExtensionException('extension.json: field "name" is required');
+            throw new Exception('extension.json: field "name" is required');
         }
 
         if (!isset($this->config['version'])) {
-            throw new ExtensionException('extension.json: field "version" is required');
+            throw new Exception('extension.json: field "version" is required');
         }
 
         $this->loadDefaults($this->config);

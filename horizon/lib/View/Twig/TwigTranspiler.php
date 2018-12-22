@@ -11,7 +11,7 @@ use Horizon\Http\MiniRequest;
 use Horizon\Routing\RouteLoader;
 use Horizon\Routing\RouteParameterBinder;
 
-use Horizon\Extend\Extension;
+use Horizon\Extension\Extension;
 use Horizon\View\ViewExtension;
 
 class TwigTranspiler

@@ -30,8 +30,6 @@ if (version_compare(FRAMEWORK_PHP_VERSION, '5.4.0', '<')) {
 class Horizon
 {
 
-    use Horizon\Framework\Configuration;
-
     /**
      * Current version of the framework.
      *
@@ -127,10 +125,7 @@ class Horizon
      */
     public static function environment($matches = null)
     {
-        $value = getenv('HORIZON_ENVIRONMENT');
-
-        // Default to production
-        if ($value === false) $value = "production";
+        $value = \Horizon\Framework\Application::environment();
 
         // Test against $matches argument
         if (!is_null($matches)) {

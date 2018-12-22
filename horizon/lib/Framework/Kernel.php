@@ -6,16 +6,16 @@ use Horizon;
 use Horizon\Routing\RouteLoader;
 
 use Horizon\Database\DatabaseKernel;
-use Horizon\Extend\ExtensionKernel;
-use Horizon\Provider\ServiceKernel;
+use Horizon\Extension\ExtensionKernel;
 use Horizon\Translation\TranslationKernel;
 use Horizon\View\ViewKernel;
 use Horizon\Http\HttpKernel;
 use Horizon\Console\ConsoleKernel;
 
+use Horizon\Support\Services\ServiceProvider;
+
 use Horizon\Support\Profiler;
 use Horizon\Support\Path;
-use Horizon\Exception\ErrorHandler;
 use Horizon\Exception\ErrorMiddleware;
 
 class Kernel
@@ -23,7 +23,6 @@ class Kernel
 
     use DatabaseKernel;
     use ExtensionKernel;
-    use ServiceKernel;
     use TranslationKernel;
     use ViewKernel;
     use HttpKernel;
@@ -37,14 +36,15 @@ class Kernel
         Profiler::start('kernel');
 
         if (defined('CONSOLE_MODE')) {
-            return static::bootConsole();
+            static::bootConsole();
+            return;
         }
 
         static::initErrorHandling();
         static::configure();
         static::initAutoloader();
         static::runBootScripts(0);
-        static::initProviders();
+        static::initServiceProviders();
         static::loadExtensions();
         static::loadExtensionVendors();
         static::initExtensionAutoloaders();
@@ -180,14 +180,10 @@ class Kernel
      */
     protected static function loadRoutes()
     {
-        foreach (static::getProviders('routes') as $provider) {
-            $files = $provider();
+        $routeFiles = Application::resolve('Horizon\Routing\RouteFile');
 
-            if (is_array($files)) {
-                foreach ($files as $file) {
-                    RouteLoader::loadRouteFile($file);
-                }
-            }
+        foreach ($routeFiles as $file) {
+            $file->load();
         }
     }
 
@@ -209,11 +205,31 @@ class Kernel
                         $action = array(new $className(), $methodName);
                     }
                     else {
-                        $action = array(new $className(), '__invoke');
+                        $action = array(new $action(), '__invoke');
                     }
                 }
 
                 call_user_func_array($action, array());
+            }
+        }
+    }
+
+    /**
+     * Initializes service providers and registers them in the application.
+     *
+     * @throws Horizon\Exception\HorizonException
+     */
+    protected static function initServiceProviders()
+    {
+        $providers = Application::config('providers', array());
+
+        foreach ($providers as $className) {
+            if (class_exists($className)) {
+                $provider = new $className();
+
+                if ($provider instanceof ServiceProvider) {
+                    Application::register($provider);
+                }
             }
         }
     }

@@ -1,10 +1,11 @@
 <?php
 
-namespace Horizon\Extend;
+namespace Horizon\Extension;
 
 use Horizon;
 use Horizon\Support\Path;
 use Horizon\Framework\Kernel;
+use Horizon\Framework\Application;
 
 use DirectoryIterator;
 
@@ -17,11 +18,6 @@ trait ExtensionKernel
     private static $extensions = array();
 
     /**
-     * @var Exception[] Key equals the extension path, and value is the exception object.
-     */
-    private static $failedExtensions = array();
-
-    /**
      * @var string[] Key is the namespace, and value is the source directory.
      */
     private static $extensionNamespaces = array();
@@ -31,21 +27,8 @@ trait ExtensionKernel
      */
     protected static function loadExtensions()
     {
-        $providers = static::getProviders('extensions');
-
-        foreach ($providers as $provider) {
-            $provider();
-
-            $extensions = $provider->getExtensions();
-            $failed = $provider->getFailedExtensions();
-
-            foreach ($extensions as $extension) {
-                static::addExtension($extension);
-            }
-
-            foreach ($failed as $path => $exception) {
-                static::$failedExtensions[$path] = $exception;
-            }
+        foreach (Application::resolve('Horizon\Extension\Extension') as $extension) {
+            static::addExtension($extension);
         }
     }
 

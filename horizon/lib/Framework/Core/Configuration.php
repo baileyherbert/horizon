@@ -1,11 +1,14 @@
 <?php
 
-namespace Horizon\Framework;
+namespace Horizon\Framework\Core;
 
 use Horizon;
 use Horizon\Exception\HorizonException;
 
-trait Configuration
+/**
+ * Utility class which loads configuration.
+ */
+class Configuration
 {
 
     private static $config = array();
@@ -15,9 +18,10 @@ trait Configuration
      *
      * @param string $key
      * @param mixed $default
+     * @throws HorizonException
      * @return mixed
      */
-    public static function config($key, $default = null)
+    public static function get($key, $default = null)
     {
         // Parse the key
         $configFile = self::getConfigFileName($key);
@@ -25,7 +29,7 @@ trait Configuration
 
         // Load the configuration file if it isn't cached
         if (!array_key_exists($configFile, self::$config)) {
-            self::loadConfigurationFile($configFile);
+            static::loadConfigurationFile($configFile);
         }
 
         // Get the configuration as an array
@@ -64,6 +68,8 @@ trait Configuration
      * app's config directory.
      *
      * @param string $name
+     * @throws HorizonException
+     * @return void
      */
     public static function loadConfigurationFile($name)
     {
@@ -90,6 +96,7 @@ trait Configuration
      * Extracts the name of the config file (the first segment) from a namespaced config key.
      *
      * @param string $path
+     * @return string
      */
     private static function getConfigFileName($path)
     {
@@ -110,6 +117,7 @@ trait Configuration
      * Extracts the segments, not including the config file name, of the namespaced config key.
      *
      * @param string $path
+     * @return string[]
      */
     private static function getConfigFileSegments($path)
     {

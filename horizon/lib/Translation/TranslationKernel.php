@@ -2,6 +2,8 @@
 
 namespace Horizon\Translation;
 
+use Horizon\Framework\Application;
+
 trait TranslationKernel
 {
 
@@ -44,12 +46,8 @@ trait TranslationKernel
      */
     protected static function loadLanguages()
     {
-        foreach (static::getProviders('translations') as $provider) {
-            $files = $provider();
-
-            foreach ($files as $filePath) {
-                static::addLanguage(new Language($filePath));
-            }
+        foreach (Application::resolve('Horizon\Translation\Language') as $language) {
+            static::addLanguage($language);
         }
     }
 

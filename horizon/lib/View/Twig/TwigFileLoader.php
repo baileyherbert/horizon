@@ -8,7 +8,7 @@ use Twig_Source;
 use Horizon\Framework\Kernel;
 
 use Horizon\View\ViewException;
-use Horizon\Extend\Extension;
+use Horizon\Extension\Extension;
 
 class TwigFileLoader extends Twig_Loader_Filesystem
 {
