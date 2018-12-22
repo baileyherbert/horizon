@@ -196,20 +196,22 @@ class TwigTranspiler
         $stringCharacter = '';
         $word = '';
 
-        while ($i < strlen($arguments)) {
+        $length = strlen($arguments);
+
+        while ($i < $length) {
             $char = $arguments[$i];
             $insertCharacter = $char;
-            $previous = (isset($arguments[$i - 1])) ? $arguments[$i - 1] : null;
+            $previous = ($i > 0) ? $arguments[$i - 1] : null;
 
-            if ($char === chr(92)) {
+            if ($char === '\\') {
                 $disableString = !$disableString;
             }
-            else if ($char !== chr(34) && $char !== chr(39)) {
+            else if ($char !== '"' && $char !== "'") {
                 $disableString = false;
             }
 
             if (!$disableString) {
-                if (!$inString && ($char === chr(34) || $char === chr(39))) {
+                if (!$inString && ($char === '"' || $char === "'")) {
                     $inString = true;
                     $stringCharacter = $char;
                 }
@@ -219,11 +221,11 @@ class TwigTranspiler
                 }
             }
 
-            if (!$inString && $char === chr(43)) {
-                $insertCharacter = chr(126);
+            if (!$inString && $char === '+') {
+                $insertCharacter = '~';
             }
 
-            if (!$inString && $char === chr(36)) {
+            if (!$inString && $char === '$') {
                 if ($previous === null || !$disableString) {
                     $insertCharacter = '';
                 }
@@ -276,26 +278,28 @@ class TwigTranspiler
 
         $escaped = false;
 
-        while ($i < strlen($value)) {
+        $length = strlen($value);
+
+        while ($i < $length) {
             $char = $value[$i];
             $insertCharacter = $char;
 
-            $previous = (isset($value[$i - 1])) ? $value[$i - 1] : null;
-            $next = (isset($value[$i + 1])) ? $value[$i + 1] : null;
-            $nextAfter = (isset($value[$i + 2])) ? $value[$i + 2] : null;
+            $previous = ($i > 0) ? $value[$i - 1] : null;
+            $next = ($i < ($length - 1)) ? $value[$i + 1] : null;
+            $nextAfter = ($i < ($length - 2)) ? $value[$i + 2] : null;
 
             if (!$inBrackets) {
-                if ($char === chr(92) && $next === chr(64)) {
-                    $insertCharacter = chr(64);
+                if ($char === '\\' && $next === '@') {
+                    $insertCharacter = '@';
                     $i++;
                 }
 
-                if ($char === chr(64) && $next === chr(123) && $nextAfter === chr(123)) {
+                if ($char === '@' && $next === '{' && $nextAfter === '{') {
                     $escaped = true;
                     $insertCharacter = '';
                 }
 
-                if ($char === chr(123) && $previous === chr(123)) {
+                if ($char === '{' && $previous === '{') {
                     if (!$escaped) {
                         $inBrackets = true;
                     }
@@ -307,16 +311,16 @@ class TwigTranspiler
 
             if ($inBrackets) {
                 if ($inString) {
-                    if ($char === chr(92)) {
+                    if ($char === '\\') {
                         $disableString = !$disableString;
                     }
-                    else if ($char !== chr(34) && $char !== chr(39)) {
+                    else if ($char !== '"' && $char !== "'") {
                         $disableString = false;
                     }
                 }
 
                 if (!$disableString) {
-                    if (!$inString && ($char === chr(34) || $char === chr(39))) {
+                    if (!$inString && ($char === '"' || $char === "'")) {
                         $inString = true;
                         $stringCharacter = $char;
                     }
@@ -326,45 +330,45 @@ class TwigTranspiler
                     }
                 }
 
-                if ($char === chr(125) && $next === chr(125)) {
+                if ($char === '}' && $next === '}') {
                     $inBrackets = false;
                 }
             }
 
             if ($inBrackets && !$inString) {
-                if ($char === chr(36)) {
+                if ($char === '$') {
                     $insertCharacter = '';
                 }
 
-                if ($char === chr(43)) {
+                if ($char === '+') {
                     $insertCharacter = '~';
                 }
 
-                if ($char === chr(45) && $next === chr(62)) {
+                if ($char === '-' && $next === '>') {
                     $insertCharacter = '.';
                 }
 
-                if ($char === chr(62) && $previous === chr(45)) {
+                if ($char === '>' && $previous === '-') {
                     $insertCharacter = '';
                 }
 
-                if ($char === chr(124) && $next === chr(124)) {
+                if ($char === '|' && $next === '|') {
                     $insertCharacter = 'or';
                 }
 
-                if ($char === chr(124) && $previous === chr(124)) {
+                if ($char === '|' && $previous === '|') {
                     $insertCharacter = '';
                 }
 
-                if ($char === chr(33) && $next !== chr(61)) {
+                if ($char === '!' && $next !== '=') {
                     $insertCharacter = 'not ';
                 }
 
-                if ($char === chr(38) && $next === chr(38)) {
+                if ($char === '&' && $next === '&') {
                     $insertCharacter = 'and';
                 }
 
-                if ($char === chr(38) && $previous === chr(38)) {
+                if ($char === '&' && $previous === '&') {
                     $insertCharacter = '';
                 }
             }
@@ -395,33 +399,35 @@ class TwigTranspiler
         $inUnescapedTag = false;
         $inCommentTag = false;
 
-        while ($i < strlen($value)) {
+        $length = strlen($value);
+
+        while ($i < $length) {
             $char = $value[$i];
             $insertCharacter = $char;
 
-            $previous = (isset($value[$i - 1])) ? $value[$i - 1] : null;
-            $next = (isset($value[$i + 1])) ? $value[$i + 1] : null;
-            $nextAfter = (isset($value[$i + 2])) ? $value[$i + 2] : null;
-            $nextAfterThat = (isset($value[$i + 3])) ? $value[$i + 3] : null;
+            $previous = ($i > 0) ? $value[$i - 1] : null;
+            $next = ($i < ($length - 1)) ? $value[$i + 1] : null;
+            $nextAfter = ($i < ($length - 2)) ? $value[$i + 2] : null;
+            $nextAfterThat = ($i < ($length - 3)) ? $value[$i + 3] : null;
 
             if (!$inString && !$inBrackets) {
-                if (!$inUnescapedTag && $char === chr(123) && $next === chr(33) && $nextAfter === chr(33)) {
+                if (!$inUnescapedTag && $char === '{' && $next === '!' && $nextAfter === '!') {
                     $i += 2;
                     $insertCharacter = '{{ (';
                     $inUnescapedTag = true;
                 }
-                else if ($inUnescapedTag && $char === chr(33) && $next === chr(33) && $nextAfter === chr(125)) {
+                else if ($inUnescapedTag && $char === '!' && $next === '!' && $nextAfter === '}') {
                     $i += 2;
                     $insertCharacter = ') | raw }}';
                     $inUnescapedTag = false;
                 }
 
-                if (!$inCommentTag && $char === chr(123) && $next === chr(123) && $nextAfter === chr(45) && $nextAfterThat === chr(45)) {
+                if (!$inCommentTag && $char === '{' && $next === '{' && $nextAfter === '-' && $nextAfterThat === '-') {
                     $inCommentTag = true;
                     $i += 3;
                     $insertCharacter = '{#';
                 }
-                else if ($inCommentTag && $char === chr(45) && $next === chr(45) && $nextAfter === chr(125) && $nextAfterThat === chr(125)) {
+                else if ($inCommentTag && $char === '-' && $next === '-' && $nextAfter === '}' && $nextAfterThat === '}') {
                     $inCommentTag = false;
                     $i += 3;
                     $insertCharacter = '#}';
@@ -429,23 +435,23 @@ class TwigTranspiler
             }
 
             if (!$inBrackets) {
-                if ($char === chr(123) && $previous === chr(123)) {
+                if ($char === '{' && $previous === '{') {
                     $inBrackets = true;
                 }
             }
 
             if ($inBrackets) {
                 if ($inString) {
-                    if ($char === chr(92)) {
+                    if ($char === '\\') {
                         $disableString = !$disableString;
                     }
-                    else if ($char !== chr(34) && $char !== chr(39)) {
+                    else if ($char !== '"' && $char !== "'") {
                         $disableString = false;
                     }
                 }
 
                 if (!$disableString) {
-                    if (!$inString && ($char === chr(34) || $char === chr(39))) {
+                    if (!$inString && ($char === '"' || $char === "'")) {
                         $inString = true;
                         $stringCharacter = $char;
                     }
@@ -455,7 +461,7 @@ class TwigTranspiler
                     }
                 }
 
-                if ($char === chr(125) && $next === chr(125)) {
+                if ($char === '}' && $next === '}') {
                     $inBrackets = false;
                 }
             }
