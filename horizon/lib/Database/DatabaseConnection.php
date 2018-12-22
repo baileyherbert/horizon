@@ -2,6 +2,7 @@
 
 namespace Horizon\Database;
 
+use Horizon\Database\Migration\Migration;
 use Horizon\Framework\Application;
 use Horizon\Framework\Kernel;
 use Horizon\Database\QueryBuilder\Documentation\AlterHelper;
@@ -183,6 +184,23 @@ class DatabaseConnection
         catch (DatabaseException $e) {
             return false;
         }
+    }
+
+    /**
+     * Starts a database migration. Expects a callable or closure to be passed which will be called.
+     *
+     * @param callable $callback
+     * @return bool
+     * @throws DatabaseException
+     */
+    public function migrate($callback)
+    {
+        if (!is_callable($callback)) {
+            throw new DatabaseException('Database migration expects a callable, ' . gettype($callback) . ' received.');
+        }
+
+        $migration = new Migration($this);
+        return $migration->run($callback);
     }
 
 }

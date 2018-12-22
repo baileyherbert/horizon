@@ -200,4 +200,16 @@ class DatabaseFacade
         }
     }
 
+    /**
+     * Starts a database migration. Expects a callable or closure to be passed which will be called.
+     *
+     * @param callable $callback
+     * @return bool
+     * @throws DatabaseException
+     */
+    public static function migrate($callback)
+    {
+        return static::connection()->migrate($callback);
+    }
+
 }
