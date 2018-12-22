@@ -7,8 +7,9 @@
             "Horizon\\": "lib"
         },
         "files": [
-          "lib/Horizon.php",
-          "lib/Helpers.php"
+            "includes/core.php",
+            "includes/helpers.php",
+            "includes/aliases.php"
         ]
     },
     "require": {

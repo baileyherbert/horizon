@@ -4,9 +4,9 @@ namespace Horizon\Http;
 
 use Exception;
 
-use Horizon;
 use Horizon\Exception\ErrorMiddleware;
 use Horizon\Exception\HorizonException;
+use Horizon\Framework\Core;
 use Horizon\Http\Exception\HttpResponseException;
 use Horizon\Routing\Route;
 use Horizon\Support\Path;
@@ -247,9 +247,9 @@ class Kernel
      */
     private function sendExposedHeader()
     {
-        $framework = 'Horizon ' . Horizon::VERSION;
+        $framework = 'Horizon ' . Core::version();
 
-        if (config('app.expose_php', true)) $framework .= ' / PHP ' . FRAMEWORK_PHP_VERSION;
+        if (config('app.expose_php', true)) $framework .= ' / PHP ' . phpversion();
         if (config('app.expose_horizon', true) === false) header_remove('X-Powered-By');
         else if (!headers_sent()) header('X-Powered-By: ' . $framework);
     }

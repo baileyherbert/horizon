@@ -3,6 +3,7 @@
 namespace Horizon\Support;
 
 use Horizon\Encryption\FastEncrypt;
+use Horizon\Framework\Core;
 
 class Archive
 {
@@ -502,7 +503,7 @@ class Archive
 			if (strpos($result, ';') !== false) {
 				$split = explode(';', $result);
 
-				if (array_shift($split) == \Horizon::ROOT_DIR) {
+				if (array_shift($split) == Core::path()) {
 					return true;
 				}
 			}
@@ -516,7 +517,7 @@ class Archive
 				if (strpos($result, ';') !== false) {
 					$split = explode(';', $result);
 
-					if (array_shift($split) == \Horizon::ROOT_DIR) {
+					if (array_shift($split) == Core::path()) {
 						return true;
 					}
 				}
@@ -538,7 +539,7 @@ class Archive
 			}
 		}
 
-		$cipher = FastEncrypt::encrypt(\Horizon::ROOT_DIR . ';' . time() . ';' . \Horizon::VERSION);
+		$cipher = FastEncrypt::encrypt(Core::path() . ';' . time() . ';' . Core::version());
 		$this->createFile($cipher, 'HZENCRYPTED');
 		$this->localEncryption = $cipher;
 	}

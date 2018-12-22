@@ -115,11 +115,13 @@ class ExecuteFile extends Command
             $this->error = $e;
         }
 
-        if (version_compare(FRAMEWORK_PHP_VERSION, '5.5.0', '<')) {
-            @set_error_handler(function() { }, 0);
+        $originalHandler = null;
+
+        if (version_compare(phpversion(), '5.5.0', '<')) {
+            $originalHandler = @set_error_handler(function() { }, 0);
         }
         else {
-            @set_error_handler(null);
+            $originalHandler = @set_error_handler(null);
         }
 
         if (is_null($oldData) && file_exists($targetPath)) {
@@ -136,6 +138,10 @@ class ExecuteFile extends Command
 
         if (!is_null($oldData)) {
             @file_put_contents($targetPath, $oldData);
+        }
+
+        if (!is_null($originalHandler)) {
+            @set_error_handler($originalHandler);
         }
     }
 

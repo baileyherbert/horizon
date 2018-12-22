@@ -2,7 +2,7 @@
 
 namespace Horizon\Http\Cookie\Drivers;
 
-use Horizon;
+use Horizon\Framework\Core;
 use Horizon\Http\Cookie\Session;
 use Horizon\Exception\HorizonException;
 use Horizon\Encryption\FastEncrypt;
@@ -50,7 +50,7 @@ class CookieDriver implements DriverInterface
                 session_start();
             }
             else {
-                if (config('session.throws') && !Horizon::environment('test')) {
+                if (config('session.throws') && !Core::environment('test')) {
                     throw new HorizonException(0x0004, 'CookieDriver init (cannot initialize session: headers already sent)');
                 }
             }

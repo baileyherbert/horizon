@@ -2,6 +2,7 @@
 
 namespace Horizon\Updates;
 
+use Horizon\Framework\Core;
 use Horizon\Support\Path;
 use GuzzleHttp\Client;
 use GuzzleHttp\Message\ResponseInterface;
@@ -128,7 +129,7 @@ class Repository
             $this->mount = substr($this->mount, 1);
         }
 
-        return Path::resolve(\Horizon::ROOT_DIR, $this->mount);
+        return Path::resolve(Core::path(), $this->mount);
     }
 
     /**
@@ -269,7 +270,7 @@ class Repository
         $client = new Client();
         return $client->get($channelUri, array(
             'headers' => array(
-                'User-Agent' => sprintf('Horizon Framework (%s)', \Horizon::VERSION),
+                'User-Agent' => sprintf('Horizon Framework (%s)', Core::version()),
                 'Authorization' => $this->getAuthorization()
             ),
             'verify' => (config('updates.peer_validation') ? UpdateService::getCertificateBundle() : false),

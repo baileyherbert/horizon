@@ -2,7 +2,7 @@
 
 namespace Horizon\Framework;
 
-use Horizon\Framework\Core\Configuration;
+use Horizon\Framework\Services\Configuration;
 use Horizon\Support\Path;
 use Horizon\Support\Services\ServiceObjectCollection;
 use Horizon\Support\Services\ServiceProvider;
@@ -136,9 +136,10 @@ class Application
      */
     public static function path($relative = '')
     {
+        $basedir = dirname(dirname(dirname(__DIR__)));
         $relative = ltrim($relative, '\\/');
 
-        return Path::join(FRAMEWORK_HORIZON_ROOT, $relative);
+        return Path::join($basedir, $relative);
     }
 
     /**

@@ -2,7 +2,6 @@
 
 namespace Horizon\Http\Cookie;
 
-use Horizon;
 use Horizon\Exception\HorizonException;
 
 class Session

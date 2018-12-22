@@ -2,6 +2,7 @@
 
 namespace Horizon\Updates;
 
+use Horizon\Framework\Core;
 use Horizon\Support\Path;
 use Horizon\Support\Archive;
 use GuzzleHttp\Exception\ServerException;
@@ -224,7 +225,7 @@ class Version
      */
     public function getDownloadPath()
     {
-        $storagePath = Path::resolve(\Horizon::ROOT_DIR, config('updates.storage'));
+        $storagePath = Path::resolve(Core::path(), config('updates.storage'));
         $downloadPath = Path::join($storagePath, $this->getId() . '.hzpack');
 
         return $downloadPath;
@@ -331,7 +332,7 @@ class Version
 
         $response = $client->get($uri, array(
             'headers' => array(
-                'User-Agent' => sprintf('Horizon Framework (%s) / %s', \Horizon::VERSION, $this->getId()),
+                'User-Agent' => sprintf('Horizon Framework (%s) / %s', Core::version(), $this->getId()),
                 'Authorization' => $this->getRepo()->getAuthorization()
             ),
             'verify' => (config('updates.peer_validation') ? UpdateService::getCertificateBundle() : false),

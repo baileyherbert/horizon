@@ -2,6 +2,7 @@
 
 namespace Horizon\Updates;
 
+use Horizon\Framework\Core;
 use Horizon\Support\Archive;
 use Horizon\Updates\UpdateException;
 use Horizon\Support\Str;
@@ -162,7 +163,7 @@ class Package
 
         foreach ($affected as $relativePath) {
             $absolutePath = $this->getRepo()->toAbsolutePath($relativePath);
-            $horizonPath = ltrim(str_replace('\\', '/', Str::stripBeginning($absolutePath, \Horizon::ROOT_DIR)), '/');
+            $horizonPath = ltrim(str_replace('\\', '/', Str::stripBeginning($absolutePath, Core::path())), '/');
 
             if (file_exists($absolutePath)) {
                 $contents = file_get_contents($absolutePath, $horizonPath);
@@ -171,7 +172,7 @@ class Package
                     $contents = FastEncrypt::encrypt($contents);
                 }
 
-                $backup->createFile($cipher, $horizonPath);
+                $backup->createFile($contents, $horizonPath);
 
                 $logger->info('Backed up file:', $horizonPath, '(' . ($encrypt ? 'cipher' : 'file') . ' size: ' . strlen($contents) . ')');
             }

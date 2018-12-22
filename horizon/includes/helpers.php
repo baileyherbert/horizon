@@ -3,11 +3,6 @@
 use Horizon\Exception\HorizonException;
 use Horizon\Framework\Application;
 
-// Facade aliases
-class Route extends \Horizon\Routing\RouteFacade {};
-class Database extends \Horizon\Database\DatabaseFacade {};
-class DB extends \Horizon\Database\DatabaseFacade {};
-
 /**
  * Gets the value of a configuration entry at the specified key path. The path should be in dot notation, with
  * the first segment containing the name of the configuration file. If the file or key path does not exist, the

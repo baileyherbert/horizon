@@ -1,6 +1,6 @@
 <?php
 
-namespace Horizon\Framework\Core;
+namespace Horizon\Framework\Services;
 
 use Horizon\Framework\Application;
 use Horizon\Support\Path;
