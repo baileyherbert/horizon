@@ -40,6 +40,12 @@ class Application
     private static $booted = array();
 
     /**
+     * Stores an array of cached resolutions.
+     * @var ServiceObjectCollection[]
+     */
+    private static $cache = array();
+
+    /**
      * Registers a service provider in the application.
      *
      * @param ServiceProvider $provider
@@ -81,10 +87,19 @@ class Application
      * Gets a collection of service objects derived from the given class name.
      *
      * @param string $className
+     * @param bool $allowCachedResolution
      * @return ServiceObjectCollection
      */
-    public static function resolve($className)
+    public static function resolve($className, $allowCachedResolution = true)
     {
+        $collection = null;
+
+        // Resolve from cache
+        if ($allowCachedResolution && array_key_exists($className, static::$cache)) {
+            return static::$cache[$className];
+        }
+
+        // Resolve from service providers
         if (array_key_exists($className, static::$providersMap)) {
             $providers = static::$providersMap[$className];
             $objects = array();
@@ -101,10 +116,15 @@ class Application
                 }
             }
 
-            return new ServiceObjectCollection($objects);
+            $collection = new ServiceObjectCollection($objects);
         }
 
-        return new ServiceObjectCollection();
+        if (is_null($collection)) {
+            $collection = new ServiceObjectCollection();
+        }
+
+        static::$cache[$className] = $collection;
+        return $collection;
     }
 
     /**
