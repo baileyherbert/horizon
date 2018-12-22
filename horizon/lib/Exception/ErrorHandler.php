@@ -2,8 +2,8 @@
 
 namespace Horizon\Exception;
 
+use Horizon\Framework\Application;
 use Horizon\Http\Exception\HttpResponseException;
-use Horizon\Framework\Kernel;
 
 class ErrorHandler implements ErrorHandlerInterface
 {
@@ -16,7 +16,7 @@ class ErrorHandler implements ErrorHandlerInterface
      */
     public function http(HttpResponseException $ex)
     {
-        Kernel::showErrorPage($ex->getCode(), $ex->getMessage());
+        Application::kernel()->http()->error($ex->getCode(), $ex->getMessage());
     }
 
     /**

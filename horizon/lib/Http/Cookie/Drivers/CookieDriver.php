@@ -46,11 +46,11 @@ class CookieDriver implements DriverInterface
     {
         if (session_status() == PHP_SESSION_NONE) {
             if (!headers_sent()) {
-                @session_name(Horizon::config('session.name'));
+                @session_name(config('session.name'));
                 session_start();
             }
             else {
-                if (Horizon::config('session.throws') && !Horizon::environment('test')) {
+                if (config('session.throws') && !Horizon::environment('test')) {
                     throw new HorizonException(0x0004, 'CookieDriver init (cannot initialize session: headers already sent)');
                 }
             }
@@ -160,7 +160,7 @@ class CookieDriver implements DriverInterface
      */
     public function isEncryptionEnabled()
     {
-        return Horizon::config('session.encrypt');
+        return config('session.encrypt');
     }
 
     /**

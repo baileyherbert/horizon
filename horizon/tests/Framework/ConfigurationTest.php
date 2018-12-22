@@ -7,10 +7,10 @@ class ConfigurationTest extends TestCase
 
     public function testConfigurationReading()
     {
-        $this->assertNotNull(Horizon::config('session.driver'));
-        $this->assertNull(Horizon::config('session.does.not.exist'));
+        $this->assertNotNull(config('session.driver'));
+        $this->assertNull(config('session.does.not.exist'));
 
-        $this->assertInternalType('array', Horizon::config('session'));
+        $this->assertInternalType('array', config('session'));
     }
 
 }

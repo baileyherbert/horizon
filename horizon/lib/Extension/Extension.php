@@ -3,6 +3,7 @@
 namespace Horizon\Extension;
 
 use Horizon\Support\Path;
+use Horizon\Support\Services\ServiceProvider;
 
 class Extension
 {
@@ -169,39 +170,22 @@ class Extension
     /**
      * Gets the extension's providers matching the specified type. Returns an array of provider instances.
      *
-     * @param string $type Examples: 'updates', 'translations', 'views'
-     * @return \Horizon\Provider\ServiceProvider[]
+     * @return ServiceProvider[]
      */
-    public function getProviders($type)
+    public function getProviders()
     {
         if (!is_array($this->config['providers'])) {
             return array();
         }
 
         $providers = $this->config['providers'];
-        $type = strtolower(trim($type));
+        $instances = array();
 
-        if (!isset($providers[$type])) {
-            return array();
+        foreach ($providers as $className) {
+            $instances[] = new $className();
         }
 
-        $applicable = $providers[$type];
-        $objects = array();
-
-        foreach ($applicable as $i => $provider) {
-            if (is_object($provider)) {
-                $objects[] = $provider;
-            }
-            else {
-                if (class_exists($provider)) {
-                    $o = new $provider($this);
-                    $objects[] = $o;
-                    $this->config['providers'][$type][$i] = $o;
-                }
-            }
-        }
-
-        return $objects;
+        return $instances;
     }
 
     /**

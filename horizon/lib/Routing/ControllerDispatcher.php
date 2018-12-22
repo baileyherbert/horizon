@@ -2,6 +2,7 @@
 
 namespace Horizon\Routing;
 
+use Horizon\Framework\Application;
 use Horizon\Http\Request;
 use Horizon\Http\Response;
 use Horizon\Http\Exception\HttpResponseException;
@@ -44,6 +45,10 @@ class ControllerDispatcher
     public function dispatch()
     {
         $action = $this->getCallable();
+
+        if (is_null($this->response)) {
+            $this->response = Application::kernel()->http()->response();
+        }
 
         if (is_callable($action)) {
             $this->init($action);

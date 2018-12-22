@@ -272,9 +272,6 @@ class Route
      */
     public function execute(Request $request = null, Response $response = null)
     {
-        //$action = $this->getAction();
-        //return call_user_func_array($action, func_get_args());
-
         return (new ControllerDispatcher($this, $request, $response))->dispatch();
     }
 

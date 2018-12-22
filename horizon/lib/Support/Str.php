@@ -38,7 +38,7 @@ class Str
      * Checks whether the $haystack starts with the $needle. This is sensitive to character casing and whitespace.
      *
      * @param string $haystack
-     * @param string $needle
+     * @param string|string[] $needle
      * @return bool
      */
     public static function startsWith($haystack, $needle)

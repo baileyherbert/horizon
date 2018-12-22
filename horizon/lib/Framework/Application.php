@@ -15,6 +15,11 @@ class Application
 {
 
     /**
+     * @var Kernel
+     */
+    private static $kernel;
+
+    /**
      * All service providers registered to the application.
      *
      * @var ServiceProvider[]
@@ -171,6 +176,16 @@ class Application
     public static function config($key, $default = null)
     {
         return Configuration::get($key, $default);
+    }
+
+    /**
+     * Gets the primary kernel for the application and framework.
+     *
+     * @return Kernel
+     */
+    public static function kernel()
+    {
+        return static::$kernel ?: (static::$kernel = new Kernel());
     }
 
 }

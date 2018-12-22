@@ -2,6 +2,7 @@
 
 namespace Horizon\View\Extensions;
 
+use Horizon\Framework\Application;
 use Horizon\Framework\Kernel;
 
 use Twig_SimpleFunction;
@@ -18,7 +19,7 @@ class HorizonExtension extends ViewExtension
 
     public function getGlobals()
     {
-        $request = Kernel::getRequest();
+        $request = Application::kernel()->http()->request();
 
         return array(
             'request' => $request,
@@ -47,7 +48,7 @@ class HorizonExtension extends ViewExtension
 
     protected function getPublicAssetPath($relativePath, $extensionId = null)
     {
-        $request = Kernel::getRequest();
+        $request = Application::kernel()->http()->request();
         $currentPath = $request->path();
         $root = rtrim($_SERVER['SUBDIRECTORY'], '/');
 
@@ -71,7 +72,7 @@ class HorizonExtension extends ViewExtension
     protected function twigCsrf()
     {
         return new Twig_SimpleFunction('csrf', function () {
-            $token = Kernel::getRequest()->session()->csrf();
+            $token = Application::kernel()->http()->request()->session()->csrf();
             return '<input type="hidden" name="_token" value="' . $token . '">';
         }, array(
             'is_safe' => array(
@@ -83,14 +84,14 @@ class HorizonExtension extends ViewExtension
     protected function twigCsrfToken()
     {
         return new Twig_SimpleFunction('csrf_token', function () {
-            return Kernel::getRequest()->session()->csrf();
+            return Application::kernel()->http()->request()->session()->csrf();
         });
     }
 
     protected function twigLang()
     {
         return new Twig_SimpleFunction('__', function ($context, $text) {
-            $bucket = Kernel::getLanguageBucket();
+            $bucket = Application::kernel()->translation()->bucket();
             return $bucket->translate($text, $context);
         }, array('needs_context' => true));
     }
@@ -109,7 +110,7 @@ class HorizonExtension extends ViewExtension
                 return $toPath;
             }
 
-            $request = Kernel::getRequest();
+            $request = Application::kernel()->http()->request();
             return $request->getLinkTo($toPath);
         });
     }

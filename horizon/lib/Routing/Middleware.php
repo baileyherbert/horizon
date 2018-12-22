@@ -2,9 +2,9 @@
 
 namespace Horizon\Routing;
 
+use Horizon\Framework\Application;
 use Horizon\Http\Request;
 use Horizon\Http\Response;
-use Horizon\Framework\Kernel;
 
 class Middleware
 {
@@ -21,7 +21,7 @@ class Middleware
      */
     public function getRequest()
     {
-        return Kernel::getRequest();
+        return Application::kernel()->http()->request();
     }
 
     /**
@@ -31,7 +31,7 @@ class Middleware
      */
     public function getResponse()
     {
-        return Kernel::getResponse();
+        return Application::kernel()->http()->response();
     }
 
 }

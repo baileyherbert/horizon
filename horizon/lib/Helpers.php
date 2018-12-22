@@ -1,6 +1,5 @@
 <?php
 
-use Horizon\Framework\Kernel;
 use Horizon\Exception\HorizonException;
 use Horizon\Framework\Application;
 
@@ -38,7 +37,7 @@ function config($key, $default = null)
  */
 function view($templateFile, array $context = array())
 {
-    $response = Kernel::getResponse();
+    $response = Application::kernel()->http()->response();
 
     if (is_null($response)) {
         throw new HorizonException(0x0008, sprintf('Cannot render template file: %s', $templateFile));
@@ -58,7 +57,7 @@ function view($templateFile, array $context = array())
  */
 function redirect($to = null, $code = 302, $halt = true)
 {
-    $response = Kernel::getResponse();
+    $response = Application::kernel()->http()->response();
 
     if (is_null($response)) {
         throw new HorizonException(0x0008, sprintf('Cannot redirect to target: %s', $to));
@@ -81,7 +80,7 @@ function redirect($to = null, $code = 302, $halt = true)
  */
 function __($text, $variables = array())
 {
-    $bucket = Kernel::getLanguageBucket();
+    $bucket = Application::kernel()->translation()->bucket();
     return $bucket->translate($text, $variables);
 }
 
@@ -95,8 +94,7 @@ function __($text, $variables = array())
  */
 function translate($text, $variables = array())
 {
-    $bucket = Kernel::getLanguageBucket();
-    return $bucket->translate($text, $variables);
+    return __($text, $variables);
 }
 
 /**
@@ -115,5 +113,5 @@ function is_octal($int)
  */
 function terminate()
 {
-    Kernel::close();
+    Application::kernel()->shutdown();
 }

@@ -2,8 +2,6 @@
 
 namespace Horizon\View;
 
-use Horizon\Framework\Kernel;
-
 use Twig_SimpleFunction;
 use Twig_Extension;
 use Twig_Extension_GlobalsInterface;

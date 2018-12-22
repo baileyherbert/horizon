@@ -2,6 +2,7 @@
 
 namespace Horizon\View\Twig;
 
+use Horizon\Framework\Application;
 use Horizon\Framework\Kernel;
 
 class TwigTranslator
@@ -20,7 +21,7 @@ class TwigTranslator
             return $value;
         }
 
-        $bucket = Kernel::getLanguageBucket();
+        $bucket = Application::kernel()->translation()->bucket();
         return $bucket->autoTranslate($value, array(), $namespaces);
     }
 

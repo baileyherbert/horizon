@@ -2,198 +2,145 @@
 
 namespace Horizon\Framework;
 
-use Horizon;
-use Horizon\Routing\RouteLoader;
-
-use Horizon\Database\DatabaseKernel;
-use Horizon\Extension\ExtensionKernel;
-use Horizon\Translation\TranslationKernel;
-use Horizon\View\ViewKernel;
-use Horizon\Http\HttpKernel;
-use Horizon\Console\ConsoleKernel;
-
-use Horizon\Support\Services\ServiceProvider;
-
+use Horizon\Exception\Kernel as ExceptionKernel;
+use Horizon\Console\Kernel as ConsoleKernel;
+use Horizon\Framework\Core\Autoloader;
+use Horizon\Routing\Kernel as RoutingKernel;
+use Horizon\Http\Kernel as HttpKernel;
+use Horizon\Database\Kernel as DatabaseKernel;
 use Horizon\Support\Profiler;
-use Horizon\Support\Path;
-use Horizon\Exception\ErrorMiddleware;
+use Horizon\Support\Services\ServiceProvider;
+use Horizon\Translation\Kernel as TranslationKernel;
+use Horizon\Extension\Kernel as ExtensionKernel;
+use Horizon\View\Kernel as ViewKernel;
 
+/**
+ * This class is the framework kernel, which is responsible for booting and initializing the framework as well as the
+ * application's controllers and services.
+ */
 class Kernel
 {
 
-    use DatabaseKernel;
-    use ExtensionKernel;
-    use TranslationKernel;
-    use ViewKernel;
-    use HttpKernel;
-    use ConsoleKernel;
+    private $booted = false;
+
+    private $http;
+    private $database;
+    private $translation;
+    private $view;
+    private $console;
+    private $extension;
+    private $exception;
+    private $routing;
 
     /**
-     * Starts the framework init process.
+     * Starts the framework.
      */
-    public static function boot()
+    public function boot()
     {
+        // Do nothing if we've already booted
+        if ($this->booted) return;
+
+        // Start profiling
         Profiler::start('kernel');
 
-        if (defined('CONSOLE_MODE')) {
-            static::bootConsole();
+        // Start the error handler
+        $this->exception()->boot();
+
+        // Set basic ini settings
+        $this->setRuntimeConfiguration();
+
+        // Autoload the application and framework
+        $this->autoload();
+
+        // Run boot scripts where priority=0
+        $this->invokeBootScripts(0);
+
+        // Load service providers
+        $this->loadProviders();
+
+        // Load extensions
+        $this->extension()->boot();
+        $this->extension()->autoload();
+        $this->extension()->provide();
+
+        // Boot the application
+        Application::boot();
+
+        // Load routes
+        $this->routing()->boot();
+
+        // Load translations
+        $this->translation()->boot();
+
+        // Run boot scripts where priority=1
+        $this->invokeBootScripts(1);
+
+        // Boot into console mode when in the console environment
+        if (Application::environment() == 'console') {
+            $this->console()->boot();
             return;
         }
 
-        static::initErrorHandling();
-        static::configure();
-        static::initAutoloader();
-        static::runBootScripts(0);
-        static::initServiceProviders();
-        static::loadExtensions();
-        static::loadExtensionVendors();
-        static::initExtensionAutoloaders();
-        static::loadRoutes();
-        static::initLanguageBucket();
-        static::runBootScripts(1);
-        static::prepareHttp();
-        static::prepareSubdirectory();
-        static::makeRequest();
-        static::runBootScripts(2);
-        static::match();
+        // Start the http kernel
+        $this->http()->boot();
+
+        // Run boot scripts where priority=2
+        $this->invokeBootScripts(2);
+
+        // Prepare the view kernel
+        $this->view()->boot();
+
+        // Run the controller
+        $this->http()->execute(function() {
+            $this->invokeBootScripts(3);
+        });
+
+        // Save state
+        $this->booted = true;
     }
 
     /**
-     * Initializes the Whoops error handler if the server supports it.
+     * Shuts down the framework.
      */
-    protected static function initErrorHandling()
+    public function shutdown()
     {
-        set_error_handler(function($severity, $message, $file, $line) {
-            ErrorMiddleware::executeRuntimeError($severity, $message, $file, $line);
-        });
-
-        set_exception_handler(function($exception) {
-            ErrorMiddleware::executeException($exception);
-        });
-
-        register_shutdown_function(function() {
-            $error = error_get_last();
-
-            if (!is_null($error)) {
-                ErrorMiddleware::executeShutdownError($error['type'], $error['message'], $error['file'], $error['line']);
-            }
-        });
+        $this->database()->close();
+        die;
     }
 
     /**
-     * Configures PHP options based on configuration files.
+     * Sets basic PHP ini and other settings to match the app configuration.
      */
-    protected static function configure()
+    private function setRuntimeConfiguration()
     {
         ini_set('error_reporting', E_ALL & ~E_DEPRECATED);
-        ini_set('display_errors', config('app.display_errors'));
-        ini_set('log_errors', config('app.log_errors'));
-        ini_set('error_log', Horizon::APP_DIR . SLASH . 'error_log');
+        ini_set('display_errors', config('app.display_errors', true));
+        ini_set('log_errors', config('app.log_errors', true));
+        ini_set('error_log', Application::path('app/error_log'));
 
         date_default_timezone_set(config('app.timezone'));
     }
 
     /**
-     * Initializes the autoloader for configured namespaces.
+     * Starts the autoloader and mounts core namespaces.
      */
-    protected static function initAutoloader()
+    private function autoload()
     {
-        $mapping = array();
-
         // Get namespaces from configuration
         foreach (config('namespaces.map') as $namespace => $relativePath) {
-            $namespace = trim($namespace, '\\') . '\\';
-            $relativePath = Path::join(Horizon::ROOT_DIR, ltrim($relativePath, '/'));
-
-            $mapping[$namespace] = $relativePath;
+            Autoloader::mount($namespace, $relativePath);
         }
 
-        // Autoload
-        spl_autoload_register(function($className) use ($mapping) {
-            $className = ltrim($className, '\\');
-
-            foreach ($mapping as $prefix => $mount) {
-                $len = strlen($prefix);
-
-                if (strncmp($prefix, $className, $len) !== 0) {
-                    continue;
-                }
-
-                $relativeClass = substr($className, $len);
-                $file = Path::join($mount, str_replace('\\', DIRECTORY_SEPARATOR, $relativeClass) . '.php');
-
-                if (file_exists($file)) {
-                    require $file;
-                }
-            }
-        });
-
-        // App vendor
-        $autoloadPath = Path::join(Horizon::APP_DIR, 'vendor/autoload.php');
-
-        if (file_exists($autoloadPath)) {
-            require $autoloadPath;
-        }
-    }
-
-    /**
-     * Initializes the autoloader for extensions.
-     */
-    protected static function initExtensionAutoloaders()
-    {
-        $mapping = array();
-
-        // Get extension namespaces
-        $extensions = static::getExtensionNamespaces();
-
-        foreach ($extensions as $namespace => $absolutePath) {
-            $namespace = trim($namespace, '\\') . '\\';
-
-            if (!isset($mapping[$namespace])) {
-                $mapping[$namespace] = $absolutePath;
-            }
-        }
-
-        // Autoload
-        spl_autoload_register(function($className) use ($mapping) {
-            $className = ltrim($className, '\\');
-
-            foreach ($mapping as $prefix => $mount) {
-                $len = strlen($prefix);
-
-                if (strncmp($prefix, $className, $len) !== 0) {
-                    continue;
-                }
-
-                $relativeClass = substr($className, $len);
-                $file = Path::join($mount, str_replace('\\', DIRECTORY_SEPARATOR, $relativeClass) . '.php');
-
-                if (file_exists($file)) {
-                    require $file;
-                }
-            }
-        });
-    }
-
-    /**
-     * Executes the route files.
-     */
-    protected static function loadRoutes()
-    {
-        $routeFiles = Application::resolve('Horizon\Routing\RouteFile');
-
-        foreach ($routeFiles as $file) {
-            $file->load();
-        }
+        // Autoload composer
+        Autoloader::vendor(Application::path('app/vendor/autoload.php'));
     }
 
     /**
      * Runs boot scripts with the specified priority (0 to 2).
      *
      * @param int $priority
-     * @return void
      */
-    protected static function runBootScripts($priority)
+    private function invokeBootScripts($priority)
     {
         $classes = config('app.bootstrap', array());
 
@@ -215,11 +162,11 @@ class Kernel
     }
 
     /**
-     * Initializes service providers and registers them in the application.
+     * Loads service providers and registers them in the application.
      *
-     * @throws Horizon\Exception\HorizonException
+     * @throws \Horizon\Exception\HorizonException
      */
-    protected static function initServiceProviders()
+    private function loadProviders()
     {
         $providers = Application::config('providers', array());
 
@@ -234,13 +181,28 @@ class Kernel
         }
     }
 
-    /**
-     * Terminates the page.
-     */
-    public static function close()
-    {
-        static::closeDatabase();
-        die;
-    }
+    /* @return HttpKernel */
+    public function http() { return $this->http ?: ($this->http = new HttpKernel()); }
+
+    /* @return DatabaseKernel */
+    public function database() { return $this->database ?: ($this->database = new DatabaseKernel()); }
+
+    /* @return TranslationKernel */
+    public function translation() { return $this->translation ?: ($this->translation = new TranslationKernel()); }
+
+    /* @return ViewKernel */
+    public function view() { return $this->view ?: ($this->view = new ViewKernel()); }
+
+    /* @return ConsoleKernel */
+    public function console() { return $this->console ?: ($this->console = new ConsoleKernel()); }
+
+    /* @return ExtensionKernel */
+    public function extension() { return $this->extension ?: ($this->extension = new ExtensionKernel()); }
+
+    /* @return ExceptionKernel */
+    public function exception() { return $this->exception ?: ($this->exception = new ExceptionKernel()); }
+
+    /* @return RoutingKernel */
+    public function routing() { return $this->routing ?: ($this->routing = new RoutingKernel()); }
 
 }

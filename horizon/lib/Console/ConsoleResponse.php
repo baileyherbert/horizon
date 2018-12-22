@@ -3,6 +3,7 @@
 namespace Horizon\Console;
 
 use Horizon\Console;
+use Horizon\Framework\Application;
 use Horizon\Http\Response;
 use Exception;
 use Horizon\Framework\Kernel;
@@ -40,7 +41,7 @@ class ConsoleResponse extends Response
             $data = 'NULL';
         }
 
-        Kernel::getConsoleOutput()->write($data);
+        Application::kernel()->console()->output()->write($data);
     }
 
     /**

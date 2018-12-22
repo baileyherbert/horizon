@@ -2,7 +2,7 @@
 
 namespace Horizon\Routing;
 
-use Horizon\Framework\Kernel;
+use Horizon\Framework\Application;
 use Horizon\Http\Request;
 use Horizon\Http\Response;
 
@@ -26,7 +26,7 @@ class Controller
      */
     public function getRequest()
     {
-        return Kernel::getRequest();
+        return Application::kernel()->http()->request();
     }
 
     /**
@@ -36,7 +36,7 @@ class Controller
      */
     public function getResponse()
     {
-        return Kernel::getResponse();
+        return Application::kernel()->http()->response();
     }
 
 }

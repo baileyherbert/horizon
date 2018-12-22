@@ -2,6 +2,8 @@
 
 namespace Horizon\Console;
 
+use Exception;
+use Horizon\Framework\Application;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -15,11 +17,12 @@ class Command extends SymfonyCommand
      *
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return void
+     * @return int
+     * @throws Exception
      */
     public function run(InputInterface $input, OutputInterface $output)
     {
-        Kernel::__initCommand($input, $output);
+        Application::kernel()->console()->inject($input, $output);
         return parent::run($input, $output);
     }
 
@@ -30,7 +33,7 @@ class Command extends SymfonyCommand
      */
     protected function getInput()
     {
-        return Kernel::getConsoleInput();
+        return Application::kernel()->console()->input();
     }
 
     /**
@@ -40,7 +43,7 @@ class Command extends SymfonyCommand
      */
     protected function getOutput()
     {
-        return Kernel::getConsoleOutput();
+        return Application::kernel()->console()->output();
     }
 
 }

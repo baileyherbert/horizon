@@ -2,6 +2,7 @@
 
 namespace Horizon\View\Twig;
 
+use Horizon\Framework\Application;
 use Twig_Loader_Filesystem;
 use Twig_Source;
 
@@ -53,13 +54,13 @@ class TwigFileLoader extends Twig_Loader_Filesystem
 
     public function findTemplate($name)
     {
-        $path = Kernel::getTemplatePath($name);
+        $path = Application::kernel()->view()->resolve($name);
 
         if ($path === null) {
             throw new ViewException(sprintf('View "%s" not found in any provider.', $name));
         }
 
-        $this->extensions[md5($name)] = Kernel::getExtensionBinding();
+        $this->extensions[md5($name)] = Application::kernel()->view()->extension();
 
         return $path;
     }

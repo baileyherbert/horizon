@@ -28,7 +28,7 @@ class Session
 
         // Load from configuration if no driver was specified at runtime
         if (is_null($desiredDriver)) {
-            $desiredDriver = Horizon::config('session.driver');
+            $desiredDriver = config('session.driver');
         }
 
         // Throw an exception if the session driver is not found

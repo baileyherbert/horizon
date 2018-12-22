@@ -1,0 +1,366 @@
+<?php
+
+namespace Horizon\Http;
+
+use Exception;
+
+use Horizon;
+use Horizon\Exception\ErrorMiddleware;
+use Horizon\Exception\HorizonException;
+use Horizon\Http\Exception\HttpResponseException;
+use Horizon\Routing\Route;
+use Horizon\Support\Path;
+use Horizon\Support\Arr;
+use Horizon\Support\Profiler;
+use Horizon\Framework\Application;
+use Horizon\Console\ConsoleResponse;
+use Horizon\Routing\RouteLoader;
+
+/**
+ * Kernel for HTTP, controllers, middleware, and everything in between.
+ */
+class Kernel
+{
+
+    /**
+     * @var string
+     */
+    private $subdirectory;
+
+    /**
+     * @var string
+     */
+    private $realPath;
+
+    /**
+     * @var Request
+     */
+    private $request;
+
+    /**
+     * @var Response
+     */
+    private $response;
+
+    /**
+     * Boots the HTTP kernel.
+     */
+    public function boot()
+    {
+        $this->sendExposedHeader();
+        $this->detectSubdirectory();
+        $this->createRequest();
+        $this->createResponse();
+    }
+
+    /**
+     * Executes the middleware and controller for the current matched route. The callback, which is optional, will be
+     * called once the route has been matched. The route is passed as the first and only argument.
+     *
+     * @param callable $callback
+     * @throws HorizonException
+     */
+    public function execute($callback = null)
+    {
+        // Find a matching route
+        $route = $this->match();
+
+        // Skip if we don't have a route
+        if (!$route) return;
+
+        // Run callback
+        if (is_callable($callback)) {
+            call_user_func($callback, $route);
+        }
+
+        try {
+            // Run middleware
+            $this->executeMiddleware($route);
+
+            // Run the controller
+            $this->executeController($route);
+        }
+        catch (HttpResponseException $e) {
+            ErrorMiddleware::getErrorHandler()->http($e);
+        }
+
+        // Close
+        $this->close();
+    }
+
+    /**
+     * Gets the Request instance for the current request. This will be null if running in console mode.
+     *
+     * @return Request|null
+     */
+    public function request()
+    {
+        return $this->request;
+    }
+
+    /**
+     * Gets the Response instance for the current request. If called from a console environment, the returned response
+     * object will act as a middleware to the console's current output object.
+     *
+     * @return Response
+     */
+    public function response()
+    {
+        if (is_null($this->response)) {
+            $this->createResponse();
+        }
+
+        return $this->response;
+    }
+
+    /**
+     * Closes the HTTP kernel and sends the output body and headers.
+     *
+     * @param bool $skipErrorPage
+     */
+    public function close($skipErrorPage = false)
+    {
+        $this->response->halt();
+        $this->response->prepare($this->request);
+        $this->response->send();
+
+        if (!$this->response->getContent() && $this->response->getStatusCode() != 200 && !$skipErrorPage) {
+            $this->error($this->response->getStatusCode());
+        }
+
+        // Stop profiling
+        Profiler::stop('kernel');
+
+        // Stop the kernel
+        Application::kernel()->shutdown();
+    }
+
+    /**
+     * Renders an error page.
+     *
+     * @param int $code
+     */
+    public function error($code)
+    {
+        $errorFilePaths = array(
+            Application::path('app/errors/' . $code . '.html'),
+            Application::path('horizon/errors/' . $code . '.html')
+        );
+
+        foreach ($errorFilePaths as $path) {
+            if (file_exists($path)) {
+                if (is_null($this->response)) {
+                    $this->createResponse();
+                }
+
+                $requestPath = (isset($this->realPath)) ? $this->realPath : $this->request->path();
+
+                $contents = file_get_contents($path);
+                $contents = str_replace('{{ path }}', $requestPath, $contents);
+
+                $this->response->setContent($contents);
+
+                break;
+            }
+        }
+
+        $this->response->setStatusCode($code);
+        $this->close(true);
+    }
+
+    /**
+     * Looks for a matching route and stores it in the kernel. This must be called before you can execute the kernel
+     * and run the route. Returns a route on success, null if not found, and false if a redirection took place.
+     *
+     * @return Route|null|false
+     */
+    private function match()
+    {
+        $route = RouteLoader::getRouter()->match($this->request);
+
+        // Show a 404 if not found
+        if (is_null($route)) {
+            echo 'b';
+            if (!$this->tryDirectoryRedirect()) {
+                echo 'c';
+                ErrorMiddleware::getErrorHandler()->http(new HttpResponseException(404, 'HttpKernel'));
+                return null;
+            }
+            echo 'd';
+
+            return false;
+        }
+
+        // Bind the route to the request
+        $this->request->bind($route);
+        return $route;
+    }
+
+    /**
+     * Executes middleware.
+     *
+     * @param Route $route
+     * @throws HorizonException
+     */
+    private function executeMiddleware(Route $route)
+    {
+        $middlewares = $route->middleware();
+
+        try {
+            foreach ($middlewares as $className) {
+                if (class_exists($className)) {
+                    $middleware = new $className;
+                    $middleware($this->request, $this->response);
+                }
+                else {
+                    throw new HorizonException(0x0006, sprintf('Middleware (%s)', $className));
+                }
+
+                if ($this->response->isHalted()) {
+                    break;
+                }
+            }
+        }
+        catch (HttpResponseException $e) {
+            ErrorMiddleware::getErrorHandler()->http($e);
+        }
+    }
+
+    /**
+     * Dispatches the controller for the current request.
+     *
+     * @param Route $route
+     */
+    private function executeController(Route $route)
+    {
+        if ($this->response->isHalted()) {
+            return;
+        }
+
+        // Execute the controller
+        $route->execute($this->request, $this->response);
+    }
+
+    /**
+     * Sets the X-Powered-By header with a credit to Horizon and its current version. Can be toggled off via the
+     * app.expose_horizon config option.
+     */
+    private function sendExposedHeader()
+    {
+        $framework = 'Horizon ' . Horizon::VERSION;
+
+        if (config('app.expose_php', true)) $framework .= ' / PHP ' . FRAMEWORK_PHP_VERSION;
+        if (config('app.expose_horizon', true) === false) header_remove('X-Powered-By');
+        else if (!headers_sent()) header('X-Powered-By: ' . $framework);
+    }
+
+    /**
+     * Detects if the application is running in a subdirectory and saves relevant information.
+     */
+    private function detectSubdirectory()
+    {
+        $rootPath = Application::path();
+        $requestUri = $_SERVER['REQUEST_URI'];
+        $queryString = '';
+
+        if (strpos($requestUri, '?') !== false) {
+            $queryString = substr($requestUri, strpos($requestUri, '?'));
+            $requestUri = substr($requestUri, 0, strpos($requestUri, '?'));
+        }
+
+        if (strpos($rootPath, '/horizon/bootstrap/') !== false) {
+            $rootPath = substr($rootPath, 0, strpos($rootPath, '/horizon/bootstrap/'));
+        }
+
+        $root = Path::parse(str_replace('\\', '/', $rootPath));
+        $uri = Path::parse($requestUri);
+        $shifted = '';
+
+        for ($i = count($uri) - 1; $i >= 0; $i--) {
+            $node = $uri[$i];
+
+            if ($node->directory) {
+                if (!empty($root) && Arr::last($root)->name == $node->name) {
+                    $shifted = '/' . $node->name . $shifted;
+                    array_pop($root);
+                }
+            }
+        }
+
+        $_SERVER['SUBDIRECTORY'] = trim($shifted, '/');
+        $this->subdirectory = $_SERVER['SUBDIRECTORY'];
+
+        $newRequestUri = $requestUri;
+        $newRequestUri = substr($newRequestUri, strlen($shifted));
+
+        if (USE_LEGACY_ROUTING) {
+            $nodes = Path::parse($newRequestUri);
+
+            if (empty($nodes) || Arr::last($nodes)->directory) {
+                $newRequestUri .= 'index.php';
+            }
+        }
+
+        $_SERVER['REQUEST_URI'] = $newRequestUri . $queryString;
+    }
+
+    /**
+     * Creates the Request instance.
+     */
+    private function createRequest()
+    {
+        $this->request = Request::auto();
+    }
+
+    /**
+     * Creates the Response instance.
+     */
+    private function createResponse()
+    {
+        $this->response = Application::environment() != 'console' ? new Response() : new ConsoleResponse();
+    }
+
+    /**
+     * Tries to redirect from a file to a directory. For example, if the current request is to /about and no route is
+     * found at that location, it will try /about/. This emulates web servers like Apache and nginx. Returns true if
+     * a redirection has taken place.
+     *
+     * @return bool
+     */
+    private function tryDirectoryRedirect()
+    {
+        if (config('app.redirect_to_directories', true) === false) {
+            return false;
+        }
+
+        if (substr($this->request->path(), -1) !== "/") {
+            // Add a trailing slash to the request uri
+            $_SERVER['REQUEST_URI'] = $this->request->path() . '/';
+
+            // Add query string
+            if ($this->request->getQueryString()) {
+                $_SERVER['REQUEST_URI'] .= '?' . $this->request->getQueryString();
+            }
+
+            // Store the path for errors
+            $this->realPath = $this->request->path();
+
+            // Create a new request object
+            $this->createRequest();
+
+            // See if the directory route matches
+            $route = RouteLoader::getRouter()->match($this->request);
+
+            // Redirect to the new uri
+            if (!is_null($route)) {
+                $this->response->redirect($this->request->fullUrl(), 301);
+                $this->close();
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+}

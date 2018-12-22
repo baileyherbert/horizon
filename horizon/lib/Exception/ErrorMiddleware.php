@@ -3,7 +3,6 @@
 namespace Horizon\Exception;
 
 use Exception;
-use Horizon\Framework\Kernel;
 use Horizon\Http\Exception\HttpResponseException;
 
 class ErrorMiddleware

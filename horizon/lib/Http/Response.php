@@ -2,6 +2,7 @@
 
 namespace Horizon\Http;
 
+use Horizon\Framework\Application;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Horizon\View\Template;
 use Horizon\Support\Str;
@@ -117,7 +118,7 @@ class Response extends SymfonyResponse
     public function redirect($to = null, $code = 302)
     {
         if ($to == null) {
-            $to = \Horizon\Framework\Kernel::getRequest()->getRequestUri();
+            $to = Application::kernel()->http()->request()->getRequestUri();
         }
 
         if (Str::startsWith($to, '/') && !Str::startsWith($to, '//')) {

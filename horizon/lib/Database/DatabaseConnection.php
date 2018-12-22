@@ -2,6 +2,7 @@
 
 namespace Horizon\Database;
 
+use Horizon\Framework\Application;
 use Horizon\Framework\Kernel;
 use Horizon\Database\QueryBuilder\Documentation\AlterHelper;
 use Horizon\Database\QueryBuilder\Documentation\CreateHelper;
@@ -133,7 +134,7 @@ class DatabaseConnection
      */
     public function getDatabase()
     {
-        return Kernel::getDatabase($this->name);
+        return Application::kernel()->database()->get($this->name);
     }
 
     /**

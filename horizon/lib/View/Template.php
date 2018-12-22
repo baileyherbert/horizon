@@ -2,7 +2,6 @@
 
 namespace Horizon\View;
 
-use Horizon\Framework\Kernel;
 use Horizon\View\Twig\TwigLoader;
 
 class Template
