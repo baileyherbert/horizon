@@ -30,13 +30,26 @@ class Container
      * Stores an array of service providers that have been booted.
      * @var ServiceProvider[]
      */
-    private $booted = array();
+    private static $booted = array();
 
     /**
      * Stores an array of cached resolutions.
      * @var ServiceObjectCollection[]
      */
     private static $cache = array();
+
+    /**
+     * Constructs a new container instance. The constructor parameters should normally be left blank as they are used
+     * internally for cloning containers.
+     *
+     * @param ServiceProvider[] $providers
+     * @param ServiceProvider[][] $map
+     */
+    public function __construct($providers = array(), $map = array())
+    {
+        $this->providers = $providers;
+        $this->providersMap = $map;
+    }
 
     /**
      * Registers a service provider in the container.
@@ -69,10 +82,10 @@ class Container
     {
         foreach ($this->providers as $provider) {
             if ($provider->isDeferred()) continue;
-            if (in_array($provider, $this->booted)) continue;
+            if (in_array($provider, static::$booted)) continue;
 
             $provider->boot();
-            $this->booted[] = $provider;
+            static::$booted[] = $provider;
         }
     }
 
@@ -98,7 +111,7 @@ class Container
             $objects = array();
 
             foreach ($providers as $provider) {
-                if ($provider->isDeferred() && !in_array($provider, $this->booted)) {
+                if ($provider->isDeferred() && !in_array($provider, static::$booted)) {
                     $provider->boot();
                 }
 
@@ -118,6 +131,17 @@ class Container
 
         static::$cache[$className] = $collection;
         return $collection;
+    }
+
+    /**
+     * Returns a new service container derived from this container. It will contain the same providers and registering
+     * new providers to the new container will not affect this one.
+     *
+     * @return Container
+     */
+    public function derive()
+    {
+        return new Container($this->providers, $this->providersMap);
     }
 
 }
