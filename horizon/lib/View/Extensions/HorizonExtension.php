@@ -81,13 +81,6 @@ class HorizonExtension extends ViewExtension
         ));
     }
 
-    protected function twigCsrfToken()
-    {
-        return new Twig_SimpleFunction('csrf_token', function () {
-            return Application::kernel()->http()->request()->session()->csrf();
-        });
-    }
-
     protected function twigLang()
     {
         return new Twig_SimpleFunction('__', function ($context, $text) {
