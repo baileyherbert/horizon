@@ -8,7 +8,9 @@ use ReflectionException;
 use ReflectionParameter;
 
 /**
- * Provides contextual parameter binding to a callable instance.
+ * Provides an interface for execution of a callable with contextual parameter binding. When executing, any parameters
+ * in the callable will be discovered via reflection and injected with an object provided from the service container.
+ * Custom objects and variables can also be considered, which will take precedence over objects from the container.
  */
 class BoundCallable
 {
