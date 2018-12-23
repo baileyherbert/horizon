@@ -209,7 +209,7 @@ class BoundCallable
             $callable = array(new $className, $methodName);
         }
 
-        else {
+        else if (!is_callable($callable)) {
             throw new Exception('Not a callable.');
         }
 
