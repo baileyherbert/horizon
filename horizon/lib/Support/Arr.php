@@ -552,4 +552,23 @@ class Arr
         return !is_array($value) ? array($value) : $value;
     }
 
+    /**
+     * Runs a callable for each item in an array. You can return values from the callable to create a new array with
+     * those values for each key.
+     *
+     * @param $array
+     * @param $callable
+     * @return array
+     */
+    public static function each($array, $callable)
+    {
+        $revised = array();
+
+        foreach ($array as $key => $value) {
+            $revised[$key] = $callable($value, $key);
+        }
+
+        return $revised;
+    }
+
 }

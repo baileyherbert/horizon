@@ -3,6 +3,9 @@
 use Horizon\Exception\HorizonException;
 use Horizon\Framework\Application;
 
+require_once __DIR__ . '/helpers/arrays.php';
+require_once __DIR__ . '/helpers/strings.php';
+
 /**
  * Gets the value of a configuration entry at the specified key path. The path should be in dot notation, with
  * the first segment containing the name of the configuration file. If the file or key path does not exist, the
@@ -106,7 +109,7 @@ function is_octal($int)
 /**
  * Terminates the page. Equivalent to die(), but it gives the kernel a chance for any last-minute work.
  */
-function terminate()
+function abort()
 {
     Application::kernel()->shutdown();
 }
