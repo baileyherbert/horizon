@@ -3,6 +3,7 @@
 namespace Horizon\View\Extensions;
 
 use Horizon\View\ViewExtension;
+use Twig_SimpleFunction;
 
 /**
  * An extension which implements transpilers to support Blade template syntax.
@@ -12,6 +13,82 @@ class BladeExtension extends ViewExtension
 
     protected $endings = array();
 
+    /**
+     * Gets an array of Twig functions which can be called from within template files. By default this method scans
+     * the local class for all methods starting with the word "Twig" and calls them to get an extension instance.
+     *
+     * @return Twig_SimpleFunction[]
+     */
+    public function getFunctions()
+    {
+        return array(
+            new Twig_SimpleFunction('camel_case', 'camel_case'),
+            new Twig_SimpleFunction('kebab_case', 'kebab_case'),
+            new Twig_SimpleFunction('snake_case', 'snake_case'),
+            new Twig_SimpleFunction('title_case', 'title_case'),
+            new Twig_SimpleFunction('studly_case', 'studly_case'),
+            new Twig_SimpleFunction('starts_with', 'starts_with'),
+            new Twig_SimpleFunction('ends_with', 'ends_with'),
+            new Twig_SimpleFunction('str_before', 'str_before'),
+            new Twig_SimpleFunction('str_after', 'str_after'),
+            new Twig_SimpleFunction('str_contains', 'str_contains'),
+            new Twig_SimpleFunction('str_finish', 'str_finish'),
+            new Twig_SimpleFunction('str_is', 'str_is'),
+            new Twig_SimpleFunction('str_limit', 'str_limit'),
+            new Twig_SimpleFunction('str_plural', 'str_plural'),
+            new Twig_SimpleFunction('str_random', 'str_random'),
+            new Twig_SimpleFunction('str_replace_first', 'str_replace_first'),
+            new Twig_SimpleFunction('str_replace_last', 'str_replace_last'),
+            new Twig_SimpleFunction('str_singular', 'str_singular'),
+            new Twig_SimpleFunction('str_slug', 'str_slug'),
+            new Twig_SimpleFunction('str_start', 'str_start'),
+            new Twig_SimpleFunction('str_substring', 'str_substring'),
+            new Twig_SimpleFunction('str_length', 'str_length'),
+            new Twig_SimpleFunction('str_find', 'str_find'),
+            new Twig_SimpleFunction('str_ucfirst', 'str_ucfirst'),
+            new Twig_SimpleFunction('str_upper', 'str_upper'),
+            new Twig_SimpleFunction('str_lower', 'str_lower'),
+
+            new Twig_SimpleFunction('array_get', 'array_get'),
+            new Twig_SimpleFunction('array_has', 'array_has'),
+            new Twig_SimpleFunction('array_first', 'array_first'),
+            new Twig_SimpleFunction('array_last', 'array_last'),
+            new Twig_SimpleFunction('array_random', 'array_random'),
+            new Twig_SimpleFunction('head', 'head'),
+            new Twig_SimpleFunction('last', 'last'),
+
+            new Twig_SimpleFunction('abort', 'abort'),
+            new Twig_SimpleFunction('bcrypt', 'bcrypt'),
+            new Twig_SimpleFunction('blank', 'blank'),
+            new Twig_SimpleFunction('config', 'config'),
+            new Twig_SimpleFunction('csrf_token', 'csrf_token'),
+            new Twig_SimpleFunction('session', 'session'),
+            new Twig_SimpleFunction('config', 'config'),
+
+            new Twig_SimpleFunction('md5', 'md5'),
+            new Twig_SimpleFunction('sha1', 'sha1'),
+            new Twig_SimpleFunction('trim', 'trim'),
+            new Twig_SimpleFunction('ltrim', 'ltrim'),
+            new Twig_SimpleFunction('rtrim', 'rtrim'),
+            new Twig_SimpleFunction('explode', 'explode'),
+            new Twig_SimpleFunction('implode', 'implode'),
+            new Twig_SimpleFunction('strlen', 'strlen'),
+            new Twig_SimpleFunction('substr', 'substr'),
+            new Twig_SimpleFunction('ucfirst', 'ucfirst'),
+            new Twig_SimpleFunction('ucwords', 'ucwords'),
+            new Twig_SimpleFunction('sprintf', 'sprintf'),
+            new Twig_SimpleFunction('str_repeat', 'str_repeat'),
+            new Twig_SimpleFunction('str_word_count', 'str_word_count'),
+            new Twig_SimpleFunction('strpos', 'strpos'),
+            new Twig_SimpleFunction('stripos', 'stripos')
+        );
+    }
+
+    /**
+     * Gets an array of Horizon tags (in @tag format) to transpile into Twig tags (in {{ tag() }} format).
+     *
+     * @return array
+     */
     public function getTranspilers()
     {
         return array(

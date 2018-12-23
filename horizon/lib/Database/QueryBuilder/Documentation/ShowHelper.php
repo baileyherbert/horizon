@@ -2,22 +2,24 @@
 
 namespace Horizon\Database\QueryBuilder\Documentation;
 
+use Horizon\Database\Model;
+
 /**
- * @method ShowHelper tables() Sets the query to show tables.
- * @method ShowHelper tableStatus() Sets the query to show tables.
- * @method ShowHelper columns(string $table) Sets the query to show tables (optionally against a pattern).
- * @method ShowHelper databases() Sets the query to show databases.
+ * @method $this tables() Sets the query to show tables.
+ * @method $this tableStatus() Sets the query to show tables.
+ * @method $this columns(string $table) Sets the query to show tables (optionally against a pattern).
+ * @method $this databases() Sets the query to show databases.
  *
- * @method ShowHelper createTable(string $table) Sets the query to show table creation query.
+ * @method $this createTable(string $table) Sets the query to show table creation query.
  *
  * @method string compile() Gets the query as a prepared string.
  * @method array getParameters() Gets an array of parameter values for prepared statements.
  *
  * @method object|int|bool exec() Executes the query.
- * @method object[]|\Horizon\Database\Model[] get() Fetches all rows in the query as objects, or models if configured.
- * @method object|\Horizon\Database\Model first() Fetches the first row in the query as an object, or a model if configured.
+ * @method object[]|Model[] get() Fetches all rows in the query as objects, or models if configured.
+ * @method object|Model first() Fetches the first row in the query as an object, or a model if configured.
  */
-class ShowHelper
+abstract class ShowHelper
 {
 
 }

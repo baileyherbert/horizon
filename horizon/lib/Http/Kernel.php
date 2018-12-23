@@ -182,13 +182,10 @@ class Kernel
 
         // Show a 404 if not found
         if (is_null($route)) {
-            echo 'b';
             if (!$this->tryDirectoryRedirect()) {
-                echo 'c';
                 ErrorMiddleware::getErrorHandler()->http(new HttpResponseException(404, 'HttpKernel'));
                 return null;
             }
-            echo 'd';
 
             return false;
         }
