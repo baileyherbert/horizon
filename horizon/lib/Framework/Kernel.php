@@ -4,7 +4,7 @@ namespace Horizon\Framework;
 
 use Horizon\Exception\Kernel as ExceptionKernel;
 use Horizon\Console\Kernel as ConsoleKernel;
-use Horizon\Framework\Core\Autoloader;
+use Horizon\Framework\Services\Autoloader;
 use Horizon\Routing\Kernel as RoutingKernel;
 use Horizon\Http\Kernel as HttpKernel;
 use Horizon\Database\Kernel as DatabaseKernel;

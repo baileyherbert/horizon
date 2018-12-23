@@ -2,7 +2,6 @@
 
 namespace Horizon\Routing;
 
-use Horizon;
 use Horizon\Exception\HorizonException;
 
 class RouteLoader

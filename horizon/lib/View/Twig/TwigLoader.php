@@ -5,8 +5,7 @@ namespace Horizon\View\Twig;
 use Twig_Extension;
 use Twig_Environment;
 
-use Horizon;
-use Horizon\Exception\HorizonException;
+use Horizon\Framework\Core;
 use Horizon\Support\Path;
 
 use Horizon\View\Template;
@@ -115,14 +114,14 @@ class TwigLoader
      */
     protected function getCacheDirectory()
     {
-        $path = Path::join(Horizon::APP_DIR, 'cache');
+        $path = Path::join(Core::path('app'), 'cache');
 
         if (!$this->isCacheEnabled()) {
             return false;
         }
 
         if (!file_exists($path)) {
-            if (is_writable(Horizon::APP_DIR)) {
+            if (is_writable(Core::path('app'))) {
                 mkdir($path, 0755);
             }
             else {

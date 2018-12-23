@@ -93,7 +93,7 @@ class ErrorMiddleware
                 static::getErrorHandler()->http(new HttpResponseException(500));
             }
 
-            terminate();
+            abort();
         }
     }
 

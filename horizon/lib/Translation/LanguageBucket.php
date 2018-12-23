@@ -127,15 +127,13 @@ class LanguageBucket
      */
     protected function getFlattenedVariables(array &$variables)
     {
-        $replacements = Arr::flatten($variables, function($flatKey) {
-            return "/({{\\s*)(\\Q$flatKey\\E)(\\s*}})/";
-        });
+        $replacements = Arr::dot($variables);
 
         $keys = array();
         $values = array();
 
         foreach ($replacements as $key => $value) {
-            $keys[] = $key;
+            $keys[] = "/({{\\s*)(\\Q{$key}\\E)(\\s*}})/";
             $values[] = $value;
         }
 

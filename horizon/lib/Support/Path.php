@@ -150,12 +150,12 @@ class Path
 
         // Loop through the target path nodes and apply them to the current path
         foreach ($target as $node) {
-            if ($node->name == '.' && !empty($path) && Arr::last($path)->file) {
+            if ($node->name == '.' && !empty($path) && $path[count($path) - 1]->file) {
                 array_pop($path);
             }
             elseif ($node->name == '..') {
                 if (!empty($path)) {
-                    if (\Horizon\Support\Arr::last($path)->file) {
+                    if ($path[count($path) - 1]->file) {
                         array_pop($path);
                     }
 
@@ -166,7 +166,7 @@ class Path
             }
             else {
                 if (!empty($path)) {
-                    if (Arr::last($path)->file) {
+                    if ($path[count($path) - 1]->file) {
                         array_pop($path);
                     }
                 }

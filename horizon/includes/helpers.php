@@ -3,10 +3,9 @@
 use Horizon\Exception\HorizonException;
 use Horizon\Framework\Application;
 
-// Facade aliases
-class Route extends \Horizon\Routing\RouteFacade {};
-class Database extends \Horizon\Database\DatabaseFacade {};
-class DB extends \Horizon\Database\DatabaseFacade {};
+require_once __DIR__ . '/helpers/arrays.php';
+require_once __DIR__ . '/helpers/strings.php';
+require_once __DIR__ . '/helpers/paths.php';
 
 /**
  * Gets the value of a configuration entry at the specified key path. The path should be in dot notation, with
@@ -111,7 +110,7 @@ function is_octal($int)
 /**
  * Terminates the page. Equivalent to die(), but it gives the kernel a chance for any last-minute work.
  */
-function terminate()
+function abort()
 {
     Application::kernel()->shutdown();
 }

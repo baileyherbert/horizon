@@ -2,7 +2,7 @@
 
 namespace Horizon\Updates;
 
-use Horizon;
+use Horizon\Framework\Core;
 use Horizon\Support\Services\ServiceProvider;
 
 /**
@@ -15,9 +15,9 @@ class UpdateServiceProvider extends ServiceProvider
     {
         $this->bind('Horizon\Updates\Repository', function() {
             $repo = new Repository('https://updates.bailey.sh/horizon');
-            $repo->setChannel(Horizon::EDITION);
-            $repo->setMountPath(Horizon::HORIZON_DIR);
-            $repo->setCurrentVersion(Horizon::VERSION);
+            $repo->setChannel(Core::edition());
+            $repo->setMountPath(Core::path('horizon/'));
+            $repo->setCurrentVersion(Core::version());
 
             return $repo;
         });

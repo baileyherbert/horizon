@@ -68,7 +68,7 @@ class ServiceObjectCollection implements ArrayAccess, Countable, IteratorAggrega
      */
     public function first()
     {
-        if (!array_key_exists(1, $this->items)) return null;
+        if (!array_key_exists(0, $this->items)) return null;
         return $this->items[0];
     }
 

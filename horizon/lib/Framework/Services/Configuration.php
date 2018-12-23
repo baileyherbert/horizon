@@ -1,9 +1,9 @@
 <?php
 
-namespace Horizon\Framework\Core;
+namespace Horizon\Framework\Services;
 
-use Horizon;
 use Horizon\Exception\HorizonException;
+use Horizon\Framework\Core;
 
 /**
  * Utility class which loads configuration.
@@ -73,7 +73,7 @@ class Configuration
      */
     public static function loadConfigurationFile($name)
     {
-        $path = Horizon::APP_CONFIG_DIR . DIRECTORY_SEPARATOR . $name . '.php';
+        $path = Core::path('app/config') . DIRECTORY_SEPARATOR . $name . '.php';
 
         // Throw an exception if the file doesn't exist
         if (!file_exists($path)) {

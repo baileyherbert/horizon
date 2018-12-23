@@ -2,9 +2,8 @@
 
 namespace Horizon\View\Twig;
 
-use Horizon;
+use Horizon\Framework\Core;
 use Horizon\Support\Path;
-use Horizon\Framework\Kernel;
 
 class TwigExtensionLoader
 {
@@ -93,8 +92,8 @@ class TwigExtensionLoader
     public function getExtensionDirectories()
     {
         return array(
-            'App\View\Extensions' => Path::join(Horizon::APP_SRC_DIR, 'View', 'Extensions'),
-            'Horizon\View\Extensions' => Path::join(Horizon::HORIZON_LIB_DIR, 'View', 'Extensions')
+            'App\View\Extensions' => Path::join(Core::path('app/src'), 'View', 'Extensions'),
+            'Horizon\View\Extensions' => Path::join(Core::path('horizon/lib'), 'View', 'Extensions')
         );
     }
 

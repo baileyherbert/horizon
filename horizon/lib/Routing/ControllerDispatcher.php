@@ -2,10 +2,12 @@
 
 namespace Horizon\Routing;
 
+use Exception;
 use Horizon\Framework\Application;
 use Horizon\Http\Request;
 use Horizon\Http\Response;
 use Horizon\Http\Exception\HttpResponseException;
+use Horizon\Support\Container\BoundCallable;
 
 class ControllerDispatcher
 {
@@ -28,7 +30,9 @@ class ControllerDispatcher
     /**
      * Constructs a new ControllerDispatcher instance.
      *
-     * @var Route
+     * @param Route $route
+     * @param Request|null $request
+     * @param Response|null $response
      */
     public function __construct(Route $route, Request $request = null, Response $response = null)
     {
@@ -41,6 +45,7 @@ class ControllerDispatcher
      * Dispatches the controller and returns the response.
      *
      * @return mixed
+     * @throws HttpResponseException
      */
     public function dispatch()
     {
@@ -54,63 +59,95 @@ class ControllerDispatcher
             $this->init($action);
 
             if (!$this->response->isHalted()) {
-                $parameters = $this->populateParameters($action);
+                // Create a new service-bound callable
+                $callable = $this->createBoundCallable($action);
 
-                if (is_string($action)) {
-                    $action = $this->createInstance($action);
-                }
-
-                return call_user_func_array($action, $parameters);
+                // Run the callable
+                return $callable->execute();
             }
         }
 
         return null;
     }
 
+    /**
+     * Runs the init() method on the controller.
+     *
+     * @param callable $action
+     */
     private function init($action)
     {
-        if (is_string($action)) {
-            $action = $this->createInstance($action);
-        }
+        $action = $this->createInstance($action);
 
-        if (!is_array($action)) {
-            return;
-        }
+        if (is_array($action)) {
+            $className = $action[0];
 
-        $className = $action[0];
+            if (method_exists($className, 'init')) {
+                $action = array($className, 'init');
 
-        if (method_exists($className, 'init')) {
-            $action = array($className, 'init');
-            $parameters = $this->populateParameters($action);
-
-            return call_user_func_array($action, $parameters);
+                $callable = $this->createBoundCallable($action);
+                $callable->execute();
+            }
         }
     }
 
     /**
-     * Gets the controller action in raw format.
+     * Creates a service-bound callable for the given action.
      *
-     * @return string
+     * @param string|callable $action
+     * @return BoundCallable
+     * @throws Exception
      */
-    protected function getAction()
+    private function createBoundCallable($action)
     {
-        $action = $this->route->getAction();
+        // Convert the action to a callable if necessary
+        $action = $this->createInstance($action);
 
-        if (is_string($action) && strpos($action, '::') !== false) {
-            return $action;
+        // Create a new service-bound callable
+        $callable = new BoundCallable($action, Application::container());
+
+        // Add our basic objects for dependency resolution
+        $callable->with($this->route);
+        $callable->with($this->request);
+        $callable->with($this->response);
+
+        // Add attribute objects
+        foreach ($this->request->attributes->all() as $name => $value) {
+            if (is_object($value)) {
+                $callable->with($value);
+            }
+
+            $callable->where($name, $value);
         }
 
-        return $action;
+        // Add variables from the route
+        foreach ($this->route->parameterNames() as $name) {
+            $value = $this->route->parameter($name);
+
+            if (!is_null($value)) {
+                $callable->where($name, $value);
+            }
+        }
+
+        // Add GET variables
+        foreach ($this->request->query->all() as $name => $value) {
+            if (!$callable->has($name)) {
+                $callable->where($name, $value);
+            }
+        }
+
+        return $callable;
     }
 
     /**
      * Gets the controller as a callable.
      *
      * @return callable
+     * @throws HttpResponseException
      */
     protected function getCallable()
     {
-        $action = $this->getAction();
+        $action = $this->route->getAction();
 
         if (is_string($action) && strpos($action, '::') !== false) {
             list($className, $methodName) = explode('::', $action, 2);
@@ -132,129 +169,17 @@ class ControllerDispatcher
     }
 
     /**
-     * Generates an array of parameters to send to the controller.
-     *
-     * @param callable $action
-     * @return array
-     */
-    protected function populateParameters($action)
-    {
-        $reflection = $this->generateReflection($action);
-        $parameters = array();
-        $optional = array();
-
-        foreach ($reflection->getParameters() as $param) {
-            $name = $param->getName();
-            $class = $param->getClass() ? $param->getClass()->name : null;
-
-            if (!is_null($class)) {
-                $parameters[] = $this->getTypedParameter($class, $name);
-            }
-            else {
-                $parameters[] = $this->getCommonParameter($name);
-            }
-
-            $optional[] = $param->isOptional();
-        }
-
-        $this->trimOptionalParameters($parameters, $optional);
-
-        return $parameters;
-    }
-
-    /**
-     * Generates a reflection object for the callable action.
-     *
-     * @param callable $action
-     * return \ReflectionMethod|\ReflectionFunction
-     */
-    protected function generateReflection($action)
-    {
-        if (is_string($action)) {
-            return new \ReflectionMethod($action);
-        }
-
-        if (is_array($action)) {
-            return new \ReflectionMethod(get_class($action[0]) . '::' . $action[1]);
-        }
-
-        if (is_callable($action)) {
-            return new \ReflectionFunction($action);
-        }
-    }
-
-    /**
-     * Gets an instance associated with a type-hinted parameter.
-     *
-     * @return mixed
-     */
-    protected function getTypedParameter($className, $name)
-    {
-        $objects = array($this->request, $this->response);
-
-        foreach ($objects as $object) {
-            if ($object instanceof $className) {
-                return $object;
-            }
-        }
-
-        $attribute = $this->request->getAttribute($name);
-
-        if (!is_null($attribute) && is_object($attribute)) {
-            if ($attribute instanceof $className) {
-                return $attribute;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Gets the value of a parameter in the route uri with the specified name.
-     *
-     * @return string|null
-     */
-    protected function getCommonParameter($name)
-    {
-        $param = $this->route->parameter($name);
-        if (!is_null($param)) return $param;
-
-        $param = $this->request->get($name);
-        if (!is_null($param)) return $param;
-
-        $attribute = $this->request->getAttribute($name);
-        return $attribute;
-    }
-
-    /**
-     * Trims optional parameters off the end of the parameters list if they are null. By doing so, the controller can
-     * use its own default values, rather than always receiving null values.
-     */
-    protected function trimOptionalParameters(array &$parameters, array &$optional)
-    {
-        $offset = count($parameters) - 1;
-
-        while ($offset >= 0) {
-            if (!$optional[$offset]) {
-                break;
-            }
-
-            if (is_null($parameters[$offset])) {
-                unset($parameters[$offset]);
-            }
-
-            $offset--;
-        }
-    }
-
-    /**
      * Creates an instance and returns the callable array to execute it.
      *
-     * @param string $name
+     * @param string|array $name
      * @return callable
      */
     protected function createInstance($name)
     {
+        if (!is_string($name)) {
+            return $name;
+        }
+
         list($className, $method) = explode('::', $name, 2);
 
         return array(new $className, $method);

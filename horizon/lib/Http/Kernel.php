@@ -4,17 +4,19 @@ namespace Horizon\Http;
 
 use Exception;
 
-use Horizon;
 use Horizon\Exception\ErrorMiddleware;
 use Horizon\Exception\HorizonException;
+use Horizon\Framework\Core;
 use Horizon\Http\Exception\HttpResponseException;
 use Horizon\Routing\Route;
+use Horizon\Support\Container\BoundCallable;
 use Horizon\Support\Path;
 use Horizon\Support\Arr;
 use Horizon\Support\Profiler;
 use Horizon\Framework\Application;
 use Horizon\Console\ConsoleResponse;
 use Horizon\Routing\RouteLoader;
+use Horizon\Support\Str;
 
 /**
  * Kernel for HTTP, controllers, middleware, and everything in between.
@@ -200,17 +202,24 @@ class Kernel
      * Executes middleware.
      *
      * @param Route $route
-     * @throws HorizonException
+     * @throws HorizonException Middleware could not be found.
+     * @throws Exception Failed to bind contextual parameters.
      */
     private function executeMiddleware(Route $route)
     {
         $middlewares = $route->middleware();
 
         try {
-            foreach ($middlewares as $className) {
+            foreach ($middlewares as $middleware) {
+                $action = Str::parseCallback($middleware, '__invoke');
+                $className = head($action);
+
                 if (class_exists($className)) {
-                    $middleware = new $className;
-                    $middleware($this->request, $this->response);
+                    $callable = new BoundCallable($action, Application::container());
+                    $callable->with($route);
+                    $callable->with($this->request);
+                    $callable->with($this->response);
+                    $callable->execute();
                 }
                 else {
                     throw new HorizonException(0x0006, sprintf('Middleware (%s)', $className));
@@ -247,9 +256,9 @@ class Kernel
      */
     private function sendExposedHeader()
     {
-        $framework = 'Horizon ' . Horizon::VERSION;
+        $framework = 'Horizon ' . Core::version();
 
-        if (config('app.expose_php', true)) $framework .= ' / PHP ' . FRAMEWORK_PHP_VERSION;
+        if (config('app.expose_php', true)) $framework .= ' / PHP ' . phpversion();
         if (config('app.expose_horizon', true) === false) header_remove('X-Powered-By');
         else if (!headers_sent()) header('X-Powered-By: ' . $framework);
     }
@@ -280,7 +289,7 @@ class Kernel
             $node = $uri[$i];
 
             if ($node->directory) {
-                if (!empty($root) && Arr::last($root)->name == $node->name) {
+                if (!empty($root) && $root[count($root) - 1]->name == $node->name) {
                     $shifted = '/' . $node->name . $shifted;
                     array_pop($root);
                 }
@@ -296,7 +305,7 @@ class Kernel
         if (USE_LEGACY_ROUTING) {
             $nodes = Path::parse($newRequestUri);
 
-            if (empty($nodes) || Arr::last($nodes)->directory) {
+            if (empty($nodes) || $nodes[count($nodes) - 1]->directory) {
                 $newRequestUri .= 'index.php';
             }
         }
