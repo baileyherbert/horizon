@@ -9,12 +9,14 @@ use Horizon\Exception\HorizonException;
 use Horizon\Framework\Core;
 use Horizon\Http\Exception\HttpResponseException;
 use Horizon\Routing\Route;
+use Horizon\Support\Container\BoundCallable;
 use Horizon\Support\Path;
 use Horizon\Support\Arr;
 use Horizon\Support\Profiler;
 use Horizon\Framework\Application;
 use Horizon\Console\ConsoleResponse;
 use Horizon\Routing\RouteLoader;
+use Horizon\Support\Str;
 
 /**
  * Kernel for HTTP, controllers, middleware, and everything in between.
@@ -200,17 +202,24 @@ class Kernel
      * Executes middleware.
      *
      * @param Route $route
-     * @throws HorizonException
+     * @throws HorizonException Middleware could not be found.
+     * @throws Exception Failed to bind contextual parameters.
      */
     private function executeMiddleware(Route $route)
     {
         $middlewares = $route->middleware();
 
         try {
-            foreach ($middlewares as $className) {
+            foreach ($middlewares as $middleware) {
+                $action = Str::parseCallback($middleware, '__invoke');
+                $className = head($action);
+
                 if (class_exists($className)) {
-                    $middleware = new $className;
-                    $middleware($this->request, $this->response);
+                    $callable = new BoundCallable($action, Application::container());
+                    $callable->with($route);
+                    $callable->with($this->request);
+                    $callable->with($this->response);
+                    $callable->execute();
                 }
                 else {
                     throw new HorizonException(0x0006, sprintf('Middleware (%s)', $className));

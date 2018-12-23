@@ -2,6 +2,8 @@
 
 namespace Horizon\Support\Container;
 
+use Exception;
+use Horizon\Support\Str;
 use ReflectionException;
 use ReflectionParameter;
 
@@ -36,10 +38,11 @@ class BoundCallable
      *
      * @param callable $callable
      * @param Container|null $container
+     * @throws Exception
      */
     public function __construct($callable, Container $container = null)
     {
-        $this->callable = $callable;
+        $this->callable = $this->getProperCallable($callable);
         $this->container = $container;
     }
 
@@ -173,6 +176,42 @@ class BoundCallable
         catch (ReflectionException $e) {}
 
         return null;
+    }
+
+    /**
+     * Makes the callable proper.
+     *
+     * @param callable $callable
+     * @return callable
+     * @throws Exception
+     */
+    private function getProperCallable($callable)
+    {
+        if (is_array($callable)) {
+            if (!count($callable)) {
+                throw new Exception('Not a callable.');
+            }
+
+            if (count($callable) == 1) {
+                $callable[1] = '__invoke';
+            }
+
+            if (is_string($callable[0])) {
+                $className = $callable[0];
+                $callable[0] = new $className;
+            }
+        }
+
+        else if (is_string($callable)) {
+            list($className, $methodName) = Str::parseCallback($callable);
+            $callable = array(new $className, $methodName);
+        }
+
+        else {
+            throw new Exception('Not a callable.');
+        }
+
+        return $callable;
     }
 
 }

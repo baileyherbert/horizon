@@ -2,6 +2,7 @@
 
 namespace Horizon\Routing;
 
+use Exception;
 use Horizon\Framework\Application;
 use Horizon\Http\Request;
 use Horizon\Http\Response;
@@ -95,6 +96,7 @@ class ControllerDispatcher
      *
      * @param string|callable $action
      * @return BoundCallable
+     * @throws Exception
      */
     private function createBoundCallable($action)
     {
