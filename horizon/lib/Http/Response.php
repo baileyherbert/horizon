@@ -184,7 +184,7 @@ class Response extends SymfonyResponse
         $content = $view->render();
 
         if (!$this->isHalted()) {
-            $this->setContent($content);
+            $this->content .= $content;
         }
     }
 
