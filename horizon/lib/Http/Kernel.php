@@ -280,7 +280,7 @@ class Kernel
             $node = $uri[$i];
 
             if ($node->directory) {
-                if (!empty($root) && Arr::last($root)->name == $node->name) {
+                if (!empty($root) && $root[count($root) - 1]->name == $node->name) {
                     $shifted = '/' . $node->name . $shifted;
                     array_pop($root);
                 }
@@ -296,7 +296,7 @@ class Kernel
         if (USE_LEGACY_ROUTING) {
             $nodes = Path::parse($newRequestUri);
 
-            if (empty($nodes) || Arr::last($nodes)->directory) {
+            if (empty($nodes) || $nodes[count($nodes) - 1]->directory) {
                 $newRequestUri .= 'index.php';
             }
         }

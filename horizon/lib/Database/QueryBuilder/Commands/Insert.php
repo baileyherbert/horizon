@@ -94,7 +94,7 @@ class Insert implements CommandInterface
             $rowValues = array();
 
             foreach ($columns as $col) {
-                $value = Arr::get($row, $col);
+                $value = $row[$col];
 
                 if (!is_array($value)) {
                     $this->compiledParameters[] = $value;
@@ -153,7 +153,7 @@ class Insert implements CommandInterface
 
         foreach ($this->values as $row) {
             foreach ($row as $column => $value) {
-                if (!Arr::exists($columns, $column)) {
+                if (!in_array($column, $columns)) {
                     $columns[] = $column;
                 }
             }
