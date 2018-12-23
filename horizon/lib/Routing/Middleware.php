@@ -9,7 +9,12 @@ use Horizon\Http\Response;
 class Middleware
 {
 
-    public function __invoke(Request $request, Response $response)
+    /**
+     * Default execution method for middleware.
+     *
+     * @return void
+     */
+    public function __invoke()
     {
 
     }
