@@ -5,6 +5,7 @@ use Horizon\Framework\Application;
 
 require_once __DIR__ . '/helpers/arrays.php';
 require_once __DIR__ . '/helpers/strings.php';
+require_once __DIR__ . '/helpers/paths.php';
 
 /**
  * Gets the value of a configuration entry at the specified key path. The path should be in dot notation, with
