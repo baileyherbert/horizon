@@ -2,6 +2,8 @@
 
 namespace Horizon\Database;
 
+use Horizon\Database\Exception\DatabaseDriverException;
+use Horizon\Database\Exception\MigrationException;
 use Horizon\Database\Migration\Migration;
 use Horizon\Framework\Application;
 use Horizon\Framework\Kernel;
@@ -187,11 +189,15 @@ class DatabaseConnection
     }
 
     /**
-     * Starts a database migration. Expects a callable or closure to be passed which will be called.
+     * Starts a database migration. Expects a callable or closure to be passed which will be called and passed a Schema
+     * instance as its only parameter.
      *
      * @param callable $callback
      * @return bool
-     * @throws DatabaseException
+     *
+     * @throws DatabaseException When a migration fails due to a query error.
+     * @throws MigrationException When an illegal migration operation is requested.
+     * @throws DatabaseDriverException When the database driver encounters a fatal error.
      */
     public function migrate($callback)
     {

@@ -219,7 +219,9 @@ class ImprovedDriver implements DriverInterface
      */
     public function close()
     {
-        @$this->handle->close();
+        if (!is_null($this->handle)) {
+            @$this->handle->close();
+        }
     }
 
 }

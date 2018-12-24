@@ -10,16 +10,6 @@ class Middleware
 {
 
     /**
-     * Default execution method for middleware.
-     *
-     * @return void
-     */
-    public function __invoke()
-    {
-
-    }
-
-    /**
      * Gets the Request instance for this middleware.
      *
      * @return Request

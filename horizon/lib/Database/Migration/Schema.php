@@ -2,6 +2,8 @@
 
 namespace Horizon\Database\Migration;
 
+use Horizon\Database\Migration\Schema\Grammar;
+
 /**
  * Utility class for building, managing, and testing database schemas.
  */
@@ -28,10 +30,16 @@ class Schema
      *
      * @param string $name
      * @param callable $callable
+     * @return bool
      */
     public function create($name, $callable)
     {
+        $blueprint = new Blueprint($name, $this);
+        $blueprint->create();
 
+        $callable($blueprint);
+
+        return $this->migration->connection()->query((string)$blueprint);
     }
 
     /**
@@ -40,10 +48,14 @@ class Schema
      *
      * @param string $name
      * @param callable $callable
+     * @return bool
      */
     public function table($name, $callable)
     {
+        $blueprint = new Blueprint($name, $this);
+        $callable($blueprint);
 
+        return $this->migration->connection()->query((string)$blueprint);
     }
 
     /**
@@ -51,20 +63,34 @@ class Schema
      *
      * @param string $from Current table name.
      * @param string $to New table name.
+     * @return bool
      */
     public function rename($from, $to)
     {
+        $query = str_join(
+            'ALTER TABLE',
+            Grammar::compileName($this->prefix($from)),
+            'RENAME',
+            Grammar::compileName($this->prefix($to))
+        ) . ';';
 
+        return $this->migration->connection()->query($query);
     }
 
     /**
      * Drops a table. Will error if the table does not exist.
      *
      * @param string $name
+     * @return bool
      */
     public function drop($name)
     {
+        $query = str_join(
+            'DROP TABLE',
+            Grammar::compileName($this->prefix($name))
+        ) . ';';
 
+        return $this->migration->connection()->query($query);
     }
 
     /**
@@ -75,18 +101,30 @@ class Schema
      */
     public function dropIfExists($name)
     {
+        $query = str_join(
+            'DROP TABLE',
+            'IF EXISTS',
+            Grammar::compileName($this->prefix($name))
+        ) . ';';
 
+        return $this->migration->connection()->query($query);
     }
 
     /**
-     * Updates the prefix on all tables in the database.
+     * Gets the current prefix or prepends it to the given table name.
      *
-     * @param string $from
-     * @param string $to
+     * @param string $name
+     * @return string
      */
-    public function prefix($from, $to)
+    public function prefix($name = null)
     {
+        $prefix = $this->migration->connection()->getDatabase()->getPrefix();
 
+        if (!is_null($name)) {
+            return $prefix . $name;
+        }
+
+        return $prefix;
     }
 
     /**
@@ -97,7 +135,13 @@ class Schema
      */
     public function hasTable($tableName)
     {
+        $query = str_join(
+            'SHOW TABLES LIKE',
+            Grammar::compileString($this->prefix($tableName))
+        ) . ';';
 
+        $rows = $this->migration->connection()->query($query);
+        return count($rows) > 0;
     }
 
     /**
@@ -109,7 +153,15 @@ class Schema
      */
     public function hasColumn($tableName, $columnName)
     {
+        $query = str_join(
+            'SHOW COLUMNS FROM',
+            Grammar::compileName($this->prefix($tableName)),
+            'LIKE',
+            Grammar::compileString($columnName)
+        ) . ';';
 
+        $rows = $this->migration->connection()->query($query);
+        return count($rows) > 0;
     }
 
 }

@@ -215,7 +215,7 @@ class ColumnDefinition
      * @param mixed $default
      * @return ColumnDefinition $this
      */
-    public function default($default)
+    public function defaults($default)
     {
         if (is_null($default)) {
             $default = 'NULL';

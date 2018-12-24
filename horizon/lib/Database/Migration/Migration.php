@@ -3,7 +3,9 @@
 namespace Horizon\Database\Migration;
 
 use Horizon\Database\DatabaseConnection;
-use Exception;
+use Horizon\Database\Exception\DatabaseDriverException;
+use Horizon\Database\Exception\DatabaseException;
+use Horizon\Database\Exception\MigrationException;
 
 /**
  * Utility class for migrating the database.
@@ -31,17 +33,14 @@ class Migration
      *
      * @param callable $callable
      * @return bool
+     * @throws DatabaseException When a migration fails due to a query error.
+     * @throws MigrationException When an illegal migration operation is requested.
+     * @throws DatabaseDriverException When the database driver encounters a fatal error.
      */
     public function run($callable)
     {
         $schema = new Schema($this);
-
-        try {
-            call_user_func($callable, $schema, $this);
-        }
-        catch (Exception $e) {
-            return false;
-        }
+        call_user_func($callable, $schema, $this);
 
         return true;
     }
