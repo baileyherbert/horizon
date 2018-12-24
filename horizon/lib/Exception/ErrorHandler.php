@@ -16,7 +16,7 @@ class ErrorHandler implements ErrorHandlerInterface
      */
     public function http(HttpResponseException $ex)
     {
-        Application::kernel()->http()->error($ex->getCode(), $ex->getMessage());
+        Application::kernel()->http()->error($ex->getCode());
     }
 
     /**
@@ -29,8 +29,11 @@ class ErrorHandler implements ErrorHandlerInterface
      */
     public function render(HorizonError $error)
     {
+        $message = !$this->useHtml() ? "%s: %s in %s on line %d\n"
+                        : "<strong>%s</strong>: %s in <strong>%s</strong> on line <strong>%d</strong> <br>\n";
+
         echo sprintf(
-            "<strong>%s</strong>: %s in <strong>%s</strong> on line <strong>%d</strong> <br>",
+            $message,
             $error->getLabel(),
             $error->getMessage(),
             $error->getFile(),
@@ -110,6 +113,16 @@ class ErrorHandler implements ErrorHandlerInterface
         }
 
         return implode("\r\n", $lines);
+    }
+
+    /**
+     * Checks the environment and returns true if error messages should be displayed in HTML.
+     *
+     * @return bool
+     */
+    private function useHtml()
+    {
+        return (Application::environment() == 'production');
     }
 
 }

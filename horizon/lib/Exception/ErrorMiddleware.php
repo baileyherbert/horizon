@@ -140,7 +140,7 @@ class ErrorMiddleware
         }
 
         // Handle silence operator (@)
-        if (error_reporting() === 0) {
+        if (error_reporting() === 0 && config('errors.silent_display')) {
             if ($error->getLevel() < 5) {
                 return false;
             }

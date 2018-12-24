@@ -113,11 +113,6 @@ class Kernel
      */
     private function setRuntimeConfiguration()
     {
-        ini_set('error_reporting', E_ALL & ~E_DEPRECATED);
-        ini_set('display_errors', config('app.display_errors', true));
-        ini_set('log_errors', config('app.log_errors', true));
-        ini_set('error_log', Application::path('app/error_log'));
-
         date_default_timezone_set(config('app.timezone'));
     }
 

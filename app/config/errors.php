@@ -93,7 +93,7 @@ return array(
     /*
         Determines whether code in the application can use the '@' operator to silence their errors. If enabled, any
         errors occurring from code using this operator will not be displayed. However, any fatal, page-breaking errors
-        will be displayed when 'display_errors' is set to true.
+        will be displayed even if 'display_errors' is set to true.
 
         Available values:
 

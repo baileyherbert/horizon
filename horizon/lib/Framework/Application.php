@@ -88,7 +88,7 @@ class Application
     }
 
     /**
-     * Gets the current environment in which the application is running (console, test, web).
+     * Gets the current environment in which the application is running (console, test, production).
      *
      * @return string
      */

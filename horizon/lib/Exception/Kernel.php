@@ -2,6 +2,8 @@
 
 namespace Horizon\Exception;
 
+use Horizon\Framework\Application;
+
 /**
  * Kernel for exceptions and error handling.
  */
@@ -13,6 +15,11 @@ class Kernel
      */
     public function boot()
     {
+        ini_set('error_reporting', E_ALL);
+        ini_set('display_errors', false);
+        ini_set('log_errors', false);
+        ini_set('error_log', Application::path('app/error_log'));
+
         $this->bindErrors();
         $this->bindExceptions();
         $this->bindFatal();
