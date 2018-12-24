@@ -46,7 +46,7 @@ class ColumnDefinitionTest extends TestCase
         $col = ColumnDefinition::varChar('test', 8)->autoIncrements();
         $this->assertEquals('`test` VARCHAR(8) NOT NULL AUTO_INCREMENT', $col->compile());
 
-        $col = ColumnDefinition::varChar('test', 8)->autoIncrements()->default('hi');
+        $col = ColumnDefinition::varChar('test', 8)->autoIncrements()->defaults('hi');
         $this->assertEquals('`test` VARCHAR(8) NOT NULL DEFAULT \'hi\' AUTO_INCREMENT', $col->compile());
 
         $col = ColumnDefinition::varChar('test', 8)->autoIncrements()->comment('This isn\'t a comment.');

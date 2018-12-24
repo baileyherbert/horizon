@@ -112,12 +112,14 @@ class ControllerDispatcher
         $callable->with($this->response);
 
         // Add attribute objects
-        foreach ($this->request->attributes->all() as $name => $value) {
-            if (is_object($value)) {
-                $callable->with($value);
-            }
+        if (!is_null($this->request)) {
+            foreach ($this->request->attributes->all() as $name => $value) {
+                if (is_object($value)) {
+                    $callable->with($value);
+                }
 
-            $callable->where($name, $value);
+                $callable->where($name, $value);
+            }
         }
 
         // Add variables from the route
@@ -130,9 +132,11 @@ class ControllerDispatcher
         }
 
         // Add GET variables
-        foreach ($this->request->query->all() as $name => $value) {
-            if (!$callable->has($name)) {
-                $callable->where($name, $value);
+        if (!is_null($this->request)) {
+            foreach ($this->request->query->all() as $name => $value) {
+                if (!$callable->has($name)) {
+                    $callable->where($name, $value);
+                }
             }
         }
 
