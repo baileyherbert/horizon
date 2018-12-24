@@ -32,7 +32,7 @@ if (!function_exists('str_join')) {
      */
     function str_join()
     {
-        return forward_static_call_array(array('Str', 'join'), func_get_args());
+        return forward_static_call_array(array('Horizon\Support\Str', 'join'), func_get_args());
     }
 }
 
