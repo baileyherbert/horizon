@@ -3,6 +3,7 @@
 namespace Horizon\Routing;
 
 use Closure;
+use Horizon\Support\Str;
 use Symfony\Component\Routing\CompiledRoute;
 use Horizon\Http\Request;
 use Horizon\Http\Exception\HttpResponseException;
@@ -153,6 +154,32 @@ class Route
     }
 
     /**
+     * Returns the controller instance for this route if it has one.
+     *
+     * @return Controller|null
+     */
+    public function getControllerInstance()
+    {
+        $action = $this->getAction();
+
+        if (is_string($action)) {
+            $callback = Str::parseCallback($action);
+
+            if (is_array($callback) && class_exists($callback[0])) {
+                return new $callback[0];
+            }
+        }
+
+        if (is_array($action) && isset($action[0]) && is_string($action[0])) {
+            if (class_exists($action[0])) {
+                return new $action[0];
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Alias of getMethods().
      *
      * @return callable
@@ -259,7 +286,14 @@ class Route
      */
     public function middleware()
     {
-        return $this->getGroup()->middleware();
+        $middleware = $this->getGroup()->middleware();
+        $controller = $this->getControllerInstance();
+
+        if (!is_null($controller)) {
+            $middleware = array_merge($middleware, (array)$controller->getMiddleware());
+        }
+
+        return array_unique($middleware);
     }
 
     /**
