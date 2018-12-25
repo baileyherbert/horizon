@@ -2,7 +2,7 @@
 
 namespace Horizon\Http\Middleware;
 
-use Horizon\Routing\Middleware;
+use Horizon\Http\Middleware;
 use Horizon\Http\Request;
 use Horizon\Http\Response;
 use Horizon\Http\Cookie\TokenMismatchException;
