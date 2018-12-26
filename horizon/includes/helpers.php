@@ -1,6 +1,7 @@
 <?php
 
 use Horizon\Support\Arr;
+use Horizon\Support\Container\Container;
 use Horizon\Support\Path;
 use Horizon\Support\Str;
 use Horizon\Framework\Application;
@@ -1398,5 +1399,30 @@ if (!function_exists('secure_asset_url')) {
             $parts['host'],
             $parts['path']
         );
+    }
+}
+
+if (!function_exists('resolve')) {
+    /**
+     * Returns a singleton of the given class name from the last service provider that registered it.
+     *
+     * @param string $className
+     * @return object|null
+     */
+    function resolve($className)
+    {
+        return Application::container()->make($className);
+    }
+}
+
+if (!function_exists('app')) {
+    /**
+     * Returns the application's service container.
+     *
+     * @return Container
+     */
+    function app()
+    {
+        return Application::container();
     }
 }
