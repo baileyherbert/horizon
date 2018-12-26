@@ -87,11 +87,15 @@ class Container
      * Returns a collection of all service objects derived from the given class name.
      *
      * @param string $className
+     * @param mixed ...$args
      * @return ServiceObjectCollection
      */
-    public function all($className)
+    public function all($className, $args = null)
     {
+        $args = func_get_args();
         $collection = null;
+
+        $className = array_shift($args);
 
         // Resolve from service providers
         if (array_key_exists($className, $this->providersMap)) {
@@ -103,7 +107,7 @@ class Container
                     $provider->boot();
                 }
 
-                foreach ($provider->resolve($className) as $resolved) {
+                foreach ($provider->resolve($className, $args) as $resolved) {
                     if ($resolved instanceof $className) {
                         $objects[] = $resolved;
                     }
@@ -124,13 +128,16 @@ class Container
      * Returns a singleton of the given class name from the last service provider that registered it.
      *
      * @param string $className
+     * @param mixed ...$args
      * @return object|null
      */
-    public function make($className)
+    public function make($className, $args = null)
     {
+        $args = func_get_args();
+        $className = array_shift($args);
+
         if (array_key_exists($className, $this->providersMap)) {
             $providers = $this->providersMap[$className];
-            $objects = array();
             $last = last($providers);
 
             if (!is_null($last)) {
@@ -138,7 +145,7 @@ class Container
                     $last->boot();
                 }
 
-                return head($last->resolve($className));
+                return head($last->resolve($className, $args));
             }
         }
 

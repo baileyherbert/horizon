@@ -80,9 +80,10 @@ class ServiceProvider
      * Resolves a class name and returns an array of objects.
      *
      * @param string $className
+     * @param mixed[] $args
      * @return object[]
      */
-    public function resolve($className)
+    public function resolve($className, $args = array())
     {
         if (!$this->registered) {
             $this->register();
@@ -94,7 +95,7 @@ class ServiceProvider
         }
 
         $callable = $this->binds[$className];
-        $response = call_user_func($callable);
+        $response = call_user_func_array($callable, $args);
 
         if (is_array($response)) {
             return $response;
