@@ -5,7 +5,7 @@ namespace Horizon\Routing\Controllers;
 use Horizon\Framework\Core;
 use Horizon\Http\Request;
 use Horizon\Http\Response;
-use Horizon\Routing\Controller;
+use Horizon\Http\Controller;
 use Horizon\Support\Str;
 use GuzzleHttp\Client;
 use Horizon\Support\Path;

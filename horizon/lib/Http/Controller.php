@@ -1,10 +1,8 @@
 <?php
 
-namespace Horizon\Routing;
+namespace Horizon\Http;
 
 use Horizon\Framework\Application;
-use Horizon\Http\Request;
-use Horizon\Http\Response;
 
 class Controller
 {

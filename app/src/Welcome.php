@@ -2,7 +2,7 @@
 
 namespace App;
 
-use Horizon\Routing\Controller;
+use Horizon\Http\Controller;
 use Horizon\Http\Response;
 
 class Welcome extends Controller
