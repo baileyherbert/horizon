@@ -2,8 +2,6 @@
 
 namespace Horizon\Extension;
 
-use Throwable;
-
 class Exception extends \Exception
 {
 
