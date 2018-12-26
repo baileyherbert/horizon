@@ -65,6 +65,7 @@ class BladeExtension extends ViewExtension
             new Twig_SimpleFunction('session', 'session'),
             new Twig_SimpleFunction('config', 'config'),
 
+            new Twig_SimpleFunction('rand', 'rand'),
             new Twig_SimpleFunction('md5', 'md5'),
             new Twig_SimpleFunction('sha1', 'sha1'),
             new Twig_SimpleFunction('trim', 'trim'),

@@ -2,16 +2,6 @@
 
 namespace Horizon\View\Twig;
 
-use Horizon\Framework\Kernel;
-
-use Horizon\Support\Path;
-use Horizon\Support\Profiler;
-
-use Horizon\Http\MiniRequest;
-use Horizon\Routing\RouteLoader;
-use Horizon\Routing\RouteParameterBinder;
-
-use Horizon\Extension\Extension;
 use Horizon\View\ViewExtension;
 
 class TwigTranspiler
@@ -36,11 +26,6 @@ class TwigTranspiler
      * @var string
      */
     private $templateFileName;
-
-    /**
-     * @var string
-     */
-    private $extensionReferenceHash;
 
     /**
      * Constructs a new precompiler instance, optionally binding the template to an extension.
@@ -87,7 +72,6 @@ class TwigTranspiler
     public function precompile($value, $templateFileName = null)
     {
         $this->templateFileName = $templateFileName;
-        $this->extensionReferenceHash = md5($templateFileName);
 
         $value = $this->correctWhitespace($value);
         $value = $this->compileTags($value);
@@ -133,7 +117,7 @@ class TwigTranspiler
         // Handle the special @translate tag
         if ($tagName === 'translate') {
             $this->translateNamespaces[] = trim($arguments, '"\'');
-            return;
+            return null;
         }
 
         // Return the compiled value
@@ -194,7 +178,6 @@ class TwigTranspiler
         $inString = false;
         $disableString = false;
         $stringCharacter = '';
-        $word = '';
 
         $length = strlen($arguments);
 
@@ -231,28 +214,6 @@ class TwigTranspiler
                 }
             }
 
-            if (!$inString) {
-                if (preg_match('/[a-zA-z]/', $char)) {
-                    $word .= $char;
-
-                    if (strlen($arguments) == $i + 1) {
-                        if ($word == 'this') {
-                            $result = substr($result, 0, -3) . "'" . $this->extensionReferenceHash . "'";
-                            break;
-                        }
-                    }
-                }
-                else {
-                    if (!empty($word)) {
-                        if ($word == 'this') {
-                            $result = substr($result, 0, -4) . "'" . $this->extensionReferenceHash . "'";
-                        }
-                    }
-
-                    $word = '';
-                }
-            }
-
             if ($insertCharacter !== '') {
                 $result .= $insertCharacter;
             }
@@ -269,12 +230,10 @@ class TwigTranspiler
         $i = 0;
 
         $inBrackets = false;
-        $inOuterString = false;
 
         $inString = false;
         $disableString = false;
         $stringCharacter = '';
-        $word = '';
 
         $escaped = false;
 
@@ -389,12 +348,10 @@ class TwigTranspiler
         $i = 0;
 
         $inBrackets = false;
-        $inOuterString = false;
 
         $inString = false;
         $disableString = false;
         $stringCharacter = '';
-        $word = '';
 
         $inUnescapedTag = false;
         $inCommentTag = false;

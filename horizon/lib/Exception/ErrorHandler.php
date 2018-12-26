@@ -90,7 +90,7 @@ class ErrorHandler implements ErrorHandlerInterface
 
         if (!is_null($originalException)) {
             if (method_exists($originalException, 'report')) {
-                call_user_method('report', $originalException, $error);
+                call_user_method('report', $error);
             }
         }
     }

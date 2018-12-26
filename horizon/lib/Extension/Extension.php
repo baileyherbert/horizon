@@ -3,268 +3,216 @@
 namespace Horizon\Extension;
 
 use Horizon\Support\Path;
-use Horizon\Support\Services\ServiceProvider;
 
+/**
+ * Base class for an extension loaded from the "/app/extensions/" directory.
+ */
 class Extension
 {
 
     /**
+     * Absolute path to the extension's root directory.
+     *
      * @var string
      */
     protected $path;
 
     /**
+     * Absolute path to the extension's configuration file.
+     *
      * @var string
      */
-    protected $directoryName;
+    protected $configFilePath;
 
     /**
-     * @var string
-     */
-    protected $configPath;
-
-    /**
+     * The extension's main configuration.
+     *
      * @var array
      */
     protected $config;
 
     /**
-     * @var string
+     * An instance of the extension's main class if applicable.
+     *
+     * @var object|null
      */
-    protected $publicMapRoute = '/extensions/%s/';
+    protected $instance;
 
     /**
-     * @var string
-     */
-    protected $publicMapLegacy = '/app/extensions/%s/';
-
-    /**
-     * Constructs a new Extension instance.
+     * Extension constructor.
      *
      * @param string $path
+     * @throws Exception
      */
     public function __construct($path)
     {
         $this->path = $path;
-        $this->directoryName = basename($path);
-        $this->configPath = Path::join($path, 'extension.json');
+        $this->configFilePath = Path::join($path, basename($path) . '.php');
 
-        if (!file_exists($this->configPath)) {
-            throw new Exception('Error loading extension: extension.json is missing');
+        if (!file_exists($this->configFilePath)) {
+            throw new Exception($this->path, 'Extension was missing its main configuration file.');
         }
 
-        $this->config = @json_decode(file_get_contents($this->configPath), true);
-
-        if (json_last_error() != JSON_ERROR_NONE) {
-            throw new Exception('Error loading extension: extension.json is not valid JSON');
-        }
-
-        if (!isset($this->config['name'])) {
-            throw new Exception('extension.json: field "name" is required');
-        }
-
-        if (!isset($this->config['version'])) {
-            throw new Exception('extension.json: field "version" is required');
-        }
-
-        $this->loadDefaults($this->config);
+        $this->loadConfiguration();
     }
 
-    public function getName()
-    {
-        return $this->config['name'];
-    }
-
-    public function getVersion()
-    {
-        return $this->config['version'];
-    }
-
+    /**
+     * Returns the absolute path to this extension's root directory.
+     *
+     * @return string
+     */
     public function getPath()
     {
         return $this->path;
     }
 
-    public function hasSourceDirectory()
-    {
-        return null != $this->config['source']['path'];
-    }
-
     /**
-     * Gets the absolute path to the extension's source directory.
+     * Returns the name of the extension.
      *
      * @return string
      */
-    public function getSourceDirectory() {
-        return Path::resolve($this->path, $this->config['source']['path']);
-    }
-
-    /**
-     * Returns whether or not the extension has a namespace configured.
-     *
-     * @return bool
-     */
-    public function hasNamespace()
+    public function getName()
     {
-        return null != $this->config['source']['namespace'];
+        return array_get($this->config, 'name');
     }
 
     /**
-     * Gets the namespace for the extension, or returns null if not set.
+     * Returns the description of the extension.
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return array_get($this->config, 'description');
+    }
+
+    /**
+     * Returns the version of the extension.
+     *
+     * @return string
+     */
+    public function getVersion()
+    {
+        return array_get($this->config, 'version');
+    }
+
+    /**
+     * Returns the name of the main class for this extension, or null if it doesn't have one.
      *
      * @return string|null
      */
-    public function getNamespace() {
-        return $this->config['source']['namespace'];
+    public function getMainClassName()
+    {
+        return array_get($this->config, 'main');
     }
 
     /**
-     * Returns whether or not the extension has composer packages inside it.
+     * Returns an array of namespaces to paths that this extension would like mapped. The key is the namespace prefix,
+     * and the value is the absolute path to map it to.
      *
-     * @return bool
+     * @return string[]
      */
-    public function hasComposer()
+    public function getNamespaces()
     {
-        return $this->config['composer']['json'] && $this->config['composer']['vendor'];
-    }
+        static $processed;
 
-    /**
-     * Gets the absolute path to the composer.json file for this extension, or null if it doesn't have one.
-     *
-     * @return string|null
-     */
-    public function getComposerJsonPath()
-    {
-        if (is_null($this->config['composer']['json'])) {
-            return null;
+        if (is_null($processed)) {
+            $namespaces = array_get($this->config, 'namespaces');
+            $processed = array();
+
+            foreach ($namespaces as $namespace => $relativePath) {
+                $relativePath = ltrim($relativePath, '/\\');
+                $absolutePath = Path::join($this->getPath(), $relativePath);
+
+                $processed[$namespace] = $absolutePath;
+            }
         }
 
-        return Path::resolve($this->path, $this->config['composer']['json']);
+        return $processed;
     }
 
     /**
-     * Gets the absolute path to the vendor directory for this extension, or null if it doesn't have one.
+     * Returns an array of file paths to require (for autoloading, helpers, or other purposes). The value of each entry
+     * is an absolute path to a file, not checked for existence.
      *
-     * @return string|null
+     * @return string[]
      */
-    public function getComposerVendorPath()
+    public function getFiles()
     {
-        if (is_null($this->config['composer']['vendor'])) {
-            return null;
+        static $processed;
+
+        if (is_null($processed)) {
+            $files = array_get($this->config, 'files');
+            $processed = array();
+
+            foreach ($files as $relativePath) {
+                $relativePath = ltrim($relativePath, '/\\');
+                $absolutePath = Path::join($this->getPath(), $relativePath);
+
+                $processed[] = $absolutePath;
+            }
         }
 
-        return Path::resolve($this->path, $this->config['composer']['vendor']);
+        return $processed;
     }
 
     /**
-     * Returns whether or not the extension has its own composer autoloader.
+     * Returns an array of provider class names registered to this extension.
      *
-     * @return bool
-     */
-    public function hasAutoLoader()
-    {
-        return $this->hasComposer()
-            && $this->config['composer']['autoload'];
-    }
-
-    /**
-     * Gets the extension's providers matching the specified type. Returns an array of provider instances.
-     *
-     * @return ServiceProvider[]
+     * @return string[]
      */
     public function getProviders()
     {
-        if (!is_array($this->config['providers'])) {
-            return array();
-        }
-
-        $providers = $this->config['providers'];
-        $instances = array();
-
-        foreach ($providers as $className) {
-            $instances[] = new $className();
-        }
-
-        return $instances;
+        return array_get($this->config, 'providers');
     }
 
     /**
-     * Loads default values for the extension to ensure it has all options.
+     * Returns true if the extension is enabled.
      *
-     * @param array $config
-     * @param array|null $defaults
+     * @return bool
      */
-    private function loadDefaults(&$config, $defaults = null)
+    public function isEnabled()
     {
-        if (is_null($defaults)) {
-            $defaults = static::getDefaults();
-        }
+        return true;
+    }
 
-        foreach ($defaults as $i => $value) {
-            if (!isset($config[$i])) {
-                $config[$i] = $value;
-            }
+    /**
+     * Returns the instance of the extension's main class, if it has one. Otherwise, null.
+     *
+     * @return object|null
+     */
+    public function instance()
+    {
+        if (is_null($this->instance)) {
+            $className = $this->getMainClassName();
 
-            if (is_array($value)) {
-                $this->loadDefaults($config[$i], $value);
+            if (!is_null($className)) {
+                $this->instance = new $className($this);
             }
         }
+
+        return $this->instance;
     }
 
     /**
-     * Gets an array of default options for extensions.
+     * Loads the configuration file and sets defaults for missing entries.
      *
-     * @return array
+     * @throws Exception
      */
-    public static function getDefaults()
+    protected function loadConfiguration()
     {
-        static $defaults = array(
-            'source' => array(
-                'path' => null,
-                'namespace' => null
-            ),
-            'composer' => array(
-                'autoload' => false,
-                'json' => null,
-                'vendor' => null
-            ),
-            'providers' => array(
-                'views' => array(),
-                'routes' => array(),
-                'updates' => array(),
-                'translations' => array()
-            )
-        );
+        $this->config = require($this->configFilePath);
 
-        return $defaults;
-    }
+        if (!is_array($this->config)) throw new Exception($this->path, 'Extension\'s main configuration file did not return an array.');
+        if (is_null(array_get($this->config, 'name'))) throw new Exception($this->path, 'Extension name is required.');
+        if (is_null(array_get($this->config, 'version'))) throw new Exception($this->path, 'Extension version is required.');
 
-    /**
-     * Gets a path to an extension's asset when rewrite routing is enabled.
-     *
-     * @param string $assetName The full name of the asset (e.g. 'styles/name.css').
-     * @return string
-     */
-    public function getMappedPublicRoute($assetName)
-    {
-        $asset = ltrim($assetName, '/');
-        $base = trim(sprintf($this->publicMapRoute, $this->directoryName), '/');
-
-        return '/' . $base . '/' . $asset;
-    }
-
-    /**
-     * Gets a path to an extension's asset when rewrite routing is disabled.
-     *
-     * @param string $assetName The full name of the asset (e.g. 'styles/name.css').
-     * @return string
-     */
-    public function getMappedLegacyRoute($assetName)
-    {
-        $asset = ltrim($assetName, '/');
-        $base = trim(sprintf($this->publicMapLegacy, $this->directoryName), '/');
-
-        return '/' . $base . '/' . $asset;
+        // Set defaults for incorrect or missing values
+        if (!is_string(array_get($this->config, 'description'))) $this->config['description'] = '';
+        if (!is_string(array_get($this->config, 'main'))) $this->config['main'] = null;
+        if (!is_array(array_get($this->config, 'namespaces'))) $this->config['namespaces'] = array();
+        if (!is_array(array_get($this->config, 'files'))) $this->config['files'] = array();
+        if (!is_array(array_get($this->config, 'providers'))) $this->config['providers'] = array();
     }
 
 }

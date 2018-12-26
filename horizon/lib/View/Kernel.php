@@ -2,7 +2,6 @@
 
 namespace Horizon\View;
 
-use Horizon\Extension\Extension;
 use Horizon\Framework\Application;
 
 /**
@@ -10,13 +9,6 @@ use Horizon\Framework\Application;
  */
 class Kernel
 {
-
-    /**
-     * The extension from which the last-resolved template was loaded.
-     *
-     * @var Extension|null
-     */
-    private $extension = null;
 
     /**
      * @var ViewLoader[]
@@ -28,7 +20,7 @@ class Kernel
      */
     public function boot()
     {
-        $this->loaders = Application::resolve('Horizon\View\ViewLoader');
+        $this->loaders = Application::collect('Horizon\View\ViewLoader');
     }
 
     /**
@@ -41,26 +33,15 @@ class Kernel
     {
         $path = null;
 
-        // Reset the extension binding
-        $this->extension = null;
-
         foreach ($this->loaders as $loader) {
-            if (!is_null($path = $loader->resolve($templateName))) {
-                $this->extension = $loader->getExtension();
+            $absolute = $loader->resolve($templateName);
+
+            if (!is_null($absolute)) {
+                $path = $absolute;
             }
         }
 
         return $path;
-    }
-
-    /**
-     * Gets the extension responsible for the last resolution.
-     *
-     * @return Extension|null
-     */
-    public function extension()
-    {
-        return $this->extension;
     }
 
 }

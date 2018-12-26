@@ -6,7 +6,6 @@ use Twig_SimpleFunction;
 use Twig_Extension;
 use Twig_Extension_GlobalsInterface;
 use Horizon\Support\Str;
-use Horizon\Extension\Extension;
 use Horizon\View\Twig\TwigFileLoader;
 
 class ViewExtension extends Twig_Extension implements Twig_Extension_GlobalsInterface
@@ -25,17 +24,6 @@ class ViewExtension extends Twig_Extension implements Twig_Extension_GlobalsInte
     public function __construct(TwigFileLoader $loader)
     {
         $this->loader = $loader;
-    }
-
-    /**
-     * Gets the extension instance by its hash id or null.
-     *
-     * @param string $id
-     * @return Extension|null
-     */
-    protected function getExtension($id)
-    {
-        return $this->loader->getExtension($id);
     }
 
     /**
