@@ -4,7 +4,6 @@ namespace Horizon\Extension;
 
 use Horizon\Framework\Application;
 use Horizon\Framework\Services\Autoloader;
-use Horizon\Support\Path;
 use Horizon\Support\Services\ServiceProvider;
 
 /**

@@ -30,13 +30,7 @@ class Autoloader
      */
     public static function mount($namespace, $path)
     {
-        // Get namespaces from configuration
-        foreach (config('namespaces.map') as $namespace => $relativePath) {
-            $namespace = trim($namespace, '\\') . '\\';
-            $absolutePath = Path::resolve(Application::path(), ltrim($relativePath, '/'));
-
-            static::$map[$namespace] = $absolutePath;
-        }
+        static::$map[$namespace] = $path;
 
         if (!static::$started) {
             static::start();

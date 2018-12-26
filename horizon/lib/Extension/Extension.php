@@ -187,7 +187,9 @@ class Extension
             $className = $this->getMainClassName();
 
             if (!is_null($className)) {
-                $this->instance = new $className($this);
+                if (class_exists($className)) {
+                    $this->instance = new $className($this);
+                }
             }
         }
 

@@ -8,6 +8,7 @@ use Horizon\Framework\Services\Autoloader;
 use Horizon\Routing\Kernel as RoutingKernel;
 use Horizon\Http\Kernel as HttpKernel;
 use Horizon\Database\Kernel as DatabaseKernel;
+use Horizon\Support\Path;
 use Horizon\Support\Profiler;
 use Horizon\Support\Services\ServiceProvider;
 use Horizon\Translation\Kernel as TranslationKernel;
@@ -123,7 +124,7 @@ class Kernel
     {
         // Get namespaces from configuration
         foreach (config('namespaces.map') as $namespace => $relativePath) {
-            Autoloader::mount($namespace, $relativePath);
+            Autoloader::mount($namespace, Application::path($relativePath));
         }
 
         // Autoload composer
