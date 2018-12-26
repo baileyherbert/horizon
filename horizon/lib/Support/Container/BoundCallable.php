@@ -132,7 +132,7 @@ class BoundCallable
                 }
 
                 // Resolve parameter as a provided class dependency
-                $collection = $this->container->resolve($class);
+                $collection = $this->container->all($class);
                 $provided = $collection->first();
 
                 if (!is_null($provided)) {

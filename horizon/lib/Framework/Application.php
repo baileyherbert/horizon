@@ -61,19 +61,29 @@ class Application
     }
 
     /**
-     * Gets a collection of service objects derived from the given class name.
+     * Returns a collection of service objects derived from the given class name.
      *
      * @param string $className
-     * @param bool $allowCachedResolution
      * @return ServiceObjectCollection
      */
-    public static function resolve($className, $allowCachedResolution = true)
+    public static function collect($className)
     {
-        return static::container()->resolve($className, $allowCachedResolution);
+        return static::container()->all($className);
     }
 
     /**
-     * Gets an absolute path to the application's root directory. If a relative path is specified, the returned path
+     * Returns a single instance of the requested class name from the service container.
+     *
+     * @param string $className
+     * @return object|null
+     */
+    public static function make($className)
+    {
+        return static::container()->make($className);
+    }
+
+    /**
+     * Returns an absolute path to the application's root directory. If a relative path is specified, the returned path
      * will be an absolute path to the specified location within the application.
      *
      * @param string $relative

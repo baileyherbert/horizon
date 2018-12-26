@@ -22,7 +22,7 @@ class Kernel
     {
         $this->bucket = new LanguageBucket();
 
-        foreach (Application::resolve('Horizon\Translation\Language') as $language) {
+        foreach (Application::collect('Horizon\Translation\Language') as $language) {
             $this->add($language);
         }
     }

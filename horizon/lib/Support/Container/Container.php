@@ -33,12 +33,6 @@ class Container
     private static $booted = array();
 
     /**
-     * Stores an array of cached resolutions.
-     * @var ServiceObjectCollection[]
-     */
-    private static $cache = array();
-
-    /**
      * Constructs a new container instance. The constructor parameters should normally be left blank as they are used
      * internally for cloning containers.
      *
@@ -90,20 +84,14 @@ class Container
     }
 
     /**
-     * Gets a collection of service objects derived from the given class name.
+     * Returns a collection of all service objects derived from the given class name.
      *
      * @param string $className
-     * @param bool $allowCachedResolution
      * @return ServiceObjectCollection
      */
-    public function resolve($className, $allowCachedResolution = true)
+    public function all($className)
     {
         $collection = null;
-
-        // Resolve from cache
-        if ($allowCachedResolution && array_key_exists($className, static::$cache)) {
-            return static::$cache[$className];
-        }
 
         // Resolve from service providers
         if (array_key_exists($className, $this->providersMap)) {
@@ -129,8 +117,32 @@ class Container
             $collection = new ServiceObjectCollection();
         }
 
-        static::$cache[$className] = $collection;
         return $collection;
+    }
+
+    /**
+     * Returns a singleton of the given class name from the last service provider that registered it.
+     *
+     * @param string $className
+     * @return object|null
+     */
+    public function make($className)
+    {
+        if (array_key_exists($className, $this->providersMap)) {
+            $providers = $this->providersMap[$className];
+            $objects = array();
+            $last = last($providers);
+
+            if (!is_null($last)) {
+                if ($last->isDeferred() && !in_array($last, static::$booted)) {
+                    $last->boot();
+                }
+
+                return head($last->resolve($className));
+            }
+        }
+
+        return null;
     }
 
     /**

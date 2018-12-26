@@ -15,7 +15,7 @@ class Kernel
      */
     public function boot()
     {
-        $routeFiles = Application::resolve('Horizon\Routing\RouteFile');
+        $routeFiles = Application::collect('Horizon\Routing\RouteFile');
 
         foreach ($routeFiles as $file) {
             $file->load();

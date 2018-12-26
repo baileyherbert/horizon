@@ -77,7 +77,7 @@ class UpdateService
     public static function getRepositories()
     {
         if (is_null(static::$repositories)) {
-            static::$repositories = Application::resolve('Horizon\Updates\Repository');
+            static::$repositories = Application::collect('Horizon\Updates\Repository');
         }
 
         return static::$repositories;
