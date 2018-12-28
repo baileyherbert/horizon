@@ -63,7 +63,7 @@ class ViewServiceProvider extends ServiceProvider
             }
 
             if (is_dir($file)) {
-                $recursive = $this->fetchExtensionDirectory(($namespace . '\\' . $file), $path);
+                $recursive = $this->fetchExtensionDirectory(($namespace . '\\' . $file), $path, $loader);
 
                 foreach ($recursive as $extension) {
                     $extensions[] = $extension;

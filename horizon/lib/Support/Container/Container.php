@@ -125,7 +125,7 @@ class Container
     }
 
     /**
-     * Returns a singleton of the given class name from the last service provider that registered it.
+     * Returns a singleton of the given class name from the last service provider that can provide it.
      *
      * @param string $className
      * @param mixed ...$args
@@ -138,14 +138,22 @@ class Container
 
         if (array_key_exists($className, $this->providersMap)) {
             $providers = $this->providersMap[$className];
-            $last = last($providers);
+            $reverse = array_reverse($providers);
 
-            if (!is_null($last)) {
-                if ($last->isDeferred() && !in_array($last, static::$booted)) {
-                    $last->boot();
+            foreach ($reverse as $provider) {
+                if ($providers->isDeferred() && !in_array($provider, static::$booted)) {
+                    $provider->boot();
                 }
 
-                return head($last->resolve($className, $args));
+                $resolved = $provider->resolve($className, $args);
+
+                if (!is_null($resolved)) {
+                    $resolved = (array) $resolved;
+
+                    if (!empty($resolved)) {
+                        return head($resolved);
+                    }
+                }
             }
         }
 

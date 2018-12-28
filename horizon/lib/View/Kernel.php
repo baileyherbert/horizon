@@ -3,6 +3,8 @@
 namespace Horizon\View;
 
 use Horizon\Foundation\Application;
+use Horizon\View\Component\Manager;
+use InvalidArgumentException;
 
 /**
  * Kernel for views.
@@ -13,14 +15,26 @@ class Kernel
     /**
      * @var ViewLoader[]
      */
-    private $loaders = array();
+    private $viewLoaders = array();
+
+    /**
+     * The latest context used to render a template.
+     *
+     * @var array
+     */
+    private $context = array();
+
+    /**
+     * @var Manager
+     */
+    private $componentManager;
 
     /**
      * Boots the kernel.
      */
     public function boot()
     {
-        $this->loaders = Application::collect('Horizon\View\ViewLoader');
+        $this->viewLoaders = Application::collect('Horizon\View\ViewLoader');
     }
 
     /**
@@ -29,11 +43,11 @@ class Kernel
      * @param string $templateName
      * @return string|null
      */
-    public function resolve($templateName)
+    public function resolveView($templateName)
     {
         $path = null;
 
-        foreach ($this->loaders as $loader) {
+        foreach ($this->viewLoaders as $loader) {
             $absolute = $loader->resolve($templateName);
 
             if (!is_null($absolute)) {
@@ -42,6 +56,40 @@ class Kernel
         }
 
         return $path;
+    }
+
+    /**
+     * Sets the internal context to use for rendering components.
+     *
+     * @param array $context
+     */
+    public function setContext($context = array())
+    {
+        $this->context = $context;
+    }
+
+    /**
+     * Returns the internal context.
+     *
+     * @return array
+     */
+    public function getContext()
+    {
+        return $this->context;
+    }
+
+    /**
+     * Returns the internal component manager.
+     *
+     * @return Manager
+     */
+    public function componentManager()
+    {
+        if (is_null($this->componentManager)) {
+            $this->componentManager = new Manager();
+        }
+
+        return $this->componentManager;
     }
 
 }

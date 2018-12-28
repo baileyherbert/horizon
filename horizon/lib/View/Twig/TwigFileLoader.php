@@ -22,21 +22,29 @@ class TwigFileLoader extends Twig_Loader_Filesystem
     private $path;
 
     /**
-     * @var \Twig_Environment
+     * @var TwigLoader
      */
-    private $environment;
+    private $loader;
 
     /**
-     * @param string|array $paths A path or an array of paths where to look for templates
-     * @param string|null $rootPath The root path common to all relative paths (null for getcwd())
+     * @param TwigLoader $loader
      */
-    public function __construct($paths = array(), $rootPath = null)
+    public function __construct(TwigLoader $loader)
     {
-        parent::__construct($paths);
+        parent::__construct(array());
+
+        $this->loader = $loader;
     }
 
     public function getSourceContext($name)
     {
+        if (starts_with($name, '@component/')) {
+            $contents = Application::kernel()->view()->componentManager()->getFileContents($name);
+            $contents = $this->compileHorizonTags($contents, $name);
+
+            return new Twig_Source($contents, $name, $name);
+        }
+
         $this->path = $this->findTemplate($name);
         $this->source = new Twig_Source($this->compileHorizonTags(file_get_contents($this->path), $name), $name, $this->path);
 
@@ -45,7 +53,11 @@ class TwigFileLoader extends Twig_Loader_Filesystem
 
     public function findTemplate($name)
     {
-        $path = Application::kernel()->view()->resolve($name);
+        if (starts_with($name, '@component/')) {
+            return $name;
+        }
+
+        $path = Application::kernel()->view()->resolveView($name);
 
         if ($path === null) {
             throw new ViewException(sprintf('View "%s" not found in any provider.', $name));

@@ -5,6 +5,7 @@ namespace Horizon\View\Extensions;
 use Horizon\Foundation\Application;
 use Horizon\Foundation\Kernel;
 
+use Horizon\Support\Facades\Component;
 use Twig_SimpleFunction;
 use Horizon\Support\Profiler;
 use Horizon\View\ViewExtension;
@@ -42,7 +43,8 @@ class HorizonExtension extends ViewExtension
             'file' => 'file',
             'script' => 'script',
             'style' => 'style',
-            'json' => 'json'
+            'json' => 'json',
+            'component' => 'component'
         );
     }
 
@@ -178,6 +180,19 @@ class HorizonExtension extends ViewExtension
         return new Twig_SimpleFunction('json', function ($data) {
             return json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         });
+    }
+
+    protected function twigComponent()
+    {
+        return new Twig_SimpleFunction('component', function () {
+            $args = func_get_args();
+
+            return forward_static_call_array(array('Horizon\Support\Facades\Component', 'compile'), $args);
+        }, array(
+            'is_safe' => array(
+                'html'
+            )
+        ));
     }
 
 }

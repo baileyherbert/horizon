@@ -2,6 +2,7 @@
 
 namespace Horizon\View;
 
+use Horizon\Foundation\Application;
 use Horizon\View\Twig\TwigLoader;
 
 class Template
@@ -27,6 +28,10 @@ class Template
     {
         $this->context = $context;
         $this->templatePath = $templateFile;
+
+        if (!starts_with($this->templatePath, '@component/')) {
+            Application::kernel()->view()->setContext($context);
+        }
     }
 
     /**
@@ -56,7 +61,13 @@ class Template
      */
     public function render()
     {
-        return (new TwigLoader($this))->render();
+        $response = (new TwigLoader($this))->render();
+
+        if (!starts_with($this->templatePath, '@component/')) {
+            Application::kernel()->view()->setContext(array());
+        }
+
+        return $response;
     }
 
 }

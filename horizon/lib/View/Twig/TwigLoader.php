@@ -9,7 +9,7 @@ use Horizon\Foundation\Framework;
 use Horizon\Support\Path;
 
 use Horizon\View\Template;
-use Horizon\View\Theme;
+use Horizon\View\Component;
 
 class TwigLoader
 {
@@ -61,7 +61,7 @@ class TwigLoader
      */
     protected function createTwigLoader()
     {
-        return new TwigFileLoader();
+        return new TwigFileLoader($this);
     }
 
     /**
