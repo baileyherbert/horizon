@@ -3,7 +3,7 @@
 namespace Horizon\Routing;
 
 use Exception;
-use Horizon\Framework\Application;
+use Horizon\Foundation\Application;
 use Horizon\Http\Request;
 use Horizon\Http\Response;
 use Horizon\Http\Exception\HttpResponseException;

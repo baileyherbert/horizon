@@ -2,9 +2,9 @@
 
 namespace Horizon\Updates;
 
-use Horizon\Framework\Application;
-use Horizon\Framework\Core;
-use Horizon\Framework\Kernel;
+use Horizon\Foundation\Application;
+use Horizon\Foundation\Framework;
+use Horizon\Foundation\Kernel;
 use Horizon\Support\Path;
 use Horizon\Logging\Logger;
 
@@ -63,7 +63,7 @@ class UpdateService
         $bundle = config('updates.ssl.certificate_authority');
 
         if (is_string($bundle)) {
-            $bundle = Path::resolve(Core::path(), $bundle);
+            $bundle = Path::resolve(Framework::path(), $bundle);
         }
 
         return $bundle;

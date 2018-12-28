@@ -2,7 +2,7 @@
 
 namespace Horizon\Exception;
 
-use Horizon\Framework\Application;
+use Horizon\Foundation\Application;
 use Horizon\Http\Exception\HttpResponseException;
 
 class ErrorHandler implements ErrorHandlerInterface

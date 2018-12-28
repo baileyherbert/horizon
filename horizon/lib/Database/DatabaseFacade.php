@@ -4,7 +4,7 @@ namespace Horizon\Database;
 
 use Horizon\Database\Exception\DatabaseDriverException;
 use Horizon\Database\Exception\MigrationException;
-use Horizon\Framework\Kernel;
+use Horizon\Foundation\Kernel;
 
 use Horizon\Database\QueryBuilder\Documentation\AlterHelper;
 use Horizon\Database\QueryBuilder\Documentation\CreateHelper;

@@ -6,7 +6,7 @@ use Horizon\Database\Model;
 
 use Horizon\Database\ORM\Relationship;
 use Horizon\Database\QueryBuilder;
-use Horizon\Framework\Kernel;
+use Horizon\Foundation\Kernel;
 use Horizon\Database\Exception\DatabaseException;
 use Horizon\Database\Cache;
 use Horizon\Database\ORM\Relationships\OneToOneRelationship;

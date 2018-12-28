@@ -1,10 +1,10 @@
 <?php
 
-namespace Horizon\Framework;
+namespace Horizon\Foundation;
 
 use Horizon\Exception\Kernel as ExceptionKernel;
 use Horizon\Console\Kernel as ConsoleKernel;
-use Horizon\Framework\Services\Autoloader;
+use Horizon\Foundation\Services\Autoloader;
 use Horizon\Routing\Kernel as RoutingKernel;
 use Horizon\Http\Kernel as HttpKernel;
 use Horizon\Database\Kernel as DatabaseKernel;

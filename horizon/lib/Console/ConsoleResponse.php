@@ -3,10 +3,10 @@
 namespace Horizon\Console;
 
 use Horizon\Console;
-use Horizon\Framework\Application;
+use Horizon\Foundation\Application;
 use Horizon\Http\Response;
 use Exception;
-use Horizon\Framework\Kernel;
+use Horizon\Foundation\Kernel;
 
 class ConsoleResponse extends Response
 {

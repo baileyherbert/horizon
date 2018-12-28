@@ -2,7 +2,7 @@
 
 namespace Horizon\Routing;
 
-use Horizon\Framework\Application;
+use Horizon\Foundation\Application;
 use Horizon\Support\Services\ServiceProvider;
 
 /**

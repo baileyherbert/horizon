@@ -2,7 +2,7 @@
 
 namespace Horizon\Routing\Controllers;
 
-use Horizon\Framework\Core;
+use Horizon\Foundation\Framework;
 use Horizon\Http\Request;
 use Horizon\Http\Response;
 use Horizon\Http\Controller;
@@ -169,7 +169,7 @@ class TcpProxyController extends Controller
 
         // Set custom headers
         $headers['x-forwarded-for'] = $_SERVER['REMOTE_ADDR'];
-        $headers['user-agent'] = 'Horizon ' . Core::version() . ' (Proxy)';
+        $headers['user-agent'] = 'Horizon ' . Framework::version() . ' (Proxy)';
 
         return $headers;
     }
@@ -191,12 +191,12 @@ class TcpProxyController extends Controller
      */
     private function getCertificatePath()
     {
-        $default = Path::join(Core::path('horizon'), 'resources/ca-bundle.crt');
+        $default = Path::join(Framework::path('horizon'), 'resources/ca-bundle.crt');
 
         if ($this->caBundlePath === false) return false;
         if (is_null($this->caBundlePath)) return $default;
 
-        $path = Path::join(Core::path(), $this->caBundlePath);
+        $path = Path::join(Framework::path(), $this->caBundlePath);
         if (!file_exists($path)) return $default;
 
         return $path;

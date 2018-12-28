@@ -2,7 +2,7 @@
 
 namespace Horizon\Console;
 
-use Horizon\Framework\Core;
+use Horizon\Foundation\Framework;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -64,7 +64,7 @@ class Kernel
     {
         $this->consoleApp = new Application();
         $this->consoleApp->setName(config('console.name', 'Horizon'));
-        $this->consoleApp->setVersion(config('console.version', Core::version()));
+        $this->consoleApp->setVersion(config('console.version', Framework::version()));
     }
 
     private function initCommands()

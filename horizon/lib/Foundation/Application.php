@@ -1,8 +1,8 @@
 <?php
 
-namespace Horizon\Framework;
+namespace Horizon\Foundation;
 
-use Horizon\Framework\Services\Configuration;
+use Horizon\Foundation\Services\Configuration;
 use Horizon\Support\Container\Container;
 use Horizon\Support\Path;
 use Horizon\Support\Services\ServiceObjectCollection;

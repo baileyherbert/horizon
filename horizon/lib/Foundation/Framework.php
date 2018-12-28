@@ -1,11 +1,11 @@
 <?php
 
-namespace Horizon\Framework;
+namespace Horizon\Foundation;
 
 /**
  * Utility class for getting information about the framework.
  */
-class Core
+class Framework
 {
 
     /**

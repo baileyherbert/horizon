@@ -5,4 +5,4 @@ define('CONSOLE_MODE', true);
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-Horizon\Framework\Application::kernel()->console()->boot();
+Horizon\Foundation\Application::kernel()->console()->boot();

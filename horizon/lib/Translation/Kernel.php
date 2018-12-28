@@ -2,7 +2,7 @@
 
 namespace Horizon\Translation;
 
-use Horizon\Framework\Application;
+use Horizon\Foundation\Application;
 
 /**
  * Kernel for translation files.

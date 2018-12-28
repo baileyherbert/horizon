@@ -4,7 +4,7 @@ use Horizon\Support\Arr;
 use Horizon\Support\Container\Container;
 use Horizon\Support\Path;
 use Horizon\Support\Str;
-use Horizon\Framework\Application;
+use Horizon\Foundation\Application;
 use Horizon\Encryption\FastEncrypt;
 use Horizon\Exception\HorizonException;
 

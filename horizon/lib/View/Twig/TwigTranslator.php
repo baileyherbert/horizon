@@ -2,8 +2,8 @@
 
 namespace Horizon\View\Twig;
 
-use Horizon\Framework\Application;
-use Horizon\Framework\Kernel;
+use Horizon\Foundation\Application;
+use Horizon\Foundation\Kernel;
 
 class TwigTranslator
 {

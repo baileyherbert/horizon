@@ -2,7 +2,7 @@
 
 namespace Horizon\Http;
 
-use Horizon\Framework\Application;
+use Horizon\Foundation\Application;
 
 class Controller
 {

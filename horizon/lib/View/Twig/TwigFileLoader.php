@@ -2,7 +2,7 @@
 
 namespace Horizon\View\Twig;
 
-use Horizon\Framework\Application;
+use Horizon\Foundation\Application;
 use Twig_Loader_Filesystem;
 use Twig_Source;
 

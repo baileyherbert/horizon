@@ -2,7 +2,7 @@
 
 namespace Horizon\View\Twig;
 
-use Horizon\Framework\Core;
+use Horizon\Foundation\Framework;
 use Horizon\Support\Path;
 
 class TwigExtensionLoader

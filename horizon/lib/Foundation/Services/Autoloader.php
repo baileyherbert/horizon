@@ -1,8 +1,8 @@
 <?php
 
-namespace Horizon\Framework\Services;
+namespace Horizon\Foundation\Services;
 
-use Horizon\Framework\Application;
+use Horizon\Foundation\Application;
 use Horizon\Support\Path;
 
 /**

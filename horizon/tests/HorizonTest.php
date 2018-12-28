@@ -1,6 +1,6 @@
 <?php
 
-use Horizon\Framework\Core;
+use Horizon\Foundation\Framework;
 use PHPUnit\Framework\TestCase;
 
 class HorizonTest extends TestCase
@@ -8,21 +8,21 @@ class HorizonTest extends TestCase
 
     public function testConstants()
     {
-        $this->assertNotNull(Core::version());
-        $this->assertEquals('jupiter', Core::edition());
+        $this->assertNotNull(Framework::version());
+        $this->assertEquals('jupiter', Framework::edition());
 
-        $this->assertNotNull(Core::path());
-        $this->assertNotNull(Core::path('vendor'));
+        $this->assertNotNull(Framework::path());
+        $this->assertNotNull(Framework::path('vendor'));
 
-        $this->assertFileExists(Core::path('horizon/composer.json'));
+        $this->assertFileExists(Framework::path('horizon/composer.json'));
     }
 
     public function testEnvironment()
     {
-        $this->assertEquals('test', Core::environment());
+        $this->assertEquals('test', Framework::environment());
 
-        $this->assertTrue(Core::environment('test'));
-        $this->assertFalse(Core::environment('production'));
+        $this->assertTrue(Framework::environment('test'));
+        $this->assertFalse(Framework::environment('production'));
     }
 
 }

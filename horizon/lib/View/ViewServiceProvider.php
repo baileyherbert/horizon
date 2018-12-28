@@ -2,8 +2,8 @@
 
 namespace Horizon\View;
 
-use Horizon\Framework\Application;
-use Horizon\Framework\Core;
+use Horizon\Foundation\Application;
+use Horizon\Foundation\Framework;
 use Horizon\Support\Path;
 use Horizon\Support\Services\ServiceProvider;
 use Horizon\View\Twig\TwigFileLoader;
@@ -92,8 +92,8 @@ class ViewServiceProvider extends ServiceProvider
     protected function getExtensionDirectories()
     {
         return array(
-            'App\View\Extensions' => Path::join(Core::path('app/src'), 'View', 'Extensions'),
-            'Horizon\View\Extensions' => Path::join(Core::path('horizon/lib'), 'View', 'Extensions')
+            'App\View\Extensions' => Path::join(Framework::path('app/src'), 'View', 'Extensions'),
+            'Horizon\View\Extensions' => Path::join(Framework::path('horizon/lib'), 'View', 'Extensions')
         );
     }
 

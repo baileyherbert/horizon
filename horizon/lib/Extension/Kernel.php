@@ -2,8 +2,8 @@
 
 namespace Horizon\Extension;
 
-use Horizon\Framework\Application;
-use Horizon\Framework\Services\Autoloader;
+use Horizon\Foundation\Application;
+use Horizon\Foundation\Services\Autoloader;
 use Horizon\Support\Services\ServiceProvider;
 
 /**

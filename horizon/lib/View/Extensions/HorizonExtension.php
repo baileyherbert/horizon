@@ -2,8 +2,8 @@
 
 namespace Horizon\View\Extensions;
 
-use Horizon\Framework\Application;
-use Horizon\Framework\Kernel;
+use Horizon\Foundation\Application;
+use Horizon\Foundation\Kernel;
 
 use Twig_SimpleFunction;
 use Horizon\Support\Profiler;

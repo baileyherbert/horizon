@@ -2,7 +2,7 @@
 
 namespace Horizon\Updates;
 
-use Horizon\Framework\Core;
+use Horizon\Foundation\Framework;
 use Horizon\Support\Archive;
 use Horizon\Updates\UpdateException;
 use Horizon\Support\Str;
@@ -163,7 +163,7 @@ class Package
 
         foreach ($affected as $relativePath) {
             $absolutePath = $this->getRepo()->toAbsolutePath($relativePath);
-            $horizonPath = ltrim(str_replace('\\', '/', Str::stripBeginning($absolutePath, Core::path())), '/');
+            $horizonPath = ltrim(str_replace('\\', '/', Str::stripBeginning($absolutePath, Framework::path())), '/');
 
             if (file_exists($absolutePath)) {
                 $contents = file_get_contents($absolutePath, $horizonPath);

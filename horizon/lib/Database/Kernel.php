@@ -4,7 +4,7 @@ namespace Horizon\Database;
 
 use Horizon\Database\Exception\DatabaseException;
 use Horizon\Exception\HorizonException;
-use Horizon\Framework\Application;
+use Horizon\Foundation\Application;
 
 /**
  * Kernel for database connectivity and interaction.

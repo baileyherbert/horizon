@@ -6,14 +6,14 @@ use Exception;
 
 use Horizon\Exception\ErrorMiddleware;
 use Horizon\Exception\HorizonException;
-use Horizon\Framework\Core;
+use Horizon\Foundation\Framework;
 use Horizon\Http\Exception\HttpResponseException;
 use Horizon\Routing\Route;
 use Horizon\Support\Container\BoundCallable;
 use Horizon\Support\Path;
 use Horizon\Support\Arr;
 use Horizon\Support\Profiler;
-use Horizon\Framework\Application;
+use Horizon\Foundation\Application;
 use Horizon\Console\ConsoleResponse;
 use Horizon\Routing\RouteLoader;
 use Horizon\Support\Str;
@@ -253,7 +253,7 @@ class Kernel
      */
     private function sendExposedHeader()
     {
-        $framework = 'Horizon ' . Core::version();
+        $framework = 'Horizon ' . Framework::version();
 
         if (config('app.expose_php', true)) $framework .= ' / PHP ' . phpversion();
         if (config('app.expose_horizon', true) === false) header_remove('X-Powered-By');

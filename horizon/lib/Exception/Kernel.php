@@ -2,7 +2,7 @@
 
 namespace Horizon\Exception;
 
-use Horizon\Framework\Application;
+use Horizon\Foundation\Application;
 
 /**
  * Kernel for exceptions and error handling.

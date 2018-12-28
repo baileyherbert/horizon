@@ -2,7 +2,7 @@
 
 namespace Horizon\Http;
 
-use Horizon\Framework\Application;
+use Horizon\Foundation\Application;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Horizon\View\Template;
 use Horizon\Support\Str;

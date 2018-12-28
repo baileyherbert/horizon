@@ -2,7 +2,7 @@
 
 namespace Horizon\View;
 
-use Horizon\Framework\Application;
+use Horizon\Foundation\Application;
 
 /**
  * Kernel for views.
