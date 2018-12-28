@@ -11,7 +11,6 @@ use Horizon\Http\Exception\HttpResponseException;
 use Horizon\Routing\Route;
 use Horizon\Support\Container\BoundCallable;
 use Horizon\Support\Path;
-use Horizon\Support\Arr;
 use Horizon\Support\Profiler;
 use Horizon\Foundation\Application;
 use Horizon\Console\ConsoleResponse;
@@ -45,6 +44,11 @@ class Kernel
     private $response;
 
     /**
+     * @var Route
+     */
+    private $route;
+
+    /**
      * Boots the HTTP kernel.
      */
     public function boot()
@@ -65,7 +69,7 @@ class Kernel
     public function execute($callback = null)
     {
         // Find a matching route
-        $route = $this->match();
+        $route = $this->route = $this->match();
 
         // Skip if we don't have a route
         if (!$route) return;
@@ -113,6 +117,16 @@ class Kernel
         }
 
         return $this->response;
+    }
+
+    /**
+     * Gets the Route instance for the current request.
+     *
+     * @return Route|null
+     */
+    public function route()
+    {
+        return $this->route;
     }
 
     /**

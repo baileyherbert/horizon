@@ -4,6 +4,7 @@ namespace Horizon\Foundation;
 
 /**
  * Utility class for getting information about the framework.
+ * @internal
  */
 class Framework
 {

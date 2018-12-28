@@ -11,6 +11,7 @@ use Horizon\Exception\HorizonException;
 
 /**
  * The base application class.
+ * @internal
  */
 class Application
 {

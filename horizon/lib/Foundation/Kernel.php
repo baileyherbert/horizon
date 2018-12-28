@@ -18,6 +18,8 @@ use Horizon\View\Kernel as ViewKernel;
 /**
  * This class is the framework kernel, which is responsible for booting and initializing the framework as well as the
  * application's controllers and services.
+ *
+ * @internal
  */
 class Kernel
 {
