@@ -140,13 +140,22 @@ class Kernel
      */
     private function invokeBootScripts($priority)
     {
-        $classes = config('app.bootstrap', array());
+        $classes = config('app.bootstrap', config('app.boot', array()));
 
         foreach ($classes as $action => $p) {
             if ($p == $priority) {
                 if (is_string($action)) {
                     if (strpos($action, '::') !== false) {
                         list($className, $methodName) = explode('::', $action, 2);
+
+                        $class = new \ReflectionClass($className);
+                        $method = $class->getMethod($methodName);
+
+                        if ($method->isStatic()) {
+                            forward_static_call(array($className, $methodName));
+                            continue;
+                        }
+
                         $action = array(new $className(), $methodName);
                     }
                     else {
