@@ -38,11 +38,7 @@ class HorizonExtension extends ViewExtension
             'localize' => '__',
             'runtime' => 'runtime',
             'link' => 'link',
-            'public' => 'public',
-            'image' => 'image',
-            'file' => 'file',
-            'script' => 'script',
-            'style' => 'style',
+            'asset' => 'asset',
             'json' => 'json',
             'component' => 'component'
         );
@@ -68,7 +64,7 @@ class HorizonExtension extends ViewExtension
             return $root . '/app/public/' . ltrim($relativePath, '/');
         }
 
-        return '/' . ltrim($root . '/', '/') . ltrim($relativePath, '/');
+        return ('/' . ltrim($root . '/', '/')) . 'assets/' . ltrim($relativePath, '/');
     }
 
     protected function twigCsrf()
@@ -110,68 +106,16 @@ class HorizonExtension extends ViewExtension
         });
     }
 
-    protected function twigPublic()
+    protected function twigAsset()
     {
         $handler = $this;
 
-        return new Twig_SimpleFunction('public', function ($relativePath, $extensionId = null) use ($handler) {
+        return new Twig_SimpleFunction('asset', function ($relativePath, $extensionId = null) use ($handler) {
             if (Str::startsWith($relativePath, array('//', 'http://', 'https://'))) {
                 return $relativePath;
             }
 
             return $handler->getPublicAssetPath($relativePath, $extensionId);
-        });
-    }
-
-    protected function twigImage()
-    {
-        $handler = $this;
-
-        return new Twig_SimpleFunction('image', function ($relativePath, $extensionId = null) use ($handler) {
-            if (Str::startsWith($relativePath, array('//', 'http://', 'https://'))) {
-                return $relativePath;
-            }
-
-            return $handler->getPublicAssetPath('/images/' . ltrim($relativePath, '/'), $extensionId);
-        });
-    }
-
-    protected function twigFile()
-    {
-        $handler = $this;
-
-        return new Twig_SimpleFunction('file', function ($relativePath, $extensionId = null) use ($handler) {
-            if (Str::startsWith($relativePath, array('//', 'http://', 'https://'))) {
-                return $relativePath;
-            }
-
-            return $handler->getPublicAssetPath('/files/' . ltrim($relativePath, '/'), $extensionId);
-        });
-    }
-
-    protected function twigScript()
-    {
-        $handler = $this;
-
-        return new Twig_SimpleFunction('script', function ($relativePath, $extensionId = null) use ($handler) {
-            if (Str::startsWith($relativePath, array('//', 'http://', 'https://'))) {
-                return $relativePath;
-            }
-
-            return $handler->getPublicAssetPath('/scripts/' . ltrim($relativePath, '/'), $extensionId);
-        });
-    }
-
-    protected function twigStyle()
-    {
-        $handler = $this;
-
-        return new Twig_SimpleFunction('style', function ($relativePath, $extensionId = null) use ($handler) {
-            if (Str::startsWith($relativePath, array('//', 'http://', 'https://'))) {
-                return $relativePath;
-            }
-
-            return $handler->getPublicAssetPath('/styles/' . ltrim($relativePath, '/'), $extensionId);
         });
     }
 
