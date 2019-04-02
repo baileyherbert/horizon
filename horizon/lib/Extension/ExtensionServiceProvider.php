@@ -15,7 +15,7 @@ class ExtensionServiceProvider extends ServiceProvider
     /**
      * @var Exception[]
      */
-    private $exceptions = array();
+    protected $exceptions = array();
 
     public function register()
     {
