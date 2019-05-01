@@ -44,27 +44,15 @@ class HorizonExtension extends ViewExtension
         );
     }
 
-    protected function getPublicAssetPath($relativePath, $extensionId = null)
+    protected function getPublicAssetPath($relativePath)
     {
-        $request = Application::kernel()->http()->request();
-        $currentPath = $request->path();
-        $root = rtrim($_SERVER['SUBDIRECTORY'], '/');
-
-        $fromExtension = is_string($extensionId) ? $this->getExtension($extensionId) : null;
-
-        if (!is_null($fromExtension)) {
-            $relative = ltrim($relativePath, '/');
-            $publicPathLegacy = sprintf('%s/%s', $root, ltrim($fromExtension->getMappedLegacyRoute($relative), '/'));
-            $publicPathRouted = sprintf('%s/%s', $root, ltrim($fromExtension->getMappedPublicRoute($relative), '/'));
-
-            return (USE_LEGACY_ROUTING) ? $publicPathLegacy : $publicPathRouted;
-        }
+        $root = Application::basedir();
 
         if (USE_LEGACY_ROUTING) {
             return $root . '/app/public/' . ltrim($relativePath, '/');
         }
 
-        return ('/' . ltrim($root . '/', '/')) . 'assets/' . ltrim($relativePath, '/');
+        return $root . '/assets/' . ltrim($relativePath, '/');
     }
 
     protected function twigCsrf()

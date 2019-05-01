@@ -130,6 +130,23 @@ class Application
     }
 
     /**
+     * Returns the base directory of the application relative to the website's document root.
+     * For example, if the application is installed in a subdirectory, the base directory will be the full path of that
+     * subdirectory.
+     *
+     * This always begins with a '/'.
+     *
+     * @return string
+     */
+    public static function basedir()
+    {
+        $directory = trim($_SERVER['SUBDIRECTORY'], '/');
+        $directory = str_replace('\\', '/', $directory);
+
+        return '/' . $directory;
+    }
+
+    /**
      * Gets the current version of the application.
      *
      * @return string
