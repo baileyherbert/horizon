@@ -46,7 +46,7 @@ class HorizonExtension extends ViewExtension
 
     protected function getPublicAssetPath($relativePath)
     {
-        $root = Application::basedir();
+        $root = rtrim(Application::basedir(), '/');
 
         if (USE_LEGACY_ROUTING) {
             return $root . '/app/public/' . ltrim($relativePath, '/');
