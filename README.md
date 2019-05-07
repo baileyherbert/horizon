@@ -5,15 +5,15 @@ configurations as possible, and reduce requirements to a minimum. I'd like to sa
 
 ## Requirements
 
-The actual requirements are pretty simple:
+The requirements are pretty simple:
 
 - PHP 5.4 or higher.
-- One supported database extension (currently `mysql`, `mysqli`, and `pdo_mysql`.
+- One supported database extension (currently `mysql`, `mysqli`, and `pdo_mysql`).
 
-The following are **optional** but recommended:
+The following are optional but recommended. If they are missing, the framework can compensate:
 
-- Rewrite rules. The framework's routing system can fall back to using .php files though.
-- Mbstring. But if you don't have this you're probably crazy.
+- Rewrite rules.
+- Mbstring.
 
 ## Documentation
 
