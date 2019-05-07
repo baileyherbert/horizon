@@ -29,13 +29,18 @@ class ViewServiceProvider extends ServiceProvider
 
             return $extensions;
         });
+
+        $this->bind('Horizon\View\ComponentLoader', function() {
+            return new ComponentLoader(Application::path('app/components'));
+        });
     }
 
     public function provides()
     {
         return array(
             'Horizon\View\ViewLoader',
-            'Horizon\View\ViewExtension'
+            'Horizon\View\ViewExtension',
+            'Horizon\View\ComponentLoader'
         );
     }
 

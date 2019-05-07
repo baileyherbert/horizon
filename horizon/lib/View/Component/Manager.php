@@ -125,13 +125,24 @@ class Manager
             return $this->registered[$name];
         }
 
-        // Check the "components" directory
-        if (file_exists($defaultPath = Application::path('app/components/' . $name . '.twig'))) {
-            return $defaultPath;
+        // Get all component loaders
+        $loaders = app()->all('Horizon\View\ComponentLoader');
+        $absolutePath = null;
+
+        foreach ($loaders as $loader) {
+            $path = $loader->resolve($name);
+
+            if (!is_null($path)) {
+                $absolutePath = $path;
+            }
         }
 
-        // No match, throw an exception
-        throw new InvalidArgumentException('No component with the name "' . $name . '" could be found.');
+        // If there is no match, throw an exception
+        if (is_null($absolutePath)) {
+            throw new InvalidArgumentException('No component with the name "' . $name . '" could be found.');
+        }
+
+        return $absolutePath;
     }
 
     /**
