@@ -227,9 +227,24 @@ class Kernel
 
                 if (class_exists($className)) {
                     $callable = new BoundCallable($action, Application::container());
+
+                    // Add basic objects for dependency resolution
                     $callable->with($route);
                     $callable->with($this->request);
                     $callable->with($this->response);
+
+                    // Add attribute objects
+                    if (!is_null($this->request)) {
+                        foreach ($this->request->attributes->all() as $name => $value) {
+                            if (is_object($value)) {
+                                $callable->with($value);
+                            }
+
+                            $callable->where($name, $value);
+                        }
+                    }
+
+                    // Run the middleware
                     $callable->execute();
                 }
                 else {
