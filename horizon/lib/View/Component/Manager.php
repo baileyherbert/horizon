@@ -111,7 +111,11 @@ class Manager
             );
         }
 
-        throw new InvalidArgumentException('Component did not declare a class dependency.');
+        return array(
+            'heading' => $heading,
+            'contents' => $contents,
+            'className' => 'Horizon\View\Component\DynamicComponent'
+        );
     }
 
     /**
