@@ -46,6 +46,9 @@ class BoundCallable
     {
         $this->callable = $this->getProperCallable($callable);
         $this->container = $container;
+
+        // Add this bound callable instance as an object
+        $this->objects['Horizon\Support\Container\BoundCallable'] = $this;
     }
 
     /**
@@ -211,6 +214,29 @@ class BoundCallable
 
         else if (!is_callable($callable)) {
             throw new Exception('Not a callable.');
+        }
+
+        return $callable;
+    }
+
+    /**
+     * Makes a copy of this bound callable for a new callable. The objects in the bound callable, as well as the
+     * service container it binds to, will be copied.
+     *
+     * @param callable $callable
+     * @return BoundCallable
+     */
+    public function copy($callable)
+    {
+        $callable = new BoundCallable($callable, $this->container);
+
+        foreach ($this->objects as $name => $instance) {
+            if ($name == 'Horizon\Support\Container\BoundCallable') continue;
+            $callable->with($instance);
+        }
+
+        foreach ($this->variables as $name => $value) {
+            $callable->where($name, $value);
         }
 
         return $callable;
