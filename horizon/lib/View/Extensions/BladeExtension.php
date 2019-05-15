@@ -48,6 +48,8 @@ class BladeExtension extends ViewExtension
             new Twig_SimpleFunction('str_ucfirst', 'str_ucfirst'),
             new Twig_SimpleFunction('str_upper', 'str_upper'),
             new Twig_SimpleFunction('str_lower', 'str_lower'),
+            new Twig_SimpleFunction('strtoupper', 'str_upper'),
+            new Twig_SimpleFunction('strtolower', 'str_lower'),
 
             new Twig_SimpleFunction('array_get', 'array_get'),
             new Twig_SimpleFunction('array_has', 'array_has'),
