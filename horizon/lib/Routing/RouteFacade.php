@@ -167,7 +167,7 @@ class RouteFacade
      */
     public static function match(array $methods, $uri, $action, $fallback = null)
     {
-        $route = static::router()->createMatchRoute($uri, $action);
+        $route = static::router()->createMatchRoute($methods, $uri, $action);
 
         if (!is_null($fallback)) {
             $route->fallback($fallback);
