@@ -3,6 +3,7 @@
 namespace Horizon\Routing;
 
 use Horizon\Exception\HorizonException;
+use Horizon\Support\Facades\Application;
 
 class RouteLoader
 {
@@ -88,6 +89,10 @@ class RouteLoader
      */
     public static function getLastDirectory()
     {
+        if (is_null(static::$currentDirectory)) {
+            return Application::path('app/routes/');
+        }
+
         return static::$currentDirectory;
     }
 
