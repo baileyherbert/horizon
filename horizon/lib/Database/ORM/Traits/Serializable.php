@@ -90,6 +90,12 @@ trait Serializable
         // Columns
         foreach ($this->storage as $name => $value) {
             if ($this->isColumnSerializable($name)) {
+                $getterName = '__get' . str_replace('_', '', $name);
+
+                if (method_exists($this, $getterName)) {
+                    $value = $this->$getterName($value);
+                }
+
                 $permitted[$name] = $value;
             }
         }
