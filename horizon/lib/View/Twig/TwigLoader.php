@@ -48,10 +48,17 @@ class TwigLoader
      */
     public function render()
     {
-        return $this->environment->render(
+        $output = $this->environment->render(
             $this->template->getPath(),
             $this->template->getContext()
         );
+
+        if ($this->loader->isDebuggingEnabled()) {
+            $output = str_replace('&#!123;', '{', $output);
+            $output = str_replace('&#!125;', '}', $output);
+        }
+
+        return $output;
     }
 
     /**

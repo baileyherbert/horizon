@@ -27,6 +27,11 @@ class TwigFileLoader extends Twig_Loader_Filesystem
     private $loader;
 
     /**
+     * @var bool
+     */
+    private $debugging = false;
+
+    /**
      * @param TwigLoader $loader
      */
     public function __construct(TwigLoader $loader)
@@ -66,9 +71,17 @@ class TwigFileLoader extends Twig_Loader_Filesystem
         return $path;
     }
 
+    public function isDebuggingEnabled() {
+        return $this->debugging;
+    }
+
     public function compileHorizonTags($text, $templateFileName)
     {
-        return (new TwigTranspiler($this))->precompile($text, $templateFileName);
+        $transpiler = new TwigTranspiler($this);
+        $data = $transpiler->precompile($text, $templateFileName);
+        $this->debugging = $transpiler->isDebuggingEnabled();
+
+        return $data;
     }
 
 }

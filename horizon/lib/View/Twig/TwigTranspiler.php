@@ -28,6 +28,11 @@ class TwigTranspiler
     private $templateFileName;
 
     /**
+     * @var bool
+     */
+    private $debugging = false;
+
+    /**
      * Constructs a new precompiler instance, optionally binding the template to an extension.
      *
      * @param TwigFileLoader $loader
@@ -80,7 +85,21 @@ class TwigTranspiler
 
         $translated = (new TwigTranslator())->compile($value, $this->translateNamespaces);
 
+        if ($this->debugging) {
+            $translated = str_replace('{', '&#!123;', $translated);
+            $translated = str_replace('}', '&#!125;', $translated);
+        }
+
         return ltrim($translated);
+    }
+
+    /**
+     * Returns true if debugging is enabled on this template.
+     *
+     * @return bool
+     */
+    public function isDebuggingEnabled() {
+        return $this->debugging;
     }
 
     /**
@@ -117,6 +136,12 @@ class TwigTranspiler
         // Handle the special @translate tag
         if ($tagName === 'translate') {
             $this->translateNamespaces[] = trim($arguments, '"\'');
+            return null;
+        }
+
+        // Handle the special @debug tag
+        if ($tagName === 'debug') {
+            $this->debugging = true;
             return null;
         }
 
