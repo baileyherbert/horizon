@@ -40,8 +40,13 @@ class ViewLoader
             return $path;
         }
 
-        // Resolve the file name with ".twig" suffixed
+        // Resolve the file name with ".twig" suffix
         if (file_exists($path = Path::resolve($this->path, $viewFileName . '.twig')) && !is_dir($path)) {
+            return $path;
+        }
+
+        // Resolve the file name with ".blade.php" suffix
+        if (file_exists($path = Path::resolve($this->path, $viewFileName . '.blade.php')) && !is_dir($path)) {
             return $path;
         }
 
