@@ -133,8 +133,10 @@ class LanguageBucket
         $values = array();
 
         foreach ($replacements as $key => $value) {
-            $keys[] = "/({{\\s*)(\\Q{$key}\\E)(\\s*}})/";
-            $values[] = $value;
+            if (!is_object($value)) {
+                $keys[] = "/({{\\s*)(\\Q{$key}\\E)(\\s*}})/";
+                $values[] = $value;
+            }
         }
 
         return array(&$keys, &$values);
