@@ -281,8 +281,16 @@ class Request extends SymfonyRequest
                 if ($route->fallback() !== null) {
                     $parameters = (new RouteParameterBinder($route))->bind($request);
                     $toPath = $route->fallback();
+                    $empty = true;
 
-                    if (!empty($parameters)) {
+                    foreach ($parameters as $param) {
+                        if (!is_array($param) && !is_object($param)) {
+                            $empty = false;
+                            break;
+                        }
+                    }
+
+                    if (!$empty) {
                         $toPath .= '?' . http_build_query($parameters);
                     }
                 }
