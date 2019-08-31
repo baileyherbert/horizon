@@ -36,6 +36,10 @@ class BelongsToOneRelationship extends Relationship
 
     public function get()
     {
+        if (is_null($this->model->{$this->localKey})) {
+            return null;
+        }
+
         $results = $this->query->get();
 
         if (isset($results[0])) {
