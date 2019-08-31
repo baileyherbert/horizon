@@ -110,6 +110,14 @@ class Response extends SymfonyResponse
     }
 
     /**
+     * Writes JSON to the output, and automatically sets the `Content-Type` header to `application/json`.
+     */
+    public function json() {
+        call_user_func_array(array($this, 'write'), func_get_args());
+        $this->setHeader('Content-Type', 'application/json');
+    }
+
+    /**
      * Turns the response into a redirection.
      *
      * @param string $to
