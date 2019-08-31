@@ -11,27 +11,27 @@ class Language
     /**
      * @var string
      */
-    private $filePath;
+    protected $filePath;
 
     /**
      * @var NamespaceDefinition[]
      */
-    private $namespaces = array();
+    protected $namespaces = array();
 
     /**
      * @var array
      */
-    private $headers = array();
+    protected $headers = array();
 
     /**
      * @var array
      */
-    private $variables = array();
+    protected $variables = array();
 
     /**
      * @var float|null
      */
-    private $parseTime = null;
+    protected $parseTime = null;
 
     /**
      * Constructs a new Language object for a file at the given path, which is expected to be in SIT format.
