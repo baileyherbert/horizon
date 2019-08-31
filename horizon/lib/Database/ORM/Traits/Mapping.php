@@ -132,6 +132,13 @@ trait Mapping
      */
     public function delete()
     {
+        if (is_null($this->getPrimaryKeyValue())) {
+            $this->emit('deleted');
+            $this->storage = array();
+
+            return;
+        }
+
         $oldData = $this->storage;
 
         $keyName = $this->getPrimaryKey();
