@@ -53,7 +53,6 @@ class BelongsToOneRelationship extends Relationship
         $foreignKey = $this->foreignKey;
 
         $this->model->$localKey = $model->$foreignKey;
-        $this->model->save();
     }
 
     public function attach($model)
