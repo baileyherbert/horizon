@@ -273,25 +273,37 @@ class Request extends SymfonyRequest
         $currentPath = $this->path();
 
         if (USE_LEGACY_ROUTING) {
+            $existingQuery = null;
+
+            if (str_contains($toPath, '?')) {
+                $existingQuery = str_substring($toPath, str_find($toPath, '?') + 1);
+                $toPath = str_substring($toPath, 0, str_find($toPath, '?'));
+            }
+
             $request = MiniRequest::simple($toPath);
             $router = RouteLoader::getRouter();
             $route = $router->match($request);
 
             if ($route !== null) {
                 if ($route->fallback() !== null) {
+                    $variables = $route->compile()->getVariables();
                     $parameters = (new RouteParameterBinder($route))->bind($request);
                     $toPath = $route->fallback();
-                    $empty = true;
+                    $query = array();
 
-                    foreach ($parameters as $param) {
-                        if (!is_array($param) && !is_object($param)) {
-                            $empty = false;
-                            break;
+                    foreach ($variables as $variableName) {
+                        if (isset($parameters[$variableName])) {
+                            $query[$variableName] = $parameters[$variableName];
                         }
                     }
 
-                    if (!$empty) {
-                        $toPath .= '?' . http_build_query($parameters);
+                    if (!empty($query)) {
+                        $toPath .= '?' . http_build_query($query);
+                    }
+
+                    if (!empty($existingQuery)) {
+                        $toPath .= (!empty($query)) ? '&' : '?';
+                        $toPath .= $existingQuery;
                     }
                 }
             }
