@@ -34,7 +34,7 @@ class RouteAction
             return $action[0] . '::' . $action[1];
         }
 
-        if (is_callable($action)) {
+        if (!is_string($action) && is_callable($action)) {
             return $action;
         }
 
