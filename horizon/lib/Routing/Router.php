@@ -440,7 +440,7 @@ class Router
     public function createDomain($domain, Closure $callback = null)
     {
         if (!is_null($callback)) {
-            return $this->createDomainGroup($namespace, $callback);
+            return $this->createDomainGroup($domain, $callback);
         }
 
         $this->currentGroup->setDomain($domain);
