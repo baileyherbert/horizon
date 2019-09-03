@@ -8,6 +8,7 @@ use Horizon\View\Template;
 use Horizon\View\ViewException;
 use InvalidArgumentException;
 use ReflectionClass;
+use Twig\Error\RuntimeError;
 
 class Manager
 {
@@ -84,7 +85,11 @@ class Manager
         }
         catch (\Exception $e) {
             unset($this->currentlyCompiling[$componentName]);
-            throw new ViewException('Component compile error: ' . $e->getMessage());
+
+            if ($e instanceof ViewException) throw $e;
+            if ($e instanceof RuntimeError) throw $e;
+
+            throw new ViewException(sprintf('%s in component: %s', basename(get_class($e)), $e->getMessage()));
         }
     }
 
