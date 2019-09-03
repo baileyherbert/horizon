@@ -20,6 +20,10 @@ class Cache
      */
     public static function hasModelInstance($model, $id)
     {
+        if (!config('database.cache', true)) {
+            return false;
+        }
+
         if (is_object($model)) {
             $model = get_class($model);
         }
@@ -46,6 +50,10 @@ class Cache
      */
     public static function getModelInstance($model, $id, $default = null)
     {
+        if (!config('database.cache', true)) {
+            return $default;
+        }
+
         if (is_object($model)) {
             $model = get_class($model);
         }
@@ -67,6 +75,10 @@ class Cache
      */
     public static function removeModelInstance($model, $id)
     {
+        if (!config('database.cache', true)) {
+            return false;
+        }
+
         if (is_object($model)) {
             $model = get_class($model);
         }
@@ -94,6 +106,10 @@ class Cache
      */
     public static function setModelInstance($model, Model $instance, $id = null)
     {
+        if (!config('database.cache', true)) {
+            return;
+        }
+
         if (is_object($model)) {
             $model = get_class($model);
         }
