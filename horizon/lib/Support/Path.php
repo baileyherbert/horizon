@@ -121,6 +121,8 @@ class Path
      */
     public static function getRelative($currentPath, $targetPath, $subdirectory = '')
     {
+        $targetPath = str_replace('\\', '/', $targetPath);
+
         $currentPath = trim($currentPath);
         $targetPath = trim($targetPath);
 
