@@ -208,6 +208,10 @@ class Response extends SymfonyResponse
         foreach ($this->with as $key => $value)
         {
             if (!array_key_exists($key, $context)) {
+                if (is_callable($value)) {
+                    $value = call_user_func($value);
+                }
+
                 $context[$key] = $value;
             }
         }
