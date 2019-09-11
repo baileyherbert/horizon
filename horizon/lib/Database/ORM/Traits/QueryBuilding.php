@@ -44,6 +44,32 @@ trait QueryBuilding
     }
 
     /**
+     * Creates a `SELECT` query builder for the model.
+     *
+     * @return SelectHelper
+     */
+    public static function query()
+    {
+        $o = (new static);
+
+        $builder = DB::connection($o->getConnection())->select()->from($o->getTable());
+        $builder->setModel(get_class($o));
+
+        return $builder;
+    }
+
+    /**
+     * Returns the total number of rows in the table for this model.
+     *
+     * @return int
+     */
+    public static function count()
+    {
+        $o = (new static);
+        return DB::connection($o->getConnection())->select()->from($o->getTable())->count();
+    }
+
+    /**
      * Gets a model instance by the primary key value.
      *
      * @param int $primaryKey
