@@ -85,7 +85,7 @@ class Str
         foreach ($segments as $segment) {
             $segment = trim($segment);
 
-            if (!empty($segment)) {
+            if ($segment !== '') {
                 $string .= ' ' . $segment;
             }
         }
