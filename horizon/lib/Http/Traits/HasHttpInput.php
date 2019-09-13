@@ -2,6 +2,8 @@
 
 namespace Horizon\Http\Traits;
 
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+
 trait HasHttpInput
 {
 
@@ -48,7 +50,7 @@ trait HasHttpInput
     /**
      * Gets the files submitted in the request as an array.
      *
-     * @return array[]
+     * @return UploadedFile[]
      */
     public function files()
     {
@@ -60,7 +62,7 @@ trait HasHttpInput
      * If the property parameter is specified, the value of that parameter in the file is returned. If the
      * parameter does not exist, null is returned.
      *
-     * @return mixed|array[]|null
+     * @return UploadedFile|mixed|null
      */
     public function file($key, $property = null)
     {
