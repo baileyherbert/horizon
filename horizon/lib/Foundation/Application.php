@@ -99,6 +99,24 @@ class Application
     }
 
     /**
+     * Returns a path to an asset in the `app/public` folder intended for use in link, script, and image references on
+     * the outputted pages.
+     *
+     * @param string $relative
+     * @return string
+     */
+    public static function asset($relative = '')
+    {
+        $root = rtrim(self::basedir(), '/');
+
+        if (USE_LEGACY_ROUTING) {
+            return $root . '/app/public/' . ltrim($relative, '/');
+        }
+
+        return $root . '/assets/' . ltrim($relative, '/');
+    }
+
+    /**
      * Gets the current environment in which the application is running (console, test, production).
      *
      * @return string

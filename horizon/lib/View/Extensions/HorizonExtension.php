@@ -46,13 +46,7 @@ class HorizonExtension extends ViewExtension
 
     protected function getPublicAssetPath($relativePath)
     {
-        $root = rtrim(Application::basedir(), '/');
-
-        if (USE_LEGACY_ROUTING) {
-            return $root . '/app/public/' . ltrim($relativePath, '/');
-        }
-
-        return $root . '/assets/' . ltrim($relativePath, '/');
+        return Application::asset($relativePath);
     }
 
     protected function twigCsrf()
