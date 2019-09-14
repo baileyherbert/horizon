@@ -196,8 +196,13 @@ class Select implements CommandInterface
                     $compiled[] = sprintf('%s %s %s', $column, $operator, $value);
                 }
                 else {
-                    $compiled[] = sprintf('%s %s ?', $column, $operator);
-                    $this->compiledParameters[] = $value;
+                    if (!is_null($value)) {
+                        $compiled[] = sprintf('%s %s ?', $column, $operator);
+                        $this->compiledParameters[] = $value;
+                    }
+                    else {
+                        $compiled[] = sprintf('%s %s NULL', $column, $operator);
+                    }
                 }
             }
 
