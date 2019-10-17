@@ -280,6 +280,15 @@ class Route
     }
 
     /**
+     * Returns the name of the route, or `null` if one is not set.
+     *
+     * @return string|null
+     */
+    public function getName() {
+        return $this->name;
+    }
+
+    /**
      * Gets an array of middleware which must run before the route action.
      *
      * @return array
