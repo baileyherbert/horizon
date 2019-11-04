@@ -31,8 +31,13 @@ class RouteFacade
      * @param string|null $fallback Path to a php file, relative to the root directory, to use for fallback routing.
      * @return Route
      */
-    public static function get($uri, $action, $fallback = null)
+    public static function get($uri, $action = null, $fallback = null)
     {
+        if (is_null($action)) {
+            $action = $uri;
+            $uri = '';
+        }
+
         $route = static::router()->createGetRoute($uri, $action);
 
         if (!is_null($fallback)) {
@@ -50,8 +55,13 @@ class RouteFacade
      * @param string|null $fallback Path to a php file, relative to the root directory, to use for fallback routing.
      * @return Route
      */
-    public static function post($uri, $action, $fallback = null)
+    public static function post($uri, $action = null, $fallback = null)
     {
+        if (is_null($action)) {
+            $action = $uri;
+            $uri = '';
+        }
+
         $route = static::router()->createPostRoute($uri, $action);
 
         if (!is_null($fallback)) {
@@ -69,8 +79,13 @@ class RouteFacade
      * @param string|null $fallback Path to a php file, relative to the root directory, to use for fallback routing.
      * @return Route
      */
-    public static function put($uri, $action, $fallback = null)
+    public static function put($uri, $action = null, $fallback = null)
     {
+        if (is_null($action)) {
+            $action = $uri;
+            $uri = '';
+        }
+
         $route = static::router()->createPutRoute($uri, $action);
 
         if (!is_null($fallback)) {
@@ -88,8 +103,13 @@ class RouteFacade
      * @param string|null $fallback Path to a php file, relative to the root directory, to use for fallback routing.
      * @return Route
      */
-    public static function patch($uri, $action, $fallback = null)
+    public static function patch($uri, $action = null, $fallback = null)
     {
+        if (is_null($action)) {
+            $action = $uri;
+            $uri = '';
+        }
+
         $route = static::router()->createPatchRoute($uri, $action);
 
         if (!is_null($fallback)) {
@@ -107,8 +127,13 @@ class RouteFacade
      * @param string|null $fallback Path to a php file, relative to the root directory, to use for fallback routing.
      * @return Route
      */
-    public static function delete($uri, $action, $fallback = null)
+    public static function delete($uri, $action = null, $fallback = null)
     {
+        if (is_null($action)) {
+            $action = $uri;
+            $uri = '';
+        }
+
         $route = static::router()->createDeleteRoute($uri, $action);
 
         if (!is_null($fallback)) {
@@ -126,8 +151,13 @@ class RouteFacade
      * @param string|null $fallback Path to a php file, relative to the root directory, to use for fallback routing.
      * @return Route
      */
-    public static function options($uri, $action, $fallback = null)
+    public static function options($uri, $action = null, $fallback = null)
     {
+        if (is_null($action)) {
+            $action = $uri;
+            $uri = '';
+        }
+
         $route = static::router()->createOptionsRoute($uri, $action);
 
         if (!is_null($fallback)) {
@@ -145,8 +175,13 @@ class RouteFacade
      * @param string|null $fallback Path to a php file, relative to the root directory, to use for fallback routing.
      * @return Route
      */
-    public static function any($uri, $action, $fallback = null)
+    public static function any($uri, $action = null, $fallback = null)
     {
+        if (is_null($action)) {
+            $action = $uri;
+            $uri = '';
+        }
+
         $route = static::router()->createAnyRoute($uri, $action);
 
         if (!is_null($fallback)) {
