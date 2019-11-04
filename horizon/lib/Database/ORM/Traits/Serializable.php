@@ -96,6 +96,10 @@ trait Serializable
                     $value = $this->$getterName($value);
                 }
 
+                if (is_numeric($value)) {
+                    $value = doubleval($value);
+                }
+
                 $permitted[$name] = $value;
             }
         }
