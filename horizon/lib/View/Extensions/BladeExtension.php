@@ -133,6 +133,7 @@ class BladeExtension extends ViewExtension
                         elseif ($char === chr(44) && $quoteChar === chr(36)) {
                             $variableName = $quoted;
                             $offset = $i;
+                            break;
                         }
                         else {
                             $quoted .= $char;
