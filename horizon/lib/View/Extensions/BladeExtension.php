@@ -2,6 +2,7 @@
 
 namespace Horizon\View\Extensions;
 
+use Exception;
 use Horizon\View\ViewExtension;
 use Twig_SimpleFunction;
 
@@ -97,11 +98,68 @@ class BladeExtension extends ViewExtension
         return array(
             'include' => function($template) { return "{% include $template %}"; },
             'extend' => function($template) { return "{% extends $template %}"; },
+            'extends' => function($template) { return "{% extends $template %}"; },
             'section' => function($template) {
                 $name = trim($template, chr(34) . chr(39));
                 $this->endings[] = 'endblock';
 
                 return "{% block $name %}";
+            },
+
+            'set' => function($args) {
+                $args = trim($args);
+                $variableName = '';
+                $variableValue = '';
+
+                // First, find the variable name
+                $quoteChar = null;
+                $quoted = '';
+                $offset = 0;
+                for ($i = 0; $i < strlen($args); $i++) {
+                    $char = $args[$i];
+
+                    if (is_null($quoteChar)) {
+                        if ($char === chr(39)) $quoteChar = $char;
+                        elseif ($char === chr(34)) $quoteChar = $char;
+                        else throw new Exception('Missing variable name in @set(name, value)');
+                    }
+                    else {
+                        if ($char === $quoteChar) {
+                            $variableName = $quoted;
+                            $offset = $i + 1;
+                            break;
+                        }
+                        else {
+                            $quoted .= $char;
+                        }
+                    }
+                }
+
+                // Next, find the comma separator
+                $comma = false;
+                for ($i = $offset; $i < strlen($args); $i++) {
+                    $char = $args[$i];
+
+                    if ($char === chr(44)) {
+                        $offset = $i + 1;
+                        $comma = true;
+                        break;
+                    }
+                    elseif ($char !== chr(32) && $char !== chr(9)) {
+                        throw new Exception('Unknown syntax in @set()');
+                    }
+                }
+
+                // If there wasn't a comma, return a capture block
+                if (!$comma) {
+                    $this->endings[] = 'endset';
+                    return "{% set {$variableName} %}";
+                }
+
+                // Next, extract the value
+                $variableValue = trim(substr($args, $offset));
+
+                return "{% set {$variableName} = {$variableValue} %}";
             },
 
             'for' => array($this, 'transpileFor'),
