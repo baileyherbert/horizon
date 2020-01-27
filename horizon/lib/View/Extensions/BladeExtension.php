@@ -119,8 +119,9 @@ class BladeExtension extends ViewExtension
                     $char = $args[$i];
 
                     if (is_null($quoteChar)) {
-                        if ($char === chr(39)) $quoteChar = $char;
-                        elseif ($char === chr(34)) $quoteChar = $char;
+                        if ($char === chr(39)) $quoteChar = $char; // '
+                        elseif ($char === chr(34)) $quoteChar = $char; // "
+                        elseif ($char === chr(36)) $quoteChar = $char; // $
                         else throw new Exception('Missing variable name in @set(name, value)');
                     }
                     else {
@@ -128,6 +129,10 @@ class BladeExtension extends ViewExtension
                             $variableName = $quoted;
                             $offset = $i + 1;
                             break;
+                        }
+                        elseif ($char === chr(44) && $quoteChar === chr(36)) {
+                            $variableName = $quoted;
+                            $offset = $i;
                         }
                         else {
                             $quoted .= $char;
