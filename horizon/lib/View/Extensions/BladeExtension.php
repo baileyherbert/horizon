@@ -199,11 +199,17 @@ class BladeExtension extends ViewExtension
      */
     public function transpileFor($args)
     {
-        if (preg_match('/^\$([\w.]+)\s+=\s+(\d+);\s+\$([\w.]+)\s+(<|<=)\s+(\d+);\s+\$([\w.]+)\+\+$/', $args, $matches)) {
+        if (preg_match('/^\$([\w.]+)\s+=\s+([^;]+);\s+\$([\w.]+)\s+(<|<=)\s+([^;]+);\s+\$([\w.]+)\+\+$/', $args, $matches)) {
             $variableName = $matches[1];
             $startValue = $matches[2];
             $endValue = $matches[5];
             $comparator = $matches[4];
+
+            if (starts_with($startValue, '$')) $startValue = substr($startValue, 1);
+            if (starts_with($endValue, '$')) $endValue = substr($endValue, 1);
+
+            $startValue = str_replace('->', '.', $startValue);
+            $endValue = str_replace('->', '.', $endValue);
 
             if ($comparator == '<') $endValue--;
             else if ($comparator != '<=') {
