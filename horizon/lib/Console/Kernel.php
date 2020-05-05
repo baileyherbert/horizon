@@ -71,9 +71,9 @@ class Kernel
     {
         $commands = config('console.commands', array());
 
-        foreach ($commands as $name) {
-            if (class_exists($name)) {
-                $this->consoleApp->add(new $name());
+        foreach ($commands as $key => $className) {
+            if (class_exists($className)) {
+                $this->consoleApp->add(new $className($key));
             }
         }
     }
