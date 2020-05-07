@@ -6,6 +6,8 @@ use Horizon\Support\Path;
 use Horizon\Support\Str;
 use Horizon\Foundation\Application;
 use Horizon\Encryption\FastEncrypt;
+use Horizon\Exception\ErrorMiddleware;
+use Horizon\Exception\HorizonError;
 use Horizon\Exception\HorizonException;
 
 if (!function_exists('camel_case')) {
@@ -1424,5 +1426,27 @@ if (!function_exists('app')) {
     function app()
     {
         return Application::container();
+    }
+}
+
+if (!function_exists('report')) {
+    /**
+     * Reports and, if enabled, logs the given exception using the current error handler. If `$forceLogging` is set
+     * to true, then the exception will always be logged regardless of the app's logging configuration.
+     *
+     * @param Exception $ex
+     * @param bool $forceLogging
+     * @return void
+     */
+    function report(Exception $ex, $forceLogging = false)
+    {
+        $error = HorizonError::fromException($ex);
+
+        $handler = ErrorMiddleware::getErrorHandler();
+        $handler->report($error);
+
+        if (ErrorMiddleware::canLog($error) || $forceLogging) {
+            $handler->log($error);
+        }
     }
 }
