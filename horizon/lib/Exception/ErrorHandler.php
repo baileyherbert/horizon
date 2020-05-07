@@ -66,7 +66,7 @@ class ErrorHandler implements ErrorHandlerInterface
         // Generate the message
         $timestamp = date('d-M-Y G:i:s T');
         $message = $this->formatMessage(sprintf(
-            "[%s] Horizon: %s:  %s in %s on line %d\r\n",
+            "[%s] Horizon: %s: %s in %s on line %d\r\n",
             $timestamp,
             $error->getLabel(),
             $error->getMessage(),

@@ -103,7 +103,7 @@ class ErrorMiddleware
      * @param HorizonError $error
      * @return bool
      */
-    private static function canLog(HorizonError $error)
+    public static function canLog(HorizonError $error)
     {
         // Always false when error logging is disabled
         if (!config('errors.log_errors', true)) {
@@ -132,7 +132,7 @@ class ErrorMiddleware
      * @param HorizonError $error
      * @return bool
      */
-    private static function canRender(HorizonError $error)
+    public static function canRender(HorizonError $error)
     {
         // Always false when error rendering is disabled
         if (!config('errors.display_errors', true)) {
@@ -161,7 +161,7 @@ class ErrorMiddleware
      * @param HorizonError $error
      * @return bool
      */
-    private static function canTerminate(HorizonError $error)
+    public static function canTerminate(HorizonError $error)
     {
         return ($error->getLevel() >= 5);
     }

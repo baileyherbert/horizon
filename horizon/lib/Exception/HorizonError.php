@@ -2,6 +2,8 @@
 
 namespace Horizon\Exception;
 
+use Exception;
+
 class HorizonError
 {
 
@@ -171,6 +173,23 @@ class HorizonError
         }
 
         return 'Unknown error';
+    }
+
+    /**
+     * Converts the given exception into a HorizonError instance.
+     *
+     * @param Exception $ex
+     * @return HorizonError
+     */
+    public static function fromException(Exception $ex) {
+        return new static(
+            $ex->getMessage(),
+            E_ERROR,
+            $ex->getFile(),
+            $ex->getLine(),
+            'exception',
+            $ex
+        );
     }
 
 }
