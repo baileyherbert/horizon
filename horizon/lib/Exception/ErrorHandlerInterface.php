@@ -8,6 +8,12 @@ interface ErrorHandlerInterface
 {
 
     /**
+     * Called automatically by the framework when the exception kernel is booted. Useful for initializing a global
+     * error reporting service.
+     */
+    public function init();
+
+    /**
      * Handles an HTTP exception. The default behavior is to show a matching error page.
      *
      * @param HttpResponseException $ex

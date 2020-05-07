@@ -74,7 +74,9 @@ class ErrorMiddleware
         $errorHandler = static::getErrorHandler();
 
         // Report the error
-        call_user_func(array($errorHandler, 'report'), $error);
+        if (static::canReport($error)) {
+            call_user_func(array($errorHandler, 'report'), $error);
+        }
 
         // Log the error
         if (static::canLog($error)) {
@@ -98,6 +100,30 @@ class ErrorMiddleware
     }
 
     /**
+     * Checks if the error can be reported.
+     *
+     * @param HorizonError $error
+     * @return bool
+     */
+    public static function canReport(HorizonError $error)
+    {
+        // Handle silence operator (@)
+        if (error_reporting() === 0 && config('errors.silent_reporting')) {
+            if ($error->getLevel() < 5) {
+                return false;
+            }
+        }
+
+        // Only report errors that are above or equal to the configured severity
+        if ($error->getLevel() < config('errors.report_sensitivity', 4)) {
+            return false;
+        }
+
+        // Report the error
+        return true;
+    }
+
+    /**
      * Checks if the error can be logged.
      *
      * @param HorizonError $error
@@ -111,14 +137,14 @@ class ErrorMiddleware
         }
 
         // Handle silence operator (@)
-        if (error_reporting() === 0) {
+        if (error_reporting() === 0 && config('errors.silent_logging')) {
             if ($error->getLevel() < 5) {
                 return false;
             }
         }
 
         // Only log errors that are above or equal to the configured severity
-        if ($error->getLevel() < config('errors.log_sensitivity')) {
+        if ($error->getLevel() < config('errors.log_sensitivity', 3)) {
             return false;
         }
 
@@ -147,7 +173,7 @@ class ErrorMiddleware
         }
 
         // Only render errors that are above or equal to the configured severity
-        if ($error->getLevel() < config('errors.display_sensitivity')) {
+        if ($error->getLevel() < config('errors.display_sensitivity', 3)) {
             return false;
         }
 

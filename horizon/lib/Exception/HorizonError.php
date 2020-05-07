@@ -115,7 +115,7 @@ class HorizonError
             }
         }
 
-        return null;
+        return new AutoException($this);
     }
 
     /**

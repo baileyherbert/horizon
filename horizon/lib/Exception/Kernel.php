@@ -26,6 +26,16 @@ class Kernel
     }
 
     /**
+     * Calls the init method on the error handler.
+     */
+    public function init() {
+        $handler = ErrorMiddleware::getErrorHandler();
+        if (method_exists($handler, 'init')) {
+            $handler->init();
+        }
+    }
+
+    /**
      * Sends non-fatal errors to the error handler.
      */
     private function bindErrors()

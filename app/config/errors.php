@@ -77,14 +77,30 @@ return array(
     'log_sensitivity' => 3,
 
     /*
-        Determines whether code in the application can use the '@' operator to silence their errors. If enabled, any
-        errors occurring from code using this operator will not be logged. However, any fatal, page-breaking errors
-        will be logged when 'log_errors' is set to true.
+        Determines the error severity level at which errors should be logged. Severity levels which are lower will not
+        be displayed. This only applies if 'display_errors' is set to true.
 
         Available values:
 
-            - true          Errors and exceptions will be logged.
-            - false         Errors and exceptions will not be logged.
+            - 1             Shows errors, warnings, deprecations, strict violations, notices.
+            - 2             Shows errors, warnings, deprecations, strict violations.
+            - 3             Shows errors, warnings, deprecations.
+            - 4             Shows errors, warnings.
+            - 5             Shows errors.
+
+        Default value: 3
+    */
+    'report_sensitivity' => 4,
+
+    /*
+        Determines whether code in the application can use the '@' operator to silence their errors. If enabled, any
+        errors occurring from code using this operator will not be logged. However, any fatal, page-breaking errors
+        will still be  logged if 'log_errors' is set to true.
+
+        Available values:
+
+            - true          Silenced errors and exceptions will be logged.
+            - false         Silenced errors and exceptions will not be logged.
 
         Default value: true
     */
@@ -93,15 +109,29 @@ return array(
     /*
         Determines whether code in the application can use the '@' operator to silence their errors. If enabled, any
         errors occurring from code using this operator will not be displayed. However, any fatal, page-breaking errors
-        will be displayed even if 'display_errors' is set to true.
+        will still be displayed if 'display_errors' is set to true.
 
         Available values:
 
-            - true          Errors and exceptions will be logged.
-            - false         Errors and exceptions will not be logged.
+            - true          Silenced errors and exceptions will be rendered.
+            - false         Silenced errors and exceptions will not be rendered.
 
         Default value: true
     */
-    'silent_display' => true
+    'silent_display' => true,
+
+    /*
+        Determines whether code in the application can use the '@' operator to silence their errors. If enabled, any
+        errors occurring from code using this operator will not be reported. However, any fatal, page-breaking errors
+        will still be reported.
+
+        Available values:
+
+            - true          Silenced errors and exceptions will be reported.
+            - false         Silenced errors and exceptions will not be reported.
+
+        Default value: true
+    */
+    'silent_reporting' => true
 
 );

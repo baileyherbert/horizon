@@ -55,6 +55,9 @@ class Kernel
         // Autoload the application and framework
         $this->autoload();
 
+        // Start custom error reporters
+        $this->exception()->init();
+
         // Run boot scripts where priority=0
         $this->invokeBootScripts(0);
 
