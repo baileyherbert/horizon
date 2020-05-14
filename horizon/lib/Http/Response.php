@@ -2,6 +2,7 @@
 
 namespace Horizon\Http;
 
+use Exception;
 use Horizon\Foundation\Application;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Horizon\View\Template;
@@ -19,6 +20,21 @@ class Response extends SymfonyResponse
      * @var array Variables to be sent to the view during rendering.
      */
     protected $with = array();
+
+    /**
+     * @var resource|null The file handle to stream.
+     */
+    protected $sendFileHandle;
+
+    /**
+     * @var string|null The optional name of the file. If set, this will force the file to download.
+     */
+    protected $sendFileName;
+
+    /**
+     * @var int|null The number of bytes in the output file.
+     */
+    protected $sendFileSize;
 
     /**
      * Sets the value of a header in the response.
@@ -194,6 +210,79 @@ class Response extends SymfonyResponse
         if (!$this->isHalted()) {
             $this->content .= $content;
         }
+    }
+
+    /**
+     * Sends a file as the response using a stream. If the file does not exist or lacks read permissions, an exception
+     * will be thrown. Note that this halts the response immediately, and any other output sent with `write()` or
+     * `writeLine()` will be ignored.
+     *
+     * The `$name` parameter is optional and accepts the name of the file to send. When set, the file will forcefully
+     * be downloaded as a binary file, rather than displayed in the browser.
+     *
+     * @param string $path
+     * @param string|null $name
+     * @return void
+     */
+    public function sendFile($path, $name = null) {
+        if (!@is_readable($path)) {
+            throw new Exception(sprintf('Attempt to send file that could not be found or read: %s', $path));
+        }
+
+        $handle = @fopen($path, 'r');
+        if ($handle === false) {
+            throw new Exception(sprintf('Unable to open file for streaming: %s', $path));
+        }
+
+        $this->sendFileHandle = $handle;
+        $this->sendFileName = $name;
+        $this->sendFileSize = filesize($path);
+        $this->halted = true;
+    }
+
+    /**
+     * Sends HTTP headers and content.
+     *
+     * @return $this
+     */
+    public function send()
+    {
+        if (!is_null($this->sendFileHandle)) {
+            $handle = $this->sendFileHandle;
+            $name = $this->sendFileName;
+
+            if (!is_null($name)) {
+                $this->setHeader('content-type', 'application/octet-stream');
+                $this->setHeader('content-disposition', 'attachment; filename="' . $name . '"');
+                $this->setHeader('content-length', $this->sendFileSize);
+            }
+
+            $this->sendHeaders();
+
+            @flock($handle, LOCK_SH);
+
+            while (!feof($handle)) {
+                $buffer = fread($handle, 1048576);
+                echo $buffer;
+                @ob_flush();
+                @flush();
+            }
+
+            @flock($handle, LOCK_UN);
+            fclose($handle);
+        }
+        else {
+            $this->sendHeaders();
+            $this->sendContent();
+        }
+
+        if (\function_exists('fastcgi_finish_request')) {
+            fastcgi_finish_request();
+        } elseif (!\in_array(\PHP_SAPI, array('cli', 'phpdbg'), true)) {
+            static::closeOutputBuffers(0, true);
+        }
+
+        return $this;
     }
 
     /**
