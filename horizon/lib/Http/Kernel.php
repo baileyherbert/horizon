@@ -236,44 +236,39 @@ class Kernel
     {
         $middlewares = $route->middleware();
 
-        try {
-            foreach ($middlewares as $middleware) {
-                $action = Str::parseCallback($middleware, '__invoke');
-                $className = head($action);
+        foreach ($middlewares as $middleware) {
+            $action = Str::parseCallback($middleware, '__invoke');
+            $className = head($action);
 
-                if (class_exists($className)) {
-                    $callable = new BoundCallable($action, Application::container());
+            if (class_exists($className)) {
+                $callable = new BoundCallable($action, Application::container());
 
-                    // Add basic objects for dependency resolution
-                    $callable->with($route);
-                    $callable->with($this->request);
-                    $callable->with($this->response);
+                // Add basic objects for dependency resolution
+                $callable->with($route);
+                $callable->with($this->request);
+                $callable->with($this->response);
 
-                    // Add attribute objects
-                    if (!is_null($this->request)) {
-                        foreach ($this->request->attributes->all() as $name => $value) {
-                            if (is_object($value)) {
-                                $callable->with($value);
-                            }
-
-                            $callable->where($name, $value);
+                // Add attribute objects
+                if (!is_null($this->request)) {
+                    foreach ($this->request->attributes->all() as $name => $value) {
+                        if (is_object($value)) {
+                            $callable->with($value);
                         }
+
+                        $callable->where($name, $value);
                     }
-
-                    // Run the middleware
-                    $callable->execute();
-                }
-                else {
-                    throw new HorizonException(0x0006, sprintf('Middleware (%s)', $className));
                 }
 
-                if ($this->response->isHalted()) {
-                    break;
-                }
+                // Run the middleware
+                $callable->execute();
             }
-        }
-        catch (HttpResponseException $e) {
-            ErrorMiddleware::getErrorHandler()->http($e);
+            else {
+                throw new HorizonException(0x0006, sprintf('Middleware (%s)', $className));
+            }
+
+            if ($this->response->isHalted()) {
+                break;
+            }
         }
     }
 
