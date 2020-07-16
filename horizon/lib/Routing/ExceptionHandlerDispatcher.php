@@ -14,22 +14,27 @@ class ExceptionHandlerDispatcher extends ControllerDispatcher
 	/**
 	 * @var Exception
 	 */
-	protected $exception;
+    protected $exception;
+
+	/**
+	 * @var RouteGroup
+	 */
+	protected $group;
 
     /**
      * Constructs a new ExceptionHandlerDispatcher instance.
      *
-     * @param Route $route
      * @param Request $request
      * @param Response $response
+     * @param RouteGroup $group
      * @param Exception $ex
      */
-    public function __construct(Route $route, Request $request, Response $response, Exception $ex)
+    public function __construct(Request $request, Response $response, RouteGroup $group, Exception $ex)
     {
-        $this->route = $route;
         $this->request = $request;
 		$this->response = $response;
-		$this->exception = $ex;
+        $this->exception = $ex;
+        $this->group = $group;
     }
 
     /**
@@ -55,7 +60,7 @@ class ExceptionHandlerDispatcher extends ControllerDispatcher
      */
     protected function getCallable()
     {
-		$handler = $this->route->getGroup()->getExceptionHandler();
+		$handler = $this->group->getExceptionHandler();
 		$action = RouteAction::parse($handler);
 
         if (is_string($action) && strpos($action, '::') !== false) {

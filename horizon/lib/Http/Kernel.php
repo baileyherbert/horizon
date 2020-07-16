@@ -72,37 +72,22 @@ class Kernel
         // Find a matching route
         $route = $this->route = $this->match();
 
-        // Skip if we don't have a route
-        if (!$route) return;
-
-        // Run callback
-        if (is_callable($callback)) {
-            call_user_func($callback, $route);
-        }
-
-        try {
-            // Run middleware
-            $this->executeMiddleware($route);
-
-            // Run the controller
-            $this->executeController($route);
-        }
-        catch (Exception $e) {
-            if (!is_null($route->getGroup()->getExceptionHandler())) {
-                try {
-                    (new ExceptionHandlerDispatcher($route, $this->request, $this->response, $e))->dispatch();
-                }
-                catch (HttpResponseException $e) {
-                    ErrorMiddleware::getErrorHandler()->http($e);
-                }
+        // If the route was found, execute it
+        if ($route) {
+            // Run callback
+            if (is_callable($callback)) {
+                call_user_func($callback, $route);
             }
-            else {
-                if ($e instanceof HttpResponseException) {
-                    ErrorMiddleware::getErrorHandler()->http($e);
-                }
-                else {
-                    throw $e;
-                }
+
+            try {
+                // Run middleware
+                $this->executeMiddleware($route);
+
+                // Run the controller
+                $this->executeController($route);
+            }
+            catch (Exception $e) {
+                $this->handleException($e, $route);
             }
         }
 
@@ -213,7 +198,7 @@ class Kernel
         // Show a 404 if not found
         if (is_null($route)) {
             if (!$this->tryDirectoryRedirect()) {
-                ErrorMiddleware::getErrorHandler()->http(new HttpResponseException(404));
+                $this->handleException(new HttpResponseException(404));
                 return null;
             }
 
@@ -223,6 +208,36 @@ class Kernel
         // Bind the route to the request
         $this->request->bind($route);
         return $route;
+    }
+
+    /**
+     * Handles an exception.
+     *
+     * @param Exception $ex
+     * @param Route $route
+     * @return void
+     */
+    private function handleException(Exception $ex, Route $route = null) {
+        $group = $route ? $route->getGroup() : RouteLoader::getRouter()->getRootGroup();
+        $handler = $group->getExceptionHandler();
+
+        // If there's no exception handler, we should pass the exception forward
+        if (is_null($handler)) {
+            if ($ex instanceof HttpResponseException) {
+                return ErrorMiddleware::getErrorHandler()->http($ex);
+            }
+
+            throw $ex;
+        }
+
+        // Dispatch the exception handler
+        try {
+            $dispatcher = new ExceptionHandlerDispatcher($this->request, $this->response, $group, $ex);
+            $dispatcher->dispatch();
+        }
+        catch (HttpResponseException $e) {
+            ErrorMiddleware::getErrorHandler()->http($e);
+        }
     }
 
     /**

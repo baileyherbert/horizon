@@ -47,6 +47,16 @@ class Router
     }
 
     /**
+     * Returns the main group at the top level of the router.
+     *
+     * @return RouteGroup
+     */
+    public function getRootGroup()
+    {
+        return $this->currentGroup;
+    }
+
+    /**
      * Sets an action as the exception handler for the current scope.
      *
      * @param Closure|string|null $action

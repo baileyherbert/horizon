@@ -123,11 +123,13 @@ class ControllerDispatcher
         }
 
         // Add variables from the route
-        foreach ($this->route->parameterNames() as $name) {
-            $value = $this->route->parameter($name);
+        if (!is_null($this->route)) {
+            foreach ($this->route->parameterNames() as $name) {
+                $value = $this->route->parameter($name);
 
-            if (!is_null($value)) {
-                $callable->where($name, $value);
+                if (!is_null($value)) {
+                    $callable->where($name, $value);
+                }
             }
         }
 
