@@ -355,6 +355,19 @@ class RouteFacade
     }
 
     /**
+     * Registers a handler for uncaught exceptions in the current scope. This can be used to intercept HTTP errors
+     * and any other exceptions thrown from controllers. The specified action will receive the exception in its
+     * parameters, and can also receive instances like the `Request` or `Response`.
+     *
+     * @param Closure|array|string $action
+     * @return Route
+     */
+    public static function catch($action)
+    {
+        return static::router()->setExceptionHandler($action);
+    }
+
+    /**
      * Loads another route file with the given name. The name must not end in '.php' and will be loaded relative to
      * the app/routes directory.
      *

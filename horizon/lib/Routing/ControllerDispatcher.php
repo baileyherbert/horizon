@@ -15,17 +15,17 @@ class ControllerDispatcher
     /**
      * @var Route
      */
-    private $route;
+    protected $route;
 
     /**
      * @var Request
      */
-    private $request;
+    protected $request;
 
     /**
      * @var Response
      */
-    private $response;
+    protected $response;
 
     /**
      * Constructs a new ControllerDispatcher instance.
@@ -75,7 +75,7 @@ class ControllerDispatcher
      *
      * @param callable $action
      */
-    private function init($action)
+    protected function init($action)
     {
         $action = $this->createInstance($action);
 
@@ -98,7 +98,7 @@ class ControllerDispatcher
      * @return BoundCallable
      * @throws Exception
      */
-    private function createBoundCallable($action)
+    protected function createBoundCallable($action)
     {
         // Convert the action to a callable if necessary
         $action = $this->createInstance($action);

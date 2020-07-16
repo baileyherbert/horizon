@@ -47,6 +47,18 @@ class Router
     }
 
     /**
+     * Sets an action as the exception handler for the current scope.
+     *
+     * @param Closure|string|null $action
+     * @return Route
+     */
+    public function setExceptionHandler($action)
+    {
+        $this->currentGroup->setExceptionHandler($action);
+        return $this;
+    }
+
+    /**
      * Creates a Route instance and adds it to the router.
      *
      * @param string|string[] $methods

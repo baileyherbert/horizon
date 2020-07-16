@@ -200,4 +200,31 @@ class RouteGroup
         return $existing;
     }
 
+    /**
+     * Sets the exception handler for this group and children.
+     *
+     * @param Closure|string|null $action
+     * @return void
+     */
+    public function setExceptionHandler($action)
+    {
+        $this->properties['exceptionHandler'] = $action;
+    }
+
+    /**
+     * Returns the exception handler for this group.
+     *
+     * @return Closure|string|null
+     */
+    public function getExceptionHandler()
+    {
+        $handler = $this->property('exceptionHandler');
+
+        if (!is_null($handler)) {
+            return $handler;
+        }
+
+        return $this->parent ? $this->parent->getExceptionHandler() : null;
+    }
+
 }

@@ -14,6 +14,7 @@ use Horizon\Support\Path;
 use Horizon\Support\Profiler;
 use Horizon\Foundation\Application;
 use Horizon\Console\ConsoleResponse;
+use Horizon\Routing\ExceptionHandlerDispatcher;
 use Horizon\Routing\RouteLoader;
 use Horizon\Support\Str;
 
@@ -86,8 +87,23 @@ class Kernel
             // Run the controller
             $this->executeController($route);
         }
-        catch (HttpResponseException $e) {
-            ErrorMiddleware::getErrorHandler()->http($e);
+        catch (Exception $e) {
+            if (!is_null($route->getGroup()->getExceptionHandler())) {
+                try {
+                    (new ExceptionHandlerDispatcher($route, $this->request, $this->response, $e))->dispatch();
+                }
+                catch (HttpResponseException $e) {
+                    ErrorMiddleware::getErrorHandler()->http($e);
+                }
+            }
+            else {
+                if ($e instanceof HttpResponseException) {
+                    ErrorMiddleware::getErrorHandler()->http($e);
+                }
+                else {
+                    throw $e;
+                }
+            }
         }
 
         // Close

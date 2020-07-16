@@ -66,14 +66,23 @@ class BoundCallable
     }
 
     /**
-     * Adds an object which will be used as a dependency for parameters requesting an object of the same class.
+     * Adds an object which will be used as a dependency for parameters requesting an object of the same class. If
+     * `$subclasses` is `true`, the object will also be registered under all of its parent classes.
      *
      * @param object $object
+     * @param boolean $subclasses
      */
-    public function with($object)
+    public function with($object, $subclasses = false)
     {
         if (is_object($object)) {
-            $this->objects[get_class($object)] = $object;
+            $class = get_class($object);
+            $this->objects[$class] = $object;
+
+            if ($subclasses) {
+                while (($class = get_parent_class($class)) !== false) {
+                    $this->objects[$class] = $object;
+                }
+            }
         }
     }
 
