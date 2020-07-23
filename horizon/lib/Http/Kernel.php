@@ -69,6 +69,8 @@ class Kernel
      */
     public function execute($callback = null)
     {
+        Profiler::start('kernel:http');
+
         // Find a matching route
         $route = $this->route = $this->match();
 
@@ -81,10 +83,14 @@ class Kernel
 
             try {
                 // Run middleware
+                Profiler::start('http:middleware');
                 $this->executeMiddleware($route);
+                Profiler::stop('http:middleware');
 
                 // Run the controller
+                Profiler::start('http:controller');
                 $this->executeController($route);
+                Profiler::stop('http:controller');
             }
             catch (Exception $e) {
                 $this->handleException($e, $route);
@@ -92,6 +98,7 @@ class Kernel
         }
 
         // Close
+        Profiler::stop('kernel:http');
         $this->close();
     }
 
@@ -193,6 +200,7 @@ class Kernel
      */
     private function match()
     {
+        Profiler::start('router:match');
         $route = RouteLoader::getRouter()->match($this->request);
 
         // Show a 404 if not found
@@ -207,6 +215,7 @@ class Kernel
 
         // Bind the route to the request
         $this->request->bind($route);
+        Profiler::stop('router:match');
         return $route;
     }
 

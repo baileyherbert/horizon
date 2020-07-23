@@ -178,6 +178,7 @@ class Kernel
      */
     private function loadProviders()
     {
+        Profiler::start('services:load');
         $providers = Application::config('providers', array());
 
         foreach ($providers as $className) {
@@ -189,6 +190,8 @@ class Kernel
                 }
             }
         }
+
+        Profiler::stop('services:load');
     }
 
     /* @return HttpKernel */

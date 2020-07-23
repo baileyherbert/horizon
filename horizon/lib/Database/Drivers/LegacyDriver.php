@@ -4,10 +4,8 @@ namespace Horizon\Database\Drivers;
 
 use Horizon\Database\Database;
 use Horizon\Database\Exception\DatabaseDriverException;
-
-use mysqli;
-use Horizon\Database\QueryBuilder\StringBuilder;
 use Horizon\Database\Exception\DatabaseException;
+use Horizon\Support\Profiler;
 use Horizon\Support\Str;
 
 class LegacyDriver implements DriverInterface
@@ -49,6 +47,7 @@ class LegacyDriver implements DriverInterface
             return;
         }
 
+        Profiler::start('database:connect', 'mysql');
         $config = $this->database->getConfig();
         $handle = @mysql_connect($config['host'], $config['username'], $config['password']);
 
@@ -70,6 +69,7 @@ class LegacyDriver implements DriverInterface
         // Set the charset and collation
         @mysql_set_charset($config['charset'], $this->handle);
         @mysql_query(sprintf('SET NAMES %s COLLATE %s;', $config['charset'], $config['collation']), $this->handle);
+        Profiler::stop('database:connect');
     }
 
     /**

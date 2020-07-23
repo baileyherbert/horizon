@@ -145,13 +145,13 @@ class Database extends EventEmitter
     public function query($statement, array $bindings = array())
     {
         // Start timing the query
-        Profiler::start('horizon:database:query');
+        Profiler::start('database:query', $statement);
 
         // Run the query on the driver
         $returned = $this->driver->query($statement, $bindings);
 
         // Stop timing and get the number of milliseconds taken
-        $timeTaken = Profiler::stop('horizon:database:query');
+        $timeTaken = Profiler::stop('database:query');
 
         // Emit
         $this->emit('query', $statement, $bindings, $timeTaken);

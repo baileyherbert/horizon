@@ -6,7 +6,7 @@ use Horizon\Database\Database;
 use Horizon\Database\Exception\DatabaseDriverException;
 use Horizon\Database\Exception\DatabaseException;
 use Horizon\Database\QueryBuilder\StringBuilder;
-
+use Horizon\Support\Profiler;
 use Horizon\Support\Str;
 
 use PDO;
@@ -52,6 +52,8 @@ class PdoDriver implements DriverInterface
             return;
         }
 
+        Profiler::start('database:connect', 'pdo');
+
         try {
             $config = $this->database->getConfig();
             $handle = new PDO(
@@ -83,6 +85,7 @@ class PdoDriver implements DriverInterface
 
         // Set the charset and collation
         $this->handle->exec(sprintf('SET NAMES %s COLLATE %s;', $config['charset'], $config['collation']));
+        Profiler::stop('database:connect');
     }
 
     /**

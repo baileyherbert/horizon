@@ -4,6 +4,7 @@ namespace Horizon\Foundation\Services;
 
 use Horizon\Foundation\Application;
 use Horizon\Support\Path;
+use Horizon\Support\Profiler;
 
 /**
  * Utility class which sets up core autoloading for the application and framework.
@@ -45,7 +46,9 @@ class Autoloader
     public static function vendor($path)
     {
         if (file_exists($path)) {
+            Profiler::start('autoloader:vendor', $path);
             require $path;
+            Profiler::stop('autoloader:vendor');
         }
     }
 
@@ -70,7 +73,9 @@ class Autoloader
                 $file = Path::join($mount, str_replace('\\', DIRECTORY_SEPARATOR, $relativeClass) . '.php');
 
                 if (file_exists($file)) {
+                    Profiler::start('autoloader:require', $file);
                     require $file;
+                    Profiler::stop('autoloader:require');
                 }
             }
         });

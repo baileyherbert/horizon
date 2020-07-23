@@ -8,6 +8,7 @@ use Horizon\Database\Exception\DatabaseDriverException;
 use mysqli;
 use Horizon\Database\QueryBuilder\StringBuilder;
 use Horizon\Database\Exception\DatabaseException;
+use Horizon\Support\Profiler;
 use Horizon\Support\Str;
 
 class ImprovedDriver implements DriverInterface
@@ -49,6 +50,7 @@ class ImprovedDriver implements DriverInterface
             return;
         }
 
+        Profiler::start('database:connect', 'mysqli');
         $config = $this->database->getConfig();
         $handle = @new mysqli($config['host'], $config['username'], $config['password'], $config['database']);
 
@@ -61,8 +63,11 @@ class ImprovedDriver implements DriverInterface
         $this->connected = true;
 
         // Set the charset and collation
+        Profiler::start('database:connect:charset', $config['charset']);
         $this->handle->set_charset($config['charset']);
         $this->handle->query(sprintf('SET NAMES %s COLLATE %s;', $config['charset'], $config['collation']));
+        Profiler::stop('database:connect:charset');
+        Profiler::stop('database:connect');
     }
 
     /**
