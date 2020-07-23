@@ -169,6 +169,17 @@ trait Mapping
             }
         }
 
+        if (array_key_exists($name, $this->changes)) {
+            $getterName = '__get' . str_replace('_', '', $name);
+            $value = $this->changes[$name];
+
+            if (method_exists($this, $getterName)) {
+                $value = $this->$getterName($value);
+            }
+
+            return $value;
+        }
+
         if (array_key_exists($name, $this->storage)) {
             $getterName = '__get' . str_replace('_', '', $name);
             $value = $this->storage[$name];
