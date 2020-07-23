@@ -404,8 +404,11 @@ class Kernel
         }
 
         if (substr($this->request->path(), -1) !== "/") {
+            $originalUri = $this->request->path();
+            $originalRequest = $this->request;
+
             // Add a trailing slash to the request uri
-            $_SERVER['REQUEST_URI'] = $this->request->path() . '/';
+            $_SERVER['REQUEST_URI'] = $originalUri . '/';
 
             // Add query string
             if ($this->request->getQueryString()) {
@@ -423,11 +426,15 @@ class Kernel
 
             // Redirect to the new uri
             if (!is_null($route)) {
-                $this->response->redirect($this->request->fullUrl(), 301);
+                $this->response->redirect($this->request->fullUrl(), 302);
                 $this->close();
 
                 return true;
             }
+
+            // Revert the request uri
+            $this->realPath = $_SERVER['REQUEST_URI'] = $originalUri;
+            $this->request = $originalRequest;
         }
 
         return false;
