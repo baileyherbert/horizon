@@ -66,6 +66,13 @@ interface DriverInterface
     public function forget($key);
 
     /**
+     * Clears all data from the session.
+     *
+     * @return void
+     */
+    public function clear();
+
+    /**
      * Flashes data to the session which will only persist until the next session activation (typically the next
      * pageload).
      *

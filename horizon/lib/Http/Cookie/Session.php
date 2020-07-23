@@ -3,6 +3,7 @@
 namespace Horizon\Http\Cookie;
 
 use Horizon\Exception\HorizonException;
+use Horizon\Http\Cookie\Drivers\CookieDriver;
 
 class Session
 {
@@ -11,6 +12,11 @@ class Session
 
     private $currentFlashData = array();
     private $newFlashData = array();
+
+    /**
+     * @var CookieDriver
+     */
+    private $driver;
 
     public function __construct($desiredDriver = null)
     {
@@ -118,6 +124,16 @@ class Session
     public function forget($key)
     {
         return $this->driver->forget($key);
+    }
+
+    /**
+     * Clears all data from the session.
+     *
+     * @return void
+     */
+    public function clear()
+    {
+        return $this->driver->clear();
     }
 
     /**

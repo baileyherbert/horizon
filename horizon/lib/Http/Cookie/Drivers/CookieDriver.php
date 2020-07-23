@@ -291,6 +291,21 @@ class CookieDriver implements DriverInterface
     }
 
     /**
+     * Clears all data from the session.
+     *
+     * @return void
+     */
+    public function clear()
+    {
+        $this->sessionData = array();
+        $this->currentFlashData = array();
+        $this->newFlashData = array();
+
+        $_SESSION[$this->token] = array();
+        $_SESSION[$this->token . '_flash'] = array();
+    }
+
+    /**
      * Flashes data to the session which will only persist until the next session activation (typically the next
      * pageload).
      *
