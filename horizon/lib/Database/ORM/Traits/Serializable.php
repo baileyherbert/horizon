@@ -115,13 +115,17 @@ trait Serializable
                 if ($this->isColumnSerializable($method->name)) {
                     $returned = $method->invoke($this);
 
-                    if (!(is_object($returned) && self::isRelationship($returned))) {
+                    if (!(is_object($returned) && $this->isRelationship($returned))) {
                         continue;
                     }
 
                     $results = $returned->get();
                     $converted = array();
                     $isSkipped = false;
+
+                    if (is_null($results)) {
+                        $converted = null;
+                    }
 
                     if (is_array($results)) {
                         foreach ($results as $key => $result) {
