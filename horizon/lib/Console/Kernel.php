@@ -80,7 +80,25 @@ class Kernel
 
     private function runConsoleApp()
     {
-        $this->consoleApp->run();
+        try {
+            $output = new ConsoleOutput();
+            $this->consoleApp->setCatchExceptions(false);
+            $this->consoleApp->run(null, $output);
+        }
+        catch (\Exception $e) {
+            $error = HorizonError::fromException($e);
+            $handler = ErrorMiddleware::getErrorHandler();
+
+            if (config('errors.console_logging', true)) {
+                $handler->log($error);
+            }
+
+            if (config('errors.console_reporting', true)) {
+                $handler->report($error);
+            }
+
+            $this->consoleApp->renderException($e, $output);
+        }
     }
 
 }
