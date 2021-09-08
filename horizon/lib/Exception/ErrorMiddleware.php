@@ -100,6 +100,25 @@ class ErrorMiddleware
     }
 
     /**
+     * Logs and reports the given error silently, the caller assumes responsibility to terminate the page and show the
+     * error.
+     */
+    public static function executeSilently(HorizonError $error)
+    {
+        $errorHandler = static::getErrorHandler();
+
+        // Report the error
+        if (static::canReport($error)) {
+            call_user_func(array($errorHandler, 'report'), $error);
+        }
+
+        // Log the error
+        if (static::canLog($error)) {
+            call_user_func(array($errorHandler, 'log'), $error);
+        }
+    }
+
+    /**
      * Checks if the error can be reported.
      *
      * @param HorizonError $error

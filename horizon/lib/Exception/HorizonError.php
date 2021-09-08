@@ -181,15 +181,22 @@ class HorizonError
      * @param Exception $ex
      * @return HorizonError
      */
-    public static function fromException(Exception $ex) {
-        return new static(
-            $ex->getMessage(),
-            E_ERROR,
-            $ex->getFile(),
-            $ex->getLine(),
-            'exception',
-            $ex
+    public static function fromException(Exception $exception, $uncaught = true) {
+        $reflect = new \ReflectionClass($exception);
+        $shortName = $reflect->getShortName();
+        $prefix = $uncaught ? 'Uncaught ' : '';
+
+        $message = sprintf(
+            "{$prefix}exception '%s' with message '%s' in %s:%d Stack trace: %s",
+            $shortName,
+            $exception->getMessage(),
+            $exception->getFile(),
+            $exception->getLine(),
+            $exception->getTraceAsString()
         );
+
+        return new static($message, E_ERROR, $exception->getFile(), $exception->getLine(), 'exception', $exception);
+
     }
 
 }

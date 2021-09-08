@@ -132,6 +132,30 @@ return array(
 
         Default value: true
     */
-    'silent_reporting' => true
+    'silent_reporting' => true,
+
+    /*
+        Determines whether errors that occur within a console command are logged.
+
+        Available values:
+
+            - true          Console command errors are logged.
+            - false         Console command errors are not logged.
+
+        Default value: true
+     */
+    'console_logging' => true,
+
+    /*
+        Determines whether errors that occur within a console command are reported.
+
+        Available values:
+
+            - true          Console command errors are reported.
+            - false         Console command errors are not reported.
+
+        Default value: true
+     */
+    'console_reporting' => true,
 
 );
