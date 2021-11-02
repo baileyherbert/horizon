@@ -9,6 +9,7 @@ use Horizon\Encryption\FastEncrypt;
 use Horizon\Exception\ErrorMiddleware;
 use Horizon\Exception\HorizonError;
 use Horizon\Exception\HorizonException;
+use Horizon\Foundation\Services\Environment;
 
 if (!function_exists('camel_case')) {
     /**
@@ -1448,5 +1449,24 @@ if (!function_exists('report')) {
         if (ErrorMiddleware::canLog($error) || $forceLogging) {
             $handler->log($error);
         }
+    }
+}
+
+if (!function_exists('env')) {
+    /**
+     *
+     * Returns the value of the specified environment variable.
+     *
+     * This function reads the `.env` or `env.php` file in the project root if the specified variable is not found.
+     * The variable name is case insensitive. The return type will be determined based on the given default value
+     * (always a string if the default is null).
+     *
+     * @param string $name
+     * @param mixed $default
+     * @return mixed
+     */
+    function env($name, $default = null)
+    {
+        return Environment::get($name, $default);
     }
 }

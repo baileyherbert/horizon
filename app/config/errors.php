@@ -29,7 +29,7 @@ return array(
 
         Default value: false
     */
-    'display_errors' => true,
+    'display_errors' => env('display_errors', false),
 
     /*
         Determines the error severity level at which errors should be displayed. Severity levels which are lower will not
@@ -45,7 +45,7 @@ return array(
 
         Default value: 4
     */
-    'display_sensitivity' => 4,
+    'display_sensitivity' => env('display_errors_level', 4),
 
     /*
         Determines whether errors in the framework or app will be logged to the filesystem. Errors are always logged
@@ -58,7 +58,7 @@ return array(
 
         Default value: true
     */
-    'log_errors' => true,
+    'log_errors' => env('error_logging', true),
 
     /*
         Determines the error severity level at which errors should be logged. Severity levels which are lower will not
@@ -74,7 +74,7 @@ return array(
 
         Default value: 3
     */
-    'log_sensitivity' => 3,
+    'log_sensitivity' => env('error_logging_level', 3),
 
     /*
         Determines the error severity level at which errors should be logged. Severity levels which are lower will not
@@ -90,7 +90,7 @@ return array(
 
         Default value: 3
     */
-    'report_sensitivity' => 4,
+    'report_sensitivity' => env('error_reporting_level', 4),
 
     /*
         Determines whether code in the application can use the '@' operator to silence their errors. If enabled, any
@@ -99,12 +99,12 @@ return array(
 
         Available values:
 
-            - true          Silenced errors and exceptions will be logged.
-            - false         Silenced errors and exceptions will not be logged.
+            - true          Silenced errors and exceptions will not be logged.
+            - false         Silenced errors and exceptions will be logged.
 
         Default value: true
     */
-    'silent_logging' => true,
+    'silent_logging' => env('error_logging_silence_enabled', true),
 
     /*
         Determines whether code in the application can use the '@' operator to silence their errors. If enabled, any
@@ -113,12 +113,12 @@ return array(
 
         Available values:
 
-            - true          Silenced errors and exceptions will be rendered.
-            - false         Silenced errors and exceptions will not be rendered.
+            - true          Silenced errors and exceptions will not be rendered.
+            - false         Silenced errors and exceptions will be rendered.
 
         Default value: true
     */
-    'silent_display' => true,
+    'silent_display' => env('display_errors_silence_enabled', true),
 
     /*
         Determines whether code in the application can use the '@' operator to silence their errors. If enabled, any
@@ -127,12 +127,12 @@ return array(
 
         Available values:
 
-            - true          Silenced errors and exceptions will be reported.
-            - false         Silenced errors and exceptions will not be reported.
+            - true          Silenced errors and exceptions will not be reported.
+            - false         Silenced errors and exceptions will be reported.
 
         Default value: true
     */
-    'silent_reporting' => true,
+    'silent_reporting' => env('error_reporting_silence_enabled', true),
 
     /*
         Determines whether errors that occur within a console command are logged.
@@ -144,7 +144,7 @@ return array(
 
         Default value: true
      */
-    'console_logging' => true,
+    'console_logging' => env('console_error_logging', true),
 
     /*
         Determines whether errors that occur within a console command are reported.
@@ -156,6 +156,6 @@ return array(
 
         Default value: true
      */
-    'console_reporting' => true,
+    'console_reporting' => env('console_error_reporting', true),
 
 );

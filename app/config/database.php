@@ -12,27 +12,27 @@
 return array(
 
     'main' => array(
-        'host' => 'localhost',
-        'database' => 'database',
-        'username' => 'root',
-        'password' => '',
+        'host' => env('db_host', '127.0.0.1'),
+        'database' => env('db_database', 'database'),
+        'username' => env('db_username', 'root'),
+        'password' => env('db_password', ''),
 
         /*
             The default character set for the database.
             Recommended value: 'utf8mb4'
         */
-        'charset' => 'utf8mb4',
+        'charset' => env('db_charset', 'utf8mb4'),
 
         /*
             The default character set collation for the database.
             Recommended value: 'utf8mb4_unicode_ci'
         */
-        'collation' => 'utf8mb4_unicode_ci',
+        'collation' => env('db_collation', 'utf8mb4_unicode_ci'),
 
         /*
             A prefix to apply to table names. This can help isolate tables in a shared database. Leave blank to disable.
         */
-        'prefix' => '',
+        'prefix' => env('db_prefix', ''),
 
         /*
             Determines whether query logging is enabled by default. This can use a large amount of memory in applications
@@ -40,7 +40,7 @@ return array(
 
             Recommended value: false
         */
-        'query_logging' => true,
+        'query_logging' => env('db_query_logging', false),
 
         /*
             Determines whether model objects loaded via the Horizon ORM will be cached in memory. This can prevent repeated
@@ -48,7 +48,7 @@ return array(
 
             Recommended value: true
         */
-        'cache' => true,
+        'cache' => env('db_caching', true),
 
         /*
             Horizon supports the MySQLi, PDO, and MySQL extensions, and will automatically detect and use them in that order.
@@ -69,7 +69,7 @@ return array(
 
             Recommended value: 'mysqli'
         */
-        'preferred_driver' => 'mysqli'
+        'preferred_driver' => env('db_driver', 'mysqli')
     )
 
 );

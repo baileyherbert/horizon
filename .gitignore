@@ -5,3 +5,7 @@ app/extensions/*/vendor/
 .vscode/
 .vs/
 error_log
+
+# Environment variables
+.env
+.env.php

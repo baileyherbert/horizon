@@ -23,7 +23,7 @@ return array(
 
         Default value: 'Horizon'
     */
-    'name' => 'Horizon',
+    'name' => env('session_name', 'Horizon'),
 
     /*
         Determines which driver to use for storing persistent user data between pageloads.
@@ -35,7 +35,7 @@ return array(
 
         Default value: 'cookie'
     */
-    'driver' => 'cookie',
+    'driver' => env('session_driver', 'cookie'),
 
     /*
         Determines whether to encrypt the data payload stored within the session. While this may not be necessary
@@ -51,22 +51,6 @@ return array(
 
         Default value: true
     */
-    'encrypt' => true,
-
-    /*
-        Determines whether the session driver will throw a fatal exception if an error occurs when initializing
-        the session. If disabled, the session driver will not error, and will silently fail to save new session data
-        or load existing session data until the cause of the issue is resolved.
-
-        Note: When HORIZON_ENVIRONMENT is set to "test", this option is overriden to FALSE.
-
-        Available values:
-
-            - true          Enables exceptions when session fails to initialize.
-            - false         Disables exceptions when session fails to initialize.
-
-        Default value: true
-    */
-    'throws' => true
+    'encrypt' => env('session_encryption', true)
 
 );
