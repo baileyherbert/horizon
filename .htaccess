@@ -19,14 +19,19 @@
     RewriteRule ^robots.txt$ app/public/robots.txt [L,QSA,NC]
     RewriteRule ^sitemap.xml$ app/public/sitemap.xml [L,QSA,NC]
 
+    # Block access to secure files
+    RewriteRule ^\.env route.php [L]
+    RewriteRule ^ace$ route.php [L]
+    RewriteRule ^README\.md$ route.php [L]
+    RewriteRule ^horizon/(.*)$ route.php [L]
+
     # Send the request to the Horizon router
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule . route.php [L]
 
     # Hide sensitive files
-    RedirectMatch 404 (\.git|tests|\.AbiSuite|nbproject|\.idea|\.vs|vendor)
-    RedirectMatch 404 \.md
+    RedirectMatch 404 (\.git)
 
     # Prevent access to distribution files
     RedirectMatch 403 \.hzbackup
