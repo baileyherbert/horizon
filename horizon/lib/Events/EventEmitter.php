@@ -6,7 +6,7 @@ class EventEmitter
 {
 
     /**
-     * @var EventCallback[]
+     * @var EventCallback[][]
      */
     private $hooks = array();
 
@@ -63,7 +63,7 @@ class EventEmitter
             $callback = $this->hooks[$channel][$i];
 
             // Delete it from the array if inactive
-            if (!$callback->getActive()) {
+            if (!$callback || !$callback->getActive()) {
                 unset($this->hooks[$channel][$i]);
             }
         }
