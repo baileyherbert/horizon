@@ -1367,7 +1367,6 @@ if (!function_exists('report')) {
 
 if (!function_exists('env')) {
 	/**
-	 *
 	 * Returns the value of the specified environment variable.
 	 *
 	 * This function reads the `.env` or `env.php` file in the project root if the specified variable is not found.
@@ -1380,6 +1379,34 @@ if (!function_exists('env')) {
 	 */
 	function env($name, $default = null) {
 		return Environment::get($name, $default);
+	}
+}
+
+if (!function_exists('setenv')) {
+	/**
+	 * Sets the value of the specified environment variable.
+	 *
+	 * Warning: This is not to be confused with the native `putenv` function. This function does not actually change
+	 * the environment variables, it only registers them internally in Horizon's environment manager.
+	 *
+	 * @param string $name
+	 * @param mixed $value
+	 * @return void
+	 */
+	function setenv($name, $value = null) {
+		Environment::set($name, $value);
+	}
+}
+
+if (!function_exists('delenv')) {
+	/**
+	 * Deletes the specified environment variable.
+	 *
+	 * @param string $name
+	 * @return void
+	 */
+	function delenv($name) {
+		Environment::delete($name);
 	}
 }
 
