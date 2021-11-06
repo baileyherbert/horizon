@@ -87,7 +87,7 @@ class Kernel {
 
 	private function runConsoleApp() {
 		try {
-			$output = new ConsoleOutput();
+			$output = $this->output = new ConsoleOutput();
 
 			$this->consoleApp->setAutoExit(false);
 			$this->consoleApp->setCatchExceptions(false);
