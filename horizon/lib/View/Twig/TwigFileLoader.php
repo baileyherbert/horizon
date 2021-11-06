@@ -43,8 +43,9 @@ class TwigFileLoader extends Twig_Loader_Filesystem {
 		if (starts_with($name, '@component/')) {
 			$contents = Application::kernel()->view()->componentManager()->getFileContents($name);
 			$contents = $this->compileHorizonTags($contents, $name);
+			$filePath = Application::kernel()->view()->componentManager()->getComponentPath($name);
 
-			return new Twig_Source($contents, $name, $name);
+			return new Twig_Source($contents, $name, $filePath);
 		}
 
 		$this->path = $this->findTemplate($name);
@@ -88,5 +89,13 @@ class TwigFileLoader extends Twig_Loader_Filesystem {
 
 		return $data;
 	}
+
+    public function isFresh($name, $time) {
+		if (starts_with($name, '@component')) {
+			$name = Application::kernel()->view()->componentManager()->getComponentPath($name);
+		}
+
+		return parent::isFresh($name, $time);
+    }
 
 }

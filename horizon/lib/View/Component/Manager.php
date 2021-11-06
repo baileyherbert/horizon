@@ -20,6 +20,11 @@ class Manager {
 	/**
 	 * @var string[]
 	 */
+	private $cached = array();
+
+	/**
+	 * @var string[]
+	 */
 	private $contents = array();
 
 	/**
@@ -123,10 +128,19 @@ class Manager {
 	 * @param $name
 	 * @return string
 	 */
-	private function getComponentPath($name) {
+	public function getComponentPath($name) {
+		if (starts_with($name, '@component/')) {
+			$name = substr($name, 11);
+		}
+
 		// Check for a manually-registered path
 		if (isset($this->registered[$name])) {
 			return $this->registered[$name];
+		}
+
+		// Check for a cached path
+		if (isset($this->cached[$name])) {
+			return $this->cached[$name];
 		}
 
 		// Get all component loaders
@@ -145,6 +159,8 @@ class Manager {
 		if (is_null($absolutePath)) {
 			throw new InvalidArgumentException('No component with the name "' . $name . '" could be found.');
 		}
+
+		$this->cached[$name] = $absolutePath;
 
 		return $absolutePath;
 	}
