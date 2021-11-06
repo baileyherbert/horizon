@@ -20,12 +20,16 @@ class HorizonExtension extends ViewExtension
 
     public function getGlobals()
     {
-        $request = Application::kernel()->http()->request();
+        if (Application::environment() !== 'console') {
+            $request = Application::kernel()->http()->request();
 
-        return array(
-            'request' => $request,
-            'route' => $request->getRoute()
-        );
+            return array(
+                'request' => $request,
+                'route' => $request->getRoute()
+            );
+        }
+
+        return array();
     }
 
     public function getTranspilers()
