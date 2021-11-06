@@ -154,6 +154,22 @@ class ImprovedDriver implements DriverInterface
     }
 
     /**
+     * Validates a query using prepared statements and throws an exception upon invalid syntax. This is ignored on
+     * unsupported drivers or platforms.
+     *
+     * @param string $statement
+     * @return void
+     *
+     * @throws DatabaseException on error
+     */
+    public function validate($statement)
+    {
+        if (!$this->handle->prepare($statement)) {
+            throw new DatabaseException($this->handle->error);
+        }
+    }
+
+    /**
      * Gets the results of a prepared statement. That is, the number of affected rows, the inserted id, or an array of
      * rows, or true, depending on the type of query.
      *

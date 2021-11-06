@@ -115,6 +115,21 @@ class LegacyDriver implements DriverInterface
     }
 
     /**
+     * Validates a query using prepared statements and throws an exception upon invalid syntax. This is ignored on
+     * unsupported drivers or platforms.
+     *
+     * @param string $statement
+     * @return void
+     *
+     * @throws DatabaseException on error
+     */
+    public function validate($statement)
+    {
+        // Not supported
+        return;
+    }
+
+    /**
      * Executes a prepared statement on the database server and returns the results.
      *
      * @param string $statement

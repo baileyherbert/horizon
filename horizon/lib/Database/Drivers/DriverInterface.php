@@ -34,6 +34,17 @@ interface DriverInterface
     public function query($statement, $bindings = null);
 
     /**
+     * Validates a query using prepared statements and throws an exception upon invalid syntax. This is ignored on
+     * unsupported drivers or platforms.
+     *
+     * @param string $statement
+     * @return void
+     *
+     * @throws DatabaseException on error
+     */
+    public function validate($statement);
+
+    /**
      * Checks if the server supports this driver.
      *
      * @return bool

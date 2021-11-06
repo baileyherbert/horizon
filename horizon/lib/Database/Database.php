@@ -2,9 +2,11 @@
 
 namespace Horizon\Database;
 
+use Exception;
 use Horizon\Events\EventEmitter;
 use Horizon\Database\Drivers\DriverInterface;
 use Horizon\Database\Exception\DatabaseException;
+use Horizon\Foundation\Application;
 use Horizon\Support\Profiler;
 
 class Database extends EventEmitter
@@ -31,12 +33,18 @@ class Database extends EventEmitter
     protected $loggingEnabled = false;
 
     /**
+     * @var Kernel
+     */
+    protected $kernel;
+
+    /**
      * Constructs a new Database instance.
      *
      * @param array $config
      */
     public function __construct(array $config)
     {
+        $this->kernel = Application::kernel()->database();
         $this->config = $config;
         $this->loggingEnabled = $config['query_logging'] == true;
 
@@ -147,16 +155,32 @@ class Database extends EventEmitter
         // Start timing the query
         Profiler::start('database:query', $statement);
 
-        // Run the query on the driver
-        $returned = $this->driver->query($statement, $bindings);
+        try {
+            $returned = false;
 
-        // Stop timing and get the number of milliseconds taken
-        $timeTaken = Profiler::stop('database:query');
+            $isSandboxMode = $this->kernel->sandboxMode();
+            $isValidationMode = $this->kernel->validationMode();
 
-        // Emit
-        $this->emit('query', $statement, $bindings, $timeTaken);
+            // Run the query on the driver
+            if (!$isSandboxMode && !$isValidationMode) {
+                $returned = $this->driver->query($statement, $bindings);
+            }
+            else if ($isValidationMode) {
+                $this->driver->validate($statement);
+            }
 
-        return $returned;
+            // Stop timing and get the number of milliseconds taken
+            $timeTaken = Profiler::stop('database:query');
+
+            // Emit
+            $this->emit('query', $statement, $bindings, $timeTaken);
+
+            return $returned;
+        }
+        catch (Exception $ex) {
+            $this->emit('query', $statement, $bindings, $timeTaken, $ex);
+            throw $ex;
+        }
     }
 
     /**
@@ -283,7 +307,7 @@ class Database extends EventEmitter
      */
     protected function doQueryLog()
     {
-        $this->on('query', function ($statement, array $bindings, $millisTaken) {
+        $this->on('query', function ($statement, array $bindings, $millisTaken, $exception = null) {
             if (!$this->loggingEnabled) {
                 return;
             }
@@ -293,7 +317,8 @@ class Database extends EventEmitter
                 'prepared' => !empty($bindings),
                 'bindings' => $bindings,
                 'reused' => false,
-                'duration' => $millisTaken
+                'duration' => $millisTaken,
+                'exception' => $exception
             );
         });
     }
