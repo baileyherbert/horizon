@@ -197,3 +197,49 @@ class LegacyDriver implements DriverInterface
 	}
 
 }
+
+if (!function_exists('mysql_connect')) {
+	function mysql_connect() {
+		throw new Exception('The mysql extension is not available on this system');
+	}
+
+	function mysql_error() {
+		throw new Exception('The mysql extension is not available on this system');
+	}
+
+	function mysql_errno() {
+		throw new Exception('The mysql extension is not available on this system');
+	}
+
+	function mysql_select_db() {
+		throw new Exception('The mysql extension is not available on this system');
+	}
+
+	function mysql_set_charset() {
+		throw new Exception('The mysql extension is not available on this system');
+	}
+
+	function mysql_query() {
+		throw new Exception('The mysql extension is not available on this system');
+	}
+
+	function mysql_affected_rows() {
+		throw new Exception('The mysql extension is not available on this system');
+	}
+
+	function mysql_insert_id() {
+		throw new Exception('The mysql extension is not available on this system');
+	}
+
+	function mysql_fetch_object() {
+		throw new Exception('The mysql extension is not available on this system');
+	}
+
+	function mysql_real_escape_string() {
+		throw new Exception('The mysql extension is not available on this system');
+	}
+
+	function mysql_close() {
+		throw new Exception('The mysql extension is not available on this system');
+	}
+}
