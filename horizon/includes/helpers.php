@@ -13,15 +13,14 @@ use Horizon\Foundation\Services\Environment;
 
 if (!function_exists('camel_case')) {
 	/**
-	 * [Unicode Friendly]
+	 * • This function is unicode friendly.
 	 *
 	 * Convert a value to camel case.
 	 *
 	 * @param string $value
 	 * @return string
 	 */
-	function camel_case($value)
-	{
+	function camel_case($value) {
 		return Str::camel($value);
 	}
 }
@@ -34,15 +33,14 @@ if (!function_exists('str_join')) {
 	 * @param string ...$parts
 	 * @return string
 	 */
-	function str_join()
-	{
+	function str_join() {
 		return forward_static_call_array(array('Horizon\Support\Str', 'join'), func_get_args());
 	}
 }
 
 if (!function_exists('starts_with')) {
 	/**
-	 * [Unicode Friendly]
+	 * • This function is unicode friendly.
 	 *
 	 * Determine if a given string starts with a given substring.
 	 *
@@ -51,8 +49,7 @@ if (!function_exists('starts_with')) {
 	 * @param bool $ignoreCase
 	 * @return bool
 	 */
-	function starts_with($haystack, $needles, $ignoreCase = false)
-	{
+	function starts_with($haystack, $needles, $ignoreCase = false) {
 		if ($ignoreCase) {
 			return Str::startsWithIgnoreCase($haystack, $needles);
 		}
@@ -63,7 +60,7 @@ if (!function_exists('starts_with')) {
 
 if (!function_exists('ends_with')) {
 	/**
-	 * [Unicode Friendly]
+	 * • This function is unicode friendly.
 	 *
 	 * Determine if a given string ends with a given substring.
 	 *
@@ -72,8 +69,7 @@ if (!function_exists('ends_with')) {
 	 * @param bool $ignoreCase
 	 * @return bool
 	 */
-	function ends_with($haystack, $needles, $ignoreCase = false)
-	{
+	function ends_with($haystack, $needles, $ignoreCase = false) {
 		if ($ignoreCase) {
 			return Str::endsWithIgnoreCase($haystack, $needles);
 		}
@@ -84,7 +80,7 @@ if (!function_exists('ends_with')) {
 
 if (!function_exists('str_contains')) {
 	/**
-	 * [Unicode Friendly]
+	 * • This function is unicode friendly.
 	 *
 	 * Determine if a given string contains a given substring.
 	 *
@@ -92,8 +88,7 @@ if (!function_exists('str_contains')) {
 	 * @param string|array $needles
 	 * @return bool
 	 */
-	function str_contains($haystack, $needles)
-	{
+	function str_contains($haystack, $needles) {
 		return Str::contains($haystack, $needles);
 	}
 }
@@ -106,15 +101,14 @@ if (!function_exists('str_finish')) {
 	 * @param string $cap
 	 * @return string
 	 */
-	function str_finish($value, $cap)
-	{
+	function str_finish($value, $cap) {
 		return Str::finish($value, $cap);
 	}
 }
 
 if (!function_exists('str_is')) {
 	/**
-	 * [Unicode Friendly]
+	 * • This function is unicode friendly.
 	 *
 	 * Determine if a given string matches a given pattern.
 	 *
@@ -122,30 +116,28 @@ if (!function_exists('str_is')) {
 	 * @param string $value
 	 * @return bool
 	 */
-	function str_is($pattern, $value)
-	{
+	function str_is($pattern, $value) {
 		return Str::is($pattern, $value);
 	}
 }
 
 if (!function_exists('str_length')) {
 	/**
-	 * [Unicode Friendly]
+	 * • This function is unicode friendly.
 	 *
 	 * Return the length of the given string.
 	 *
 	 * @param string $value
 	 * @return int
 	 */
-	function str_length($value)
-	{
+	function str_length($value) {
 		return Str::length($value);
 	}
 }
 
 if (!function_exists('str_limit')) {
 	/**
-	 * [Unicode Friendly]
+	 * • This function is unicode friendly.
 	 *
 	 * Limit the number of characters in a string.
 	 *
@@ -154,30 +146,28 @@ if (!function_exists('str_limit')) {
 	 * @param string $end
 	 * @return string
 	 */
-	function str_limit($value, $limit = 100, $end = '...')
-	{
+	function str_limit($value, $limit = 100, $end = '...') {
 		return Str::limit($value, $limit, $end);
 	}
 }
 
 if (!function_exists('str_lower')) {
 	/**
-	 * [Unicode Friendly]
+	 * • This function is unicode friendly.
 	 *
 	 * Convert the given string to lower-case.
 	 *
 	 * @param string $value
 	 * @return string
 	 */
-	function str_lower($value)
-	{
+	function str_lower($value) {
 		return Str::lower($value);
 	}
 }
 
 if (!function_exists('str_limit_words')) {
 	/**
-	 * [Unicode Friendly]
+	 * • This function is unicode friendly.
 	 *
 	 * Limit the number of words in a string.
 	 *
@@ -186,8 +176,7 @@ if (!function_exists('str_limit_words')) {
 	 * @param string $end
 	 * @return string
 	 */
-	function str_limit_words($value, $words = 100, $end = '...')
-	{
+	function str_limit_words($value, $words = 100, $end = '...') {
 		return Str::words($value, $words, $end);
 	}
 }
@@ -200,8 +189,7 @@ if (!function_exists('str_plural')) {
 	 * @param int $count
 	 * @return string
 	 */
-	function str_plural($value, $count = 2)
-	{
+	function str_plural($value, $count = 2) {
 		return Str::plural($value, $count);
 	}
 }
@@ -213,8 +201,7 @@ if (!function_exists('str_random')) {
 	 * @param int $length
 	 * @return string
 	 */
-	function str_random($length = 16)
-	{
+	function str_random($length = 16) {
 		return Str::random($length);
 	}
 }
@@ -226,15 +213,14 @@ if (!function_exists('str_random_quick')) {
 	 * @param int $length
 	 * @return string
 	 */
-	function str_random_quick($length = 16)
-	{
+	function str_random_quick($length = 16) {
 		return Str::quickRandom($length);
 	}
 }
 
 if (!function_exists('str_replace_first')) {
 	/**
-	 * [Unicode Friendly]
+	 * • This function is unicode friendly.
 	 *
 	 * Replace the first occurrence of a given value in the string.
 	 *
@@ -243,15 +229,14 @@ if (!function_exists('str_replace_first')) {
 	 * @param string $subject
 	 * @return string
 	 */
-	function str_replace_first($search, $replace, $subject)
-	{
+	function str_replace_first($search, $replace, $subject) {
 		return Str::replaceFirst($search, $replace, $subject);
 	}
 }
 
 if (!function_exists('str_replace_last')) {
 	/**
-	 * [Unicode Friendly]
+	 * • This function is unicode friendly.
 	 *
 	 * Replace the last occurrence of a given value in the string.
 	 *
@@ -260,15 +245,14 @@ if (!function_exists('str_replace_last')) {
 	 * @param string $subject
 	 * @return string
 	 */
-	function str_replace_last($search, $replace, $subject)
-	{
+	function str_replace_last($search, $replace, $subject) {
 		return Str::replaceLast($search, $replace, $subject);
 	}
 }
 
 if (!function_exists('str_replace_array')) {
 	/**
-	 * [Unicode Friendly]
+	 * • This function is unicode friendly.
 	 *
 	 * Replace a given value in the string sequentially with an array.
 	 *
@@ -277,53 +261,49 @@ if (!function_exists('str_replace_array')) {
 	 * @param string $subject
 	 * @return string
 	 */
-	function str_replace_array($search, $replace, $subject)
-	{
+	function str_replace_array($search, $replace, $subject) {
 		return Str::replaceArray($search, $replace, $subject);
 	}
 }
 
 if (!function_exists('str_upper')) {
 	/**
-	 * [Unicode Friendly]
+	 * • This function is unicode friendly.
 	 *
 	 * Convert the given string to upper-case.
 	 *
 	 * @param string $value
 	 * @return string
 	 */
-	function str_upper($value)
-	{
+	function str_upper($value) {
 		return Str::upper($value);
 	}
 }
 
 if (!function_exists('kebab_case')) {
 	/**
-	 * [Unicode Friendly]
+	 * • This function is unicode friendly.
 	 *
 	 * Convert a string to kebab case.
 	 *
 	 * @param string $value
 	 * @return string
 	 */
-	function kebab_case($value)
-	{
+	function kebab_case($value) {
 		return Str::kebab($value);
 	}
 }
 
 if (!function_exists('title_case')) {
 	/**
-	 * [Unicode Friendly]
+	 * • This function is unicode friendly.
 	 *
 	 * Convert the given string to title case.
 	 *
 	 * @param string $value
 	 * @return string
 	 */
-	function title_case($value)
-	{
+	function title_case($value) {
 		return Str::title($value);
 	}
 }
@@ -335,15 +315,14 @@ if (!function_exists('str_singular')) {
 	 * @param string $value
 	 * @return string
 	 */
-	function str_singular($value)
-	{
+	function str_singular($value) {
 		return Str::singular($value);
 	}
 }
 
 if (!function_exists('str_slug')) {
 	/**
-	 * [Unicode Friendly]
+	 * • This function is unicode friendly.
 	 *
 	 * Generate a URL friendly "slug" from a given string.
 	 *
@@ -351,15 +330,14 @@ if (!function_exists('str_slug')) {
 	 * @param string $separator
 	 * @return string
 	 */
-	function str_slug($title, $separator = '-')
-	{
+	function str_slug($title, $separator = '-') {
 		return Str::slug($title, $separator);
 	}
 }
 
 if (!function_exists('snake_case')) {
 	/**
-	 * [Unicode Friendly]
+	 * • This function is unicode friendly.
 	 *
 	 * Convert a string to snake case.
 	 *
@@ -367,30 +345,28 @@ if (!function_exists('snake_case')) {
 	 * @param string $delimiter
 	 * @return string
 	 */
-	function snake_case($value, $delimiter = '_')
-	{
+	function snake_case($value, $delimiter = '_') {
 		return Str::snake($value, $delimiter);
 	}
 }
 
 if (!function_exists('studly_case')) {
 	/**
-	 * [Unicode Friendly]
+	 * • This function is unicode friendly.
 	 *
 	 * Convert a value to studly caps case.
 	 *
 	 * @param string $value
 	 * @return string
 	 */
-	function studly_case($value)
-	{
+	function studly_case($value) {
 		return Str::studly($value);
 	}
 }
 
 if (!function_exists('str_substring')) {
 	/**
-	 * [Unicode Friendly]
+	 * • This function is unicode friendly.
 	 *
 	 * Returns the portion of string specified by the start and length parameters.
 	 *
@@ -399,30 +375,28 @@ if (!function_exists('str_substring')) {
 	 * @param int|null $length
 	 * @return string
 	 */
-	function str_substring($string, $start, $length = null)
-	{
+	function str_substring($string, $start, $length = null) {
 		return Str::substr($string, $start, $length);
 	}
 }
 
 if (!function_exists('str_ucfirst')) {
 	/**
-	 * [Unicode Friendly]
+	 * • This function is unicode friendly.
 	 *
 	 * Make a string's first character uppercase.
 	 *
 	 * @param string $string
 	 * @return string
 	 */
-	function str_ucfirst($string)
-	{
+	function str_ucfirst($string) {
 		return Str::ucfirst($string);
 	}
 }
 
 if (!function_exists('str_find')) {
 	/**
-	 * [Unicode Friendly]
+	 * • This function is unicode friendly.
 	 *
 	 * Finds the position of a substring in the given string. Returns false if not found.
 	 *
@@ -430,15 +404,14 @@ if (!function_exists('str_find')) {
 	 * @param string|array $needles
 	 * @return int|bool
 	 */
-	function str_find($haystack, $needles)
-	{
+	function str_find($haystack, $needles) {
 		return Str::find($haystack, $needles);
 	}
 }
 
 if (!function_exists('str_before')) {
 	/**
-	 * [Unicode Friendly]
+	 * • This function is unicode friendly.
 	 *
 	 * Get the portion of a string before a given value.
 	 *
@@ -446,15 +419,14 @@ if (!function_exists('str_before')) {
 	 * @param string $search
 	 * @return string
 	 */
-	function str_before($subject, $search)
-	{
+	function str_before($subject, $search) {
 		return Str::before($subject, $search);
 	}
 }
 
 if (!function_exists('str_after')) {
 	/**
-	 * [Unicode Friendly]
+	 * • This function is unicode friendly.
 	 *
 	 * Return the remainder of a string after a given value.
 	 *
@@ -462,8 +434,7 @@ if (!function_exists('str_after')) {
 	 * @param string $search
 	 * @return string
 	 */
-	function str_after($subject, $search)
-	{
+	function str_after($subject, $search) {
 		return Str::after($subject, $search);
 	}
 }
@@ -476,8 +447,7 @@ if (!function_exists('e')) {
 	 * @param bool $doubleEncode
 	 * @return string
 	 */
-	function e($value, $doubleEncode = true)
-	{
+	function e($value, $doubleEncode = true) {
 		return htmlspecialchars($value, ENT_QUOTES, 'UTF-8', $doubleEncode);
 	}
 }
@@ -491,8 +461,7 @@ if (!function_exists('preg_replace_array')) {
 	 * @param string $subject
 	 * @return string
 	 */
-	function preg_replace_array($pattern, array $replacements, $subject)
-	{
+	function preg_replace_array($pattern, array $replacements, $subject) {
 		return preg_replace_callback($pattern, function () use (&$replacements) {
 			foreach ($replacements as $key => $value) {
 				return array_shift($replacements);
@@ -508,8 +477,7 @@ if (!function_exists('array_accessible')) {
 	 * @param mixed $value
 	 * @return bool
 	 */
-	function array_accessible($value)
-	{
+	function array_accessible($value) {
 		return Arr::accessible($value);
 	}
 }
@@ -523,8 +491,7 @@ if (!function_exists('array_add')) {
 	 * @param mixed $value
 	 * @return array
 	 */
-	function array_add($array, $key, $value)
-	{
+	function array_add($array, $key, $value) {
 		return Arr::add($array, $key, $value);
 	}
 }
@@ -536,8 +503,7 @@ if (!function_exists('array_collapse')) {
 	 * @param array $array
 	 * @return array
 	 */
-	function array_collapse($array)
-	{
+	function array_collapse($array) {
 		return Arr::collapse($array);
 	}
 }
@@ -549,8 +515,7 @@ if (!function_exists('array_divide')) {
 	 * @param array $array
 	 * @return array
 	 */
-	function array_divide($array)
-	{
+	function array_divide($array) {
 		return Arr::divide($array);
 	}
 }
@@ -563,8 +528,7 @@ if (!function_exists('array_dot')) {
 	 * @param string $prepend
 	 * @return array
 	 */
-	function array_dot($array, $prepend = '')
-	{
+	function array_dot($array, $prepend = '') {
 		return Arr::dot($array, $prepend);
 	}
 }
@@ -577,8 +541,7 @@ if (!function_exists('array_except')) {
 	 * @param array|string $keys
 	 * @return array
 	 */
-	function array_except($array, $keys)
-	{
+	function array_except($array, $keys) {
 		return Arr::except($array, $keys);
 	}
 }
@@ -591,8 +554,7 @@ if (!function_exists('array_exists')) {
 	 * @param string|int $key
 	 * @return bool
 	 */
-	function array_exists($array, $key)
-	{
+	function array_exists($array, $key) {
 		return Arr::exists($array, $key);
 	}
 }
@@ -607,8 +569,7 @@ if (!function_exists('array_first')) {
 	 * @param mixed $default
 	 * @return mixed
 	 */
-	function array_first($array, $callback = null, $default = null)
-	{
+	function array_first($array, $callback = null, $default = null) {
 		return Arr::first($array, $callback, $default);
 	}
 }
@@ -623,8 +584,7 @@ if (!function_exists('array_last')) {
 	 * @param mixed $default
 	 * @return mixed
 	 */
-	function array_last($array, $callback = null, $default = null)
-	{
+	function array_last($array, $callback = null, $default = null) {
 		return Arr::last($array, $callback, $default);
 	}
 }
@@ -637,8 +597,7 @@ if (!function_exists('array_flatten')) {
 	 * @param int $depth
 	 * @return array
 	 */
-	function array_flatten($array, $depth = INF)
-	{
+	function array_flatten($array, $depth = INF) {
 		return Arr::flatten($array, $depth);
 	}
 }
@@ -651,8 +610,7 @@ if (!function_exists('array_forget')) {
 	 * @param array|string $keys
 	 * @return void
 	 */
-	function array_forget(&$array, $keys)
-	{
+	function array_forget(&$array, $keys) {
 		Arr::forget($array, $keys);
 	}
 }
@@ -666,8 +624,7 @@ if (!function_exists('array_get')) {
 	 * @param mixed $default
 	 * @return mixed
 	 */
-	function array_get($array, $key, $default = null)
-	{
+	function array_get($array, $key, $default = null) {
 		return Arr::get($array, $key, $default);
 	}
 }
@@ -680,8 +637,7 @@ if (!function_exists('array_has')) {
 	 * @param string|array $keys
 	 * @return bool
 	 */
-	function array_has($array, $keys)
-	{
+	function array_has($array, $keys) {
 		return Arr::has($array, $keys);
 	}
 }
@@ -694,8 +650,7 @@ if (!function_exists('array_is_assoc')) {
 	 * @param array $array
 	 * @return bool
 	 */
-	function array_is_assoc($array)
-	{
+	function array_is_assoc($array) {
 		return Arr::isAssoc($array);
 	}
 }
@@ -708,8 +663,7 @@ if (!function_exists('array_only')) {
 	 * @param array|string $keys
 	 * @return array
 	 */
-	function array_only($array, $keys)
-	{
+	function array_only($array, $keys) {
 		return Arr::only($array, $keys);
 	}
 }
@@ -723,8 +677,7 @@ if (!function_exists('array_pluck')) {
 	 * @param string|array|null $key
 	 * @return array
 	 */
-	function array_pluck($array, $value, $key = null)
-	{
+	function array_pluck($array, $value, $key = null) {
 		return Arr::pluck($array, $value, $key);
 	}
 }
@@ -738,8 +691,7 @@ if (!function_exists('array_prepend')) {
 	 * @param mixed $key
 	 * @return array
 	 */
-	function array_prepend($array, $value, $key = null)
-	{
+	function array_prepend($array, $value, $key = null) {
 		return Arr::prepend($array, $value, $key);
 	}
 }
@@ -753,8 +705,7 @@ if (!function_exists('array_pull')) {
 	 * @param mixed $default
 	 * @return mixed
 	 */
-	function array_pull(&$array, $key, $default = null)
-	{
+	function array_pull(&$array, $key, $default = null) {
 		return Arr::pull($array, $key, $default);
 	}
 }
@@ -769,8 +720,7 @@ if (!function_exists('array_random')) {
 	 *
 	 * @throws InvalidArgumentException
 	 */
-	function array_random($array, $number = null)
-	{
+	function array_random($array, $number = null) {
 		return Arr::random($array, $number);
 	}
 }
@@ -785,8 +735,7 @@ if (!function_exists('array_set')) {
 	 * @param mixed $value
 	 * @return array
 	 */
-	function array_set(&$array, $key, $value)
-	{
+	function array_set(&$array, $key, $value) {
 		return Arr::set($array, $key, $value);
 	}
 }
@@ -798,8 +747,7 @@ if (!function_exists('array_shuffle')) {
 	 * @param array $array
 	 * @return array
 	 */
-	function array_shuffle($array)
-	{
+	function array_shuffle($array) {
 		return Arr::shuffle($array);
 	}
 }
@@ -812,8 +760,7 @@ if (!function_exists('array_sort')) {
 	 * @param callable|string $callback
 	 * @return array
 	 */
-	function array_sort($array, $callback)
-	{
+	function array_sort($array, $callback) {
 		return Arr::sort($array, $callback);
 	}
 }
@@ -825,8 +772,7 @@ if (!function_exists('array_sort_recursive')) {
 	 * @param array $array
 	 * @return array
 	 */
-	function array_sort_recursive($array)
-	{
+	function array_sort_recursive($array) {
 		return Arr::sortRecursive($array);
 	}
 }
@@ -839,8 +785,7 @@ if (!function_exists('array_where')) {
 	 * @param callable $callback
 	 * @return array
 	 */
-	function array_where($array, $callback)
-	{
+	function array_where($array, $callback) {
 		return Arr::where($array, $callback);
 	}
 }
@@ -852,8 +797,7 @@ if (!function_exists('array_wrap')) {
 	 * @param mixed $value
 	 * @return array
 	 */
-	function array_wrap($value)
-	{
+	function array_wrap($value) {
 		return Arr::wrap($value);
 	}
 }
@@ -865,8 +809,7 @@ if (!function_exists('head')) {
 	 * @param array $array
 	 * @return mixed
 	 */
-	function head($array)
-	{
+	function head($array) {
 		return reset($array);
 	}
 }
@@ -878,8 +821,7 @@ if (!function_exists('last')) {
 	 * @param array $array
 	 * @return mixed
 	 */
-	function last($array)
-	{
+	function last($array) {
 		return end($array);
 	}
 }
@@ -891,8 +833,7 @@ if (!function_exists('blank')) {
 	 * @param mixed $value
 	 * @return bool
 	 */
-	function blank($value)
-	{
+	function blank($value) {
 		if (is_null($value)) return true;
 		if (is_string($value)) return trim($value) === '';
 		if (is_numeric($value) || is_bool($value)) return false;
@@ -909,8 +850,7 @@ if (!function_exists('filled')) {
 	 * @param mixed $value
 	 * @return bool
 	 */
-	function filled($value)
-	{
+	function filled($value) {
 		return !blank($value);
 	}
 }
@@ -922,8 +862,7 @@ if (!function_exists('class_basename')) {
 	 * @param string|object $class
 	 * @return string
 	 */
-	function class_basename($class)
-	{
+	function class_basename($class) {
 		$class = is_object($class) ? get_class($class) : $class;
 		return basename(str_replace('\\', '/', $class));
 	}
@@ -938,8 +877,7 @@ if (! function_exists('object_get')) {
 	 * @param mixed $default
 	 * @return mixed
 	 */
-	function object_get($object, $key, $default = null)
-	{
+	function object_get($object, $key, $default = null) {
 		if (is_null($key) || trim($key) == '') {
 			return $object;
 		}
@@ -962,8 +900,7 @@ if (!function_exists('windows_os')) {
 	 *
 	 * @return bool
 	 */
-	function windows_os()
-	{
+	function windows_os() {
 		return strtolower(substr(PHP_OS, 0, 3)) === 'win';
 	}
 }
@@ -976,8 +913,7 @@ if (!function_exists('request')) {
 	 * @param mixed|null $default
 	 * @return \Horizon\Http\Request|string|null
 	 */
-	function request($input = null, $default = null)
-	{
+	function request($input = null, $default = null) {
 		$request = Application::kernel()->http()->request();
 
 		if (!is_null($input)) {
@@ -997,8 +933,7 @@ if (!function_exists('response')) {
 	 * @param array|null $headers
 	 * @return \Horizon\Http\Response
 	 */
-	function response($output = null, $code = null, $headers = null)
-	{
+	function response($output = null, $code = null, $headers = null) {
 		$response = Application::kernel()->http()->response();
 
 		if (!is_null($output)) {
@@ -1027,8 +962,7 @@ if (!function_exists('session')) {
 	 * @param mixed|null $value
 	 * @return \Horizon\Http\Cookie\Session|mixed
 	 */
-	function session($name = null, $value = null)
-	{
+	function session($name = null, $value = null) {
 		$session = request()->session();
 
 		if (!is_null($name)) {
@@ -1050,8 +984,7 @@ if (!function_exists('csrf_token')) {
 	 *
 	 * @return string
 	 */
-	function csrf_token()
-	{
+	function csrf_token() {
 		return session()->csrf();
 	}
 }
@@ -1125,8 +1058,7 @@ if (!function_exists('encrypt')) {
 	 * @param string|mixed $value
 	 * @return string
 	 */
-	function encrypt($value)
-	{
+	function encrypt($value) {
 		if (!is_string($value)) {
 			$value = serialize($value);
 		}
@@ -1143,8 +1075,7 @@ if (!function_exists('decrypt')) {
 	 * @param string $value
 	 * @return string|mixed
 	 */
-	function decrypt($value)
-	{
+	function decrypt($value) {
 		$decrypted = FastEncrypt::decrypt($value);
 
 		if (is_serialized($decrypted)) {
@@ -1169,8 +1100,7 @@ if (!function_exists('config')) {
 	 * @param mixed|null $default
 	 * @return mixed
 	 */
-	function config($key, $default = null)
-	{
+	function config($key, $default = null) {
 		try {
 			return Application::config($key, $default);
 		} catch (HorizonException $e) {
@@ -1187,8 +1117,7 @@ if (!function_exists('view')) {
 	 * @param array $context
 	 * @return void
 	 */
-	function view($templateFile, array $context = array())
-	{
+	function view($templateFile, array $context = array()) {
 		response()->view($templateFile, $context);
 	}
 }
@@ -1202,8 +1131,7 @@ if (!function_exists('redirect')) {
 	 * @param bool $halt
 	 * @return false
 	 */
-	function redirect($to = null, $code = 302, $halt = true)
-	{
+	function redirect($to = null, $code = 302, $halt = true) {
 		if ($halt) response()->halt();
 		response()->redirect($to, $code);
 
@@ -1220,8 +1148,7 @@ if (!function_exists('__')) {
 	 * @param array $variables
 	 * @return string
 	 */
-	function __($text, $variables = array())
-	{
+	function __($text, $variables = array()) {
 		return Application::kernel()->translation()->bucket()->translate($text, $variables);
 	}
 }
@@ -1235,8 +1162,7 @@ if (!function_exists('translate')) {
 	 * @param array $variables
 	 * @return string
 	 */
-	function translate($text, $variables = array())
-	{
+	function translate($text, $variables = array()) {
 		return __($text, $variables);
 	}
 }
@@ -1247,8 +1173,7 @@ if (!function_exists('bucket')) {
 	 *
 	 * @return \Horizon\Translation\LanguageBucket
 	 */
-	function bucket()
-	{
+	function bucket() {
 		return Application::kernel()->translation()->bucket();
 	}
 }
@@ -1260,8 +1185,7 @@ if (!function_exists('is_octal')) {
 	 * @param int $int
 	 * @return bool
 	 */
-	function is_octal($int)
-	{
+	function is_octal($int) {
 		return decoct(octdec($int)) == $int;
 	}
 }
@@ -1273,8 +1197,7 @@ if (!function_exists('abort')) {
 	 * @param int $code Exit code.
 	 * @return false
 	 */
-	function abort($code = 0)
-	{
+	function abort($code = 0) {
 		Application::kernel()->shutdown($code);
 		return false;
 	}
@@ -1286,8 +1209,7 @@ if (!function_exists('app_path')) {
 	 *
 	 * @return string
 	 */
-	function app_path()
-	{
+	function app_path() {
 		return Application::path('/app');
 	}
 }
@@ -1298,8 +1220,7 @@ if (!function_exists('base_path')) {
 	 *
 	 * @return string
 	 */
-	function base_path()
-	{
+	function base_path() {
 		return Application::path();
 	}
 }
@@ -1310,8 +1231,7 @@ if (!function_exists('config_path')) {
 	 *
 	 * @return string
 	 */
-	function config_path()
-	{
+	function config_path() {
 		return Application::path('/app/config');
 	}
 }
@@ -1322,8 +1242,7 @@ if (!function_exists('public_path')) {
 	 *
 	 * @return string
 	 */
-	function public_path()
-	{
+	function public_path() {
 		return Application::path('/app/public');
 	}
 }
@@ -1335,8 +1254,7 @@ if (!function_exists('path')) {
 	 * @param string $relative
 	 * @return string
 	 */
-	function path($relative = '')
-	{
+	function path($relative = '') {
 		return Application::path($relative);
 	}
 }
@@ -1349,8 +1267,7 @@ if (!function_exists('asset')) {
 	 * @param string $relativePath
 	 * @return string
 	 */
-	function asset($relativePath)
-	{
+	function asset($relativePath) {
 		$relativePath = trim($relativePath, '/');
 		$root = trim($_SERVER['SUBDIRECTORY'], '/');
 
@@ -1375,8 +1292,7 @@ if (!function_exists('asset_url')) {
 	 * @param string $relativePath
 	 * @return string
 	 */
-	function asset_url($relativePath)
-	{
+	function asset_url($relativePath) {
 		$uri = asset($relativePath);
 		$url = request()->url($uri);
 
@@ -1391,8 +1307,7 @@ if (!function_exists('secure_asset_url')) {
 	 * @param string $relativePath
 	 * @return string
 	 */
-	function secure_asset_url($relativePath)
-	{
+	function secure_asset_url($relativePath) {
 		$uri = asset($relativePath);
 		$url = request()->url($uri);
 
@@ -1413,8 +1328,7 @@ if (!function_exists('resolve')) {
 	 * @param string $className
 	 * @return object|null
 	 */
-	function resolve($className)
-	{
+	function resolve($className) {
 		return Application::container()->make($className);
 	}
 }
@@ -1425,8 +1339,7 @@ if (!function_exists('app')) {
 	 *
 	 * @return Container
 	 */
-	function app()
-	{
+	function app() {
 		return Application::container();
 	}
 }
@@ -1440,8 +1353,7 @@ if (!function_exists('report')) {
 	 * @param bool $forceLogging
 	 * @return void
 	 */
-	function report(Exception $ex, $forceLogging = false)
-	{
+	function report(Exception $ex, $forceLogging = false) {
 		$error = HorizonError::fromException($ex);
 
 		$handler = ErrorMiddleware::getErrorHandler();
@@ -1466,8 +1378,7 @@ if (!function_exists('env')) {
 	 * @param mixed $default
 	 * @return mixed
 	 */
-	function env($name, $default = null)
-	{
+	function env($name, $default = null) {
 		return Environment::get($name, $default);
 	}
 }
