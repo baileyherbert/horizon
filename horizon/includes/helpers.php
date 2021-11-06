@@ -1410,6 +1410,20 @@ if (!function_exists('delenv')) {
 	}
 }
 
+if (!function_exists('is_mode')) {
+	/**
+	 * Returns if the environment matches the given mode.
+	 *
+	 * This looks at the `APP_MODE` environment variable which typically should be either `production` or `development`.
+	 *
+	 * @param string $mode
+	 * @return bool
+	 */
+	function is_mode($mode) {
+		return Application::mode() === $mode;
+	}
+}
+
 if (!function_exists('datetime_to_timestamp')) {
 	/**
 	 * Converts a SQL `DATETIME` value to a unix seconds timestamp with an optional timezone.

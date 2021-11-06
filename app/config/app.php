@@ -22,31 +22,6 @@ return array(
 	'timezone' => env('app_timezone', 'UTC'),
 
 	/*
-		Determines whether the PHP version will be exposed in headers. This is enabled by default in PHP but because
-		the Horizon framework overrides the 'X-Powered-By' header, you can customize this easily here.
-
-		Available values:
-
-			- true          Current version of PHP will be shown in headers.
-			- false         Current version of PHP will be removed from headers.
-
-		Default value: false
-	*/
-	'expose_php' => false,
-
-	/*
-		Determines whether the Horizon Framework will be advertised in the `X-Powered-By` header.
-
-		Available values:
-
-			- true          Horizon will be shown in headers.
-			- false         Horizon will be removed from headers.
-
-		Default value: false
-	*/
-	'expose_horizon' => false,
-
-	/*
 		Determines if the framework will automatically redirect to directories when a page with the name of the directory
 		is requested but not found. For example, if the directory /test/ exists but the user tries to load "/test" and
 		no such page exists, they will be redirected (301) to "/test/".
@@ -72,7 +47,7 @@ return array(
 
 		Default value: true
 	*/
-	'view_cache' => false,
+	'view_cache' => is_mode('production'),
 
 	/*
 		The current version of the application.

@@ -306,8 +306,8 @@ class Kernel {
 	private function sendExposedHeader() {
 		$framework = 'Horizon';
 
-		if (config('app.expose_php', true)) $framework .= ' / PHP ' . phpversion();
-		if (config('app.expose_horizon', true) === false) header_remove('X-Powered-By');
+		if (config('app.expose_php', false)) $framework .= ' / PHP ' . phpversion();
+		if (config('app.expose_horizon', false) === false) header_remove('X-Powered-By');
 		else if (!headers_sent()) header('X-Powered-By: ' . $framework);
 	}
 

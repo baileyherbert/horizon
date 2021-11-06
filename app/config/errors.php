@@ -27,9 +27,9 @@ return array(
 			- true          Errors and exceptions will be included in the output.
 			- false         Errors and exceptions will be silently ignored if possible.
 
-		Default value: false
+		Default value: development=true, production=false
 	*/
-	'display_errors' => env('display_errors', false),
+	'display_errors' => env('display_errors', is_mode('development')),
 
 	/*
 		Determines the error severity level at which errors should be displayed. Severity levels which are lower will not
@@ -45,7 +45,7 @@ return array(
 
 		Default value: 4
 	*/
-	'display_sensitivity' => env('display_errors_level', 4),
+	'display_sensitivity' => env('display_errors_level', 3),
 
 	/*
 		Determines whether errors in the framework or app will be logged to the filesystem. Errors are always logged
