@@ -2,9 +2,15 @@
 
 namespace Horizon\Console;
 
+use Exception;
+use Horizon\Exception\ErrorMiddleware;
+use Horizon\Exception\HorizonError;
 use Horizon\Foundation\Framework;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Exception\RuntimeException;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -100,6 +106,32 @@ class Kernel
     }
 
     /**
+     * Executes the given command on the internal command line tool with the specified arguments array. Errors will
+     * not be caught. The exit code is returned.
+     *
+     * @param string[] $args
+     * @param OutputInterface|null $output
+     * @return int
+     */
+    public function execute(array $args, OutputInterface $output = null) {
+        $input = new ArrayInput($args);
+        $output = $output ?: new ConsoleOutput();
+
+        $this->consoleApp->setAutoExit(false);
+        $this->consoleApp->setCatchExceptions(false);
+        return $this->consoleApp->run($input, $output);
+    }
+
+    /**
+     * Returns the current console app (if we are running in a console context) or null otherwise.
+     *
+     * @return Application|null
+     */
+    public function getConsoleApp() {
+        return $this->consoleApp;
+    }
+
+    /**
      * Handles the given exception from within a console command.
      *
      * @param Exception|Error $ex
@@ -117,8 +149,6 @@ class Kernel
             if (config('errors.console_reporting', true)) {
                 $handler->report($error);
             }
-
-            $this->consoleApp->renderException($e, $output);
         }
 
         $this->consoleApp->renderException($ex, $this->output);
