@@ -2,6 +2,8 @@
 
 namespace Horizon\Database;
 
+use DateTime;
+use DateTimeZone;
 use Exception;
 use Horizon\Events\EventEmitter;
 use Horizon\Database\Drivers\DriverInterface;
@@ -309,6 +311,21 @@ class Database extends EventEmitter {
 	 */
 	public function close() {
 		$this->driver->close();
+	}
+
+	/**
+	 * Sets the timezone of the connection. If a timezone is not specified, uses the application's global default
+	 * timezone instead.
+	 *
+	 * @param string|null $timezone
+	 * @return void
+	 */
+	public function setTimezone($timezone = null) {
+		$timezone = new DateTimeZone($timezone ?: config('app.timezone', 'UTC'));
+		$date = new DateTime('now', $timezone);
+		$offset = $date->format('P');
+
+		$this->driver->query("SET time_zone = '$offset';");
 	}
 
 }

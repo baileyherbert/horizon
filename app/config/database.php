@@ -71,6 +71,13 @@ return array(
 		*/
 		'preferred_driver' => env('db_driver', 'mysqli'),
 
+		/*
+			Determines whether the application's timezone will be set on database connections. This will execute as a
+			single query and will slow down database initialization variably based on latency. If you know that your
+			database server and application share the same time zone, disable this.
+		*/
+		'send_timezone' => true,
+
 		/**
 		 * An array of directories, relative to the application's root directory, where migrations should be created in
 		 * and loaded from. The `ace make:migration` command line tool will create new migrations in the first entry

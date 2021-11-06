@@ -80,6 +80,12 @@ class PdoDriver implements DriverInterface {
 
 		// Set the charset and collation
 		$this->handle->exec(sprintf('SET NAMES %s COLLATE %s;', $config['charset'], $config['collation']));
+
+		// Set the timezone
+		if (config('database.send_timezone', true)) {
+			$this->database->setTimezone();
+		}
+
 		Profiler::stop('database:connect');
 	}
 

@@ -67,6 +67,11 @@ class LegacyDriver implements DriverInterface {
 		// Set the charset and collation
 		@mysql_set_charset($config['charset'], $this->handle);
 		@mysql_query(sprintf('SET NAMES %s COLLATE %s;', $config['charset'], $config['collation']), $this->handle);
+
+		if (config('database.send_timezone', true)) {
+			$this->database->setTimezone();
+		}
+
 		Profiler::stop('database:connect');
 	}
 

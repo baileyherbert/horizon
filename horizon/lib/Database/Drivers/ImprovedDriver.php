@@ -63,6 +63,11 @@ class ImprovedDriver implements DriverInterface {
 		Profiler::start('database:connect:charset', $config['charset']);
 		$this->handle->set_charset($config['charset']);
 		$this->handle->query(sprintf('SET NAMES %s COLLATE %s;', $config['charset'], $config['collation']));
+
+		if (config('database.send_timezone', true)) {
+			$this->database->setTimezone();
+		}
+
 		Profiler::stop('database:connect:charset');
 		Profiler::stop('database:connect');
 	}
