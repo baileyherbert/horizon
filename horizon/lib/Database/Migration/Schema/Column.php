@@ -73,6 +73,13 @@ class Column {
 	private $defaultValueSet = false;
 
 	/**
+	 * The operation to perform on row update.
+	 *
+	 * @var string|null
+	 */
+	private $onUpdateOperation;
+
+	/**
 	 * Determines the column's comment.
 	 *
 	 * @var string|null
@@ -205,6 +212,18 @@ class Column {
 	}
 
 	/**
+	 * Set the operation that the column performs when the row is updated.
+	 *
+	 * @param mixed $value
+	 * @return $this
+	 */
+	public function onUpdate($operation) {
+		$this->onUpdateOperation = $operation;
+
+		return $this;
+	}
+
+	/**
 	 * Place the column "first" in the table
 	 *
 	 * @return $this
@@ -287,10 +306,15 @@ class Column {
 	/**
 	 * Set the TIMESTAMP column to use CURRENT_TIMESTAMP as default value.
 	 *
+	 * @param bool $onUpdate When true, the timestamp will be updated to the current whenever the row changes as well.
 	 * @return $this
 	 */
-	public function useCurrent() {
+	public function useCurrent($onUpdate = false) {
 		$this->defaults('CURRENT_TIMESTAMP');
+
+		if ($onUpdate) {
+			$this->onUpdate('CURRENT_TIMESTAMP');
+		}
 
 		return $this;
 	}
@@ -320,6 +344,7 @@ class Column {
 			$this->compileCollate(),
 			$this->compileNullable(),
 			$this->compileDefault(),
+			$this->compileOnUpdate(),
 			$this->compileIncrements(),
 			$this->compileComment(),
 			(!is_null($this->placement) && $this->change) ? $this->placement : ''
@@ -375,6 +400,19 @@ class Column {
 	private function compileDefault() {
 		if ($this->defaultValueSet) {
 			return 'DEFAULT ' . Grammar::compileDefault($this->defaultValue);
+		}
+
+		return '';
+	}
+
+	/**
+	 * Compiles the on update operation. For example, "ON UPDATE CURRENT_TIMESTAMP".
+	 *
+	 * @return string
+	 */
+	private function compileOnUpdate() {
+		if ($this->onUpdateOperation) {
+			return 'ON UPDATE ' . Grammar::compileDefault($this->onUpdateOperation);
 		}
 
 		return '';

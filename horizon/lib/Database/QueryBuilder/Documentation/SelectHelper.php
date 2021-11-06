@@ -26,7 +26,7 @@ use Horizon\Database\Model;
  *
  * @method string compile() Gets the query as a prepared string.
  * @method array getParameters() Gets an array of parameter values for prepared statements.
- * @method void setModel(Model $model) Overrides the model to use for the results.
+ * @method $this setModel(string $model) Overrides the model to use for the results.
  *
  * @method object|int|bool exec() Executes the query.
  * @method object[]|Model[] get() Fetches all rows in the query as objects, or models if configured.

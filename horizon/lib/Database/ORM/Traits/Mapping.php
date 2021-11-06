@@ -19,6 +19,7 @@ trait Mapping {
 	protected $incrementing = true;
 	protected $storage = array();
 	protected $changes = array();
+	protected $fixes = array();
 
 	/**
 	 * Name of database connection to use for this model.
@@ -98,6 +99,16 @@ trait Mapping {
 			$this->emit('inserted', $returned);
 		}
 		else {
+			if (!empty($this->fixes)) {
+				foreach ($this->fixes as $key) {
+					if (!isset($this->changes[$key])) {
+						$this->changes[$key] = $this->storage[$key];
+					}
+				}
+
+				$this->fixes = array();
+			}
+
 			$builder = \DB::connection($this->getConnection())->update()->table($this->getTable())->values($this->changes);
 			$builder->where($keyName, '=', $keyValue);
 			$builder->exec();

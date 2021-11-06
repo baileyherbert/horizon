@@ -11,7 +11,6 @@ class Model extends EventEmitter implements \JsonSerializable {
 
 	use ORM\Traits\Mapping;
 	use ORM\Traits\QueryBuilding;
-	use ORM\Traits\Timestamps;
 	use ORM\Traits\Serializable;
 
 	/**

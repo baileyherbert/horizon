@@ -418,6 +418,17 @@ class Blueprint {
 	}
 
 	/**
+	 * Creates the `created_at` and `updated_at` columns on the table. Both will be set to the current timestamp at
+	 * row creation, and the `updated_at` column will automatically update to the current time when the row is changed.
+	 *
+	 * @return void
+	 */
+	public function timestamps() {
+		$this->timestamp('created_at')->useCurrent();
+		$this->timestamp('updated_at')->useCurrent(true);
+	}
+
+	/**
 	 * Determine if the blueprint has a create command.
 	 *
 	 * @return bool
