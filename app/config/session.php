@@ -51,6 +51,23 @@ return array(
 
 		Default value: true
 	*/
-	'encrypt' => env('session_encryption', true)
+	'encrypt' => env('session_encryption', true),
+
+	/*
+		Determines whether to use `serialize()` or `json_encode()` for data stored in the session. Using native
+		serialization allows more advanced data types to be stored, but causes decreased session write performance.
+		JSON restricts data types to a safe selection, but causes slower read performance.
+
+		Changing this will cause existing sessions to become invalidated. The cookie driver will clear all affected
+		cookies automatically.
+
+		Available values:
+
+			- true          Uses native serialization (faster read / accepts all types).
+			- false         Uses JSON serialization (faster write / accepts basic types).
+
+		Default value: true
+	*/
+	'serialize' => true
 
 );

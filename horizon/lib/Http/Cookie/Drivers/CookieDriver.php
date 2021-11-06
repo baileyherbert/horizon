@@ -2,10 +2,12 @@
 
 namespace Horizon\Http\Cookie\Drivers;
 
+use Exception;
 use Horizon\Foundation\Framework;
 use Horizon\Http\Cookie\Session;
 use Horizon\Exception\HorizonException;
 use Horizon\Encryption\FastEncrypt;
+use Horizon\Http\Cookie\CookieInitializationException;
 
 class CookieDriver implements DriverInterface {
 
@@ -71,19 +73,68 @@ class CookieDriver implements DriverInterface {
 			}
 		}
 
-		// Load flash data
-		foreach ($_SESSION[$this->token . '_flash'] as $key => $value) {
-			$this->currentFlashData[$key] = json_decode($this->decrypt($value), true);
-			$this->sessionData[$key] = $this->currentFlashData[$key];
-		}
+		try {
+			// Load flash data
+			foreach ($_SESSION[$this->token . '_flash'] as $key => $value) {
+				$this->currentFlashData[$key] = $this->unserialize($this->decrypt($value));
+				$this->sessionData[$key] = $this->currentFlashData[$key];
+			}
 
-		// Load variables into the payload
-		foreach ($_SESSION[$this->token] as $key => $value) {
-			$this->sessionData[$key] = json_decode($this->decrypt($value), true);
+			// Load variables into the payload
+			foreach ($_SESSION[$this->token] as $key => $value) {
+				$this->sessionData[$key] = $this->unserialize($this->decrypt($value));
+			}
+		}
+		catch (CookieInitializationException $ex) {
+			// When we fail to parse data, clear the entire session
+			$this->clear();
 		}
 
 		// Expire flash data
 		$this->expireFlash();
+	}
+
+	/**
+	 * Unserializes data from a string. Throws an exception if the data cannot be read.
+	 *
+	 * @param string $data
+	 * @return mixed
+	 * @throws CookieInitializationException
+	 */
+	private function unserialize($data) {
+		if (config('session.serialize', true)) {
+			$result = @unserialize($data);
+
+			if ($result === false && $data !== 'b:0;') {
+				throw new CookieInitializationException();
+			}
+
+			return $result;
+		}
+		else {
+			$result = @json_decode($data, true);
+
+			if (is_null($result)) {
+				throw new CookieInitializationException();
+			}
+
+			return $result;
+		}
+	}
+
+	/**
+	 * Serializes data into a string.
+	 *
+	 * @param mixed $object
+	 * @return string
+	 */
+	private function serialize($object) {
+		if (config('session.serialize', true)) {
+			return serialize($object);
+		}
+		else {
+			return json_encode($object);
+		}
 	}
 
 	/**
@@ -208,8 +259,12 @@ class CookieDriver implements DriverInterface {
 	 * @return void
 	 */
 	public function put($key, $value) {
+		if (is_null($value)) {
+			return $this->forget($key);
+		}
+
 		$this->sessionData[$key] = $value;
-		$_SESSION[$this->token][$key] = $this->encrypt(json_encode($value));
+		$_SESSION[$this->token][$key] = $this->encrypt($this->serialize($value));
 	}
 
 	/**
@@ -293,7 +348,7 @@ class CookieDriver implements DriverInterface {
 	 */
 	public function flash($key, $value) {
 		$this->newFlashData[$key] = $value;
-		$_SESSION[$this->token . '_flash'][$key] = $this->encrypt(json_encode($value));
+		$_SESSION[$this->token . '_flash'][$key] = $this->encrypt($this->serialize($value));
 	}
 
 	/**
