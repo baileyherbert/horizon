@@ -12,6 +12,7 @@ use Horizon\Support\Profiler;
 use Horizon\Support\Services\ServiceProvider;
 use Horizon\Translation\Kernel as TranslationKernel;
 use Horizon\Extension\Kernel as ExtensionKernel;
+use Horizon\Foundation\Services\Environment;
 use Horizon\View\Kernel as ViewKernel;
 
 /**
@@ -39,6 +40,10 @@ class Kernel {
 	public function boot() {
 		// Do nothing if we've already booted
 		if ($this->booted) return;
+
+		// Ensure environment variables
+		if (!env('HORIZON_MODE')) Environment::set('HORIZON_MODE', 'web');
+		if (!env('APP_MODE')) Environment::set('APP_MODE', 'production');
 
 		// Start profiling
 		Profiler::start('kernel');

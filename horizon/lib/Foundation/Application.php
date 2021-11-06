@@ -101,7 +101,7 @@ class Application {
 	public static function asset($relative = '') {
 		$root = rtrim(self::basedir(), '/');
 
-		if (USE_LEGACY_ROUTING) {
+		if (Application::routing() === 'legacy') {
 			return $root . '/app/public/' . ltrim($relative, '/');
 		}
 
@@ -109,19 +109,21 @@ class Application {
 	}
 
 	/**
-	 * Gets the current environment in which the application is running (console, test, production).
+	 * Returns the current environment (`web`, `test`, or `console`).
 	 *
 	 * @return string
 	 */
 	public static function environment() {
-		if (($environment = getenv('HORIZON_ENVIRONMENT')) === false) {
-			if (defined('CONSOLE_MODE')) return 'console';
-			if (defined('USE_LEGACY_ROUTING')) return 'production';
+		return env('HORIZON_MODE');
+	}
 
-			return 'unknown';
-		}
-
-		return $environment;
+	/**
+	 * Returns the current environment mode (`production`, `development`, or `staging`).
+	 *
+	 * @return string
+	 */
+	public static function mode() {
+		return env('APP_MODE');
 	}
 
 	/**
@@ -130,11 +132,7 @@ class Application {
 	 * @return string
 	 */
 	public static function routing() {
-		if (defined('USE_LEGACY_ROUTING')) {
-			return USE_LEGACY_ROUTING ? 'legacy' : 'rewrite';
-		}
-
-		return 'none';
+		return env('ROUTING_MODE', 'router');
 	}
 
 	/**

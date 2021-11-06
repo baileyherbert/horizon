@@ -1271,7 +1271,7 @@ if (!function_exists('asset')) {
 		$relativePath = trim($relativePath, '/');
 		$root = trim($_SERVER['SUBDIRECTORY'], '/');
 
-		if (USE_LEGACY_ROUTING) {
+		if (Application::routing() === 'legacy') {
 			$path = Path::join('/', $root, 'app/public', $relativePath);
 			$path = str_replace('\\', '/', $path);
 

@@ -123,7 +123,7 @@ class ErrorHandler implements ErrorHandlerInterface {
 	 * @return bool
 	 */
 	private function useHtml() {
-		return (Application::environment() == 'production');
+		return (Application::environment() == 'web');
 	}
 
 }

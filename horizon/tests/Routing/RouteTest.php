@@ -6,8 +6,6 @@ use Horizon\Routing\Router;
 use Horizon\Routing\Route;
 use Horizon\Http\Request;
 
-define('USE_LEGACY_ROUTING', false);
-
 class RouteTest extends TestCase
 {
 

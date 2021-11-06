@@ -2,6 +2,7 @@
 
 namespace Horizon\Routing\Matching;
 
+use Horizon\Foundation\Application;
 use Horizon\Routing\Route;
 use Horizon\Http\Request;
 
@@ -15,7 +16,7 @@ class UriValidator {
 	 * @return bool
 	 */
 	public function matches(Route $route, Request $request) {
-		if (USE_LEGACY_ROUTING && $request->isLegacyRoutingAllowed()) {
+		if (Application::routing() === 'legacy' && $request->isLegacyRoutingAllowed()) {
 			return $this->legacy($route, $request);
 		}
 

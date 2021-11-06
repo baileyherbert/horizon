@@ -22,7 +22,7 @@ class HorizonTest extends TestCase
         $this->assertEquals('test', Framework::environment());
 
         $this->assertTrue(Framework::environment('test'));
-        $this->assertFalse(Framework::environment('production'));
+        $this->assertFalse(Framework::environment('web'));
     }
 
 }

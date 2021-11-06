@@ -349,7 +349,7 @@ class Kernel {
 		$newRequestUri = $requestUri;
 		$newRequestUri = substr($newRequestUri, strlen($shifted));
 
-		if (USE_LEGACY_ROUTING) {
+		if (Application::routing() === 'legacy') {
 			$nodes = Path::parse($newRequestUri);
 
 			if (empty($nodes) || $nodes[count($nodes) - 1]->directory) {

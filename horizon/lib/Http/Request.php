@@ -2,6 +2,7 @@
 
 namespace Horizon\Http;
 
+use Horizon\Foundation\Application;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Horizon\Routing\Route;
@@ -196,7 +197,7 @@ class Request extends SymfonyRequest {
 	 * Extracts arguments from the REQUEST_URI into the GET global.
 	 */
 	private static function injectQueryArgs() {
-		if (!USE_LEGACY_ROUTING) {
+		if (Application::routing() === 'router') {
 			$uri = $_SERVER['REQUEST_URI'];
 
 			if (strpos($uri, '?') !== false) {
@@ -251,7 +252,7 @@ class Request extends SymfonyRequest {
 	public function getLinkTo($toPath) {
 		$currentPath = $this->path();
 
-		if (USE_LEGACY_ROUTING) {
+		if (Application::routing() === 'legacy') {
 			$existingQuery = null;
 
 			if (str_contains($toPath, '?')) {

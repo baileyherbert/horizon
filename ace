@@ -1,8 +1,4 @@
 #!/usr/bin/env php
 <?php
 
-define('CONSOLE_MODE', true);
-
-require_once __DIR__ . '/horizon/vendor/autoload.php';
-
-Horizon\Foundation\Application::kernel()->boot();
+require_once __DIR__ . '/horizon/bootstrap/console.php';

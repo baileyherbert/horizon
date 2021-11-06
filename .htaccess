@@ -1,9 +1,5 @@
 # Horizon Routing
 
-<IfModule mod_env.c>
-	SetEnv HORIZON_ENVIRONMENT production
-</IfModule>
-
 <IfModule mod_rewrite.c>
 	RewriteEngine On
 

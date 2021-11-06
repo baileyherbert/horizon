@@ -66,7 +66,7 @@ class Framework {
 	 * Gets the current environment mode. If the first argument contains a string, returns a boolean representing
 	 * whether the provided string matches the environment or not (case-insensitive).
 	 *
-	 * Possible environments are ('production', 'test', 'console').
+	 * Possible environments are ('web', 'test', 'console').
 	 *
 	 * @param string $matches
 	 * @return string|bool
