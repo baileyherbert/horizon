@@ -13,4 +13,11 @@ interface CommandInterface {
 	 */
 	public function __construct(QueryBuilder $builder);
 
+	/**
+	 * Compiles the command into a string statement.
+	 *
+	 * @return string
+	 */
+	public function compile();
+
 }
