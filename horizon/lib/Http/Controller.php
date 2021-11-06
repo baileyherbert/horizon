@@ -4,16 +4,14 @@ namespace Horizon\Http;
 
 use Horizon\Foundation\Application;
 
-class Controller
-{
+class Controller {
 
 	/**
 	 * Get the middleware assigned to the controller. This is in excess to middleware defined at the router level.
 	 *
 	 * @return string[]|string
 	 */
-	public function getMiddleware()
-	{
+	public function getMiddleware() {
 		return array();
 	}
 
@@ -22,8 +20,7 @@ class Controller
 	 *
 	 * @return Request
 	 */
-	public function getRequest()
-	{
+	public function getRequest() {
 		return Application::kernel()->http()->request();
 	}
 
@@ -32,8 +29,7 @@ class Controller
 	 *
 	 * @return Response
 	 */
-	public function getResponse()
-	{
+	public function getResponse() {
 		return Application::kernel()->http()->response();
 	}
 

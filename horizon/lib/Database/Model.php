@@ -7,8 +7,7 @@ use Horizon\Events\EventEmitter;
 /**
  * Represents a row of data in the database.
  */
-class Model extends EventEmitter implements \JsonSerializable
-{
+class Model extends EventEmitter implements \JsonSerializable {
 
 	use ORM\Traits\Mapping;
 	use ORM\Traits\QueryBuilding;
@@ -20,8 +19,7 @@ class Model extends EventEmitter implements \JsonSerializable
 	 *
 	 * @param object|null $mapping A database row as an object, to map this model instance to.
 	 */
-	public function __construct($mapping = null)
-	{
+	public function __construct($mapping = null) {
 		if (is_object($mapping)) {
 			foreach ($mapping as $column => $value) {
 				$this->storage[$column] = $value;
@@ -34,8 +32,7 @@ class Model extends EventEmitter implements \JsonSerializable
 	 *
 	 * @return string
 	 */
-	public function __toString()
-	{
+	public function __toString() {
 		return $this->toJson();
 	}
 

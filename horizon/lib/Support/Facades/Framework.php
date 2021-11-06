@@ -5,16 +5,14 @@ namespace Horizon\Support\Facades;
 /**
  * Facade for access to framework-specific information and methods.
  */
-class Framework
-{
+class Framework {
 
 	/**
 	 * Gets the decoded composer.json object for the framework.
 	 *
 	 * @return object
 	 */
-	public static function composer()
-	{
+	public static function composer() {
 		return \Horizon\Foundation\Framework::composer();
 	}
 
@@ -23,8 +21,7 @@ class Framework
 	 *
 	 * @return string
 	 */
-	public static function version()
-	{
+	public static function version() {
 		return \Horizon\Foundation\Framework::version();
 	}
 
@@ -33,8 +30,7 @@ class Framework
 	 *
 	 * @return string
 	 */
-	public static function edition()
-	{
+	public static function edition() {
 		return \Horizon\Foundation\Framework::edition();
 	}
 

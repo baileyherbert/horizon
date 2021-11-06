@@ -2,7 +2,6 @@
 
 namespace Horizon\Database\Exception;
 
-class DatabaseDriverException extends \Exception
-{
+class DatabaseDriverException extends \Exception {
 
 }

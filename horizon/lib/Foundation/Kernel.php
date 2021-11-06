@@ -8,7 +8,6 @@ use Horizon\Foundation\Services\Autoloader;
 use Horizon\Routing\Kernel as RoutingKernel;
 use Horizon\Http\Kernel as HttpKernel;
 use Horizon\Database\Kernel as DatabaseKernel;
-use Horizon\Support\Path;
 use Horizon\Support\Profiler;
 use Horizon\Support\Services\ServiceProvider;
 use Horizon\Translation\Kernel as TranslationKernel;
@@ -21,8 +20,7 @@ use Horizon\View\Kernel as ViewKernel;
  *
  * @internal
  */
-class Kernel
-{
+class Kernel {
 
 	private $booted = false;
 
@@ -38,8 +36,7 @@ class Kernel
 	/**
 	 * Starts the framework.
 	 */
-	public function boot()
-	{
+	public function boot() {
 		// Do nothing if we've already booted
 		if ($this->booted) return;
 
@@ -111,8 +108,7 @@ class Kernel
 	 * @param int $code Exit code.
 	 * @return void
 	 */
-	public function shutdown($code = 0)
-	{
+	public function shutdown($code = 0) {
 		$this->database()->close();
 		exit($code);
 	}
@@ -120,16 +116,14 @@ class Kernel
 	/**
 	 * Sets basic PHP ini and other settings to match the app configuration.
 	 */
-	private function setRuntimeConfiguration()
-	{
+	private function setRuntimeConfiguration() {
 		date_default_timezone_set(config('app.timezone'));
 	}
 
 	/**
 	 * Starts the autoloader and mounts core namespaces.
 	 */
-	private function autoload()
-	{
+	private function autoload() {
 		// Get namespaces from configuration
 		foreach (config('namespaces.map') as $namespace => $relativePath) {
 			Autoloader::mount($namespace, Application::path($relativePath));
@@ -144,8 +138,7 @@ class Kernel
 	 *
 	 * @param int $priority
 	 */
-	private function invokeBootScripts($priority)
-	{
+	private function invokeBootScripts($priority) {
 		$classes = config('app.bootstrap', config('app.boot', array()));
 
 		foreach ($classes as $action => $p) {
@@ -179,8 +172,7 @@ class Kernel
 	 *
 	 * @throws \Horizon\Exception\HorizonException
 	 */
-	private function loadProviders()
-	{
+	private function loadProviders() {
 		Profiler::start('services:load');
 		$providers = Application::config('providers', array());
 

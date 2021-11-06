@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <phpunit bootstrap="bootstrap/test.php"
-		 color="true"
-		 convertErrorsToExceptions="true"
-		 convertNoticesToExceptions="true"
-		 convertWarningsToExceptions="true"
-		 stopOnFailure="false"
-		 syntaxCheck="false">
+		color="true"
+		convertErrorsToExceptions="true"
+		convertNoticesToExceptions="true"
+		convertWarningsToExceptions="true"
+		stopOnFailure="false"
+		syntaxCheck="false">
 	<testsuite>
 		<testsuite name="Horizon Framework">
 			<directory>./tests</directory>

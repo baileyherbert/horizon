@@ -4,15 +4,11 @@ namespace Horizon\View\Twig;
 
 use Twig_Extension;
 use Twig_Environment;
-
 use Horizon\Foundation\Framework;
 use Horizon\Support\Path;
-
 use Horizon\View\Template;
-use Horizon\View\Component;
 
-class TwigLoader
-{
+class TwigLoader {
 
 	/**
 	 * @var Template
@@ -34,8 +30,7 @@ class TwigLoader
 	 *
 	 * @param Template $template
 	 */
-	public function __construct(Template $template)
-	{
+	public function __construct(Template $template) {
 		$this->template = $template;
 		$this->loader = $this->createTwigLoader();
 		$this->environment = $this->createTwigEnvironment();
@@ -46,8 +41,7 @@ class TwigLoader
 	 *
 	 * @return string
 	 */
-	public function render()
-	{
+	public function render() {
 		$output = $this->environment->render(
 			$this->template->getPath(),
 			$this->template->getContext()
@@ -66,16 +60,14 @@ class TwigLoader
 	 *
 	 * @return TwigFileLoader
 	 */
-	protected function createTwigLoader()
-	{
+	protected function createTwigLoader() {
 		return new TwigFileLoader($this);
 	}
 
 	/**
 	 * Creates the twig environment instance.
 	 */
-	protected function createTwigEnvironment()
-	{
+	protected function createTwigEnvironment() {
 		// An array to store environment options
 		$options = array(
 			'cache' => $this->getCacheDirectory(),
@@ -97,8 +89,7 @@ class TwigLoader
 	 * @param Twig_Environment $environment
 	 * @param Twig_Extension[] $extensions
 	 */
-	protected function addExtensions(Twig_Environment $environment, array $extensions)
-	{
+	protected function addExtensions(Twig_Environment $environment, array $extensions) {
 		foreach ($extensions as $extension) {
 			$environment->addExtension($extension);
 		}
@@ -109,8 +100,7 @@ class TwigLoader
 	 *
 	 * @return bool
 	 */
-	protected function isCacheEnabled()
-	{
+	protected function isCacheEnabled() {
 		return config('app.view_cache', false);
 	}
 
@@ -119,8 +109,7 @@ class TwigLoader
 	 *
 	 * @return string|false
 	 */
-	protected function getCacheDirectory()
-	{
+	protected function getCacheDirectory() {
 		$path = Path::join(Framework::path('app'), 'cache');
 
 		if (!$this->isCacheEnabled()) {

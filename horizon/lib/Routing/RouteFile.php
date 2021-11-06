@@ -4,11 +4,7 @@ namespace Horizon\Routing;
 
 use Horizon\Support\Profiler;
 
-/**
- *
- */
-class RouteFile
-{
+class RouteFile {
 
 	/**
 	 * Absolute path to the route file.
@@ -22,8 +18,7 @@ class RouteFile
 	 *
 	 * @param string $path
 	 */
-	public function __construct($path)
-	{
+	public function __construct($path) {
 		$this->path = $path;
 	}
 
@@ -32,16 +27,14 @@ class RouteFile
 	 *
 	 * @return bool
 	 */
-	public function exists()
-	{
+	public function exists() {
 		return is_string($this->path) && file_exists($this->path);
 	}
 
 	/**
 	 * Loads the route file into the framework.
 	 */
-	public function load()
-	{
+	public function load() {
 		if ($this->exists()) {
 			Profiler::start('router:require');
 			require $this->path;

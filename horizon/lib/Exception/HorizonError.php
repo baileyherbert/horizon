@@ -4,8 +4,7 @@ namespace Horizon\Exception;
 
 use Exception;
 
-class HorizonError
-{
+class HorizonError {
 
 	private $message;
 	private $severity;
@@ -27,8 +26,7 @@ class HorizonError
 	 * @param string $context
 	 * @param \Exception|null $contextObject
 	 */
-	public function __construct($message, $severity, $file, $line, $context, $contextObject = null)
-	{
+	public function __construct($message, $severity, $file, $line, $context, $contextObject = null) {
 		$this->message = $message;
 		$this->severity = $severity;
 		$this->file = $file;
@@ -45,8 +43,7 @@ class HorizonError
 	 *
 	 * @return string
 	 */
-	public function getMessage()
-	{
+	public function getMessage() {
 		return $this->message;
 	}
 
@@ -55,8 +52,7 @@ class HorizonError
 	 *
 	 * @return int
 	 */
-	public function getLevel()
-	{
+	public function getLevel() {
 		return $this->severityLevel;
 	}
 
@@ -65,8 +61,7 @@ class HorizonError
 	 *
 	 * @return string
 	 */
-	public function getFile()
-	{
+	public function getFile() {
 		return $this->file;
 	}
 
@@ -75,8 +70,7 @@ class HorizonError
 	 *
 	 * @return int
 	 */
-	public function getLine()
-	{
+	public function getLine() {
 		return $this->line;
 	}
 
@@ -85,8 +79,7 @@ class HorizonError
 	 *
 	 * @return string
 	 */
-	public function getLabel()
-	{
+	public function getLabel() {
 		return $this->severityLabel;
 	}
 
@@ -96,8 +89,7 @@ class HorizonError
 	 *
 	 * @return string
 	 */
-	public function getContext()
-	{
+	public function getContext() {
 		return $this->context;
 	}
 
@@ -107,8 +99,7 @@ class HorizonError
 	 *
 	 * @return \Exception|null
 	 */
-	public function getException()
-	{
+	public function getException() {
 		if ($this->context == 'exception' && !is_null($this->contextObject)) {
 			if ($this->contextObject instanceof \Exception) {
 				return $this->contextObject;
@@ -125,8 +116,7 @@ class HorizonError
 	 * @param int $constant
 	 * @return int
 	 */
-	protected static function getSeverityLevelFromConstant($constant)
-	{
+	protected static function getSeverityLevelFromConstant($constant) {
 		static $severities = array(
 			E_NOTICE => 1,
 			E_USER_NOTICE => 1,
@@ -157,8 +147,7 @@ class HorizonError
 	 * @param int $severity
 	 * @return string
 	 */
-	protected static function getSeverityLabelFromLevel($severity)
-	{
+	protected static function getSeverityLabelFromLevel($severity) {
 		static $labels = array(
 			1 => 'Notice',
 			2 => 'Strict',

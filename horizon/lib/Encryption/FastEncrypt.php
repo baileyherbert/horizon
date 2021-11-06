@@ -9,14 +9,12 @@ use phpseclib\Crypt\AES;
  * of framework-generated, server-side data. If you wish to use symmetric key encryption for your own data, see the
  * SymmetricKey encryption class.
  */
-class FastEncrypt
-{
+class FastEncrypt {
 
 	/**
 	 * @param string $data The text to encrypt.
 	 */
-	public static function encrypt($data)
-	{
+	public static function encrypt($data) {
 		$cipher = self::generateCipher();
 		return $cipher->encrypt($data);
 	}
@@ -24,8 +22,7 @@ class FastEncrypt
 	/**
 	 * @param string $encrypted The encrypted data to decrypt.
 	 */
-	public static function decrypt($encrypted)
-	{
+	public static function decrypt($encrypted) {
 		$cipher = self::generateCipher();
 		return $cipher->decrypt($encrypted);
 	}
@@ -35,8 +32,7 @@ class FastEncrypt
 	 *
 	 * @return AES
 	 */
-	private static function generateCipher()
-	{
+	private static function generateCipher() {
 		$cipher = new AES();
 		$blockLength = ($cipher->getBlockLength() >> 3);
 
@@ -52,8 +48,7 @@ class FastEncrypt
 	 * @param $length
 	 * @return string Encryption key containing $length number of characters.
 	 */
-	private static function generateKey($length = 32)
-	{
+	private static function generateKey($length = 32) {
 		$base = substr(md5(__DIR__), 0, 10);
 
 		if (isset($_SERVER['PATH'])) $base .= substr(md5($_SERVER['PATH']), 2, 8);
@@ -76,8 +71,7 @@ class FastEncrypt
 	 * @param $length
 	 * @return string Encryption IV containing $length number of characters.
 	 */
-	private static function generateIV($length = 32)
-	{
+	private static function generateIV($length = 32) {
 		$base = substr(md5(__DIR__), 0, 5);
 
 		if (@ini_get('extension_dir')) $base .= substr(md5(ini_get('extension_dir')), 2, 4);

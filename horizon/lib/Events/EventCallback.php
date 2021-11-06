@@ -5,8 +5,7 @@ namespace Horizon\Events;
 define('EVENT_ONCE', 0x01);
 define('EVENT_EVERY', 0x02);
 
-class EventCallback
-{
+class EventCallback {
 
 	/**
 	 * @var callable The callback function.
@@ -26,8 +25,7 @@ class EventCallback
 	/**
 	 * Constructor
 	 */
-	public function __construct(callable $callable, $type = EVENT_ONCE)
-	{
+	public function __construct(callable $callable, $type = EVENT_ONCE) {
 		$this->callable = $callable;
 		$this->type = $type;
 	}

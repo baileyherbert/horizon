@@ -4,11 +4,7 @@ namespace Horizon\View;
 
 use Horizon\Support\Path;
 
-/**
- *
- */
-class ViewLoader
-{
+class ViewLoader {
 
 	/**
 	 * The root path for the file loader.
@@ -22,8 +18,7 @@ class ViewLoader
 	 *
 	 * @param string $path
 	 */
-	public function __construct($path)
-	{
+	public function __construct($path) {
 		$this->path = $path;
 	}
 
@@ -33,8 +28,7 @@ class ViewLoader
 	 * @param string $viewFileName
 	 * @return string|null
 	 */
-	public function resolve($viewFileName)
-	{
+	public function resolve($viewFileName) {
 		// Resolve the exact file name
 		if (file_exists($path = Path::resolve($this->path, $viewFileName)) && !is_dir($path)) {
 			return $path;

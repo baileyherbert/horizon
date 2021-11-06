@@ -5,9 +5,7 @@ namespace Horizon\Database\QueryBuilder;
 use Horizon\Support\Str;
 
 
-
-class ColumnDefinition
-{
+class ColumnDefinition {
 
 	/**
 	 * @var string
@@ -70,15 +68,13 @@ class ColumnDefinition
 	 * @param string $type
 	 * @param array $parameter
 	 */
-	public function __construct($type, $name, array $parameters = array())
-	{
+	public function __construct($type, $name, array $parameters = array()) {
 		$this->type = $type;
 		$this->name = $name;
 		$this->parameters = $parameters;
 	}
 
-	public function compile($includeName = true)
-	{
+	public function compile($includeName = true) {
 		return Str::join(
 			($includeName ? $this->compileName() : ''),
 			$this->compileDataType(),
@@ -86,13 +82,11 @@ class ColumnDefinition
 		);
 	}
 
-	protected function compileName()
-	{
+	protected function compileName() {
 		return StringBuilder::formatColumnName($this->name);
 	}
 
-	protected function compileDataType()
-	{
+	protected function compileDataType() {
 		$type = $this->type;
 		$compiled = array();
 
@@ -124,8 +118,7 @@ class ColumnDefinition
 		return Str::join($compiled);
 	}
 
-	protected function compileOptions()
-	{
+	protected function compileOptions() {
 		$compiled = array();
 
 		// Null
@@ -155,8 +148,7 @@ class ColumnDefinition
 	 * @param bool $bool
 	 * @return ColumnDefinition $this
 	 */
-	public function unsigned($bool = true)
-	{
+	public function unsigned($bool = true) {
 		$this->unsigned = $bool;
 		return $this;
 	}
@@ -167,8 +159,7 @@ class ColumnDefinition
 	 * @param bool $bool
 	 * @return ColumnDefinition $this
 	 */
-	public function zeroFill($bool = true)
-	{
+	public function zeroFill($bool = true) {
 		$this->zeroFill = $bool;
 		return $this;
 	}
@@ -179,8 +170,7 @@ class ColumnDefinition
 	 * @param string $charset
 	 * @return ColumnDefinition $this
 	 */
-	public function charset($charset)
-	{
+	public function charset($charset) {
 		$this->charset = $charset;
 		return $this;
 	}
@@ -191,8 +181,7 @@ class ColumnDefinition
 	 * @param string $collate
 	 * @return ColumnDefinition $this
 	 */
-	public function collate($collate)
-	{
+	public function collate($collate) {
 		$this->collate = $collate;
 		return $this;
 	}
@@ -203,8 +192,7 @@ class ColumnDefinition
 	 * @param bool $bool
 	 * @return ColumnDefinition $this
 	 */
-	public function isNull($bool = true)
-	{
+	public function isNull($bool = true) {
 		$this->isNull = $bool;
 		return $this;
 	}
@@ -215,8 +203,7 @@ class ColumnDefinition
 	 * @param mixed $default
 	 * @return ColumnDefinition $this
 	 */
-	public function defaults($default)
-	{
+	public function defaults($default) {
 		if (is_null($default)) {
 			$default = 'NULL';
 		}
@@ -234,8 +221,7 @@ class ColumnDefinition
 	 * @param bool $bool
 	 * @return ColumnDefinition $this
 	 */
-	public function autoIncrements($bool = true)
-	{
+	public function autoIncrements($bool = true) {
 		$this->autoIncrements = $bool;
 		return $this;
 	}
@@ -246,8 +232,7 @@ class ColumnDefinition
 	 * @param string $text
 	 * @return ColumnDefinition $this
 	 */
-	public function comment($text)
-	{
+	public function comment($text) {
 		$this->comment = $text;
 		return $this;
 	}
@@ -257,8 +242,7 @@ class ColumnDefinition
 	 *
 	 * @return bool
 	 */
-	public function isTextual()
-	{
+	public function isTextual() {
 		static $columns = array(
 			'CHAR', 'VARCHAR', 'TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT', 'ENUM', 'SET'
 		);
@@ -271,8 +255,7 @@ class ColumnDefinition
 	 *
 	 * @return bool
 	 */
-	public function isNumeric()
-	{
+	public function isNumeric() {
 		static $columns = array(
 			'TINYINT', 'SMALLINT', 'MEDIUMINT', 'INT', 'BIGINT', 'REAL', 'DOUBLE', 'FLOAT', 'DECIMAL', 'NUMERIC'
 		);
@@ -288,8 +271,7 @@ class ColumnDefinition
 	 * @param int $length
 	 * @return ColumnDefinition
 	 */
-	public static function bit($name, $length)
-	{
+	public static function bit($name, $length) {
 		return new ColumnDefinition('BIT', $name, array($length));
 	}
 
@@ -300,8 +282,7 @@ class ColumnDefinition
 	 * @param int $length
 	 * @return ColumnDefinition
 	 */
-	public static function tinyInteger($name, $length)
-	{
+	public static function tinyInteger($name, $length) {
 		return new ColumnDefinition('TINYINT', $name, array($length));
 	}
 
@@ -312,8 +293,7 @@ class ColumnDefinition
 	 * @param int $length
 	 * @return ColumnDefinition
 	 */
-	public static function smallInteger($name, $length)
-	{
+	public static function smallInteger($name, $length) {
 		return new ColumnDefinition('SMALLINT', $name, array($length));
 	}
 
@@ -324,8 +304,7 @@ class ColumnDefinition
 	 * @param int $length
 	 * @return ColumnDefinition
 	 */
-	public static function mediumInteger($name, $length)
-	{
+	public static function mediumInteger($name, $length) {
 		return new ColumnDefinition('MEDIUMINT', $name, array($length));
 	}
 
@@ -336,8 +315,7 @@ class ColumnDefinition
 	 * @param int $length
 	 * @return ColumnDefinition
 	 */
-	public static function integer($name, $length)
-	{
+	public static function integer($name, $length) {
 		return new ColumnDefinition('INT', $name, array($length));
 	}
 
@@ -348,8 +326,7 @@ class ColumnDefinition
 	 * @param int $length
 	 * @return ColumnDefinition
 	 */
-	public static function bigInteger($name, $length)
-	{
+	public static function bigInteger($name, $length) {
 		return new ColumnDefinition('BIGINT', $name, array($length));
 	}
 
@@ -361,8 +338,7 @@ class ColumnDefinition
 	 * @param int $decimals
 	 * @return ColumnDefinition
 	 */
-	public static function real($name, $length, $decimals)
-	{
+	public static function real($name, $length, $decimals) {
 		return new ColumnDefinition('REAL', $name, array($length, $decimals));
 	}
 
@@ -374,8 +350,7 @@ class ColumnDefinition
 	 * @param int $decimals
 	 * @return ColumnDefinition
 	 */
-	public static function double($name, $length, $decimals)
-	{
+	public static function double($name, $length, $decimals) {
 		return new ColumnDefinition('DOUBLE', $name, array($length, $decimals));
 	}
 
@@ -387,8 +362,7 @@ class ColumnDefinition
 	 * @param int $decimals
 	 * @return ColumnDefinition
 	 */
-	public static function float($name, $length, $decimals)
-	{
+	public static function float($name, $length, $decimals) {
 		return new ColumnDefinition('FLOAT', $name, array($length, $decimals));
 	}
 
@@ -400,8 +374,7 @@ class ColumnDefinition
 	 * @param int $decimals
 	 * @return ColumnDefinition
 	 */
-	public static function decimal($name, $length, $decimals = null)
-	{
+	public static function decimal($name, $length, $decimals = null) {
 		return new ColumnDefinition('DECIMAL', $name, array($length, $decimals));
 	}
 
@@ -413,8 +386,7 @@ class ColumnDefinition
 	 * @param int $decimals
 	 * @return ColumnDefinition
 	 */
-	public static function numeric($name, $length, $decimals = null)
-	{
+	public static function numeric($name, $length, $decimals = null) {
 		return new ColumnDefinition('NUMERIC', $name, array($length, $decimals));
 	}
 
@@ -424,8 +396,7 @@ class ColumnDefinition
 	 * @param string $name
 	 * @return ColumnDefinition
 	 */
-	public static function date($name)
-	{
+	public static function date($name) {
 		return new ColumnDefinition('DATE', $name);
 	}
 
@@ -435,8 +406,7 @@ class ColumnDefinition
 	 * @param string $name
 	 * @return ColumnDefinition
 	 */
-	public static function time($name)
-	{
+	public static function time($name) {
 		return new ColumnDefinition('TIME', $name);
 	}
 
@@ -446,8 +416,7 @@ class ColumnDefinition
 	 * @param string $name
 	 * @return ColumnDefinition
 	 */
-	public static function timestamp($name)
-	{
+	public static function timestamp($name) {
 		return new ColumnDefinition('TIMESTAMP', $name);
 	}
 
@@ -457,8 +426,7 @@ class ColumnDefinition
 	 * @param string $name
 	 * @return ColumnDefinition
 	 */
-	public static function dateTime($name)
-	{
+	public static function dateTime($name) {
 		return new ColumnDefinition('DATETIME', $name);
 	}
 
@@ -468,8 +436,7 @@ class ColumnDefinition
 	 * @param string $name
 	 * @return ColumnDefinition
 	 */
-	public static function year($name)
-	{
+	public static function year($name) {
 		return new ColumnDefinition('YEAR', $name);
 	}
 
@@ -480,8 +447,7 @@ class ColumnDefinition
 	 * @param int $length
 	 * @return ColumnDefinition
 	 */
-	public static function char($name, $length)
-	{
+	public static function char($name, $length) {
 		return new ColumnDefinition('CHAR', $name, array($length));
 	}
 
@@ -492,8 +458,7 @@ class ColumnDefinition
 	 * @param int $length
 	 * @return ColumnDefinition
 	 */
-	public static function varChar($name, $length)
-	{
+	public static function varChar($name, $length) {
 		return new ColumnDefinition('VARCHAR', $name, array($length));
 	}
 
@@ -504,8 +469,7 @@ class ColumnDefinition
 	 * @param int $length
 	 * @return ColumnDefinition
 	 */
-	public static function binary($name, $length)
-	{
+	public static function binary($name, $length) {
 		return new ColumnDefinition('BINARY', $name, array($length));
 	}
 
@@ -516,8 +480,7 @@ class ColumnDefinition
 	 * @param int $length
 	 * @return ColumnDefinition
 	 */
-	public static function varBinary($name, $length)
-	{
+	public static function varBinary($name, $length) {
 		return new ColumnDefinition('VARBINARY', $name, array($length));
 	}
 
@@ -527,8 +490,7 @@ class ColumnDefinition
 	 * @param string $name
 	 * @return ColumnDefinition
 	 */
-	public static function tinyBlob($name)
-	{
+	public static function tinyBlob($name) {
 		return new ColumnDefinition('TINYBLOB', $name);
 	}
 
@@ -538,8 +500,7 @@ class ColumnDefinition
 	 * @param string $name
 	 * @return ColumnDefinition
 	 */
-	public static function blob($name)
-	{
+	public static function blob($name) {
 		return new ColumnDefinition('BLOB', $name);
 	}
 
@@ -549,8 +510,7 @@ class ColumnDefinition
 	 * @param string $name
 	 * @return ColumnDefinition
 	 */
-	public static function mediumBlob($name)
-	{
+	public static function mediumBlob($name) {
 		return new ColumnDefinition('MEDIUMBLOB', $name);
 	}
 
@@ -560,8 +520,7 @@ class ColumnDefinition
 	 * @param string $name
 	 * @return ColumnDefinition
 	 */
-	public static function longBlob($name)
-	{
+	public static function longBlob($name) {
 		return new ColumnDefinition('LONGBLOB', $name);
 	}
 
@@ -571,8 +530,7 @@ class ColumnDefinition
 	 * @param string $name
 	 * @return ColumnDefinition
 	 */
-	public static function tinyText($name)
-	{
+	public static function tinyText($name) {
 		return new ColumnDefinition('TINYTEXT', $name);
 	}
 
@@ -582,8 +540,7 @@ class ColumnDefinition
 	 * @param string $name
 	 * @return ColumnDefinition
 	 */
-	public static function text($name)
-	{
+	public static function text($name) {
 		return new ColumnDefinition('TEXT', $name);
 	}
 
@@ -593,8 +550,7 @@ class ColumnDefinition
 	 * @param string $name
 	 * @return ColumnDefinition
 	 */
-	public static function mediumText($name)
-	{
+	public static function mediumText($name) {
 		return new ColumnDefinition('MEDIUMTEXT', $name);
 	}
 
@@ -604,8 +560,7 @@ class ColumnDefinition
 	 * @param string $name
 	 * @return ColumnDefinition
 	 */
-	public static function longText($name)
-	{
+	public static function longText($name) {
 		return new ColumnDefinition('LONGTEXT', $name);
 	}
 
@@ -615,8 +570,7 @@ class ColumnDefinition
 	 * @param string $name
 	 * @return ColumnDefinition
 	 */
-	public static function enum($name)
-	{
+	public static function enum($name) {
 		$args = func_get_args();
 		$escaped = array();
 
@@ -633,8 +587,7 @@ class ColumnDefinition
 	 * @param string $name
 	 * @return ColumnDefinition
 	 */
-	public static function set($name)
-	{
+	public static function set($name) {
 		$args = func_get_args();
 		$escaped = array();
 

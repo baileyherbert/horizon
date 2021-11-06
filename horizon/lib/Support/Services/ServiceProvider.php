@@ -11,8 +11,7 @@ use InvalidArgumentException;
  * For instance, Laravel includes a full service container for dependency injection; Horizon's providers are meant to be
  * a basic way to dynamically load objects for its services and there is no service container or dependency injection.
  */
-class ServiceProvider
-{
+class ServiceProvider {
 
 	/**
 	 * Indicates if the boot method should be deferred (called immediately before the provider is first invoked).
@@ -37,16 +36,14 @@ class ServiceProvider
 	/**
 	 * Boots the service provider.
 	 */
-	public function boot()
-	{
+	public function boot() {
 
 	}
 
 	/**
 	 * Registers the bindings in the service provider.
 	 */
-	public function register()
-	{
+	public function register() {
 
 	}
 
@@ -55,8 +52,7 @@ class ServiceProvider
 	 *
 	 * @return string[]
 	 */
-	public function provides()
-	{
+	public function provides() {
 		return array();
 	}
 
@@ -67,8 +63,7 @@ class ServiceProvider
 	 * @param string $className
 	 * @param callable $callable
 	 */
-	protected function bind($className, $callable)
-	{
+	protected function bind($className, $callable) {
 		if (!is_callable($callable)) {
 			throw new InvalidArgumentException('Service providers must bind class names to callables.');
 		}
@@ -83,8 +78,7 @@ class ServiceProvider
 	 * @param mixed[] $args
 	 * @return object[]
 	 */
-	public function resolve($className, $args = array())
-	{
+	public function resolve($className, $args = array()) {
 		if (!$this->registered) {
 			$this->register();
 			$this->registered = true;
@@ -112,8 +106,7 @@ class ServiceProvider
 	 *
 	 * @return bool
 	 */
-	public function isDeferred()
-	{
+	public function isDeferred() {
 		return $this->defer;
 	}
 

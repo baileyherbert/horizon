@@ -2,8 +2,7 @@
 
 namespace Horizon\Events;
 
-class EventEmitter
-{
+class EventEmitter {
 
 	/**
 	 * @var EventCallback[][]
@@ -16,8 +15,7 @@ class EventEmitter
 	 * @param string $channel The channel to emit on.
 	 * @param mixed [$args...] Optional arguments to send to the callbacks.
 	 */
-	protected function emit()
-	{
+	protected function emit() {
 		// Get all arguments
 		$args = func_get_args();
 
@@ -84,8 +82,7 @@ class EventEmitter
 	 * @param string $channel Event channel.
 	 * @param callable $callback Callback function.
 	 */
-	public function on($channel, callable $callback)
-	{
+	public function on($channel, callable $callback) {
 		// Create an array for the channel if needed
 		$this->prepare($channel);
 
@@ -100,8 +97,7 @@ class EventEmitter
 	 * @param string $channel Event channel.
 	 * @param callable $callback Callback function.
 	 */
-	public function once($channel, callable $callback)
-	{
+	public function once($channel, callable $callback) {
 		// Create an array for the channel if needed
 		$this->prepare($channel);
 
@@ -115,8 +111,7 @@ class EventEmitter
 	 * @param string $channel Event channel.
 	 * @param callable $callback Callback function.
 	 */
-	public function remove($channel, callable $callback)
-	{
+	public function remove($channel, callable $callback) {
 		$index = -1;
 
 		// Skip if no callbacks exist

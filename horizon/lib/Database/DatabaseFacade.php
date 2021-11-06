@@ -2,10 +2,6 @@
 
 namespace Horizon\Database;
 
-use Horizon\Database\Exception\DatabaseDriverException;
-use Horizon\Database\Exception\MigrationException;
-use Horizon\Foundation\Kernel;
-
 use Horizon\Database\QueryBuilder\Documentation\AlterHelper;
 use Horizon\Database\QueryBuilder\Documentation\CreateHelper;
 use Horizon\Database\QueryBuilder\Documentation\DeleteHelper;
@@ -16,8 +12,7 @@ use Horizon\Database\QueryBuilder\Documentation\ShowHelper;
 use Horizon\Database\QueryBuilder\Documentation\UpdateHelper;
 use Horizon\Database\Exception\DatabaseException;
 
-class DatabaseFacade
-{
+class DatabaseFacade {
 
 	/**
 	 * @var DatabaseConnection[]
@@ -30,8 +25,7 @@ class DatabaseFacade
 	 * @param string $name
 	 * @return DatabaseConnection
 	 */
-	public static function connection($name = null)
-	{
+	public static function connection($name = null) {
 		if (isset(static::$connections[$name])) {
 			return static::$connections[$name];
 		}
@@ -58,8 +52,7 @@ class DatabaseFacade
 	 * @param array $bindings
 	 * @return array|int|bool
 	 */
-	public static function query($statement, array $bindings = array())
-	{
+	public static function query($statement, array $bindings = array()) {
 		return static::connection()->query($statement, $bindings);
 	}
 
@@ -68,8 +61,7 @@ class DatabaseFacade
 	 *
 	 * @return AlterHelper
 	 */
-	public static function alter()
-	{
+	public static function alter() {
 		return static::connection()->alter();
 	}
 
@@ -78,8 +70,7 @@ class DatabaseFacade
 	 *
 	 * @return CreateHelper
 	 */
-	public static function create()
-	{
+	public static function create() {
 		return static::connection()->create();
 	}
 
@@ -88,8 +79,7 @@ class DatabaseFacade
 	 *
 	 * @return DeleteHelper
 	 */
-	public static function delete()
-	{
+	public static function delete() {
 		return static::connection()->delete();
 	}
 
@@ -98,8 +88,7 @@ class DatabaseFacade
 	 *
 	 * @return DropHelper
 	 */
-	public static function drop()
-	{
+	public static function drop() {
 		return static::connection()->drop();
 	}
 
@@ -108,8 +97,7 @@ class DatabaseFacade
 	 *
 	 * @return InsertHelper
 	 */
-	public static function insert()
-	{
+	public static function insert() {
 		return static::connection()->insert();
 	}
 
@@ -118,8 +106,7 @@ class DatabaseFacade
 	 *
 	 * @return SelectHelper
 	 */
-	public static function select()
-	{
+	public static function select() {
 		return static::connection()->select();
 	}
 
@@ -128,8 +115,7 @@ class DatabaseFacade
 	 *
 	 * @return ShowHelper
 	 */
-	public static function show()
-	{
+	public static function show() {
 		return static::connection()->show();
 	}
 
@@ -138,8 +124,7 @@ class DatabaseFacade
 	 *
 	 * @return UpdateHelper
 	 */
-	public static function update()
-	{
+	public static function update() {
 		return static::connection()->update();
 	}
 
@@ -149,8 +134,7 @@ class DatabaseFacade
 	 *
 	 * @return Database
 	 */
-	public static function getDatabase()
-	{
+	public static function getDatabase() {
 		return static::connection()->getDatabase();
 	}
 
@@ -159,8 +143,7 @@ class DatabaseFacade
 	 *
 	 * @return bool
 	 */
-	public static function transaction()
-	{
+	public static function transaction() {
 		try {
 			static::query('START TRANSACTION;');
 			return true;
@@ -175,8 +158,7 @@ class DatabaseFacade
 	 *
 	 * @return bool
 	 */
-	public static function commit()
-	{
+	public static function commit() {
 		try {
 			static::query('COMMIT;');
 			return true;
@@ -191,8 +173,7 @@ class DatabaseFacade
 	 *
 	 * @return bool
 	 */
-	public static function rollback()
-	{
+	public static function rollback() {
 		try {
 			static::query('ROLLBACK;');
 			return true;

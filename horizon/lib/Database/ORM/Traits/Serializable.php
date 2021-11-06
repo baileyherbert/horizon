@@ -3,14 +3,12 @@
 namespace Horizon\Database\ORM\Traits;
 
 use Horizon\Database\Model;
-
 use Horizon\Database\ORM\Relationship;
 
 /**
  * Implements serialization into a model instance.
  */
-trait Serializable
-{
+trait Serializable {
 
 	/**
 	 * An array containing the columns to hide from serialization. When hiding relationships, use the relationship's
@@ -50,8 +48,7 @@ trait Serializable
 	 * @param string $name
 	 * @return bool
 	 */
-	protected function isColumnSerializable($name)
-	{
+	protected function isColumnSerializable($name) {
 		if (!empty($this->visible)) {
 			if (!in_array($name, $this->visible)) {
 				return false;
@@ -72,8 +69,7 @@ trait Serializable
 	 * @param object $object
 	 * @return bool
 	 */
-	protected function isRelationship($object)
-	{
+	protected function isRelationship($object) {
 		return ($object instanceof Relationship);
 	}
 
@@ -83,8 +79,7 @@ trait Serializable
 	 * @param string[] $skipped
 	 * @return array
 	 */
-	protected function getSerializeData($skipped = array())
-	{
+	protected function getSerializeData($skipped = array()) {
 		$permitted = array();
 
 		// Columns
@@ -212,8 +207,7 @@ trait Serializable
 	 *
 	 * @return string
 	 */
-	public function toJson()
-	{
+	public function toJson() {
 		$data = $this->getSerializeData();
 
 		return json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
@@ -225,8 +219,7 @@ trait Serializable
 	 * @param string[] $hidden Classes of models to hide during serialization.
 	 * @return array
 	 */
-	public function toArray($hidden = array())
-	{
+	public function toArray($hidden = array()) {
 		return $this->getSerializeData($hidden);
 	}
 

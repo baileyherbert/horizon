@@ -6,15 +6,13 @@ use Closure;
 use Horizon\Support\Str;
 use Symfony\Component\Routing\CompiledRoute;
 use Horizon\Http\Request;
-use Horizon\Http\Exception\HttpResponseException;
 use Horizon\Routing\Matching\ValidatorInterface;
 use Horizon\Routing\Matching\MethodValidator;
 use Horizon\Routing\Matching\DomainValidator;
 use Horizon\Routing\Matching\UriValidator;
 use Horizon\Http\Response;
 
-class Route
-{
+class Route {
 
 	/**
 	 * @var ValidatorInterface[]
@@ -84,8 +82,7 @@ class Route
 	 * @param  Closure|array  $action
 	 * @return void
 	 */
-	public function __construct($methods, $uri, $action, RouteGroup $group = null)
-	{
+	public function __construct($methods, $uri, $action, RouteGroup $group = null) {
 		// Ensure methods is an array
 		if (!is_array($methods)) {
 			$methods = array($methods);
@@ -108,8 +105,7 @@ class Route
 	 *
 	 * @return string
 	 */
-	public function getUri()
-	{
+	public function getUri() {
 		return $this->uri;
 	}
 
@@ -118,8 +114,7 @@ class Route
 	 *
 	 * @return string
 	 */
-	public function uri()
-	{
+	public function uri() {
 		return $this->getUri();
 	}
 
@@ -128,8 +123,7 @@ class Route
 	 *
 	 * @return string[]
 	 */
-	public function getMethods()
-	{
+	public function getMethods() {
 		return $this->methods;
 	}
 
@@ -138,8 +132,7 @@ class Route
 	 *
 	 * @return string[]
 	 */
-	public function methods()
-	{
+	public function methods() {
 		return $this->getMethods();
 	}
 
@@ -148,8 +141,7 @@ class Route
 	 *
 	 * @return callable
 	 */
-	public function getAction()
-	{
+	public function getAction() {
 		return $this->action;
 	}
 
@@ -158,8 +150,7 @@ class Route
 	 *
 	 * @return Controller|null
 	 */
-	public function getControllerInstance()
-	{
+	public function getControllerInstance() {
 		$action = $this->getAction();
 
 		if (is_string($action)) {
@@ -184,8 +175,7 @@ class Route
 	 *
 	 * @return callable
 	 */
-	public function action()
-	{
+	public function action() {
 		return $this->getAction();
 	}
 
@@ -194,8 +184,7 @@ class Route
 	 *
 	 * @return RouteGroup
 	 */
-	public function getGroup()
-	{
+	public function getGroup() {
 		return $this->group;
 	}
 
@@ -204,8 +193,7 @@ class Route
 	 *
 	 * @return RouteGroup
 	 */
-	public function group()
-	{
+	public function group() {
 		return $this->getGroup();
 	}
 
@@ -214,8 +202,7 @@ class Route
 	 *
 	 * @return string
 	 */
-	public function getDomain()
-	{
+	public function getDomain() {
 		$domain = $this->group->domain();
 
 		if (empty($domain)) return null;
@@ -227,8 +214,7 @@ class Route
 	 *
 	 * @return RouteGroup
 	 */
-	public function domain()
-	{
+	public function domain() {
 		return $this->getDomain();
 	}
 
@@ -239,8 +225,7 @@ class Route
 	 * @param mixed $value
 	 * @return Route $this
 	 */
-	public function defaults($key, $value)
-	{
+	public function defaults($key, $value) {
 		$this->defaults[$key] = $value;
 		return $this;
 	}
@@ -252,8 +237,7 @@ class Route
 	 * @param mixed|null $default
 	 * @return mixed
 	 */
-	public function getDefault($key, $default = null)
-	{
+	public function getDefault($key, $default = null) {
 		if (isset($this->defaults[$key])) {
 			return $this->defaults[$key];
 		}
@@ -268,8 +252,7 @@ class Route
 	 * @param string|null $name
 	 * @return string|Route
 	 */
-	public function name($name = null)
-	{
+	public function name($name = null) {
 		if (is_null($name)) {
 			return $this->name;
 		}
@@ -293,8 +276,7 @@ class Route
 	 *
 	 * @return array
 	 */
-	public function middleware()
-	{
+	public function middleware() {
 		$middleware = $this->getGroup()->middleware();
 		$controller = $this->getControllerInstance();
 
@@ -313,8 +295,7 @@ class Route
 	 *
 	 * @return mixed
 	 */
-	public function execute(Request $request = null, Response $response = null)
-	{
+	public function execute(Request $request = null, Response $response = null) {
 		return (new ControllerDispatcher($this, $request, $response))->dispatch();
 	}
 
@@ -323,8 +304,7 @@ class Route
 	 *
 	 * @return CompiledRoute
 	 */
-	public function compile()
-	{
+	public function compile() {
 		if (!$this->compiled) {
 			$this->compiled = (new RouteCompiler($this))->compile();
 		}
@@ -339,8 +319,7 @@ class Route
 	 * @param string $expression
 	 * @return Route $this
 	 */
-	public function where($name, $expression = null)
-	{
+	public function where($name, $expression = null) {
 		$parsed = is_array($name) ? $name : array($name => $expression);
 
 		foreach ($parsed as $name => $expression) {
@@ -356,8 +335,7 @@ class Route
 	 *
 	 * @return Route|string|null
 	 */
-	public function fallback($path = null)
-	{
+	public function fallback($path = null) {
 		if (!is_null($path)) {
 			$this->fallback = '/' . ltrim($path, '/');
 			return $this;
@@ -373,8 +351,7 @@ class Route
 	 * @param bool $includingMethod
 	 * @return bool
 	 */
-	public function matches(Request $request, $includingMethod = true)
-	{
+	public function matches(Request $request, $includingMethod = true) {
 		$this->compile();
 
 		foreach ($this->getValidators() as $validator) {
@@ -395,8 +372,7 @@ class Route
 	 *
 	 * @param Request $request
 	 */
-	public function bind(Request $request)
-	{
+	public function bind(Request $request) {
 		$this->compile();
 		$this->parameters = (new RouteParameterBinder($this))->bind($request);
 	}
@@ -409,8 +385,7 @@ class Route
 	 * @param mixed $default
 	 * @return mixed
 	 */
-	public function parameter($key, $default = null)
-	{
+	public function parameter($key, $default = null) {
 		if (is_null($this->parameters)) {
 			return array();
 		}
@@ -431,8 +406,7 @@ class Route
 	 *
 	 * @return array|null
 	 */
-	public function parameters()
-	{
+	public function parameters() {
 		if (is_null($this->parameters)) {
 			return array();
 		}
@@ -445,8 +419,7 @@ class Route
 	 *
 	 * @return string[]
 	 */
-	public function parameterNames()
-	{
+	public function parameterNames() {
 		preg_match_all('/\{(.*?)\}/', ($this->getDomain() ?: '') . $this->uri(), $matches);
 
 		return array_map(function ($m) {
@@ -459,8 +432,7 @@ class Route
 	 *
 	 * @return ValidatorInterface[]
 	 */
-	public static function getValidators()
-	{
+	public static function getValidators() {
 		if (!isset(self::$validators)) {
 			self::$validators = array(
 				new MethodValidator,

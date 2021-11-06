@@ -21,7 +21,6 @@ namespace Horizon\Database\QueryBuilder\Documentation;
  *
  * @method object|int|bool exec() Executes the query.
  */
-abstract class DeleteHelper
-{
+abstract class DeleteHelper {
 
 }

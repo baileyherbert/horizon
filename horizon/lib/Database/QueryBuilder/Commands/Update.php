@@ -5,11 +5,9 @@ namespace Horizon\Database\QueryBuilder\Commands;
 use Horizon\Database\QueryBuilder;
 use Horizon\Database\QueryBuilder\StringBuilder;
 use Horizon\Support\Str;
-use Horizon\Support\Arr;
 use Horizon\Database\Exception\QueryBuilderException;
 
-class Update implements CommandInterface
-{
+class Update implements CommandInterface {
 
 	/**
 	 * @var QueryBuilder
@@ -56,8 +54,7 @@ class Update implements CommandInterface
 	 *
 	 * @param QueryBuilder $builder
 	 */
-	public function __construct(QueryBuilder $builder)
-	{
+	public function __construct(QueryBuilder $builder) {
 		$this->builder = $builder;
 	}
 
@@ -66,8 +63,7 @@ class Update implements CommandInterface
 	 *
 	 * @return string
 	 */
-	public function compile()
-	{
+	public function compile() {
 		$this->compiledParameters = array();
 
 		return Str::join(
@@ -84,8 +80,7 @@ class Update implements CommandInterface
 	/**
 	 * @return string
 	 */
-	protected function compileTable()
-	{
+	protected function compileTable() {
 		if (!$this->table) return '';
 
 		$prefix = $this->builder->getPrefix();
@@ -97,8 +92,7 @@ class Update implements CommandInterface
 	/**
 	 * @return string
 	 */
-	protected function compileValues()
-	{
+	protected function compileValues() {
 		$compiled = array();
 
 		foreach ($this->values as $key => $value) {
@@ -117,8 +111,7 @@ class Update implements CommandInterface
 	/**
 	 * @return string
 	 */
-	protected function compileWheres()
-	{
+	protected function compileWheres() {
 		if (empty($this->wheres)) {
 			return '';
 		}
@@ -165,8 +158,7 @@ class Update implements CommandInterface
 	/**
 	 * @return string
 	 */
-	protected function compileFunction($function)
-	{
+	protected function compileFunction($function) {
 		$functionString = array_shift($function);
 
 		if (!preg_match('/^([A-Z]+)(\([^)]*\))$/', $functionString, $matches)) {
@@ -188,8 +180,7 @@ class Update implements CommandInterface
 	/**
 	 * @return string
 	 */
-	protected function compileOrderBy()
-	{
+	protected function compileOrderBy() {
 		$compiled = array();
 
 		if (count($this->orders) == 0) {
@@ -214,8 +205,7 @@ class Update implements CommandInterface
 	/**
 	 * @return string
 	 */
-	protected function compileLimit()
-	{
+	protected function compileLimit() {
 		return !is_null($this->limit) ? ('LIMIT ' . $this->limit) : '';
 	}
 
@@ -225,8 +215,7 @@ class Update implements CommandInterface
 	 * @param int $i
 	 * @return array|null
 	 */
-	protected function getEnclosureStartingAt($i)
-	{
+	protected function getEnclosureStartingAt($i) {
 		$enclosure = null;
 
 		foreach ($this->enclosures as $enclose) {
@@ -244,8 +233,7 @@ class Update implements CommandInterface
 	 * @param int $i
 	 * @return int
 	 */
-	protected function getNumEnclosuresStartingAt($i)
-	{
+	protected function getNumEnclosuresStartingAt($i) {
 		$count = 0;
 
 		foreach ($this->enclosures as $enclose) {
@@ -263,8 +251,7 @@ class Update implements CommandInterface
 	 * @param int $i
 	 * @return array|null
 	 */
-	protected function getEnclosureEndingAt($i)
-	{
+	protected function getEnclosureEndingAt($i) {
 		$enclosure = null;
 
 		foreach ($this->enclosures as $enclose) {
@@ -282,8 +269,7 @@ class Update implements CommandInterface
 	 * @param int $i
 	 * @return int
 	 */
-	protected function getNumEnclosuresEndingAt($i)
-	{
+	protected function getNumEnclosuresEndingAt($i) {
 		$count = 0;
 
 		foreach ($this->enclosures as $enclose) {
@@ -300,8 +286,7 @@ class Update implements CommandInterface
 	 *
 	 * @return array
 	 */
-	public function getParameters()
-	{
+	public function getParameters() {
 		$this->compile();
 		return $this->compiledParameters;
 	}
@@ -312,8 +297,7 @@ class Update implements CommandInterface
 	 * @param string $tableName
 	 * @return $this
 	 */
-	public function table($tableName)
-	{
+	public function table($tableName) {
 		$this->table = $tableName;
 		return $this;
 	}
@@ -324,8 +308,7 @@ class Update implements CommandInterface
 	 * @param string $tableName
 	 * @return $this
 	 */
-	public function values(array $values)
-	{
+	public function values(array $values) {
 		foreach ($values as $key => $val) {
 			if (StringBuilder::isFunction($val) && !is_array($val)) {
 				$values[$key] = array($val);
@@ -344,8 +327,7 @@ class Update implements CommandInterface
 	 * @param mixed $equals
 	 * @return $this
 	 */
-	public function where($column, $operator, $equals, $separator = 'AND')
-	{
+	public function where($column, $operator, $equals, $separator = 'AND') {
 		$function = (is_array($equals)) ? $equals : null;
 
 		if (is_string($equals) && StringBuilder::isFunction($equals)) {
@@ -371,8 +353,7 @@ class Update implements CommandInterface
 	 * @param mixed $equals
 	 * @return $this
 	 */
-	public function andWhere($column, $operator, $equals)
-	{
+	public function andWhere($column, $operator, $equals) {
 		return $this->where($column, $operator, $equals);
 	}
 
@@ -384,8 +365,7 @@ class Update implements CommandInterface
 	 * @param mixed $equals
 	 * @return $this
 	 */
-	public function orWhere($column, $operator, $equals)
-	{
+	public function orWhere($column, $operator, $equals) {
 		return $this->where($column, $operator, $equals, 'OR');
 	}
 
@@ -396,8 +376,7 @@ class Update implements CommandInterface
 	 * @param string $separator
 	 * @return $this
 	 */
-	public function enclose(callable $callback, $separator = 'AND')
-	{
+	public function enclose(callable $callback, $separator = 'AND') {
 		$startPosition = count($this->wheres);
 		$callback($this->builder);
 		$endPosition = count($this->wheres) - 1;
@@ -417,8 +396,7 @@ class Update implements CommandInterface
 	 * @param callable $callback
 	 * @return $this
 	 */
-	public function orEnclose(callable $callback)
-	{
+	public function orEnclose(callable $callback) {
 		return $this->enclose($callback, 'OR');
 	}
 
@@ -428,8 +406,7 @@ class Update implements CommandInterface
 	 * @param callable $callback
 	 * @return $this
 	 */
-	public function andEnclose(callable $callback)
-	{
+	public function andEnclose(callable $callback) {
 		return $this->enclose($callback);
 	}
 
@@ -439,8 +416,7 @@ class Update implements CommandInterface
 	 * @param int $limit
 	 * @return $this
 	 */
-	public function limit($limit)
-	{
+	public function limit($limit) {
 		$this->limit = $limit;
 		return $this;
 	}
@@ -452,8 +428,7 @@ class Update implements CommandInterface
 	 * @param string $direction,...
 	 * @return $this
 	 */
-	public function orderBy()
-	{
+	public function orderBy() {
 		$args = func_get_args();
 
 		if (count($args) == 1) {

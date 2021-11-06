@@ -4,14 +4,12 @@ namespace Horizon\Http;
 
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\ParameterBag;
-use Horizon\Http\Cookie\Session;
 use Horizon\Routing\Route;
 use Horizon\Routing\RouteLoader;
 use Horizon\Routing\RouteParameterBinder;
 use Horizon\Support\Path;
 
-class Request extends SymfonyRequest
-{
+class Request extends SymfonyRequest {
 
 	use Traits\HasHttpCookies,
 		Traits\HasHttpInput,
@@ -39,8 +37,7 @@ class Request extends SymfonyRequest
 	 * @param array $server The SERVER parameters.
 	 * @param string|null $content The raw body data.
 	 */
-	public function __construct(array $query = array(), array $request = array(), array $attributes = array(), array $cookies = array(), array $files = array(), array $server = array(), $content = null)
-	{
+	public function __construct(array $query = array(), array $request = array(), array $attributes = array(), array $cookies = array(), array $files = array(), array $server = array(), $content = null) {
 		parent::__construct($query, $request, $attributes, $cookies, $files, $server, $content);
 
 		$this->horizonAttributes = new ParameterBag();
@@ -50,8 +47,7 @@ class Request extends SymfonyRequest
 	/**
 	 * Automatically creates a Request instance from the current environment.
 	 */
-	public static function auto()
-	{
+	public static function auto() {
 		static::injectQueryArgs();
 
 		return new self($_GET, $_POST, array(), $_COOKIE, $_FILES, $_SERVER, file_get_contents('php://input'));
@@ -63,8 +59,7 @@ class Request extends SymfonyRequest
 	 *
 	 * @return string
 	 */
-	public function path()
-	{
+	public function path() {
 		return strtok($this->getRequestUri(), '?');
 	}
 
@@ -75,8 +70,7 @@ class Request extends SymfonyRequest
 	 * @param string|null $path
 	 * @return string
 	 */
-	public function url($path = null)
-	{
+	public function url($path = null) {
 		if ($path) {
 			return preg_replace('/\?.*/', '', $this->getUriForPath('/' . ltrim($path, '/')));
 		}
@@ -91,8 +85,7 @@ class Request extends SymfonyRequest
 	 * @param string|null $path
 	 * @return string
 	 */
-	public function fullUrl($path = null)
-	{
+	public function fullUrl($path = null) {
 		$query = $this->getQueryString();
 		$uri = $this->url($path);
 
@@ -111,8 +104,7 @@ class Request extends SymfonyRequest
 	 *
 	 * @return string
 	 */
-	public function root()
-	{
+	public function root() {
 		return rtrim($this->getSchemeAndHttpHost() . $this->getBaseUrl(), '/') . '/';
 	}
 
@@ -121,8 +113,7 @@ class Request extends SymfonyRequest
 	 *
 	 * @return bool
 	 */
-	public function ajax()
-	{
+	public function ajax() {
 		return $this->isXmlHttpRequest();
 	}
 
@@ -131,8 +122,7 @@ class Request extends SymfonyRequest
 	 *
 	 * @return bool
 	 */
-	public function secure()
-	{
+	public function secure() {
 		return $this->isSecure();
 	}
 
@@ -142,8 +132,7 @@ class Request extends SymfonyRequest
 	 *
 	 * @return string
 	 */
-	public function ip()
-	{
+	public function ip() {
 		return $this->getClientIp();
 	}
 
@@ -152,8 +141,7 @@ class Request extends SymfonyRequest
 	 *
 	 * @return string
 	 */
-	public function userAgent()
-	{
+	public function userAgent() {
 		return $this->headers->get('User-Agent');
 	}
 
@@ -161,10 +149,9 @@ class Request extends SymfonyRequest
 	 * Gets the value of the specified header as a string.
 	 *
 	 * @param string|null $key
-	 * @return string
+	 * @return string|string[]
 	 */
-	public function header($key = null)
-	{
+	public function header($key = null) {
 		if (is_null($key)) {
 			return $this->headers->all();
 		}
@@ -177,8 +164,7 @@ class Request extends SymfonyRequest
 	 *
 	 * @return Route|null
 	 */
-	public function route()
-	{
+	public function route() {
 		return $this->horizonRoute;
 	}
 
@@ -186,8 +172,7 @@ class Request extends SymfonyRequest
 	 * @see route()
 	 * @return Route|null
 	 */
-	public function getRoute()
-	{
+	public function getRoute() {
 		return $this->route();
 	}
 
@@ -196,8 +181,7 @@ class Request extends SymfonyRequest
 	 *
 	 * @param Route $route
 	 */
-	public function bind(Route $route)
-	{
+	public function bind(Route $route) {
 		$this->horizonRoute = $route;
 		$this->horizonRoute->bind($this);
 
@@ -211,8 +195,7 @@ class Request extends SymfonyRequest
 	/**
 	 * Extracts arguments from the REQUEST_URI into the GET global.
 	 */
-	private static function injectQueryArgs()
-	{
+	private static function injectQueryArgs() {
 		if (!USE_LEGACY_ROUTING) {
 			$uri = $_SERVER['REQUEST_URI'];
 
@@ -233,8 +216,7 @@ class Request extends SymfonyRequest
 	 * @param string $key
 	 * @param mixed $value
 	 */
-	public function setAttribute($key, $value)
-	{
+	public function setAttribute($key, $value) {
 		$this->attributes->set($key, $value);
 	}
 
@@ -245,8 +227,7 @@ class Request extends SymfonyRequest
 	 * @param mixed $default
 	 * @return mixed
 	 */
-	public function getAttribute($key, $default = null)
-	{
+	public function getAttribute($key, $default = null) {
 		return $this->attributes->get($key, $default);
 	}
 
@@ -255,8 +236,7 @@ class Request extends SymfonyRequest
 	 *
 	 * @return bool
 	 */
-	public function isLegacyRoutingAllowed()
-	{
+	public function isLegacyRoutingAllowed() {
 		return true;
 	}
 
@@ -268,8 +248,7 @@ class Request extends SymfonyRequest
 	 * @param string $toPath
 	 * @return string
 	 */
-	public function getLinkTo($toPath)
-	{
+	public function getLinkTo($toPath) {
 		$currentPath = $this->path();
 
 		if (USE_LEGACY_ROUTING) {

@@ -4,8 +4,7 @@ namespace Horizon\Http\Traits;
 
 use Horizon\Http\Cookie\Session;
 
-trait HasHttpCookies
-{
+trait HasHttpCookies {
 
 	/**
 	 * @var Session
@@ -19,8 +18,7 @@ trait HasHttpCookies
 	 *
 	 * @return Session
 	 */
-	public function session()
-	{
+	public function session() {
 		if (!isset($this->horizonSession)) {
 			$this->horizonSession = new Session();
 		}
@@ -32,16 +30,14 @@ trait HasHttpCookies
 	 * @see session()
 	 * @return Session
 	 */
-	public function getSession()
-	{
+	public function getSession() {
 		return $this->session();
 	}
 
 	/**
 	 *
 	 */
-	public function cookies()
-	{
+	public function cookies() {
 
 	}
 

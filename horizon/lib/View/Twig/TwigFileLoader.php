@@ -8,8 +8,7 @@ use Twig_Source;
 
 use Horizon\View\ViewException;
 
-class TwigFileLoader extends Twig_Loader_Filesystem
-{
+class TwigFileLoader extends Twig_Loader_Filesystem {
 
 	/**
 	 * @var Twig_Source
@@ -34,15 +33,13 @@ class TwigFileLoader extends Twig_Loader_Filesystem
 	/**
 	 * @param TwigLoader $loader
 	 */
-	public function __construct(TwigLoader $loader)
-	{
+	public function __construct(TwigLoader $loader) {
 		parent::__construct(array());
 
 		$this->loader = $loader;
 	}
 
-	public function getSourceContext($name)
-	{
+	public function getSourceContext($name) {
 		if (starts_with($name, '@component/')) {
 			$contents = Application::kernel()->view()->componentManager()->getFileContents($name);
 			$contents = $this->compileHorizonTags($contents, $name);
@@ -56,8 +53,7 @@ class TwigFileLoader extends Twig_Loader_Filesystem
 		return $this->source;
 	}
 
-	public function findTemplate($name)
-	{
+	public function findTemplate($name) {
 		if (starts_with($name, '@component/')) {
 			return $name;
 		}
@@ -85,8 +81,7 @@ class TwigFileLoader extends Twig_Loader_Filesystem
 		return $this->debugging;
 	}
 
-	public function compileHorizonTags($text, $templateFileName)
-	{
+	public function compileHorizonTags($text, $templateFileName) {
 		$transpiler = new TwigTranspiler($this);
 		$data = $transpiler->precompile($text, $templateFileName);
 		$this->debugging = $transpiler->isDebuggingEnabled();

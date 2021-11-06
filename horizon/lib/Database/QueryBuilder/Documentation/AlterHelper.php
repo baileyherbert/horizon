@@ -33,7 +33,6 @@ use Horizon\Database\QueryBuilder\ColumnDefinition;
  *
  * @method object|int|bool exec() Executes the query, returning the number of affected rows.
  */
-abstract class AlterHelper
-{
+abstract class AlterHelper {
 
 }

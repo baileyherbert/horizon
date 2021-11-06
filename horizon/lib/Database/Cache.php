@@ -2,8 +2,7 @@
 
 namespace Horizon\Database;
 
-class Cache
-{
+class Cache {
 
 	/**
 	 * @var Model[][]
@@ -18,8 +17,7 @@ class Cache
 	 *
 	 * @return bool
 	 */
-	public static function hasModelInstance($model, $id)
-	{
+	public static function hasModelInstance($model, $id) {
 		if (!config('database.cache', true)) {
 			return false;
 		}
@@ -48,8 +46,7 @@ class Cache
 	 *
 	 * @return Model|mixed
 	 */
-	public static function getModelInstance($model, $id, $default = null)
-	{
+	public static function getModelInstance($model, $id, $default = null) {
 		if (!config('database.cache', true)) {
 			return $default;
 		}
@@ -73,8 +70,7 @@ class Cache
 	 *
 	 * @return bool
 	 */
-	public static function removeModelInstance($model, $id)
-	{
+	public static function removeModelInstance($model, $id) {
 		if (!config('database.cache', true)) {
 			return false;
 		}
@@ -104,8 +100,7 @@ class Cache
 	 *
 	 * @return void
 	 */
-	public static function setModelInstance($model, Model $instance, $id = null)
-	{
+	public static function setModelInstance($model, Model $instance, $id = null) {
 		if (!config('database.cache', true)) {
 			return;
 		}

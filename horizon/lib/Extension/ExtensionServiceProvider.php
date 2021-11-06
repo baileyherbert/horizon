@@ -9,16 +9,14 @@ use Horizon\Support\Services\ServiceProvider;
 /**
  * Provides extensions for the application.
  */
-class ExtensionServiceProvider extends ServiceProvider
-{
+class ExtensionServiceProvider extends ServiceProvider {
 
 	/**
 	 * @var Exception[]
 	 */
 	protected $exceptions = array();
 
-	public function register()
-	{
+	public function register() {
 		$this->bind('Horizon\Extension\Extension', function() {
 			$extensionsDir = Application::path('app/extensions');
 			if (!file_exists($extensionsDir)) return null;
@@ -45,8 +43,7 @@ class ExtensionServiceProvider extends ServiceProvider
 		});
 	}
 
-	public function provides()
-	{
+	public function provides() {
 		return array(
 			'Horizon\Extension\Extension',
 			'Horizon\Extension\Exception'

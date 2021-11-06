@@ -6,8 +6,7 @@ use Horizon\Http\MiniRequest;
 use Horizon\Routing\Route;
 use Horizon\Http\Request;
 
-class MethodValidator
-{
+class MethodValidator {
 
 	/**
 	 * Validates that the route's methods match the request.
@@ -16,8 +15,7 @@ class MethodValidator
 	 * @param Request $request
 	 * @return bool
 	 */
-	public function matches(Route $route, Request $request)
-	{
+	public function matches(Route $route, Request $request) {
 		if ($request instanceof MiniRequest) {
 			return true;
 		}

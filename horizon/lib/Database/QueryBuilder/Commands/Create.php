@@ -6,11 +6,8 @@ use Horizon\Database\QueryBuilder;
 use Horizon\Database\QueryBuilder\StringBuilder;
 use Horizon\Database\QueryBuilder\ColumnDefinition;
 use Horizon\Support\Str;
-use Horizon\Support\Arr;
-use Horizon\Database\Exception\QueryBuilderException;
 
-class Create implements CommandInterface
-{
+class Create implements CommandInterface {
 
 	use Traits\HasTableOptions;
 
@@ -49,8 +46,7 @@ class Create implements CommandInterface
 	 *
 	 * @param QueryBuilder $builder
 	 */
-	public function __construct(QueryBuilder $builder)
-	{
+	public function __construct(QueryBuilder $builder) {
 		$this->builder = $builder;
 	}
 
@@ -59,8 +55,7 @@ class Create implements CommandInterface
 	 *
 	 * @return string
 	 */
-	public function compile()
-	{
+	public function compile() {
 		return Str::join(
 			'CREATE TABLE',
 			$this->compileTableName(),
@@ -75,8 +70,7 @@ class Create implements CommandInterface
 	 *
 	 * @return string
 	 */
-	protected function compileTableName()
-	{
+	protected function compileTableName() {
 		$prefix = $this->builder->getPrefix();
 		return StringBuilder::formatTableName($prefix . $this->table);
 	}
@@ -86,8 +80,7 @@ class Create implements CommandInterface
 	 *
 	 * @return string
 	 */
-	protected function compileSchema()
-	{
+	protected function compileSchema() {
 		$compiled = array();
 		$keys = $this->compileKeys();
 
@@ -107,8 +100,7 @@ class Create implements CommandInterface
 	 *
 	 * @return string
 	 */
-	public function compileKeys()
-	{
+	public function compileKeys() {
 		$compiled = array();
 
 		if (!empty($this->primaryKey)) {
@@ -138,8 +130,7 @@ class Create implements CommandInterface
 	 * @param array $key
 	 * @return string
 	 */
-	protected function compileForeignKey(array $key)
-	{
+	protected function compileForeignKey(array $key) {
 		$compiled = array('FOREIGN KEY');
 
 		// Generate the unique foreign key name
@@ -171,8 +162,7 @@ class Create implements CommandInterface
 	 * @param string[] $columns
 	 * @return string
 	 */
-	protected function compileColumnList(array $columns)
-	{
+	protected function compileColumnList(array $columns) {
 		$columnList = array();
 		foreach ($columns as $colName) {
 			$columnList[] = StringBuilder::formatColumnName($colName);
@@ -187,8 +177,7 @@ class Create implements CommandInterface
 	 * @param string $tableName
 	 * @return $this
 	 */
-	public function table($tableName)
-	{
+	public function table($tableName) {
 		$this->table = $tableName;
 		return $this;
 	}
@@ -199,8 +188,7 @@ class Create implements CommandInterface
 	 * @param ColumnDefinition $column
 	 * @return $this
 	 */
-	public function column(ColumnDefinition $column)
-	{
+	public function column(ColumnDefinition $column) {
 		$this->columns[] = $column;
 	}
 
@@ -210,8 +198,7 @@ class Create implements CommandInterface
 	 * @param ColumnDefinition[] $columns
 	 * @return $this
 	 */
-	public function columns(array $columns)
-	{
+	public function columns(array $columns) {
 		$this->columns = $columns;
 	}
 
@@ -221,8 +208,7 @@ class Create implements CommandInterface
 	 * @param string $column, ...
 	 * @return $this
 	 */
-	public function primary()
-	{
+	public function primary() {
 		$this->primaryKey = func_get_args();
 		return $this;
 	}
@@ -233,8 +219,7 @@ class Create implements CommandInterface
 	 * @param string $column, ...
 	 * @return $this
 	 */
-	public function index()
-	{
+	public function index() {
 		$this->keys[] = array(
 			'type' => 'INDEX',
 			'columns' => func_get_args()
@@ -249,8 +234,7 @@ class Create implements CommandInterface
 	 * @param string $column, ...
 	 * @return $this
 	 */
-	public function unique()
-	{
+	public function unique() {
 		$this->keys[] = array(
 			'type' => 'UNIQUE',
 			'columns' => func_get_args()
@@ -269,8 +253,7 @@ class Create implements CommandInterface
 	 * @param string|null $onUpdate
 	 * @return $this
 	 */
-	public function foreign($column, $foreignTable, $foreignColumn, $onDelete = null, $onUpdate = null)
-	{
+	public function foreign($column, $foreignTable, $foreignColumn, $onDelete = null, $onUpdate = null) {
 		// Ensure the columns are arrays
 		if (!is_array($foreignColumn)) $foreignColumn = array($foreignColumn);
 		if (!is_array($column)) $column = array($column);
@@ -295,14 +278,12 @@ class Create implements CommandInterface
 	 * @param bool $bool
 	 * @return $this
 	 */
-	public function ifNotExists($bool = true)
-	{
+	public function ifNotExists($bool = true) {
 		$this->ifNotExists = $bool;
 		return $this;
 	}
 
-	public function getParameters()
-	{
+	public function getParameters() {
 		return array();
 	}
 

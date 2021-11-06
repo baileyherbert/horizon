@@ -8,11 +8,9 @@ use Horizon\Database\ORM\Relationships\BelongsToOneRelationship;
 use Horizon\Database\ORM\Relationships\BelongsToManyRelationship;
 use Horizon\Database\QueryBuilder\StringBuilder;
 
-trait Relationships
-{
+trait Relationships {
 
-	protected function hasOne($model, $foreignKey = null, $localKey = null)
-	{
+	protected function hasOne($model, $foreignKey = null, $localKey = null) {
 		if (is_null($localKey)) {
 			$localKey = $this->primaryKey;
 		}
@@ -24,8 +22,7 @@ trait Relationships
 		return new OneToOneRelationship($this, $model, $foreignKey, $localKey);
 	}
 
-	protected function belongsTo($model, $localKey = null, $parentKey = null)
-	{
+	protected function belongsTo($model, $localKey = null, $parentKey = null) {
 		$o = new $model;
 
 		if (is_null($localKey)) {
@@ -40,8 +37,7 @@ trait Relationships
 		return new BelongsToOneRelationship($this, $model, $parentKey, $localKey);
 	}
 
-	protected function hasMany($model, $foreignKey = null, $localKey = null)
-	{
+	protected function hasMany($model, $foreignKey = null, $localKey = null) {
 		if (is_null($localKey)) {
 			$localKey = $this->primaryKey;
 		}
@@ -53,8 +49,7 @@ trait Relationships
 		return new OneToManyRelationship($this, $model, $foreignKey, $localKey);
 	}
 
-	protected function belongsToMany($model, $mapTable = null, $localKey = null, $parentKey = null)
-	{
+	protected function belongsToMany($model, $mapTable = null, $localKey = null, $parentKey = null) {
 		if (is_null($localKey)) {
 			$localKey = StringBuilder::getSingularModelName($this) . '_' . $this->getPrimaryKey();
 		}
@@ -68,8 +63,7 @@ trait Relationships
 		return new BelongsToManyRelationship($this, $model, $parentKey, $localKey, $mapTable);
 	}
 
-	protected static function has($relationship, $operator = '>', $count = 0)
-	{
+	protected static function has($relationship, $operator = '>', $count = 0) {
 
 	}
 

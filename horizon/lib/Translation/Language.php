@@ -2,11 +2,7 @@
 
 namespace Horizon\Translation;
 
-use Horizon\Translation\Language\Definition;
-use Horizon\Translation\Language\NamespaceDefinition;
-
-class Language
-{
+class Language {
 
 	/**
 	 * @var string
@@ -38,8 +34,7 @@ class Language
 	 *
 	 * @param string $languageFilePath
 	 */
-	public function __construct($languageFilePath)
-	{
+	public function __construct($languageFilePath) {
 		// Ensure the file exists
 		if (!file_exists($languageFilePath)) {
 			throw new LanguageException('Failed to load language file: link not found');
@@ -62,8 +57,7 @@ class Language
 	 * @param string $name
 	 * @return boolean
 	 */
-	public function hasHeader($name)
-	{
+	public function hasHeader($name) {
 		$name = strtolower($name);
 
 		return isset($this->headers[$name]);
@@ -75,8 +69,7 @@ class Language
 	 * @param string $name
 	 * @return string|null
 	 */
-	public function getHeader($name)
-	{
+	public function getHeader($name) {
 		$name = strtolower($name);
 
 		return isset($this->headers[$name]) ?
@@ -86,8 +79,7 @@ class Language
 	/**
 	 * Gets an array of headers.
 	 */
-	public function getHeaders()
-	{
+	public function getHeaders() {
 		return $this->headers;
 	}
 
@@ -97,8 +89,7 @@ class Language
 	 * @param string $name
 	 * @return boolean
 	 */
-	public function hasNamespace($name)
-	{
+	public function hasNamespace($name) {
 		$name = strtolower($name);
 
 		return isset($this->namespaces[$name]);
@@ -109,8 +100,7 @@ class Language
 	 *
 	 * @return NamespaceDefinition|null
 	 */
-	public function getNamespace($name)
-	{
+	public function getNamespace($name) {
 		$name = strtolower($name);
 
 		return isset($this->namespaces[$name]) ?
@@ -122,8 +112,7 @@ class Language
 	 *
 	 * @return NamespaceDefinition[]
 	 */
-	public function getNamespaces()
-	{
+	public function getNamespaces() {
 		return $this->namespaces;
 	}
 
@@ -133,8 +122,7 @@ class Language
 	 * @param string $name
 	 * @return boolean
 	 */
-	public function hasVariable($name)
-	{
+	public function hasVariable($name) {
 		$name = strtolower($name);
 
 		return isset($this->variables[$name]);
@@ -145,8 +133,7 @@ class Language
 	 *
 	 * @return bool|null|string|int|double
 	 */
-	public function getVariable($name)
-	{
+	public function getVariable($name) {
 		$name = strtolower($name);
 
 		return isset($this->variables[$name]) ?
@@ -158,8 +145,7 @@ class Language
 	 *
 	 * @return array
 	 */
-	public function getVariables()
-	{
+	public function getVariables() {
 		return $this->variables;
 	}
 
@@ -168,8 +154,7 @@ class Language
 	 *
 	 * @return float|null
 	 */
-	public function getParseTime()
-	{
+	public function getParseTime() {
 		return $this->parseTime;
 	}
 
@@ -182,8 +167,7 @@ class Language
 	 * @param string|string[]|null $namespaceConstraint
 	 * @return string
 	 */
-	public function translate($text, $namespaceConstraint = null)
-	{
+	public function translate($text, $namespaceConstraint = null) {
 		$target = $this->namespaces;
 		$text = preg_replace("/({{\s*)([a-zA-Z._]+)(\s*}})/", "{{ $2 }}", $text);
 
@@ -226,8 +210,7 @@ class Language
 	 *
 	 * @return string
 	 */
-	public function getMode()
-	{
+	public function getMode() {
 		$mode = 'ltr';
 
 		if ($this->hasHeader('direction')) {

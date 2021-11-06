@@ -10,8 +10,7 @@ use InvalidArgumentException;
 use ReflectionClass;
 use Twig\Error\RuntimeError;
 
-class Manager
-{
+class Manager {
 
 	/**
 	 * @var string[]
@@ -36,8 +35,7 @@ class Manager
 	 * @param string $name
 	 * @param string $path
 	 */
-	public function register($name, $path)
-	{
+	public function register($name, $path) {
 		if (!file_exists($path)) {
 			throw new InvalidArgumentException('Cannot register component because no file existed at the given path.');
 		}
@@ -53,8 +51,7 @@ class Manager
 	 * @throws InvalidArgumentException if the component cannot be found.
 	 * @throws ViewException if the component encounters a render error.
 	 */
-	public function compile($componentName, $constructorArgs = array())
-	{
+	public function compile($componentName, $constructorArgs = array()) {
 		if (isset($this->currentlyCompiling[$componentName])) {
 			throw new ViewException('Component compiler detected an infinite loop.');
 		}
@@ -100,8 +97,7 @@ class Manager
 	 * @param string $path
 	 * @return array
 	 */
-	private function getComponent($path)
-	{
+	private function getComponent($path) {
 		$contents = trim(file_get_contents($path));
 		$heading = strtok($contents, "\n");
 
@@ -127,8 +123,7 @@ class Manager
 	 * @param $name
 	 * @return string
 	 */
-	private function getComponentPath($name)
-	{
+	private function getComponentPath($name) {
 		// Check for a manually-registered path
 		if (isset($this->registered[$name])) {
 			return $this->registered[$name];
@@ -162,8 +157,7 @@ class Manager
 	 * @return object
 	 * @throws
 	 */
-	private function resolve($className, $args = array())
-	{
+	private function resolve($className, $args = array()) {
 		if (!is_null($instance = app()->make($className, $args))) {
 			return $instance;
 		}
@@ -184,8 +178,7 @@ class Manager
 	 * @return string
 	 * @throws
 	 */
-	public function getFileContents($name)
-	{
+	public function getFileContents($name) {
 		if (isset($this->contents[$name])) {
 			$contents = $this->contents[$name];
 			unset($this->contents[$name]);

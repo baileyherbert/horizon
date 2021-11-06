@@ -7,14 +7,12 @@ use Horizon\Foundation\Application;
 /**
  * Kernel for exceptions and error handling.
  */
-class Kernel
-{
+class Kernel {
 
 	/**
 	 * Boots the exception kernel and starts error handling.
 	 */
-	public function boot()
-	{
+	public function boot() {
 		ini_set('error_reporting', E_ALL);
 		ini_set('display_errors', false);
 		ini_set('log_errors', false);
@@ -38,8 +36,7 @@ class Kernel
 	/**
 	 * Sends non-fatal errors to the error handler.
 	 */
-	private function bindErrors()
-	{
+	private function bindErrors() {
 		set_error_handler(function($severity, $message, $file, $line) {
 			ErrorMiddleware::executeRuntimeError($severity, $message, $file, $line);
 		});
@@ -48,8 +45,7 @@ class Kernel
 	/**
 	 * Sends uncaught exceptions to the error handler.
 	 */
-	private function bindExceptions()
-	{
+	private function bindExceptions() {
 		set_exception_handler(function($exception) {
 			ErrorMiddleware::executeException($exception);
 		});
@@ -58,8 +54,7 @@ class Kernel
 	/**
 	 * Sends fatal errors to the error handler.
 	 */
-	private function bindFatal()
-	{
+	private function bindFatal() {
 		register_shutdown_function(function() {
 			$error = error_get_last();
 

@@ -5,8 +5,7 @@ namespace Horizon\Routing\Matching;
 use Horizon\Routing\Route;
 use Horizon\Http\Request;
 
-interface ValidatorInterface
-{
+interface ValidatorInterface {
 
 	/**
 	 * Validates that the route matches the request.

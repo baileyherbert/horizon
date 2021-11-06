@@ -3,12 +3,9 @@
 namespace Horizon\Routing;
 
 use Closure;
-use ArrayObject;
-
 use Horizon\Http\Exception\HttpResponseException;
 
-class RouteAction
-{
+class RouteAction {
 
 	/**
 	 * Parses the provided route action and returns a fully-qualified closure.
@@ -16,8 +13,7 @@ class RouteAction
 	 * @param string $uri
 	 * @param Closure|callable $action
 	 */
-	public static function parse($action)
-	{
+	public static function parse($action) {
 		if (is_null($action)) {
 			return self::missingAction();
 		}
@@ -54,8 +50,7 @@ class RouteAction
 	 *
 	 * @return Closure
 	 */
-	private static function missingAction()
-	{
+	private static function missingAction() {
 		return function() {
 			throw new HttpResponseException(404);
 		};

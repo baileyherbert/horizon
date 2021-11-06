@@ -8,8 +8,7 @@ use Horizon\Http\Response;
 use Horizon\Http\Exception\HttpResponseException;
 use Horizon\Support\Container\BoundCallable;
 
-class ExceptionHandlerDispatcher extends ControllerDispatcher
-{
+class ExceptionHandlerDispatcher extends ControllerDispatcher {
 
 	/**
 	 * @var Exception
@@ -29,8 +28,7 @@ class ExceptionHandlerDispatcher extends ControllerDispatcher
 	 * @param RouteGroup $group
 	 * @param Exception $ex
 	 */
-	public function __construct(Request $request, Response $response, RouteGroup $group, Exception $ex)
-	{
+	public function __construct(Request $request, Response $response, RouteGroup $group, Exception $ex) {
 		$this->request = $request;
 		$this->response = $response;
 		$this->exception = $ex;
@@ -44,8 +42,7 @@ class ExceptionHandlerDispatcher extends ControllerDispatcher
 	 * @return BoundCallable
 	 * @throws Exception
 	 */
-	protected function createBoundCallable($action)
-	{
+	protected function createBoundCallable($action) {
 		$callable = parent::createBoundCallable($action);
 		$callable->with($this->exception, true);
 
@@ -58,8 +55,7 @@ class ExceptionHandlerDispatcher extends ControllerDispatcher
 	 * @return callable
 	 * @throws HttpResponseException
 	 */
-	protected function getCallable()
-	{
+	protected function getCallable() {
 		$handler = $this->group->getExceptionHandler();
 		$action = RouteAction::parse($handler);
 

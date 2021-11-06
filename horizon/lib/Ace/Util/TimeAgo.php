@@ -2,7 +2,6 @@
 
 namespace Horizon\Ace\Util;
 
-
 /**
 * A class to calculate and format a timestamp into "human readable" form (i.e. 4 minutes ago).
 */
@@ -76,5 +75,3 @@ class TimeAgo {
 		return (time() - $this->timestamp) / (3600 * 24 * 365.25);
 	}
 }
-
-?>

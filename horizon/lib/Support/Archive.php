@@ -5,8 +5,10 @@ namespace Horizon\Support;
 use Horizon\Encryption\FastEncrypt;
 use Horizon\Foundation\Framework;
 
-class Archive
-{
+/**
+ * A utility for reading, editing, and creating ZIP archives.
+ */
+class Archive {
 	/**
 	 * Compressed data.
 	 */
@@ -73,8 +75,7 @@ class Archive
 	 * @param string $baseDir
 	 * @param string $raw
 	 */
-	public function __construct($path = null, $baseDir = '.', $raw = null)
-	{
+	public function __construct($path = null, $baseDir = '.', $raw = null) {
 		$this->baseDir = $baseDir;
 
 		if (!is_null($path)) {
@@ -91,8 +92,7 @@ class Archive
 	 *
 	 * @param string $name
 	 */
-	public function createDirectory($name)
-	{
+	public function createDirectory($name) {
 		$name = str_replace('\\', '', $name);
 
 		// Local file header
@@ -152,8 +152,7 @@ class Archive
 	 * @param string $data
 	 * @param string $name
 	 */
-	public function createFile($data, $name)
-	{
+	public function createFile($data, $name) {
 		$name = str_replace('\\', '/', $name);
 
 		// Local file header
@@ -217,8 +216,7 @@ class Archive
 	 * @param string $name
 	 * @param string|null $raw
 	 */
-	protected function readZip($name, $raw = null)
-	{
+	protected function readZip($name, $raw = null) {
 		// Clear current file
 		$this->datasec = array();
 
@@ -263,8 +261,7 @@ class Archive
 		// Remove empty entry/signature
 		array_shift($filesecta);
 
-		foreach ($filesecta as $filedata)
-		{
+		foreach ($filesecta as $filedata) {
 			$entrya = array();
 			$entrya['error'] = "";
 
@@ -274,8 +271,7 @@ class Archive
 			$isEncrypted = (($unpackeda['general_purpose'] & 0x0001) ? true : false);
 
 			// Check for value block after compressed data
-			if ($unpackeda['general_purpose'] & 0x0008)
-			{
+			if ($unpackeda['general_purpose'] & 0x0008) {
 				$unpackeda2 = unpack('V1crc/V1size_compressed/V1size_uncompressed', substr($filedata, -12));
 
 				$unpackeda['crc'] = $unpackeda2['crc'];
@@ -326,7 +322,7 @@ class Archive
 						$filedata = gzinflate($filedata);
 						break;
 					case 12:
-						if (!extension_loaded("bz2")) {
+						if (!extension_loaded("bz2") && function_exists('dl')) {
 							@dl((strtolower(substr(PHP_OS, 0, 3)) == 'win') ? 'php_bz2.dll' : 'bz2.so');
 						}
 
@@ -373,8 +369,7 @@ class Archive
 		return $this->files;
 	}
 
-	public function addFile($file, $dir = '.', $file_blacklist = array(), $ext_blacklist = array())
-	{
+	public function addFile($file, $dir = '.', $file_blacklist = array(), $ext_blacklist = array()) {
 		$file = str_replace('\\', '/', $file);
 		$dir = str_replace('\\', '/', $dir);
 
@@ -437,8 +432,7 @@ class Archive
 	 *
 	 * @return array[]
 	 */
-	public function getFiles()
-	{
+	public function getFiles() {
 		return $this->files;
 	}
 
@@ -447,8 +441,7 @@ class Archive
 	 *
 	 * @return array[]
 	 */
-	public function getDirectories()
-	{
+	public function getDirectories() {
 		return $this->dirs;
 	}
 
@@ -457,8 +450,7 @@ class Archive
 	 *
 	 * @return bool
 	 */
-	public function hasError()
-	{
+	public function hasError() {
 		return !empty($this->archiveError);
 	}
 
@@ -467,8 +459,7 @@ class Archive
 	 *
 	 * @return string
 	 */
-	public function getError()
-	{
+	public function getError() {
 		return $this->archiveError;
 	}
 
@@ -477,8 +468,7 @@ class Archive
 	 *
 	 * @return bool
 	 */
-	public function isEncrypted()
-	{
+	public function isEncrypted() {
 		if (!is_null($this->localEncryption)) return true;
 
 		foreach ($this->files as $file) {
@@ -495,8 +485,7 @@ class Archive
 	 *
 	 * @return bool
 	 */
-	public function isDecryptable()
-	{
+	public function isDecryptable() {
 		if (!is_null($this->localEncryption)) {
 			$result = FastEncrypt::decrypt($this->localEncryption);
 
@@ -531,8 +520,7 @@ class Archive
 	 * Marks the archive as encrypted. Note that this does not automatically encrypt the data -- that is your
 	 * responsibility.
 	 */
-	public function markEncrypted()
-	{
+	public function markEncrypted() {
 		foreach ($this->files as $file) {
 			if (empty($file['dir']) && $file['name'] == 'HZENCRYPTED') {
 				return;
@@ -549,8 +537,7 @@ class Archive
 	 *
 	 * @return string
 	 */
-	public function build()
-	{
+	public function build() {
 		$data = implode('', $this->datasec);
 		$ctrldir = implode('', $this->ctrlDir);
 
@@ -573,13 +560,11 @@ class Archive
 	 *
 	 * @return Archive
 	 */
-	public static function fromString($raw)
-	{
+	public static function fromString($raw) {
 		return new Archive(null, '.', $raw);
 	}
 
-	public function __toString()
-	{
+	public function __toString() {
 		return $this->build();
 	}
 }

@@ -11,8 +11,7 @@ use GuzzleHttp\Client;
 use Horizon\Support\Path;
 use Horizon\Http\Exception\HttpResponseException;
 
-class TcpProxyController extends Controller
-{
+class TcpProxyController extends Controller {
 
 	private $address;
 	private $port;
@@ -27,8 +26,7 @@ class TcpProxyController extends Controller
 
 	private $ssl;
 
-	public function __invoke(Request $request, Response $response, $_address, $_port, $_timeout, $_caBundle)
-	{
+	public function __invoke(Request $request, Response $response, $_address, $_port, $_timeout, $_caBundle) {
 		$this->address = $_address;
 		$this->port = $_port;
 		$this->timeout = $_timeout;
@@ -49,8 +47,7 @@ class TcpProxyController extends Controller
 	 *
 	 * @return string
 	 */
-	private function getRealAddress()
-	{
+	private function getRealAddress() {
 		$input = $this->address;
 
 		if (!preg_match('/^https?:\/\//i', $input)) {
@@ -82,8 +79,7 @@ class TcpProxyController extends Controller
 	 * @param string $original
 	 * @return string
 	 */
-	private function getQueryArgs($original)
-	{
+	private function getQueryArgs($original) {
 		$args = array();
 
 		// Parse original
@@ -117,8 +113,7 @@ class TcpProxyController extends Controller
 	 *
 	 * @return string|array
 	 */
-	private function getPostArgs()
-	{
+	private function getPostArgs() {
 		if ($this->method == 'GET') {
 			return array();
 		}
@@ -135,8 +130,7 @@ class TcpProxyController extends Controller
 	 *
 	 * @return array
 	 */
-	private function getHeaders()
-	{
+	private function getHeaders() {
 		$remove = array('host', 'connection', 'cache-control', 'user-agent', 'x-forwarded-for', 'upgrade-insecure-requests', 'set-cookie', 'cookie');
 		$headers = $this->getRequest()->header();
 
@@ -179,8 +173,7 @@ class TcpProxyController extends Controller
 	 *
 	 * @return bool
 	 */
-	private function isSSL()
-	{
+	private function isSSL() {
 		return Str::startsWith($this->url, 'https://') && $this->caBundlePath !== false;
 	}
 
@@ -189,8 +182,7 @@ class TcpProxyController extends Controller
 	 *
 	 * @return string
 	 */
-	private function getCertificatePath()
-	{
+	private function getCertificatePath() {
 		$default = Path::join(Framework::path('horizon'), 'resources/ca-bundle.crt');
 
 		if ($this->caBundlePath === false) return false;
@@ -207,8 +199,7 @@ class TcpProxyController extends Controller
 	 *
 	 * @return void
 	 */
-	private function perform()
-	{
+	private function perform() {
 		$client = new Client();
 		$method = $this->method;
 
@@ -246,8 +237,7 @@ class TcpProxyController extends Controller
 		$this->getResponse()->setHeader('X-Horizon-Status', 'OK');
 	}
 
-	private function performHandlingErrors()
-	{
+	private function performHandlingErrors() {
 		$fail = function($code, $fwd = true, $message = 'OK') {
 			$this->getResponse()->setHeader('X-Horizon-Proxy', ($fwd ? 'Forwarded' : 'Not forwarded') . ' (' . $code . ')');
 			$this->getResponse()->setHeader('X-Horizon-Status', $message);

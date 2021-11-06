@@ -6,7 +6,6 @@ use Exception;
 
 use Horizon\Exception\ErrorMiddleware;
 use Horizon\Exception\HorizonException;
-use Horizon\Foundation\Framework;
 use Horizon\Http\Exception\HttpResponseException;
 use Horizon\Routing\Route;
 use Horizon\Support\Container\BoundCallable;
@@ -21,8 +20,7 @@ use Horizon\Support\Str;
 /**
  * Kernel for HTTP, controllers, middleware, and everything in between.
  */
-class Kernel
-{
+class Kernel {
 
 	/**
 	 * @var string
@@ -52,8 +50,7 @@ class Kernel
 	/**
 	 * Boots the HTTP kernel.
 	 */
-	public function boot()
-	{
+	public function boot() {
 		$this->sendExposedHeader();
 		$this->detectSubdirectory();
 		$this->createRequest();
@@ -67,8 +64,7 @@ class Kernel
 	 * @param callable $callback
 	 * @throws HorizonException
 	 */
-	public function execute($callback = null)
-	{
+	public function execute($callback = null) {
 		Profiler::start('kernel:http');
 
 		// Find a matching route
@@ -107,8 +103,7 @@ class Kernel
 	 *
 	 * @return Request|null
 	 */
-	public function request()
-	{
+	public function request() {
 		return $this->request;
 	}
 
@@ -118,8 +113,7 @@ class Kernel
 	 *
 	 * @return Response
 	 */
-	public function response()
-	{
+	public function response() {
 		if (is_null($this->response)) {
 			$this->createResponse();
 		}
@@ -132,8 +126,7 @@ class Kernel
 	 *
 	 * @return Route|null
 	 */
-	public function route()
-	{
+	public function route() {
 		return $this->route;
 	}
 
@@ -142,8 +135,7 @@ class Kernel
 	 *
 	 * @param bool $skipErrorPage
 	 */
-	public function close($skipErrorPage = false)
-	{
+	public function close($skipErrorPage = false) {
 		$this->response->halt();
 		$this->response->prepare($this->request);
 		$this->response->send();
@@ -164,8 +156,7 @@ class Kernel
 	 *
 	 * @param int $code
 	 */
-	public function error($code)
-	{
+	public function error($code) {
 		$errorFilePaths = array(
 			Application::path('app/errors/' . $code . '.html'),
 			Application::path('horizon/errors/' . $code . '.html')
@@ -198,8 +189,7 @@ class Kernel
 	 *
 	 * @return Route|null|false
 	 */
-	private function match()
-	{
+	private function match() {
 		Profiler::start('router:match');
 		$route = RouteLoader::getRouter()->match($this->request);
 
@@ -256,8 +246,7 @@ class Kernel
 	 * @throws HorizonException Middleware could not be found.
 	 * @throws Exception Failed to bind contextual parameters.
 	 */
-	private function executeMiddleware(Route $route)
-	{
+	private function executeMiddleware(Route $route) {
 		$middlewares = $route->middleware();
 
 		foreach ($middlewares as $middleware) {
@@ -301,8 +290,7 @@ class Kernel
 	 *
 	 * @param Route $route
 	 */
-	private function executeController(Route $route)
-	{
+	private function executeController(Route $route) {
 		if ($this->response->isHalted()) {
 			return;
 		}
@@ -315,8 +303,7 @@ class Kernel
 	 * Sets the X-Powered-By header with a credit to Horizon and its current version. Can be toggled off via the
 	 * app.expose_horizon config option.
 	 */
-	private function sendExposedHeader()
-	{
+	private function sendExposedHeader() {
 		$framework = 'Horizon';
 
 		if (config('app.expose_php', true)) $framework .= ' / PHP ' . phpversion();
@@ -327,8 +314,7 @@ class Kernel
 	/**
 	 * Detects if the application is running in a subdirectory and saves relevant information.
 	 */
-	private function detectSubdirectory()
-	{
+	private function detectSubdirectory() {
 		$rootPath = Application::path();
 		$requestUri = $_SERVER['REQUEST_URI'];
 		$queryString = '';
@@ -377,16 +363,14 @@ class Kernel
 	/**
 	 * Creates the Request instance.
 	 */
-	private function createRequest()
-	{
+	private function createRequest() {
 		$this->request = Request::auto();
 	}
 
 	/**
 	 * Creates the Response instance.
 	 */
-	private function createResponse()
-	{
+	private function createResponse() {
 		$this->response = Application::environment() != 'console' ? new Response() : new ConsoleResponse();
 	}
 
@@ -397,8 +381,7 @@ class Kernel
 	 *
 	 * @return bool
 	 */
-	private function tryDirectoryRedirect()
-	{
+	private function tryDirectoryRedirect() {
 		if (config('app.redirect_to_directories', true) === false) {
 			return false;
 		}

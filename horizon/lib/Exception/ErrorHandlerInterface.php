@@ -4,8 +4,7 @@ namespace Horizon\Exception;
 
 use Horizon\Http\Exception\HttpResponseException;
 
-interface ErrorHandlerInterface
-{
+interface ErrorHandlerInterface {
 
 	/**
 	 * Called automatically by the framework when the exception kernel is booted. Useful for initializing a global

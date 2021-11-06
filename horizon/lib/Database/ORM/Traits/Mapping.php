@@ -6,16 +6,11 @@ use Horizon\Database\Model;
 
 use Horizon\Database\ORM\Relationship;
 use Horizon\Database\QueryBuilder;
-use Horizon\Foundation\Kernel;
-use Horizon\Database\Exception\DatabaseException;
 use Horizon\Database\Cache;
 use Horizon\Database\ORM\Relationships\OneToOneRelationship;
-use Horizon\Database\ORM\Relationships\OneToManyRelationship;
-use Horizon\Database\ORM\Relationships\BelongsToManyRelationship;
 use Horizon\Database\ORM\Relationships\BelongsToOneRelationship;
 
-trait Mapping
-{
+trait Mapping {
 
 	use Relationships;
 
@@ -37,8 +32,7 @@ trait Mapping
 	 *
 	 * @return string
 	 */
-	public function getTable()
-	{
+	public function getTable() {
 		if (is_null($this->table)) {
 			$tableNameParts = explode('\\', strtolower(get_class($this)));
 			$tableName = array_pop($tableNameParts);
@@ -58,8 +52,7 @@ trait Mapping
 	 *
 	 * @return string
 	 */
-	public function getPrimaryKey()
-	{
+	public function getPrimaryKey() {
 		return $this->primaryKey;
 	}
 
@@ -68,8 +61,7 @@ trait Mapping
 	 *
 	 * @return int|null
 	 */
-	public function getPrimaryKeyValue()
-	{
+	public function getPrimaryKeyValue() {
 		$keyName = $this->getPrimaryKey();
 
 		if (isset($this->storage[$keyName])) {
@@ -82,8 +74,7 @@ trait Mapping
 	/**
 	 * Saves changes to the row or creates the row if it doesn't exist.
 	 */
-	public function save()
-	{
+	public function save() {
 		$keyName = $this->getPrimaryKey();
 		$keyValue = $this->getPrimaryKeyValue();
 
@@ -130,8 +121,7 @@ trait Mapping
 	 *
 	 * @return array
 	 */
-	public function delete()
-	{
+	public function delete() {
 		if (is_null($this->getPrimaryKeyValue())) {
 			$this->emit('deleted');
 			$this->storage = array();
@@ -154,13 +144,11 @@ trait Mapping
 		return $oldData;
 	}
 
-	public function __isset($name)
-	{
+	public function __isset($name) {
 		return (method_exists($this, $name) || array_key_exists($name, $this->storage));
 	}
 
-	public function __get($name)
-	{
+	public function __get($name) {
 		if (method_exists($this, $name)) {
 			$relationship = $this->$name();
 
@@ -194,8 +182,7 @@ trait Mapping
 		return null;
 	}
 
-	public function __set($name, $value)
-	{
+	public function __set($name, $value) {
 		$setterName = '__set' . str_replace('_', '', $name);
 
 		if (array_key_exists($name, $this->storage)) {
@@ -225,8 +212,7 @@ trait Mapping
 	 *
 	 * @return string|null
 	 */
-	public function getConnection()
-	{
+	public function getConnection() {
 		return $this->connection;
 	}
 
@@ -236,8 +222,7 @@ trait Mapping
 	 * @param string|null $name
 	 * @return void
 	 */
-	public function setConnection($name)
-	{
+	public function setConnection($name) {
 		$this->connection = $name;
 	}
 

@@ -10,8 +10,7 @@ use Horizon\Database\Migration\Schema\Grammar;
 /**
  * Represents a database table.
  */
-class Blueprint
-{
+class Blueprint {
 
 	/**
 	 * The storage engine that should be used for the table.
@@ -61,8 +60,7 @@ class Blueprint
 	 * @param string $name
 	 * @param SchemaConnection $schema
 	 */
-	public function __construct($name, SchemaConnection $schema)
-	{
+	public function __construct($name, SchemaConnection $schema) {
 		$this->table = $name;
 		$this->schema = $schema;
 	}
@@ -73,8 +71,7 @@ class Blueprint
 	 * @param string $column
 	 * @return Column
 	 */
-	public function increments($column)
-	{
+	public function increments($column) {
 		return $this->unsignedInteger($column, true);
 	}
 
@@ -84,8 +81,7 @@ class Blueprint
 	 * @param string $column
 	 * @return Column
 	 */
-	public function tinyIncrements($column)
-	{
+	public function tinyIncrements($column) {
 		return $this->unsignedTinyInteger($column, true);
 	}
 
@@ -95,8 +91,7 @@ class Blueprint
 	 * @param string $column
 	 * @return Column
 	 */
-	public function smallIncrements($column)
-	{
+	public function smallIncrements($column) {
 		return $this->unsignedSmallInteger($column, true);
 	}
 
@@ -106,8 +101,7 @@ class Blueprint
 	 * @param string $column
 	 * @return Column
 	 */
-	public function mediumIncrements($column)
-	{
+	public function mediumIncrements($column) {
 		return $this->unsignedMediumInteger($column, true);
 	}
 
@@ -117,8 +111,7 @@ class Blueprint
 	 * @param string $column
 	 * @return Column
 	 */
-	public function bigIncrements($column)
-	{
+	public function bigIncrements($column) {
 		return $this->unsignedBigInteger($column, true);
 	}
 
@@ -129,8 +122,7 @@ class Blueprint
 	 * @param int $length
 	 * @return Column
 	 */
-	public function char($column, $length = null)
-	{
+	public function char($column, $length = null) {
 		$length = $length ?: 256;
 		return $this->addColumn('char', $column, compact('length'));
 	}
@@ -142,8 +134,7 @@ class Blueprint
 	 * @param int $length
 	 * @return Column
 	 */
-	public function string($column, $length = null)
-	{
+	public function string($column, $length = null) {
 		$length = $length ?: 256;
 		return $this->addColumn('string', $column, compact('length'));
 	}
@@ -154,8 +145,7 @@ class Blueprint
 	 * @param string $column
 	 * @return Column
 	 */
-	public function text($column)
-	{
+	public function text($column) {
 		return $this->addColumn('text', $column);
 	}
 
@@ -165,8 +155,7 @@ class Blueprint
 	 * @param string $column
 	 * @return Column
 	 */
-	public function mediumText($column)
-	{
+	public function mediumText($column) {
 		return $this->addColumn('mediumText', $column);
 	}
 
@@ -176,8 +165,7 @@ class Blueprint
 	 * @param string $column
 	 * @return Column
 	 */
-	public function longText($column)
-	{
+	public function longText($column) {
 		return $this->addColumn('longText', $column);
 	}
 
@@ -189,8 +177,7 @@ class Blueprint
 	 * @param bool $unsigned
 	 * @return Column
 	 */
-	public function integer($column, $autoIncrement = false, $unsigned = false)
-	{
+	public function integer($column, $autoIncrement = false, $unsigned = false) {
 		return $this->addColumn('integer', $column, compact('autoIncrement', 'unsigned'));
 	}
 
@@ -202,8 +189,7 @@ class Blueprint
 	 * @param bool $unsigned
 	 * @return Column
 	 */
-	public function tinyInteger($column, $autoIncrement = false, $unsigned = false)
-	{
+	public function tinyInteger($column, $autoIncrement = false, $unsigned = false) {
 		return $this->addColumn('tinyInteger', $column, compact('autoIncrement', 'unsigned'));
 	}
 
@@ -215,8 +201,7 @@ class Blueprint
 	 * @param bool $unsigned
 	 * @return Column
 	 */
-	public function smallInteger($column, $autoIncrement = false, $unsigned = false)
-	{
+	public function smallInteger($column, $autoIncrement = false, $unsigned = false) {
 		return $this->addColumn('smallInteger', $column, compact('autoIncrement', 'unsigned'));
 	}
 
@@ -228,8 +213,7 @@ class Blueprint
 	 * @param bool $unsigned
 	 * @return Column
 	 */
-	public function mediumInteger($column, $autoIncrement = false, $unsigned = false)
-	{
+	public function mediumInteger($column, $autoIncrement = false, $unsigned = false) {
 		return $this->addColumn('mediumInteger', $column, compact('autoIncrement', 'unsigned'));
 	}
 
@@ -241,8 +225,7 @@ class Blueprint
 	 * @param bool $unsigned
 	 * @return Column
 	 */
-	public function bigInteger($column, $autoIncrement = false, $unsigned = false)
-	{
+	public function bigInteger($column, $autoIncrement = false, $unsigned = false) {
 		return $this->addColumn('bigInteger', $column, compact('autoIncrement', 'unsigned'));
 	}
 
@@ -253,8 +236,7 @@ class Blueprint
 	 * @param bool $autoIncrement
 	 * @return Column
 	 */
-	public function unsignedInteger($column, $autoIncrement = false)
-	{
+	public function unsignedInteger($column, $autoIncrement = false) {
 		return $this->integer($column, $autoIncrement, true);
 	}
 
@@ -265,8 +247,7 @@ class Blueprint
 	 * @param bool $autoIncrement
 	 * @return Column
 	 */
-	public function unsignedTinyInteger($column, $autoIncrement = false)
-	{
+	public function unsignedTinyInteger($column, $autoIncrement = false) {
 		return $this->tinyInteger($column, $autoIncrement, true);
 	}
 
@@ -277,8 +258,7 @@ class Blueprint
 	 * @param bool $autoIncrement
 	 * @return Column
 	 */
-	public function unsignedSmallInteger($column, $autoIncrement = false)
-	{
+	public function unsignedSmallInteger($column, $autoIncrement = false) {
 		return $this->smallInteger($column, $autoIncrement, true);
 	}
 
@@ -289,8 +269,7 @@ class Blueprint
 	 * @param bool $autoIncrement
 	 * @return Column
 	 */
-	public function unsignedMediumInteger($column, $autoIncrement = false)
-	{
+	public function unsignedMediumInteger($column, $autoIncrement = false) {
 		return $this->mediumInteger($column, $autoIncrement, true);
 	}
 
@@ -301,8 +280,7 @@ class Blueprint
 	 * @param bool $autoIncrement
 	 * @return Column
 	 */
-	public function unsignedBigInteger($column, $autoIncrement = false)
-	{
+	public function unsignedBigInteger($column, $autoIncrement = false) {
 		return $this->bigInteger($column, $autoIncrement, true);
 	}
 
@@ -314,8 +292,7 @@ class Blueprint
 	 * @param int $places
 	 * @return Column
 	 */
-	public function float($column, $total = 8, $places = 2)
-	{
+	public function float($column, $total = 8, $places = 2) {
 		return $this->addColumn('float', $column, compact('total', 'places'));
 	}
 
@@ -327,8 +304,7 @@ class Blueprint
 	 * @param int|null $places
 	 * @return Column
 	 */
-	public function double($column, $total = null, $places = null)
-	{
+	public function double($column, $total = null, $places = null) {
 		return $this->addColumn('double', $column, compact('total', 'places'));
 	}
 
@@ -340,8 +316,7 @@ class Blueprint
 	 * @param int $places
 	 * @return Column
 	 */
-	public function decimal($column, $total = 8, $places = 2)
-	{
+	public function decimal($column, $total = 8, $places = 2) {
 		return $this->addColumn('decimal', $column, compact('total', 'places'));
 	}
 
@@ -353,8 +328,7 @@ class Blueprint
 	 * @param int $places
 	 * @return Column
 	 */
-	public function unsignedDecimal($column, $total = 8, $places = 2)
-	{
+	public function unsignedDecimal($column, $total = 8, $places = 2) {
 		return $this->addColumn('decimal', $column, array(
 			'total' => $total, 'places' => $places, 'unsigned' => true,
 		));
@@ -366,8 +340,7 @@ class Blueprint
 	 * @param string $column
 	 * @return Column
 	 */
-	public function boolean($column)
-	{
+	public function boolean($column) {
 		return $this->addColumn('boolean', $column);
 	}
 
@@ -377,8 +350,7 @@ class Blueprint
 	 * @param string $column
 	 * @return Column
 	 */
-	public function date($column)
-	{
+	public function date($column) {
 		return $this->addColumn('date', $column);
 	}
 
@@ -389,8 +361,7 @@ class Blueprint
 	 * @param int $precision
 	 * @return Column
 	 */
-	public function dateTime($column, $precision = 0)
-	{
+	public function dateTime($column, $precision = 0) {
 		return $this->addColumn('dateTime', $column, compact('precision'));
 	}
 
@@ -401,8 +372,7 @@ class Blueprint
 	 * @param int $precision
 	 * @return Column
 	 */
-	public function time($column, $precision = 0)
-	{
+	public function time($column, $precision = 0) {
 		return $this->addColumn('time', $column, compact('precision'));
 	}
 
@@ -413,8 +383,7 @@ class Blueprint
 	 * @param int $precision
 	 * @return Column
 	 */
-	public function timestamp($column, $precision = 0)
-	{
+	public function timestamp($column, $precision = 0) {
 		return $this->addColumn('timestamp', $column, compact('precision'));
 	}
 
@@ -424,8 +393,7 @@ class Blueprint
 	 * @param string $column
 	 * @return Column
 	 */
-	public function year($column)
-	{
+	public function year($column) {
 		return $this->addColumn('year', $column);
 	}
 
@@ -435,8 +403,7 @@ class Blueprint
 	 * @param string $column
 	 * @return Column
 	 */
-	public function json($column)
-	{
+	public function json($column) {
 		return $this->addColumn('json', $column);
 	}
 
@@ -446,8 +413,7 @@ class Blueprint
 	 * @param string $column
 	 * @return Column
 	 */
-	public function binary($column)
-	{
+	public function binary($column) {
 		return $this->addColumn('binary', $column);
 	}
 
@@ -456,8 +422,7 @@ class Blueprint
 	 *
 	 * @return bool
 	 */
-	protected function creating()
-	{
+	protected function creating() {
 		return $this->create;
 	}
 
@@ -466,8 +431,7 @@ class Blueprint
 	 *
 	 * @return void
 	 */
-	public function create()
-	{
+	public function create() {
 		$this->create = true;
 	}
 
@@ -478,8 +442,7 @@ class Blueprint
 	 * @return Command
 	 * @throws
 	 */
-	public function dropColumn($columns)
-	{
+	public function dropColumn($columns) {
 		if ($this->isCreating()) {
 			throw new MigrationException('Cannot drop a column while in table creation mode.');
 		}
@@ -496,8 +459,7 @@ class Blueprint
 	 * @return $this
 	 * @throws
 	 */
-	public function renameColumn($from, $to)
-	{
+	public function renameColumn($from, $to) {
 		if ($this->isCreating()) {
 			throw new MigrationException('Cannot rename a column while in table creation mode.');
 		}
@@ -520,8 +482,7 @@ class Blueprint
 	 * @param string|null $algorithm
 	 * @return Command
 	 */
-	public function primary($columns, $name = null, $algorithm = null)
-	{
+	public function primary($columns, $name = null, $algorithm = null) {
 		return $this->indexCommand('primary', $columns, $name, $algorithm);
 	}
 
@@ -532,8 +493,7 @@ class Blueprint
 	 * @return Command
 	 * @throws
 	 */
-	public function dropPrimary($index = null)
-	{
+	public function dropPrimary($index = null) {
 		return $this->dropIndexCommand('dropPrimary', 'primary', $index);
 	}
 
@@ -545,8 +505,7 @@ class Blueprint
 	 * @param string|null $algorithm
 	 * @return Command
 	 */
-	public function unique($columns, $name = null, $algorithm = null)
-	{
+	public function unique($columns, $name = null, $algorithm = null) {
 		return $this->indexCommand('unique', $columns, $name, $algorithm);
 	}
 
@@ -557,8 +516,7 @@ class Blueprint
 	 * @return Command
 	 * @throws
 	 */
-	public function dropUnique($index)
-	{
+	public function dropUnique($index) {
 		return $this->dropIndexCommand('dropUnique', 'unique', $index);
 	}
 
@@ -570,8 +528,7 @@ class Blueprint
 	 * @param string|null $algorithm
 	 * @return Command
 	 */
-	public function index($columns, $name = null, $algorithm = null)
-	{
+	public function index($columns, $name = null, $algorithm = null) {
 		return $this->indexCommand('index', $columns, $name, $algorithm);
 	}
 
@@ -582,8 +539,7 @@ class Blueprint
 	 * @return Command
 	 * @throws
 	 */
-	public function dropIndex($index)
-	{
+	public function dropIndex($index) {
 		return $this->dropIndexCommand('dropIndex', 'index', $index);
 	}
 
@@ -594,8 +550,7 @@ class Blueprint
 	 * @param string $name
 	 * @return Command
 	 */
-	public function foreign($columns, $name = null)
-	{
+	public function foreign($columns, $name = null) {
 		return $this->indexCommand('foreign', $columns, $name);
 	}
 
@@ -606,8 +561,7 @@ class Blueprint
 	 * @return Command
 	 * @throws
 	 */
-	public function dropForeign($index)
-	{
+	public function dropForeign($index) {
 		return $this->dropIndexCommand('dropForeign', 'foreign', $index);
 	}
 
@@ -619,8 +573,7 @@ class Blueprint
 	 * @param array $parameters
 	 * @return Column
 	 */
-	public function addColumn($type, $name, array $parameters = array())
-	{
+	public function addColumn($type, $name, array $parameters = array()) {
 		return $this->columns[] = new Column($type, $name, $parameters, $this);
 	}
 
@@ -631,8 +584,7 @@ class Blueprint
 	 * @return $this
 	 * @throws
 	 */
-	public function removeColumn($name)
-	{
+	public function removeColumn($name) {
 		if ($this->isCreating()) {
 			throw new MigrationException('Cannot remove a column while in table creation mode.');
 		}
@@ -653,8 +605,7 @@ class Blueprint
 	 * @param string|null $algorithm
 	 * @return Command
 	 */
-	protected function indexCommand($type, $columns, $index = null, $algorithm = null)
-	{
+	protected function indexCommand($type, $columns, $index = null, $algorithm = null) {
 		$columns = (array)$columns;
 		$index = $index ?: $this->createIndexName($type, $columns);
 
@@ -670,8 +621,7 @@ class Blueprint
 	 * @return Command
 	 * @throws
 	 */
-	protected function dropIndexCommand($command, $type, $index)
-	{
+	protected function dropIndexCommand($command, $type, $index) {
 		if ($this->isCreating()) {
 			throw new MigrationException('Cannot drop an index while in table creation mode.');
 		}
@@ -692,8 +642,7 @@ class Blueprint
 	 * @param array $columns
 	 * @return string
 	 */
-	protected function createIndexName($type, array $columns)
-	{
+	protected function createIndexName($type, array $columns) {
 		$index = strtolower($this->table . '_' . implode('_', $columns) . '_' . $type);
 		return str_replace(array('-', '.'), '_', $index);
 	}
@@ -704,8 +653,7 @@ class Blueprint
 	 * @param array $parameters
 	 * @return Command
 	 */
-	protected function addCommand($name, array $parameters = array())
-	{
+	protected function addCommand($name, array $parameters = array()) {
 		return $this->commands[] = new Command($name, $parameters, $this);
 	}
 
@@ -714,8 +662,7 @@ class Blueprint
 	 *
 	 * @return string
 	 */
-	public function getTable()
-	{
+	public function getTable() {
 		return $this->table;
 	}
 
@@ -724,8 +671,7 @@ class Blueprint
 	 *
 	 * @return bool
 	 */
-	public function isCreating()
-	{
+	public function isCreating() {
 		return $this->create;
 	}
 
@@ -734,8 +680,7 @@ class Blueprint
 	 *
 	 * @return bool
 	 */
-	private function hasPrimaryKey()
-	{
+	private function hasPrimaryKey() {
 		foreach ($this->commands as $command) {
 			if ($command->name == 'primary') {
 				return true;
@@ -750,8 +695,7 @@ class Blueprint
 	 *
 	 * @return Column|null
 	 */
-	private function getIncrementingColumn()
-	{
+	private function getIncrementingColumn() {
 		foreach ($this->columns as $column) {
 			if ($column->autoIncrementing || array_get($column->parameters, 'autoIncrement', false)) {
 				return $column;
@@ -766,8 +710,7 @@ class Blueprint
 	 *
 	 * @return Column[]
 	 */
-	public function getColumns()
-	{
+	public function getColumns() {
 		return $this->columns;
 	}
 
@@ -776,8 +719,7 @@ class Blueprint
 	 *
 	 * @return Command[]
 	 */
-	public function getCommands()
-	{
+	public function getCommands() {
 		return $this->commands;
 	}
 
@@ -786,8 +728,7 @@ class Blueprint
 	 *
 	 * @return string
 	 */
-	public function __toString()
-	{
+	public function __toString() {
 		if ($this->isCreating()) {
 			if (!$this->hasPrimaryKey()) {
 				if (!is_null($incrementing = $this->getIncrementingColumn())) {
@@ -807,8 +748,7 @@ class Blueprint
 	 *
 	 * @return string
 	 */
-	private function compileCreateTable()
-	{
+	private function compileCreateTable() {
 		$query = array('CREATE TABLE', Grammar::compileName($this->schema->prefix($this->table)));
 
 		// Build columns
@@ -833,8 +773,7 @@ class Blueprint
 	 *
 	 * @return string
 	 */
-	private function compileAlterTable()
-	{
+	private function compileAlterTable() {
 		$query = array('ALTER TABLE', Grammar::compileName($this->schema->prefix($this->table)));
 		$specifications = array();
 

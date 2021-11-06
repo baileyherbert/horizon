@@ -8,16 +8,14 @@ use Horizon\Support\Services\ServiceProvider;
 /**
  * Facade for access to application-specific information and methods.
  */
-class Application
-{
+class Application {
 
 	/**
 	 * Returns the service container for the application.
 	 *
 	 * @return \Horizon\Support\Container\Container
 	 */
-	public static function container()
-	{
+	public static function container() {
 		return \Horizon\Foundation\Application::container();
 	}
 
@@ -27,8 +25,7 @@ class Application
 	 * @param ServiceProvider $provider
 	 * @return void
 	 */
-	public static function register(ServiceProvider $provider)
-	{
+	public static function register(ServiceProvider $provider) {
 		static::container()->register($provider);
 	}
 
@@ -39,8 +36,7 @@ class Application
 	 * @param string $relative
 	 * @return string
 	 */
-	public static function path($relative = '')
-	{
+	public static function path($relative = '') {
 		return \Horizon\Foundation\Application::path($relative);
 	}
 
@@ -51,8 +47,7 @@ class Application
 	 * @param string $relative
 	 * @return string
 	 */
-	public static function asset($relative = '')
-	{
+	public static function asset($relative = '') {
 		return \Horizon\Foundation\Application::asset($relative);
 	}
 
@@ -61,8 +56,7 @@ class Application
 	 *
 	 * @return string
 	 */
-	public static function environment()
-	{
+	public static function environment() {
 		return \Horizon\Foundation\Application::environment();
 	}
 
@@ -71,8 +65,7 @@ class Application
 	 *
 	 * @return string
 	 */
-	public static function routing()
-	{
+	public static function routing() {
 		return \Horizon\Foundation\Application::routing();
 	}
 
@@ -82,8 +75,7 @@ class Application
 	 * @return string
 	 * @throws HorizonException
 	 */
-	public static function version()
-	{
+	public static function version() {
 		return \Horizon\Foundation\Application::version();
 	}
 
@@ -97,8 +89,7 @@ class Application
 	 * @return mixed
 	 * @throws HorizonException
 	 */
-	public static function config($key, $default = null)
-	{
+	public static function config($key, $default = null) {
 		return \Horizon\Foundation\Application::config($key, $default);
 	}
 

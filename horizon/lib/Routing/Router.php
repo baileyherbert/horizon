@@ -3,20 +3,14 @@
 namespace Horizon\Routing;
 
 use Closure;
-
 use Horizon\Http\Request;
-
 use Horizon\Routing\Route;
 use Horizon\Routing\RouteGroup;
-
 use Horizon\Routing\Controllers\ViewActionController;
 use Horizon\Routing\Controllers\RedirectActionController;
-
-use Horizon\Exception\HttpResponseException;
 use Horizon\Routing\Controllers\TcpProxyController;
 
-class Router
-{
+class Router {
 
 	/**
 	 * @var Route[]
@@ -41,8 +35,7 @@ class Router
 	/**
 	 * Constructs a new Router instance.
 	 */
-	public function __construct()
-	{
+	public function __construct() {
 		$this->resetMainGroup();
 	}
 
@@ -51,8 +44,7 @@ class Router
 	 *
 	 * @return RouteGroup
 	 */
-	public function getRootGroup()
-	{
+	public function getRootGroup() {
 		return $this->currentGroup;
 	}
 
@@ -62,8 +54,7 @@ class Router
 	 * @param Closure|string|null $action
 	 * @return Route
 	 */
-	public function setExceptionHandler($action)
-	{
+	public function setExceptionHandler($action) {
 		$this->currentGroup->setExceptionHandler($action);
 		return $this;
 	}
@@ -76,8 +67,7 @@ class Router
 	 * @param Closure|null $action
 	 * @return Route
 	 */
-	private function addRoute($methods, $uri, $action)
-	{
+	private function addRoute($methods, $uri, $action) {
 		if (!is_array($methods)) {
 			$methods = array($methods);
 		}
@@ -109,8 +99,7 @@ class Router
 	 * @param array $properties
 	 * @return RouteGroup
 	 */
-	private function addRouteGroup(Closure $callback, array $properties = array())
-	{
+	private function addRouteGroup(Closure $callback, array $properties = array()) {
 		// Create the group
 		$group = new RouteGroup($properties, $this->currentGroup);
 
@@ -131,8 +120,7 @@ class Router
 	 * @param Closure|array|string $action
 	 * @return Route
 	 */
-	public function createGetRoute($uri, $action)
-	{
+	public function createGetRoute($uri, $action) {
 		return $this->addRoute('GET', $uri, $action);
 	}
 
@@ -143,8 +131,7 @@ class Router
 	 * @param Closure|array|string $action
 	 * @return Route
 	 */
-	public function createHeadRoute($uri, $action)
-	{
+	public function createHeadRoute($uri, $action) {
 		return $this->addRoute('HEAD', $uri, $action);
 	}
 
@@ -155,8 +142,7 @@ class Router
 	 * @param Closure|array|string $action
 	 * @return Route
 	 */
-	public function createPostRoute($uri, $action)
-	{
+	public function createPostRoute($uri, $action) {
 		return $this->addRoute('POST', $uri, $action);
 	}
 
@@ -167,8 +153,7 @@ class Router
 	 * @param Closure|array|string $action
 	 * @return Route
 	 */
-	public function createPutRoute($uri, $action)
-	{
+	public function createPutRoute($uri, $action) {
 		return $this->addRoute('PUT', $uri, $action);
 	}
 
@@ -179,8 +164,7 @@ class Router
 	 * @param Closure|array|string $action
 	 * @return Route
 	 */
-	public function createPatchRoute($uri, $action)
-	{
+	public function createPatchRoute($uri, $action) {
 		return $this->addRoute('PATCH', $uri, $action);
 	}
 
@@ -191,8 +175,7 @@ class Router
 	 * @param Closure|array|string $action
 	 * @return Route
 	 */
-	public function createDeleteRoute($uri, $action)
-	{
+	public function createDeleteRoute($uri, $action) {
 		return $this->addRoute('DELETE', $uri, $action);
 	}
 
@@ -203,8 +186,7 @@ class Router
 	 * @param Closure|array|string $action
 	 * @return Route
 	 */
-	public function createOptionsRoute($uri, $action)
-	{
+	public function createOptionsRoute($uri, $action) {
 		return $this->addRoute('OPTIONS', $uri, $action);
 	}
 
@@ -215,8 +197,7 @@ class Router
 	 * @param Closure|array|string $action
 	 * @return Route
 	 */
-	public function createAnyRoute($uri, $action)
-	{
+	public function createAnyRoute($uri, $action) {
 		return $this->addRoute(static::$verbs, $uri, $action);
 	}
 
@@ -228,8 +209,7 @@ class Router
 	 * @param Closure|array|string $action
 	 * @return Route
 	 */
-	public function createMatchRoute(array $methods, $uri, $action)
-	{
+	public function createMatchRoute(array $methods, $uri, $action) {
 		return $this->addRoute($methods, $uri, $action);
 	}
 
@@ -242,8 +222,7 @@ class Router
 	 * @param array $variables
 	 * @return Route
 	 */
-	public function createViewRoute($uri, $view, array $variables = array())
-	{
+	public function createViewRoute($uri, $view, array $variables = array()) {
 		return $this->addRoute(static::$verbs, $uri, get_class(new ViewActionController()))
 			   ->defaults('view', $view)
 			   ->defaults('variables', $variables);
@@ -259,8 +238,7 @@ class Router
 	 * @param int $code
 	 * @return Route
 	 */
-	public function createRedirectRoute($uri, $to, $code = 302)
-	{
+	public function createRedirectRoute($uri, $to, $code = 302) {
 		return $this->addRoute(static::$verbs, $uri, get_class(new RedirectActionController()))
 			   ->defaults('to', $to)
 			   ->defaults('code', $code);
@@ -286,8 +264,7 @@ class Router
 	 * @param int $timeout Number of seconds to wait before timing out the request.
 	 * @return Route
 	 */
-	public function createTcpProxyRoute($uri, $address, $port = 80, $caBundle = null, $timeout = 30)
-	{
+	public function createTcpProxyRoute($uri, $address, $port = 80, $caBundle = null, $timeout = 30) {
 		return $this->addRoute(static::$verbs, $uri, get_class(new TcpProxyController()))
 			   ->defaults('_address', $address)
 			   ->defaults('_port', $port)
@@ -302,8 +279,7 @@ class Router
 	 * @param Closure $callback
 	 * @return RouteGroup
 	 */
-	public function createGroup($propertiesOrCallback = null, $callback = null)
-	{
+	public function createGroup($propertiesOrCallback = null, $callback = null) {
 		if (is_null($callback)) {
 			$callback = $propertiesOrCallback;
 			$propertiesOrCallback = array();
@@ -320,8 +296,7 @@ class Router
 	 * @param Closure|null $callback
 	 * @return RouteGroup|void
 	 */
-	public function createPrefix($prefix, Closure $callback = null)
-	{
+	public function createPrefix($prefix, Closure $callback = null) {
 		if (!is_null($callback)) {
 			return $this->createPrefixGroup($prefix, $callback);
 		}
@@ -336,8 +311,7 @@ class Router
 	 * @param Closure $callback
 	 * @return RouteGroup
 	 */
-	public function createPrefixGroup($prefix, Closure $callback)
-	{
+	public function createPrefixGroup($prefix, Closure $callback) {
 		return $this->addRouteGroup($callback, array(
 			'prefix' => $prefix
 		));
@@ -352,8 +326,7 @@ class Router
 	 * @param Closure|null $callback
 	 * @return RouteGroup|void
 	 */
-	public function createMiddleware($middleware, Closure $callback = null)
-	{
+	public function createMiddleware($middleware, Closure $callback = null) {
 		if (!is_array($middleware)) {
 			$middleware = array($middleware);
 		}
@@ -372,8 +345,7 @@ class Router
 	 * @param Closure $callback
 	 * @return RouteGroup
 	 */
-	public function createMiddlewareGroup($middleware, Closure $callback)
-	{
+	public function createMiddlewareGroup($middleware, Closure $callback) {
 		if (!is_array($middleware)) {
 			$middleware = array($middleware);
 		}
@@ -392,8 +364,7 @@ class Router
 	 * @param Closure|null $callback
 	 * @return RouteGroup|void
 	 */
-	public function createName($name, Closure $callback = null)
-	{
+	public function createName($name, Closure $callback = null) {
 		if (!is_null($callback)) {
 			return $this->createNameGroup($name, $callback);
 		}
@@ -408,8 +379,7 @@ class Router
 	 * @param Closure $callback
 	 * @return RouteGroup
 	 */
-	public function createNameGroup($name, Closure $callback)
-	{
+	public function createNameGroup($name, Closure $callback) {
 		return $this->addRouteGroup($callback, array(
 			'name' => $name
 		));
@@ -424,8 +394,7 @@ class Router
 	 * @param Closure|null $callback
 	 * @return RouteGroup|void
 	 */
-	public function createNamespace($namespace, Closure $callback = null)
-	{
+	public function createNamespace($namespace, Closure $callback = null) {
 		if (!is_null($callback)) {
 			return $this->createNamespaceGroup($namespace, $callback);
 		}
@@ -441,8 +410,7 @@ class Router
 	 * @param Closure $callback
 	 * @return RouteGroup
 	 */
-	public function createNamespaceGroup($namespace, Closure $callback)
-	{
+	public function createNamespaceGroup($namespace, Closure $callback) {
 		return $this->addRouteGroup($callback, array(
 			'namespace' => $namespace . '\\'
 		));
@@ -459,8 +427,7 @@ class Router
 	 * @param Closure $callback
 	 * @return RouteGroup
 	 */
-	public function createDomain($domain, Closure $callback = null)
-	{
+	public function createDomain($domain, Closure $callback = null) {
 		if (!is_null($callback)) {
 			return $this->createDomainGroup($domain, $callback);
 		}
@@ -476,8 +443,7 @@ class Router
 	 * @param Closure $callback
 	 * @return RouteGroup
 	 */
-	public function createDomainGroup($domain, Closure $callback)
-	{
+	public function createDomainGroup($domain, Closure $callback) {
 		return $this->addRouteGroup($callback, array(
 			'domain' => $domain
 		));
@@ -488,8 +454,7 @@ class Router
 	 *
 	 * @return Route|null
 	 */
-	public function match(Request $request)
-	{
+	public function match(Request $request) {
 		foreach ($this->routes as $route) {
 			if ($route->matches($request)) {
 				return $route;
@@ -505,8 +470,7 @@ class Router
 	 * @param RouteGroup $group
 	 * @param Closure $callback
 	 */
-	private function executeGroup(RouteGroup $group, Closure $callback)
-	{
+	private function executeGroup(RouteGroup $group, Closure $callback) {
 		// Get the current group
 		$originalGroup = $this->currentGroup;
 
@@ -527,8 +491,7 @@ class Router
 	 * @param mixed $value
 	 * @return mixed
 	 */
-	private function applyGroupProperty($property, $value)
-	{
+	private function applyGroupProperty($property, $value) {
 		// Skip if there is no current group
 		if (!$this->currentGroup) {
 			return $value;
@@ -541,8 +504,7 @@ class Router
 	/**
 	 * Creates a new main group instance.
 	 */
-	public function resetMainGroup()
-	{
+	public function resetMainGroup() {
 		$this->currentGroup = new RouteGroup(array());
 	}
 

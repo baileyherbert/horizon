@@ -5,10 +5,9 @@ namespace Horizon\Database\Migration\Schema;
 use Horizon\Database\Migration\Blueprint;
 
 /**
- *
+ * Represents a schema blueprint statement.
  */
-class Command
-{
+class Command {
 
 	/**
 	 * @var string
@@ -32,8 +31,7 @@ class Command
 	 * @param array $parameters
 	 * @param Blueprint $table
 	 */
-	public function __construct($name, array $parameters, Blueprint $table)
-	{
+	public function __construct($name, array $parameters, Blueprint $table) {
 		$this->name = $name;
 		$this->parameters = $parameters;
 		$this->table = $table;
@@ -44,8 +42,7 @@ class Command
 	 *
 	 * @return bool
 	 */
-	private function isIndex()
-	{
+	private function isIndex() {
 		return ($this->name == 'primary' || $this->name == 'foreign' || $this->name == 'index' || $this->name == 'unique');
 	}
 
@@ -54,8 +51,7 @@ class Command
 	 *
 	 * @return bool
 	 */
-	private function isDropIndex()
-	{
+	private function isDropIndex() {
 		return ($this->name == 'dropPrimary' || $this->name == 'dropForeign' || $this->name == 'dropIndex' || $this->name == 'dropUnique');
 	}
 
@@ -64,8 +60,7 @@ class Command
 	 *
 	 * @return string
 	 */
-	public function __toString()
-	{
+	public function __toString() {
 		if ($this->isIndex()) return $this->compileIndex();
 		if ($this->isDropIndex()) return $this->compileDropIndex();
 		if ($this->name === 'dropColumn') return $this->compileDropColumn();
@@ -78,8 +73,7 @@ class Command
 	 *
 	 * @return string
 	 */
-	private function compileIndex()
-	{
+	private function compileIndex() {
 		$indexName = array_get($this->parameters, 'index');
 		$columns = array_get($this->parameters, 'columns');
 
@@ -96,8 +90,7 @@ class Command
 	 *
 	 * @return string
 	 */
-	private function compileDropIndex()
-	{
+	private function compileDropIndex() {
 		$indexName = array_get($this->parameters, 'index');
 
 		return str_join(
@@ -112,8 +105,7 @@ class Command
 	 *
 	 * @return string
 	 */
-	private function compileDropColumn()
-	{
+	private function compileDropColumn() {
 		$columns = array_get($this->parameters, 'columns', array());
 		$statements = array();
 

@@ -16,8 +16,7 @@ use Horizon\Database\QueryBuilder\Commands\Select;
  * @method \Horizon\Database\QueryBuilder\Documentation\ShowHelper show()
  * @method \Horizon\Database\QueryBuilder\Documentation\UpdateHelper update()
  */
-class QueryBuilder
-{
+class QueryBuilder {
 
 	/**
 	 * @var string Prefix for table names.
@@ -45,8 +44,7 @@ class QueryBuilder
 	 * @param string $prefix
 	 * @param Database|null $database
 	 */
-	public function __construct($prefix = null, $database = null)
-	{
+	public function __construct($prefix = null, $database = null) {
 		$this->prefix = $prefix;
 		$this->database = $database;
 	}
@@ -56,8 +54,7 @@ class QueryBuilder
 	 *
 	 * @param string $prefix
 	 */
-	public function setPrefix($prefix)
-	{
+	public function setPrefix($prefix) {
 		$this->prefix = $prefix;
 	}
 
@@ -66,8 +63,7 @@ class QueryBuilder
 	 *
 	 * @param string $prefix
 	 */
-	public function getPrefix()
-	{
+	public function getPrefix() {
 		return $this->prefix;
 	}
 
@@ -78,8 +74,7 @@ class QueryBuilder
 	 * @param array $arguments
 	 * @return mixed
 	 */
-	public function __call($method, $arguments)
-	{
+	public function __call($method, $arguments) {
 		if (is_null($this->command)) {
 			return $this->startCommand($method, $arguments);
 		}
@@ -94,8 +89,7 @@ class QueryBuilder
 	 * @param string $model
 	 * @return $this
 	 */
-	public function setModel($model)
-	{
+	public function setModel($model) {
 		$this->model = $model;
 		return $this;
 	}
@@ -107,8 +101,7 @@ class QueryBuilder
 	 * @param array $arguments Arguments provided to the call (can be empty).
 	 * @return $this
 	 */
-	protected function startCommand($method, $arguments)
-	{
+	protected function startCommand($method, $arguments) {
 		// Commands have no parameters
 		if (count($arguments) !== 0) {
 			throw new QueryBuilderException(sprintf('%s() expected exactly 0 arguments, got %d', $method, count($arguments)));
@@ -133,8 +126,7 @@ class QueryBuilder
 	 * @param array $arguments Arguments provided to the call.
 	 * @return $this|mixed
 	 */
-	protected function runCommandMethod($method, $arguments)
-	{
+	protected function runCommandMethod($method, $arguments) {
 		if (!method_exists($this->command, $method)) {
 			throw new QueryBuilderException(sprintf('Command has no such method \'%s\'', $method));
 		}
@@ -153,8 +145,7 @@ class QueryBuilder
 	 *
 	 * @return string[]
 	 */
-	protected function getCommands()
-	{
+	protected function getCommands() {
 		static $commands = array(
 			'Alter',
 			'Create',
@@ -176,8 +167,7 @@ class QueryBuilder
 	 * @param string $command
 	 * @return bool
 	 */
-	protected function hasCommand($command)
-	{
+	protected function hasCommand($command) {
 		$commands = $this->getCommands();
 
 		foreach ($commands as $c) {
@@ -195,8 +185,7 @@ class QueryBuilder
 	 * @param string $command
 	 * @return CommandInterface|null
 	 */
-	protected function getCommand($command)
-	{
+	protected function getCommand($command) {
 		$commands = $this->getCommands();
 
 		foreach ($commands as $c) {
@@ -217,8 +206,7 @@ class QueryBuilder
 	 *
 	 * @return Model[]|object[]
 	 */
-	public function get()
-	{
+	public function get() {
 		$results = $this->database->query($this->compile(), $this->getParameters());
 
 		return $this->mapToModels($results);
@@ -229,8 +217,7 @@ class QueryBuilder
 	 *
 	 * @return int
 	 */
-	public function count()
-	{
+	public function count() {
 		if (!($this->command instanceof Select)) {
 			return null;
 		}
@@ -249,8 +236,7 @@ class QueryBuilder
 	 *
 	 * @return bool|object|int
 	 */
-	public function exec()
-	{
+	public function exec() {
 		$result = $this->database->query($this->compile(), $this->getParameters());
 
 		return $result;
@@ -261,8 +247,7 @@ class QueryBuilder
 	 *
 	 * @return Model|object|null
 	 */
-	public function first()
-	{
+	public function first() {
 		// Set the limit to 1 row
 		$this->limit(1);
 
@@ -282,8 +267,7 @@ class QueryBuilder
 	 *
 	 * @return Model[]|object[]
 	 */
-	protected function mapToModels(&$results)
-	{
+	protected function mapToModels(&$results) {
 		$models = array();
 		$modelClass = $this->model;
 
@@ -303,8 +287,7 @@ class QueryBuilder
 	 *
 	 * @return string
 	 */
-	public function __toString()
-	{
+	public function __toString() {
 		if (is_null($this->command)) {
 			throw new QueryBuilderException('Cannot convert to string: query builder has no command');
 		}

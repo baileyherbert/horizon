@@ -5,8 +5,7 @@ namespace Horizon\Database\Drivers;
 use Horizon\Database\Database;
 use Horizon\Database\Exception\DatabaseException;
 
-interface DriverInterface
-{
+interface DriverInterface {
 
 	/**
 	 * Creates a new driver instance.

@@ -3,7 +3,6 @@
 namespace Horizon\Ace\Commands\Migrations;
 
 use Horizon\Console\Command;
-use Horizon\Database\Migration\Schema;
 use Horizon\Foundation\Application;
 use Horizon\Support\Facades\Ace;
 use Symfony\Component\Console\Input\InputInterface;

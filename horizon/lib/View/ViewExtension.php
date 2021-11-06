@@ -8,8 +8,7 @@ use Twig_Extension_GlobalsInterface;
 use Horizon\Support\Str;
 use Horizon\View\Twig\TwigFileLoader;
 
-class ViewExtension extends Twig_Extension implements Twig_Extension_GlobalsInterface
-{
+class ViewExtension extends Twig_Extension implements Twig_Extension_GlobalsInterface {
 
 	/**
 	 * @var TwigFileLoader
@@ -21,8 +20,7 @@ class ViewExtension extends Twig_Extension implements Twig_Extension_GlobalsInte
 	 *
 	 * @param TwigFileLoader $loader
 	 */
-	public function __construct(TwigFileLoader $loader)
-	{
+	public function __construct(TwigFileLoader $loader) {
 		$this->loader = $loader;
 	}
 
@@ -32,8 +30,7 @@ class ViewExtension extends Twig_Extension implements Twig_Extension_GlobalsInte
 	 *
 	 * @return array
 	 */
-	public function getGlobals()
-	{
+	public function getGlobals() {
 		return array();
 	}
 
@@ -43,8 +40,7 @@ class ViewExtension extends Twig_Extension implements Twig_Extension_GlobalsInte
 	 *
 	 * @return Twig_SimpleFunction[]
 	 */
-	public function getFunctions()
-	{
+	public function getFunctions() {
 		$functions = array();
 		$methods = get_class_methods($this);
 
@@ -68,8 +64,7 @@ class ViewExtension extends Twig_Extension implements Twig_Extension_GlobalsInte
 	 *
 	 * @return array
 	 */
-	public function getTranspilers()
-	{
+	public function getTranspilers() {
 		return array();
 	}
 

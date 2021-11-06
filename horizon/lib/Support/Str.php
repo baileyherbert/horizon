@@ -5,8 +5,7 @@
 
 namespace Horizon\Support;
 
-class Str
-{
+class Str {
 
 	/**
 	 * The cache of snake-cased words.
@@ -34,8 +33,7 @@ class Str
 	 * @param string $language
 	 * @return string
 	 */
-	public static function ascii($value, $language = 'en')
-	{
+	public static function ascii($value, $language = 'en') {
 		$languageSpecific = static::languageSpecificCharsArray($language);
 
 		if (!is_null($languageSpecific)) {
@@ -55,8 +53,7 @@ class Str
 	 * @param string $value
 	 * @return string
 	 */
-	public static function camel($value)
-	{
+	public static function camel($value) {
 		if (isset(static::$camelCache[$value])) {
 			return static::$camelCache[$value];
 		}
@@ -72,8 +69,7 @@ class Str
 	 * @param string $two,...
 	 * @return string
 	 */
-	public static function join()
-	{
+	public static function join() {
 		$segments = func_get_args();
 
 		if (count($segments) == 1 && is_array($segments[0])) {
@@ -100,8 +96,7 @@ class Str
 	 * @param string|array $needles
 	 * @return bool
 	 */
-	public static function startsWith($haystack, $needles)
-	{
+	public static function startsWith($haystack, $needles) {
 		foreach ((array)$needles as $needle) {
 			if ($needle != '' && mb_strpos($haystack, $needle) === 0) {
 				return true;
@@ -118,8 +113,7 @@ class Str
 	 * @param string|array $needles
 	 * @return bool
 	 */
-	public static function startsWithIgnoreCase($haystack, $needles)
-	{
+	public static function startsWithIgnoreCase($haystack, $needles) {
 		$needles = (array)$needles;
 		$needles = Arr::each($needles, function($value) { return mb_strtolower($value); });
 
@@ -133,8 +127,7 @@ class Str
 	 * @param string|array $needles
 	 * @return bool
 	 */
-	public static function endsWith($haystack, $needles)
-	{
+	public static function endsWith($haystack, $needles) {
 		foreach ((array)$needles as $needle) {
 			if ((string)$needle === static::substr($haystack, -static::length($needle))) {
 				return true;
@@ -151,8 +144,7 @@ class Str
 	 * @param string|array $needles
 	 * @return bool
 	 */
-	public static function endsWithIgnoreCase($haystack, $needles)
-	{
+	public static function endsWithIgnoreCase($haystack, $needles) {
 		$needles = (array)$needles;
 		$needles = Arr::each($needles, function($value) { return mb_strtolower($value); });
 
@@ -166,8 +158,7 @@ class Str
 	 * @param string $prefix
 	 * @return string
 	 */
-	public static function start($value, $prefix)
-	{
+	public static function start($value, $prefix) {
 		$quoted = preg_quote($prefix, '/');
 		return $prefix . preg_replace('/^(?:'.$quoted.')+/u', '', $value);
 	}
@@ -179,8 +170,7 @@ class Str
 	 * @param string $needle
 	 * @return string
 	 */
-	public static function stripBeginning($haystack, $needle)
-	{
+	public static function stripBeginning($haystack, $needle) {
 		if (static::startsWith($haystack, $needle)) {
 			return mb_substr($haystack, mb_strlen($needle));
 		}
@@ -195,8 +185,7 @@ class Str
 	 * @param string|array $needles
 	 * @return bool
 	 */
-	public static function contains($haystack, $needles)
-	{
+	public static function contains($haystack, $needles) {
 		foreach ((array)$needles as $needle) {
 			if ($needle != '' && mb_strpos($haystack, $needle) !== false) {
 				return true;
@@ -213,8 +202,7 @@ class Str
 	 * @param string|array $needles
 	 * @return int|bool
 	 */
-	public static function find($haystack, $needles)
-	{
+	public static function find($haystack, $needles) {
 		foreach ((array)$needles as $needle) {
 			$index = mb_strpos($haystack, $needle);
 
@@ -233,8 +221,7 @@ class Str
 	 * @param string $search
 	 * @return string
 	 */
-	public static function before($subject, $search)
-	{
+	public static function before($subject, $search) {
 		return $search === '' ? $subject : explode($search, $subject)[0];
 	}
 
@@ -245,8 +232,7 @@ class Str
 	 * @param string $search
 	 * @return string
 	 */
-	public static function after($subject, $search)
-	{
+	public static function after($subject, $search) {
 		return $search === '' ? $subject : array_reverse(explode($search, $subject, 2))[0];
 	}
 
@@ -257,8 +243,7 @@ class Str
 	 * @param string $cap
 	 * @return string
 	 */
-	public static function finish($value, $cap)
-	{
+	public static function finish($value, $cap) {
 		$quoted = preg_quote($cap, '/');
 		return preg_replace('/(?:'.$quoted.')+$/u', '', $value).$cap;
 	}
@@ -270,8 +255,7 @@ class Str
 	 * @param string $value
 	 * @return bool
 	 */
-	public static function is($pattern, $value)
-	{
+	public static function is($pattern, $value) {
 		$patterns = is_array($pattern) ? $pattern : (array) $pattern;
 
 		if (empty($patterns)) {
@@ -300,8 +284,7 @@ class Str
 	 * @param string $value
 	 * @return string
 	 */
-	public static function kebab($value)
-	{
+	public static function kebab($value) {
 		return static::snake($value, '-');
 	}
 
@@ -311,8 +294,7 @@ class Str
 	 * @param string $value
 	 * @return int
 	 */
-	public static function length($value)
-	{
+	public static function length($value) {
 		return mb_strlen($value);
 	}
 
@@ -324,8 +306,7 @@ class Str
 	 * @param string $end
 	 * @return string
 	 */
-	public static function limit($value, $limit = 100, $end = '...')
-	{
+	public static function limit($value, $limit = 100, $end = '...') {
 		if (mb_strwidth($value, 'UTF-8') <= $limit) {
 			return $value;
 		}
@@ -339,8 +320,7 @@ class Str
 	 * @param string $value
 	 * @return string
 	 */
-	public static function lower($value)
-	{
+	public static function lower($value) {
 		return mb_strtolower($value, 'UTF-8');
 	}
 
@@ -352,8 +332,7 @@ class Str
 	 * @param string $end
 	 * @return string
 	 */
-	public static function words($value, $words = 100, $end = '...')
-	{
+	public static function words($value, $words = 100, $end = '...') {
 		preg_match('/^\s*+(?:\S++\s*+){1,' . $words . '}/u', $value, $matches);
 
 		if (!isset($matches[0]) || static::length($value) === static::length($matches[0])) {
@@ -370,8 +349,7 @@ class Str
 	 * @param string|null $default
 	 * @return array
 	 */
-	public static function parseCallback($callback, $default = null)
-	{
+	public static function parseCallback($callback, $default = null) {
 		if (static::contains($callback, '::')) {
 			return explode('::', $callback, 2);
 		}
@@ -386,8 +364,7 @@ class Str
 	 * @param int $count
 	 * @return string
 	 */
-	public static function plural($value, $count = 2)
-	{
+	public static function plural($value, $count = 2) {
 		if ($count === 1) return $value;
 		if (static::endsWith($value, ['ch', 'sh', 'x', 'ss'])) return $value . 'es';
 		if (static::endsWith($value, 's')) return $value;
@@ -401,8 +378,7 @@ class Str
 	 * @param int $length
 	 * @return string
 	 */
-	public static function random($length = 16)
-	{
+	public static function random($length = 16) {
 		$string = '';
 
 		while (($len = static::length($string)) < $length) {
@@ -422,8 +398,7 @@ class Str
 	 * @param int $length
 	 * @return string
 	 */
-	public static function quickRandom($length = 16)
-	{
+	public static function quickRandom($length = 16) {
 		$pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 		return static::substr(str_shuffle(str_repeat($pool, $length)), 0, $length);
 	}
@@ -436,8 +411,7 @@ class Str
 	 * @param string $subject
 	 * @return string
 	 */
-	public static function replaceFirst($search, $replace, $subject)
-	{
+	public static function replaceFirst($search, $replace, $subject) {
 		$position = strpos($subject, $search);
 
 		if ($position !== false) {
@@ -455,8 +429,7 @@ class Str
 	 * @param string $subject
 	 * @return string
 	 */
-	public static function replaceLast($search, $replace, $subject)
-	{
+	public static function replaceLast($search, $replace, $subject) {
 		$position = strrpos($subject, $search);
 
 		if ($position !== false) {
@@ -474,8 +447,7 @@ class Str
 	 * @param string $subject
 	 * @return string
 	 */
-	public static function replaceArray($search, $replace, $subject)
-	{
+	public static function replaceArray($search, $replace, $subject) {
 		foreach ($replace as $value) {
 			$subject = static::replaceFirst($search, $value, $subject);
 		}
@@ -489,8 +461,7 @@ class Str
 	 * @param string $value
 	 * @return string
 	 */
-	public static function upper($value)
-	{
+	public static function upper($value) {
 		return mb_strtoupper($value, 'UTF-8');
 	}
 
@@ -500,8 +471,7 @@ class Str
 	 * @param string $value
 	 * @return string
 	 */
-	public static function title($value)
-	{
+	public static function title($value) {
 		return mb_convert_case($value, MB_CASE_TITLE, 'UTF-8');
 	}
 
@@ -511,8 +481,7 @@ class Str
 	 * @param string $value
 	 * @return string
 	 */
-	public static function singular($value)
-	{
+	public static function singular($value) {
 		return rtrim($value, 's');
 	}
 
@@ -523,8 +492,7 @@ class Str
 	 * @param string $separator
 	 * @return string
 	 */
-	public static function slug($title, $separator = '-')
-	{
+	public static function slug($title, $separator = '-') {
 		$title = static::ascii($title);
 		$flip = $separator == '-' ? '_' : '-';
 		$title = preg_replace('!['.preg_quote($flip).']+!u', $separator, $title);
@@ -541,8 +509,7 @@ class Str
 	 * @param string $delimiter
 	 * @return string
 	 */
-	public static function snake($value, $delimiter = '_')
-	{
+	public static function snake($value, $delimiter = '_') {
 		$key = $value;
 
 		if (isset(static::$snakeCache[$key][$delimiter])) {
@@ -563,8 +530,7 @@ class Str
 	 * @param string $value
 	 * @return string
 	 */
-	public static function studly($value)
-	{
+	public static function studly($value) {
 		$key = $value;
 
 		if (isset(static::$studlyCache[$key])) {
@@ -583,8 +549,7 @@ class Str
 	 * @param int|null $length
 	 * @return string
 	 */
-	public static function substr($string, $start, $length = null)
-	{
+	public static function substr($string, $start, $length = null) {
 		return mb_substr($string, $start, $length, 'UTF-8');
 	}
 
@@ -594,8 +559,7 @@ class Str
 	 * @param string $string
 	 * @return string
 	 */
-	public static function ucfirst($string)
-	{
+	public static function ucfirst($string) {
 		return static::upper(static::substr($string, 0, 1)) . static::substr($string, 1);
 	}
 
@@ -606,8 +570,7 @@ class Str
 	 * @see https://github.com/danielstjules/Stringy/blob/2.3.1/LICENSE.txt
 	 * @return array
 	 */
-	private static function charsArray()
-	{
+	private static function charsArray() {
 		static $charsArray;
 
 		if (isset($charsArray)) {
@@ -739,8 +702,7 @@ class Str
 	 * @param  string  $language
 	 * @return array|null
 	 */
-	private static function languageSpecificCharsArray($language)
-	{
+	private static function languageSpecificCharsArray($language) {
 		static $languageSpecific;
 
 		if (!isset($languageSpecific)) {

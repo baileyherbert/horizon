@@ -5,11 +5,9 @@ namespace Horizon\Database\QueryBuilder\Commands;
 use Horizon\Database\QueryBuilder;
 use Horizon\Database\QueryBuilder\StringBuilder;
 use Horizon\Support\Str;
-use Horizon\Support\Arr;
 use Horizon\Database\Exception\QueryBuilderException;
 
-class Select implements CommandInterface
-{
+class Select implements CommandInterface {
 
 	/**
 	 * @var QueryBuilder
@@ -71,8 +69,7 @@ class Select implements CommandInterface
 	 *
 	 * @param QueryBuilder $builder
 	 */
-	public function __construct(QueryBuilder $builder)
-	{
+	public function __construct(QueryBuilder $builder) {
 		$this->builder = $builder;
 		$this->columns = array('*');
 	}
@@ -82,8 +79,7 @@ class Select implements CommandInterface
 	 *
 	 * @return string
 	 */
-	public function compile()
-	{
+	public function compile() {
 		$this->compiledParameters = array();
 
 		return Str::join(
@@ -99,16 +95,14 @@ class Select implements CommandInterface
 	/**
 	 * @return string
 	 */
-	protected function compileCommand()
-	{
+	protected function compileCommand() {
 		return 'SELECT' . ($this->distinct ? ' DISTINCT' : '');
 	}
 
 	/**
 	 * @return string
 	 */
-	protected function compileColumns()
-	{
+	protected function compileColumns() {
 		$compiled = array();
 
 		if (count($this->columns) == 1 && $this->columns[0] == 'COUNT(*)') {
@@ -131,8 +125,7 @@ class Select implements CommandInterface
 	/**
 	 * @return string
 	 */
-	protected function compileTables()
-	{
+	protected function compileTables() {
 		$compiled = array();
 
 		if (count($this->tables) == 0) {
@@ -152,8 +145,7 @@ class Select implements CommandInterface
 	/**
 	 * @return string
 	 */
-	protected function compileWheres()
-	{
+	protected function compileWheres() {
 		if (empty($this->wheres)) {
 			return '';
 		}
@@ -219,8 +211,7 @@ class Select implements CommandInterface
 	/**
 	 * @return string
 	 */
-	protected function compileFunction($function)
-	{
+	protected function compileFunction($function) {
 		$functionString = array_shift($function);
 
 		if (!preg_match('/^([A-Z]+)(\([^)]*\))$/', $functionString, $matches)) {
@@ -242,8 +233,7 @@ class Select implements CommandInterface
 	/**
 	 * @return string
 	 */
-	protected function compileOrderBy()
-	{
+	protected function compileOrderBy() {
 		$compiled = array();
 
 		if ($this->orders === 'RAND()') {
@@ -268,8 +258,7 @@ class Select implements CommandInterface
 	/**
 	 * @return string
 	 */
-	protected function compileLimit()
-	{
+	protected function compileLimit() {
 		if (is_null($this->limit)) {
 			return '';
 		}
@@ -290,8 +279,7 @@ class Select implements CommandInterface
 	 * @param int $i
 	 * @return array|null
 	 */
-	protected function getEnclosureStartingAt($i)
-	{
+	protected function getEnclosureStartingAt($i) {
 		$enclosure = null;
 
 		foreach ($this->enclosures as $enclose) {
@@ -309,8 +297,7 @@ class Select implements CommandInterface
 	 * @param int $i
 	 * @return int
 	 */
-	protected function getNumEnclosuresStartingAt($i)
-	{
+	protected function getNumEnclosuresStartingAt($i) {
 		$count = 0;
 
 		foreach ($this->enclosures as $enclose) {
@@ -328,8 +315,7 @@ class Select implements CommandInterface
 	 * @param int $i
 	 * @return array|null
 	 */
-	protected function getEnclosureEndingAt($i)
-	{
+	protected function getEnclosureEndingAt($i) {
 		$enclosure = null;
 
 		foreach ($this->enclosures as $enclose) {
@@ -347,8 +333,7 @@ class Select implements CommandInterface
 	 * @param int $i
 	 * @return int
 	 */
-	protected function getNumEnclosuresEndingAt($i)
-	{
+	protected function getNumEnclosuresEndingAt($i) {
 		$count = 0;
 
 		foreach ($this->enclosures as $enclose) {
@@ -365,8 +350,7 @@ class Select implements CommandInterface
 	 *
 	 * @return array
 	 */
-	public function getParameters()
-	{
+	public function getParameters() {
 		$this->compile();
 
 		return $this->compiledParameters;
@@ -378,8 +362,7 @@ class Select implements CommandInterface
 	 * @param string $tableName,...
 	 * @return $this
 	 */
-	public function from()
-	{
+	public function from() {
 		$this->tables = func_get_args();
 		return $this;
 	}
@@ -390,8 +373,7 @@ class Select implements CommandInterface
 	 * @param string $columnName,...
 	 * @return $this
 	 */
-	public function columns()
-	{
+	public function columns() {
 		$this->columns = func_get_args();
 		return $this;
 	}
@@ -404,8 +386,7 @@ class Select implements CommandInterface
 	 * @param mixed $equals
 	 * @return $this
 	 */
-	public function where($column, $operator, $equals, $separator = 'AND', $reference = false)
-	{
+	public function where($column, $operator, $equals, $separator = 'AND', $reference = false) {
 		$function = (is_array($equals)) ? $equals : null;
 
 		if (is_string($equals) && StringBuilder::isFunction($equals)) {
@@ -432,8 +413,7 @@ class Select implements CommandInterface
 	 * @param mixed $equals
 	 * @return $this
 	 */
-	public function andWhere($column, $operator, $equals)
-	{
+	public function andWhere($column, $operator, $equals) {
 		return $this->where($column, $operator, $equals);
 	}
 
@@ -445,8 +425,7 @@ class Select implements CommandInterface
 	 * @param mixed $equals
 	 * @return $this
 	 */
-	public function orWhere($column, $operator, $equals)
-	{
+	public function orWhere($column, $operator, $equals) {
 		return $this->where($column, $operator, $equals, 'OR');
 	}
 
@@ -458,8 +437,7 @@ class Select implements CommandInterface
 	 * @param string $mode
 	 * @return $this
 	 */
-	public function whereMatch($column, $against, $mode = 'boolean', $separator = 'AND')
-	{
+	public function whereMatch($column, $against, $mode = 'boolean', $separator = 'AND') {
 		$this->wheres[] = array(
 			'fulltext' => true,
 			'column' => $column,
@@ -481,8 +459,7 @@ class Select implements CommandInterface
 	 * @param string $separator
 	 * @return $this
 	 */
-	public function enclose(callable $callback, $separator = 'AND')
-	{
+	public function enclose(callable $callback, $separator = 'AND') {
 		$startPosition = count($this->wheres);
 		$callback($this->builder);
 		$endPosition = count($this->wheres) - 1;
@@ -502,8 +479,7 @@ class Select implements CommandInterface
 	 * @param callable $callback
 	 * @return $this
 	 */
-	public function orEnclose(callable $callback)
-	{
+	public function orEnclose(callable $callback) {
 		return $this->enclose($callback, 'OR');
 	}
 
@@ -513,8 +489,7 @@ class Select implements CommandInterface
 	 * @param callable $callback
 	 * @return $this
 	 */
-	public function andEnclose(callable $callback)
-	{
+	public function andEnclose(callable $callback) {
 		return $this->enclose($callback);
 	}
 
@@ -524,8 +499,7 @@ class Select implements CommandInterface
 	 * @param bool $is
 	 * @return $this
 	 */
-	public function distinct($is = true)
-	{
+	public function distinct($is = true) {
 		$this->distinct = $is;
 		return $this;
 	}
@@ -536,8 +510,7 @@ class Select implements CommandInterface
 	 * @param int $limit
 	 * @return $this
 	 */
-	public function limit($limit)
-	{
+	public function limit($limit) {
 		$this->limit = $limit;
 		return $this;
 	}
@@ -548,8 +521,7 @@ class Select implements CommandInterface
 	 * @param int $start
 	 * @return $this
 	 */
-	public function offset($start)
-	{
+	public function offset($start) {
 		$this->offset = $start;
 		return $this;
 	}
@@ -561,8 +533,7 @@ class Select implements CommandInterface
 	 * @param string $direction,...
 	 * @return $this
 	 */
-	public function orderBy()
-	{
+	public function orderBy() {
 		$args = func_get_args();
 
 		if (count($args) == 1) {

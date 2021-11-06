@@ -2,8 +2,7 @@
 
 namespace Horizon\Database\QueryBuilder;
 
-class StringBuilder
-{
+class StringBuilder {
 
 	/**
 	 * Formats the table name for use in a query.
@@ -11,8 +10,7 @@ class StringBuilder
 	 * @param string $name
 	 * @return string
 	 */
-	public static function formatTableName($name)
-	{
+	public static function formatTableName($name) {
 		$name = trim($name);
 		$segments = explode('.', $name);
 
@@ -32,8 +30,7 @@ class StringBuilder
 	 * @param string $name
 	 * @return string
 	 */
-	public static function formatColumnName($name)
-	{
+	public static function formatColumnName($name) {
 		$name = trim($name);
 		$segments = explode('.', $name);
 
@@ -57,8 +54,7 @@ class StringBuilder
 	 * @param string $op
 	 * @return string
 	 */
-	public static function formatOperator($op)
-	{
+	public static function formatOperator($op) {
 		if (strlen($op) == 1) {
 			return $op;
 		}
@@ -72,8 +68,7 @@ class StringBuilder
 	 * @param string $text
 	 * @return bool
 	 */
-	public static function isFunction($text)
-	{
+	public static function isFunction($text) {
 		if (is_string($text)) {
 			return 1 == preg_match('/^[A-Z]+(\([^)]*\))$/', $text);
 		}
@@ -91,8 +86,7 @@ class StringBuilder
 	 * @param string $value
 	 * @return string
 	 */
-	public static function escapeEnumValue($value)
-	{
+	public static function escapeEnumValue($value) {
 		if (is_numeric($value)) {
 			return $value;
 		}
@@ -114,8 +108,7 @@ class StringBuilder
 	 * @param string $value
 	 * @return string
 	 */
-	public static function formatFulltextValue($value)
-	{
+	public static function formatFulltextValue($value) {
 		$value = str_replace("'", "\\'", $value);
 		return sprintf("'%s'", $value);
 	}
@@ -126,8 +119,7 @@ class StringBuilder
 	 * @param array $bindings
 	 * @return string
 	 */
-	public static function generateTypes(array &$bindings)
-	{
+	public static function generateTypes(array &$bindings) {
 		$types = array();
 
 		foreach ($bindings as $value) {
@@ -147,8 +139,7 @@ class StringBuilder
 	 * @param string $plural
 	 * @return string
 	 */
-	public static function generateMappingTableName($model, $relatedModel)
-	{
+	public static function generateMappingTableName($model, $relatedModel) {
 		$names = array($model, $relatedModel);
 
 		foreach ($names as $i => $value) {
@@ -172,8 +163,7 @@ class StringBuilder
 	 * @param string|Model $model
 	 * @return string
 	 */
-	public static function getSingularModelName($model)
-	{
+	public static function getSingularModelName($model) {
 		if (is_object($model)) {
 			$model = get_class($model);
 		}

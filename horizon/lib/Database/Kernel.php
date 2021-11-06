@@ -9,8 +9,7 @@ use Horizon\Foundation\Application;
 /**
  * Kernel for database connectivity and interaction.
  */
-class Kernel
-{
+class Kernel {
 
 	/**
 	 * Loaded databases.
@@ -38,8 +37,7 @@ class Kernel
 	 * @throws DatabaseException
 	 * @throws HorizonException
 	 */
-	public function get($name = null)
-	{
+	public function get($name = null) {
 		if (is_null($name)) {
 			$name = static::getDefaultName();
 
@@ -63,8 +61,7 @@ class Kernel
 	 * @param string|null $name
 	 * @return bool
 	 */
-	public function close($name = null)
-	{
+	public function close($name = null) {
 		if (is_null($name)) {
 			foreach ($this->databases as $database) {
 				$database->close();
@@ -91,8 +88,7 @@ class Kernel
 	 * @throws DatabaseException
 	 * @throws HorizonException
 	 */
-	private function load($name = null)
-	{
+	private function load($name = null) {
 		if (is_null($name)) {
 			$name = $this->getDefaultName();
 
@@ -116,8 +112,7 @@ class Kernel
 	 *
 	 * @return string|null
 	 */
-	private static function getDefaultName()
-	{
+	private static function getDefaultName() {
 		$databases = config('database');
 
 		if (isset($databases['main'])) {
@@ -139,8 +134,7 @@ class Kernel
 	 * @return array|null
 	 * @throws HorizonException
 	 */
-	private static function getConfiguration($name = null)
-	{
+	private static function getConfiguration($name = null) {
 		$databases = Application::config('database');
 
 		// For a null name, find the default database config

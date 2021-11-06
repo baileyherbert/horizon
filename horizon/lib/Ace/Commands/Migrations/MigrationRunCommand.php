@@ -6,7 +6,6 @@ use Horizon\Console\Command;
 use Horizon\Database\Migration;
 use Horizon\Database\Migration\SchemaRecorderBucket;
 use Horizon\Database\Migrator;
-use Horizon\Support\Facades\Ace;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;

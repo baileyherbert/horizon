@@ -5,9 +5,7 @@ namespace Horizon\Translation;
 use Horizon\Translation\Language\Definition;
 use Horizon\Translation\Language\NamespaceDefinition;
 
-
-class LanguageParser
-{
+class LanguageParser {
 
 	/**
 	 * @var array
@@ -34,8 +32,7 @@ class LanguageParser
 	 *
 	 * @param string $fileData
 	 */
-	public function __construct($fileData)
-	{
+	public function __construct($fileData) {
 		$startTime = microtime(true);
 
 		$fileData = $this->normalizeFile($fileData);
@@ -83,8 +80,7 @@ class LanguageParser
 	 *
 	 * @return array
 	 */
-	public function &getHeaders()
-	{
+	public function &getHeaders() {
 		return $this->headers;
 	}
 
@@ -93,8 +89,7 @@ class LanguageParser
 	 *
 	 * @return array
 	 */
-	public function &getNamespaces()
-	{
+	public function &getNamespaces() {
 		return $this->namespaces;
 	}
 
@@ -103,8 +98,7 @@ class LanguageParser
 	 *
 	 * @return array
 	 */
-	public function &getVariables()
-	{
+	public function &getVariables() {
 		return $this->variables;
 	}
 
@@ -114,8 +108,7 @@ class LanguageParser
 	 * @param string $line
 	 * @param int $lineNumber
 	 */
-	protected function parseVariable($line, $lineNumber)
-	{
+	protected function parseVariable($line, $lineNumber) {
 		// Find the components of the variable
 		preg_match('/\\s*(["\'](?:[^\'"\\\\]|\\\\.)*["\'])\\s+(["\'](?:[^\'"\\\\]|\\\\.)*["\']|true|false|null|nil|[-]{0,1}\\d*[.]{0,1}\\d*[^.])\\s*/', $line, $components);
 
@@ -144,8 +137,7 @@ class LanguageParser
 	 * @param int $lineNumber
 	 * @return string
 	 */
-	protected function parseNamespace($line, $lineNumber)
-	{
+	protected function parseNamespace($line, $lineNumber) {
 		$namespace = trim($line);
 
 		if (!preg_match('/^([^0-9][a-zA-Z0-9._:-]+)$/', $namespace)) {
@@ -162,8 +154,7 @@ class LanguageParser
 	 * @param string $line
 	 * @param int $lineNumber
 	 */
-	protected function parseHeader($command, $line, $lineNumber)
-	{
+	protected function parseHeader($command, $line, $lineNumber) {
 		// Extract the components
 		$headerName = ltrim($command, '@');
 		$headerValue = trim($line);
@@ -184,8 +175,7 @@ class LanguageParser
 	 * @param int $lineNumber
 	 * @return Definition
 	 */
-	protected function parseDefinition($line, $lineNumber)
-	{
+	protected function parseDefinition($line, $lineNumber) {
 		// Find the components of the variable
 		preg_match('/\\s*(["](?:[^"\\\\]|\\\\.)*["]|[\'](?:[^\'\\\\]|\\\\.)*[\'])\\s*[=]{0,1}\\s*(["](?:[^"\\\\]|\\\\.)*["]|[\'](?:[^\'\\\\]|\\\\.)*[\'])\\s*(\\/[a-zA-Z]+){0,1}/', $line, $components);
 
@@ -225,8 +215,7 @@ class LanguageParser
 	 * @param string $string
 	 * @return string
 	 */
-	protected function parseQuotedString($string)
-	{
+	protected function parseQuotedString($string) {
 		$quoteCharacter = substr($string, 0, 1);
 
 		$string = str_replace('\\' . $quoteCharacter, $quoteCharacter, $string);
@@ -241,8 +230,7 @@ class LanguageParser
 	 * @param string $string
 	 * @return string
 	 */
-	protected function parseMixedValue($value)
-	{
+	protected function parseMixedValue($value) {
 		if ($value == 'true' || $value == 'false') {
 			return $value == 'true';
 		}
@@ -264,8 +252,7 @@ class LanguageParser
 	 * @param string $text
 	 * @return string
 	 */
-	protected function normalizeFile($text)
-	{
+	protected function normalizeFile($text) {
 		$text = str_replace("\r\n", "\n", $text);
 		$text = trim($text);
 
@@ -278,8 +265,7 @@ class LanguageParser
 	 * @param string $text
 	 * @return string
 	 */
-	protected function normalizeLine($text)
-	{
+	protected function normalizeLine($text) {
 		// Find a comment character outside of any quotes
 		preg_match('/(?s)(?:(?<!\\\\)\'(?:\\\\\'|[^\'])*\'|(?<!\\\\)"(?:\\\\"|[^"])*")(*SKIP)(*F)|#/', $text, $matches, PREG_OFFSET_CAPTURE);
 
@@ -298,8 +284,7 @@ class LanguageParser
 	/**
 	 * Returns a reference to an array of headers supported by the parser.
 	 */
-	protected function &getAllowedHeaders()
-	{
+	protected function &getAllowedHeaders() {
 		static $array = array(
 			'@author',
 			'@name',
@@ -324,8 +309,7 @@ class LanguageParser
 	/**
 	 * Returns a reference to an array of flags supported by the parser.
 	 */
-	protected function &getAllowedFlags()
-	{
+	protected function &getAllowedFlags() {
 		static $array = array(
 			'i',
 			'x',

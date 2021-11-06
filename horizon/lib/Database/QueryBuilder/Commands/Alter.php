@@ -6,11 +6,8 @@ use Horizon\Database\QueryBuilder;
 use Horizon\Database\QueryBuilder\StringBuilder;
 use Horizon\Database\QueryBuilder\ColumnDefinition;
 use Horizon\Support\Str;
-use Horizon\Support\Arr;
-use Horizon\Database\Exception\QueryBuilderException;
 
-class Alter implements CommandInterface
-{
+class Alter implements CommandInterface {
 
 	use Traits\HasTableOptions;
 
@@ -39,8 +36,7 @@ class Alter implements CommandInterface
 	 *
 	 * @param QueryBuilder $builder
 	 */
-	public function __construct(QueryBuilder $builder)
-	{
+	public function __construct(QueryBuilder $builder) {
 		$this->builder = $builder;
 	}
 
@@ -49,8 +45,7 @@ class Alter implements CommandInterface
 	 *
 	 * @return string
 	 */
-	public function compile()
-	{
+	public function compile() {
 		$statements = $this->statements;
 
 		foreach ($this->options as $option => $value) {
@@ -70,8 +65,7 @@ class Alter implements CommandInterface
 	 * @param array $columns
 	 * @return string
 	 */
-	protected function compileColumnList(array $columns)
-	{
+	protected function compileColumnList(array $columns) {
 		$columnList = array();
 		foreach ($columns as $colName) {
 			$columnList[] = StringBuilder::formatColumnName($colName);
@@ -85,8 +79,7 @@ class Alter implements CommandInterface
 	 *
 	 * @param string $table
 	 */
-	public function table($table)
-	{
+	public function table($table) {
 		$this->table = $table;
 		return $this;
 	}
@@ -98,8 +91,7 @@ class Alter implements CommandInterface
 	 * @param string|null $after
 	 * @return $this
 	 */
-	public function addColumn(ColumnDefinition $column, $after = null)
-	{
+	public function addColumn(ColumnDefinition $column, $after = null) {
 		$compiled = array(
 			'ADD',
 			$column->compile()
@@ -120,8 +112,7 @@ class Alter implements CommandInterface
 	 * @param string $columnName
 	 * @return $this
 	 */
-	public function dropColumn($columnName)
-	{
+	public function dropColumn($columnName) {
 		$this->statements[] = 'DROP ' . StringBuilder::formatColumnName($columnName);
 		return $this;
 	}
@@ -133,8 +124,7 @@ class Alter implements CommandInterface
 	 * @param string|null $after
 	 * @return $this
 	 */
-	public function modifyColumn(ColumnDefinition $column, $after = null)
-	{
+	public function modifyColumn(ColumnDefinition $column, $after = null) {
 		$compiled = array(
 			'MODIFY',
 			$column->compile()
@@ -156,8 +146,7 @@ class Alter implements CommandInterface
 	 * @param string|null $after
 	 * @return $this
 	 */
-	public function changeColumn(ColumnDefinition $column, $newName, $after = null)
-	{
+	public function changeColumn(ColumnDefinition $column, $newName, $after = null) {
 		$compiled = array(
 			'CHANGE',
 			StringBuilder::formatColumnName($column->name),
@@ -179,8 +168,7 @@ class Alter implements CommandInterface
 	 * @param string $columnName,...
 	 * @return $this
 	 */
-	public function addPrimaryKey()
-	{
+	public function addPrimaryKey() {
 		$this->statements[] = sprintf('ADD PRIMARY KEY (%s)', $this->compileColumnList(func_get_args()));
 		return $this;
 	}
@@ -191,8 +179,7 @@ class Alter implements CommandInterface
 	 * @param string $columnName,...
 	 * @return $this
 	 */
-	public function addIndex()
-	{
+	public function addIndex() {
 		$keyName = StringBuilder::formatColumnName($this->table . '_' . implode('_', func_get_args()));
 
 		$this->statements[] = sprintf('ADD INDEX %s (%s)', $keyName, $this->compileColumnList(func_get_args()));
@@ -205,8 +192,7 @@ class Alter implements CommandInterface
 	 * @param string $columnName,...
 	 * @return $this
 	 */
-	public function addUniqueIndex()
-	{
+	public function addUniqueIndex() {
 		$keyName = StringBuilder::formatColumnName($this->table . '_' . implode('_', func_get_args()));
 
 		$this->statements[] = sprintf('ADD UNIQUE INDEX %s (%s)', $keyName, $this->compileColumnList(func_get_args()));
@@ -223,8 +209,7 @@ class Alter implements CommandInterface
 	 * @param string|null $onUpdate
 	 * @return $this
 	 */
-	public function addForeignKey($columns, $foreignTable, $foreignColumns, $onDelete = null, $onUpdate = null)
-	{
+	public function addForeignKey($columns, $foreignTable, $foreignColumns, $onDelete = null, $onUpdate = null) {
 		if (!is_array($columns)) $column = array($columns);
 		if (!is_array($foreignColumns)) $foreignColumns = array($foreignColumns);
 
@@ -251,8 +236,7 @@ class Alter implements CommandInterface
 	 *
 	 * @return $this
 	 */
-	public function dropPrimaryKey()
-	{
+	public function dropPrimaryKey() {
 		$this->statements[] = 'DROP PRIMARY KEY';
 		return $this;
 	}
@@ -263,8 +247,7 @@ class Alter implements CommandInterface
 	 * @param string $name
 	 * @return $this
 	 */
-	public function dropIndex($name)
-	{
+	public function dropIndex($name) {
 		$this->statements[] = 'DROP INDEX ' . StringBuilder::formatColumnName($name);
 		return $this;
 	}
@@ -275,8 +258,7 @@ class Alter implements CommandInterface
 	 * @param string $name
 	 * @return $this
 	 */
-	public function dropForeignKey($name)
-	{
+	public function dropForeignKey($name) {
 		$this->statements[] = 'DROP FOREIGN KEY ' . StringBuilder::formatColumnName($name);
 		return $this;
 	}
@@ -287,8 +269,7 @@ class Alter implements CommandInterface
 	 * @param string $newTableName
 	 * @return $this
 	 */
-	public function rename($newTableName)
-	{
+	public function rename($newTableName) {
 		$this->statements[] = 'RENAME ' . StringBuilder::formatTableName($this->builder->getPrefix() . $newTableName);
 		return $this;
 	}
@@ -300,8 +281,7 @@ class Alter implements CommandInterface
 	 * @param string $value
 	 * @return $this
 	 */
-	public function opt($name, $value)
-	{
+	public function opt($name, $value) {
 		$this->options[strtoupper($name)] = $value;
 		return $this;
 	}
@@ -312,8 +292,7 @@ class Alter implements CommandInterface
 	 * @param string $engine
 	 * @return $this
 	 */
-	public function engine($engine)
-	{
+	public function engine($engine) {
 		return $this->opt('ENGINE', $engine);
 	}
 
@@ -323,8 +302,7 @@ class Alter implements CommandInterface
 	 * @param string $charset
 	 * @return $this
 	 */
-	public function charset($charset)
-	{
+	public function charset($charset) {
 		return $this->opt('CHARACTER SET', $charset);
 	}
 
@@ -334,13 +312,11 @@ class Alter implements CommandInterface
 	 * @param string $collation
 	 * @return $this
 	 */
-	public function collate($collation)
-	{
+	public function collate($collation) {
 		return $this->opt('COLLATE', $collation);
 	}
 
-	public function getParameters()
-	{
+	public function getParameters() {
 		return array();
 	}
 

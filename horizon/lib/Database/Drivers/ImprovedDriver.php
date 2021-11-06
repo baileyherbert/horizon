@@ -11,8 +11,7 @@ use Horizon\Database\Exception\DatabaseException;
 use Horizon\Support\Profiler;
 use Horizon\Support\Str;
 
-class ImprovedDriver implements DriverInterface
-{
+class ImprovedDriver implements DriverInterface {
 
 	/**
 	 * @var Database
@@ -34,8 +33,7 @@ class ImprovedDriver implements DriverInterface
 	 *
 	 * @param Database $database
 	 */
-	public function __construct(Database $database)
-	{
+	public function __construct(Database $database) {
 		$this->database = $database;
 	}
 
@@ -44,8 +42,7 @@ class ImprovedDriver implements DriverInterface
 	 *
 	 * @throws DatabaseDriverException on error
 	 */
-	public function connect()
-	{
+	public function connect() {
 		if ($this->connected) {
 			return;
 		}
@@ -79,8 +76,7 @@ class ImprovedDriver implements DriverInterface
 	 *
 	 * @throws DatabaseException on error
 	 */
-	public function query($statement, $bindings = null)
-	{
+	public function query($statement, $bindings = null) {
 		$this->connect();
 
 		$statement = trim($statement);
@@ -121,8 +117,7 @@ class ImprovedDriver implements DriverInterface
 	 *
 	 * @throws DatabaseException on error
 	 */
-	protected function prepared($statement, array &$bindings = array())
-	{
+	protected function prepared($statement, array &$bindings = array()) {
 		if ($p = $this->handle->prepare($statement)) {
 			$types = StringBuilder::generateTypes($bindings);
 			$parameters = array($types);
@@ -162,8 +157,7 @@ class ImprovedDriver implements DriverInterface
 	 *
 	 * @throws DatabaseException on error
 	 */
-	public function validate($statement)
-	{
+	public function validate($statement) {
 		if (!$this->handle->prepare($statement)) {
 			throw new DatabaseException($this->handle->error);
 		}
@@ -177,8 +171,7 @@ class ImprovedDriver implements DriverInterface
 	 * @param string $statement query
 	 * @return int|array
 	 */
-	protected function getPreparedResults($p, $statement)
-	{
+	protected function getPreparedResults($p, $statement) {
 		$p->store_result();
 
 		$array = array();
@@ -209,8 +202,7 @@ class ImprovedDriver implements DriverInterface
 
 		// Fetch results
 		$i=0;
-		while ($p->fetch())
-		{
+		while ($p->fetch()) {
 			$tmp = array();
 
 			foreach ($data as $k => $v) {
@@ -230,16 +222,14 @@ class ImprovedDriver implements DriverInterface
 	 *
 	 * @return bool
 	 */
-	public static function supported()
-	{
+	public static function supported() {
 		return (function_exists('mysqli_connect'));
 	}
 
 	/**
 	 * Closes the connection.
 	 */
-	public function close()
-	{
+	public function close() {
 		if (!is_null($this->handle)) {
 			@$this->handle->close();
 		}

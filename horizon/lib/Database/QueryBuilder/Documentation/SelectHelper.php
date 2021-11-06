@@ -32,7 +32,6 @@ use Horizon\Database\Model;
  * @method object|Model first() Fetches the first row in the query as an object, or a model if configured.
  * @method int count() Sets the column to COUNT(*), executes the query, and returns the rows.
  */
-abstract class SelectHelper
-{
+abstract class SelectHelper {
 
 }

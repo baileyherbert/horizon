@@ -4,8 +4,7 @@ namespace Horizon\Http\Traits;
 
 use Symfony\Component\HttpFoundation\ParameterBag;
 
-trait HasJsonInput
-{
+trait HasJsonInput {
 
 	private $json;
 	private $jsonError;
@@ -17,8 +16,7 @@ trait HasJsonInput
 	 * @param mixed $default Return value if key is not found.
 	 * @return array|mixed|null
 	 */
-	public function json($key = null, $default = null)
-	{
+	public function json($key = null, $default = null) {
 		if (!isset($this->json)) {
 			// Decode the content with errors suppressed
 			$decoded = @json_decode($this->getContent(), true);
@@ -41,8 +39,7 @@ trait HasJsonInput
 	/**
 	 * Checks if the JSON decode operation encountered an error and stores it if so.
 	 */
-	private function jsonStoreError()
-	{
+	private function jsonStoreError() {
 		// Get the last error (symfony/polyfill-php55)
 		$error = json_last_error_msg();
 

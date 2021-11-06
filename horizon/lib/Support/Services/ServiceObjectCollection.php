@@ -10,8 +10,7 @@ use IteratorAggregate;
 /**
  * A collection of service objects.
  */
-class ServiceObjectCollection implements ArrayAccess, Countable, IteratorAggregate
-{
+class ServiceObjectCollection implements ArrayAccess, Countable, IteratorAggregate {
 
 	/**
 	 * The items contained in the collection.
@@ -32,8 +31,7 @@ class ServiceObjectCollection implements ArrayAccess, Countable, IteratorAggrega
 	 *
 	 * @param object[] $objects
 	 */
-	public function __construct(array $objects = array())
-	{
+	public function __construct(array $objects = array()) {
 		$this->items = $objects;
 	}
 
@@ -42,8 +40,7 @@ class ServiceObjectCollection implements ArrayAccess, Countable, IteratorAggrega
 	 *
 	 * @return object[]
 	 */
-	public function all()
-	{
+	public function all() {
 		return $this->items;
 	}
 
@@ -52,8 +49,7 @@ class ServiceObjectCollection implements ArrayAccess, Countable, IteratorAggrega
 	 *
 	 * @return object|null
 	 */
-	public function next()
-	{
+	public function next() {
 		if (array_key_exists($this->index, $this->items)) {
 			return $this->items[$this->index++];
 		}
@@ -66,8 +62,7 @@ class ServiceObjectCollection implements ArrayAccess, Countable, IteratorAggrega
 	 *
 	 * @return object|null
 	 */
-	public function first()
-	{
+	public function first() {
 		if (!array_key_exists(0, $this->items)) return null;
 		return $this->items[0];
 	}
@@ -76,8 +71,7 @@ class ServiceObjectCollection implements ArrayAccess, Countable, IteratorAggrega
 	 * Retrieves an external iterator.
 	 * @return \ArrayIterator
 	 */
-	public function getIterator()
-	{
+	public function getIterator() {
 		return new ArrayIterator($this->items);
 	}
 
@@ -87,8 +81,7 @@ class ServiceObjectCollection implements ArrayAccess, Countable, IteratorAggrega
 	 * @param mixed $offset
 	 * @return bool
 	 */
-	public function offsetExists($offset)
-	{
+	public function offsetExists($offset) {
 		return array_key_exists($offset, $this->items);
 	}
 
@@ -98,8 +91,7 @@ class ServiceObjectCollection implements ArrayAccess, Countable, IteratorAggrega
 	 * @param mixed $offset
 	 * @return mixed
 	 */
-	public function offsetGet($offset)
-	{
+	public function offsetGet($offset) {
 		return $this->items[$offset];
 	}
 
@@ -110,8 +102,7 @@ class ServiceObjectCollection implements ArrayAccess, Countable, IteratorAggrega
 	 * @param mixed $value
 	 * @return void
 	 */
-	public function offsetSet($offset, $value)
-	{
+	public function offsetSet($offset, $value) {
 		if (is_null($offset)) {
 			$this->items[] = $value;
 		}
@@ -126,8 +117,7 @@ class ServiceObjectCollection implements ArrayAccess, Countable, IteratorAggrega
 	 * @param mixed $offset
 	 * @return void
 	 */
-	public function offsetUnset($offset)
-	{
+	public function offsetUnset($offset) {
 		unset($this->items[$offset]);
 	}
 
@@ -136,8 +126,7 @@ class ServiceObjectCollection implements ArrayAccess, Countable, IteratorAggrega
 	 *
 	 * @return int
 	 */
-	public function count()
-	{
+	public function count() {
 		return count($this->items);
 	}
 

@@ -9,8 +9,7 @@ use Horizon\Http\Response;
 use Horizon\Http\Exception\HttpResponseException;
 use Horizon\Support\Container\BoundCallable;
 
-class ControllerDispatcher
-{
+class ControllerDispatcher {
 
 	/**
 	 * @var Route
@@ -34,8 +33,7 @@ class ControllerDispatcher
 	 * @param Request|null $request
 	 * @param Response|null $response
 	 */
-	public function __construct(Route $route, Request $request = null, Response $response = null)
-	{
+	public function __construct(Route $route, Request $request = null, Response $response = null) {
 		$this->route = $route;
 		$this->request = $request;
 		$this->response = $response;
@@ -47,8 +45,7 @@ class ControllerDispatcher
 	 * @return mixed
 	 * @throws HttpResponseException
 	 */
-	public function dispatch()
-	{
+	public function dispatch() {
 		$action = $this->getCallable();
 
 		if (is_null($this->response)) {
@@ -75,8 +72,7 @@ class ControllerDispatcher
 	 *
 	 * @param callable $action
 	 */
-	protected function init($action)
-	{
+	protected function init($action) {
 		$action = $this->createInstance($action);
 
 		if (is_array($action)) {
@@ -98,8 +94,7 @@ class ControllerDispatcher
 	 * @return BoundCallable
 	 * @throws Exception
 	 */
-	protected function createBoundCallable($action)
-	{
+	protected function createBoundCallable($action) {
 		// Convert the action to a callable if necessary
 		$action = $this->createInstance($action);
 
@@ -151,8 +146,7 @@ class ControllerDispatcher
 	 * @return callable
 	 * @throws HttpResponseException
 	 */
-	protected function getCallable()
-	{
+	protected function getCallable() {
 		$action = $this->route->getAction();
 
 		if (is_string($action) && strpos($action, '::') !== false) {
@@ -184,8 +178,7 @@ class ControllerDispatcher
 	 * @param string|array $name
 	 * @return callable
 	 */
-	protected function createInstance($name)
-	{
+	protected function createInstance($name) {
 		if (!is_string($name)) {
 			return $name;
 		}

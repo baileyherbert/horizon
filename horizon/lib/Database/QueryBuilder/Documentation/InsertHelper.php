@@ -11,7 +11,6 @@ namespace Horizon\Database\QueryBuilder\Documentation;
  *
  * @method object|int|bool exec() Executes the query.
  */
-abstract class InsertHelper
-{
+abstract class InsertHelper {
 
 }

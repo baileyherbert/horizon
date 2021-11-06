@@ -7,8 +7,7 @@ use Horizon\Database\Migration\Blueprint;
 /**
  * Represents a database table column.
  */
-class Column
-{
+class Column {
 
 	/**
 	 * The blueprinted type of the column (will not always be the same as the SQL type).
@@ -116,8 +115,7 @@ class Column
 	 * @param array $parameters
 	 * @param Blueprint $table
 	 */
-	public function __construct($type, $name, array $parameters, Blueprint $table)
-	{
+	public function __construct($type, $name, array $parameters, Blueprint $table) {
 		$this->type = $type;
 		$this->name = $name;
 		$this->parameters = $parameters;
@@ -129,8 +127,7 @@ class Column
 	 * @param string $column
 	 * @return $this
 	 */
-	public function after($column)
-	{
+	public function after($column) {
 		$this->placement = 'AFTER ' . Grammar::compileName($column);
 
 		return $this;
@@ -141,8 +138,7 @@ class Column
 	 *
 	 * @return $this
 	 */
-	public function autoIncrement()
-	{
+	public function autoIncrement() {
 		$this->autoIncrementing = true;
 
 		return $this;
@@ -153,8 +149,7 @@ class Column
 	 *
 	 * @return $this
 	 */
-	public function change()
-	{
+	public function change() {
 		$this->change = true;
 
 		return $this;
@@ -166,8 +161,7 @@ class Column
 	 * @param string $charset
 	 * @return $this
 	 */
-	public function charset($charset)
-	{
+	public function charset($charset) {
 		$this->charset = $charset;
 
 		return $this;
@@ -179,8 +173,7 @@ class Column
 	 * @param string $collation
 	 * @return $this
 	 */
-	public function collation($collation)
-	{
+	public function collation($collation) {
 		$this->collation = $collation;
 
 		return $this;
@@ -192,8 +185,7 @@ class Column
 	 * @param string $comment
 	 * @return $this
 	 */
-	public function comment($comment)
-	{
+	public function comment($comment) {
 		$this->comment = $comment;
 
 		return $this;
@@ -205,8 +197,7 @@ class Column
 	 * @param mixed $value
 	 * @return $this
 	 */
-	public function defaults($value)
-	{
+	public function defaults($value) {
 		$this->defaultValue = $value;
 		$this->defaultValueSet = true;
 
@@ -218,8 +209,7 @@ class Column
 	 *
 	 * @return $this
 	 */
-	public function first()
-	{
+	public function first() {
 		$this->placement = 'FIRST';
 
 		return $this;
@@ -230,8 +220,7 @@ class Column
 	 *
 	 * @return $this
 	 */
-	public function index()
-	{
+	public function index() {
 		$this->table->index($this->name);
 
 		return $this;
@@ -243,8 +232,7 @@ class Column
 	 * @param bool $value
 	 * @return $this
 	 */
-	public function nullable($value = true)
-	{
+	public function nullable($value = true) {
 		$this->nullable = $value;
 
 		return $this;
@@ -255,8 +243,7 @@ class Column
 	 *
 	 * @return $this
 	 */
-	public function primary()
-	{
+	public function primary() {
 		$this->table->primary($this->name);
 
 		return $this;
@@ -268,8 +255,7 @@ class Column
 	 * @param string $name
 	 * @return $this
 	 */
-	public function rename($name)
-	{
+	public function rename($name) {
 		$this->newName = $name;
 		$this->change = true;
 
@@ -281,8 +267,7 @@ class Column
 	 *
 	 * @return $this
 	 */
-	public function unique()
-	{
+	public function unique() {
 		$this->table->unique($this->name);
 
 		return $this;
@@ -293,8 +278,7 @@ class Column
 	 *
 	 * @return $this
 	 */
-	public function unsigned()
-	{
+	public function unsigned() {
 		$this->parameters['unsigned'] = true;
 
 		return $this;
@@ -305,8 +289,7 @@ class Column
 	 *
 	 * @return $this
 	 */
-	public function useCurrent()
-	{
+	public function useCurrent() {
 		$this->defaults('CURRENT_TIMESTAMP');
 
 		return $this;
@@ -317,8 +300,7 @@ class Column
 	 *
 	 * @return string
 	 */
-	public function __toString()
-	{
+	public function __toString() {
 		$statement = '';
 
 		if (!$this->table->isCreating()) {
@@ -349,8 +331,7 @@ class Column
 	 *
 	 * @return string
 	 */
-	private function compileDataType()
-	{
+	private function compileDataType() {
 		$type = Grammar::getColumnType($this->type);
 
 		// Add (total, places) values for floating point columns
@@ -381,8 +362,7 @@ class Column
 	 *
 	 * @return string
 	 */
-	private function compileNullable()
-	{
+	private function compileNullable() {
 		return $this->nullable ? 'NULL' : 'NOT NULL';
 	}
 
@@ -392,8 +372,7 @@ class Column
 	 *
 	 * @return string
 	 */
-	private function compileDefault()
-	{
+	private function compileDefault() {
 		if ($this->defaultValueSet) {
 			return 'DEFAULT ' . Grammar::compileDefault($this->defaultValue);
 		}
@@ -406,8 +385,7 @@ class Column
 	 *
 	 * @return string
 	 */
-	private function compileIncrements()
-	{
+	private function compileIncrements() {
 		if ($this->autoIncrementing || array_get($this->parameters, 'autoIncrement', false)) {
 			return 'AUTO_INCREMENT';
 		}
@@ -420,8 +398,7 @@ class Column
 	 *
 	 * @return string
 	 */
-	private function compileComment()
-	{
+	private function compileComment() {
 		if (is_string($this->comment)) {
 			return 'COMMENT ' . Grammar::compileComment($this->comment);
 		}
@@ -434,8 +411,7 @@ class Column
 	 *
 	 * @return string
 	 */
-	private function compileCollate()
-	{
+	private function compileCollate() {
 		$charset = '';
 		$collate = '';
 
@@ -451,8 +427,7 @@ class Column
 	 * @param string $name
 	 * @return mixed
 	 */
-	public function __get($name)
-	{
+	public function __get($name) {
 		if (isset($this->$name)) {
 			return $this->$name;
 		}

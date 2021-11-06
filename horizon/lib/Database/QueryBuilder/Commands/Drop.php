@@ -5,11 +5,8 @@ namespace Horizon\Database\QueryBuilder\Commands;
 use Horizon\Database\QueryBuilder;
 use Horizon\Database\QueryBuilder\StringBuilder;
 use Horizon\Support\Str;
-use Horizon\Support\Arr;
-use Horizon\Database\Exception\QueryBuilderException;
 
-class Drop implements CommandInterface
-{
+class Drop implements CommandInterface {
 
 	/**
 	 * @var QueryBuilder
@@ -36,8 +33,7 @@ class Drop implements CommandInterface
 	 *
 	 * @param QueryBuilder $builder
 	 */
-	public function __construct(QueryBuilder $builder)
-	{
+	public function __construct(QueryBuilder $builder) {
 		$this->builder = $builder;
 	}
 
@@ -46,8 +42,7 @@ class Drop implements CommandInterface
 	 *
 	 * @return string
 	 */
-	public function compile()
-	{
+	public function compile() {
 		if (!is_null($this->database)) {
 			return Str::join(
 				'DROP DATABASE',
@@ -73,8 +68,7 @@ class Drop implements CommandInterface
 	 * @param string $name
 	 * @return $this
 	 */
-	public function table($name)
-	{
+	public function table($name) {
 		$this->table = $name;
 		return $this;
 	}
@@ -85,8 +79,7 @@ class Drop implements CommandInterface
 	 * @param string $name
 	 * @return $this
 	 */
-	public function database($name)
-	{
+	public function database($name) {
 		$this->database = $name;
 		return $this;
 	}
@@ -97,14 +90,12 @@ class Drop implements CommandInterface
 	 * @param bool $bool
 	 * @return $this
 	 */
-	public function ifExists($bool = true)
-	{
+	public function ifExists($bool = true) {
 		$this->ifExists = $bool;
 		return $this;
 	}
 
-	public function getParameters()
-	{
+	public function getParameters() {
 		return array();
 	}
 

@@ -42,8 +42,7 @@ class Environment {
 	 * @param mixed $default
 	 * @return mixed
 	 */
-	public static function get($name, $default = null)
-	{
+	public static function get($name, $default = null) {
 		$name = strtolower($name);
 
 		if (array_key_exists($name, static::$overrideData)) {
@@ -68,8 +67,7 @@ class Environment {
 	 * @param mixed $value
 	 * @return void
 	 */
-	public static function set($name, $value)
-	{
+	public static function set($name, $value) {
 		$name = strtolower($name);
 		static::$overrideData[$name] = $value;
 	}
@@ -83,8 +81,7 @@ class Environment {
 	 * @param bool $useOverridesRegister
 	 * @return void
 	 */
-	public static function delete($name, $useOverridesRegister = false)
-	{
+	public static function delete($name, $useOverridesRegister = false) {
 		$name = strtolower($name);
 
 		if (isset(static::$overrideData[$name])) {
@@ -108,8 +105,7 @@ class Environment {
 	 * @param mixed $default
 	 * @return mixed
 	 */
-	private static function formatWithDefault($name, $value, $default)
-	{
+	private static function formatWithDefault($name, $value, $default) {
 		switch (gettype($default)) {
 			case 'boolean': {
 				return in_array(
@@ -134,8 +130,7 @@ class Environment {
 	/**
 	 * Returns environment variables loaded from the disk.
 	 */
-	private static function getFileData()
-	{
+	private static function getFileData() {
 		if (!static::$fileLoaded) {
 			static::readEnvFile();
 			static::readEnvArrayFile();
@@ -148,8 +143,7 @@ class Environment {
 	/**
 	 * Returns environment variables loaded into the current process.
 	 */
-	private static function getProcessData()
-	{
+	private static function getProcessData() {
 		if (!static::$processLoaded) {
 			foreach (getenv() as $key => $value) {
 				static::$processData[strtolower($key)] = $value;
@@ -166,8 +160,7 @@ class Environment {
 	 *
 	 * @return void
 	 */
-	private static function readEnvFile()
-	{
+	private static function readEnvFile() {
 		$targetFiles = array(
 			path('.env')
 		);
@@ -202,8 +195,7 @@ class Environment {
 	 *
 	 * @return void
 	 */
-	private static function readEnvArrayFile()
-	{
+	private static function readEnvArrayFile() {
 		$targetFiles = array(
 			path('.env.php')
 		);

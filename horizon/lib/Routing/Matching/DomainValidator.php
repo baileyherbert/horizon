@@ -5,8 +5,7 @@ namespace Horizon\Routing\Matching;
 use Horizon\Routing\Route;
 use Horizon\Http\Request;
 
-class DomainValidator
-{
+class DomainValidator {
 
 	/**
 	 * Validates that the route's domain matches the request.
@@ -15,8 +14,7 @@ class DomainValidator
 	 * @param Request $request
 	 * @return bool
 	 */
-	public function matches(Route $route, Request $request)
-	{
+	public function matches(Route $route, Request $request) {
 		if (is_null($route->compile()->getHostRegex())) {
 			return true;
 		}

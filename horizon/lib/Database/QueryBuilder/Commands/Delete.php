@@ -5,11 +5,9 @@ namespace Horizon\Database\QueryBuilder\Commands;
 use Horizon\Database\QueryBuilder;
 use Horizon\Database\QueryBuilder\StringBuilder;
 use Horizon\Support\Str;
-use Horizon\Support\Arr;
 use Horizon\Database\Exception\QueryBuilderException;
 
-class Delete implements CommandInterface
-{
+class Delete implements CommandInterface {
 
 	/**
 	 * @var QueryBuilder
@@ -51,8 +49,7 @@ class Delete implements CommandInterface
 	 *
 	 * @param QueryBuilder $builder
 	 */
-	public function __construct(QueryBuilder $builder)
-	{
+	public function __construct(QueryBuilder $builder) {
 		$this->builder = $builder;
 	}
 
@@ -61,8 +58,7 @@ class Delete implements CommandInterface
 	 *
 	 * @return string
 	 */
-	public function compile()
-	{
+	public function compile() {
 		$this->compiledParameters = array();
 
 		return Str::join(
@@ -77,8 +73,7 @@ class Delete implements CommandInterface
 	/**
 	 * @return string
 	 */
-	protected function compileTable()
-	{
+	protected function compileTable() {
 		if (!$this->table) return '';
 
 		$prefix = $this->builder->getPrefix();
@@ -90,8 +85,7 @@ class Delete implements CommandInterface
 	/**
 	 * @return string
 	 */
-	protected function compileWheres()
-	{
+	protected function compileWheres() {
 		if (empty($this->wheres)) {
 			return '';
 		}
@@ -138,8 +132,7 @@ class Delete implements CommandInterface
 	/**
 	 * @return string
 	 */
-	protected function compileFunction($function)
-	{
+	protected function compileFunction($function) {
 		$functionString = array_shift($function);
 
 		if (!preg_match('/^([A-Z]+)(\([^)]*\))$/', $functionString, $matches)) {
@@ -161,8 +154,7 @@ class Delete implements CommandInterface
 	/**
 	 * @return string
 	 */
-	protected function compileOrderBy()
-	{
+	protected function compileOrderBy() {
 		$compiled = array();
 
 		if (count($this->orders) == 0) {
@@ -187,8 +179,7 @@ class Delete implements CommandInterface
 	/**
 	 * @return string
 	 */
-	protected function compileLimit()
-	{
+	protected function compileLimit() {
 		return !is_null($this->limit) ? ('LIMIT ' . $this->limit) : '';
 	}
 
@@ -198,8 +189,7 @@ class Delete implements CommandInterface
 	 * @param int $i
 	 * @return array|null
 	 */
-	protected function getEnclosureStartingAt($i)
-	{
+	protected function getEnclosureStartingAt($i) {
 		$enclosure = null;
 
 		foreach ($this->enclosures as $enclose) {
@@ -217,8 +207,7 @@ class Delete implements CommandInterface
 	 * @param int $i
 	 * @return int
 	 */
-	protected function getNumEnclosuresStartingAt($i)
-	{
+	protected function getNumEnclosuresStartingAt($i) {
 		$count = 0;
 
 		foreach ($this->enclosures as $enclose) {
@@ -236,8 +225,7 @@ class Delete implements CommandInterface
 	 * @param int $i
 	 * @return array|null
 	 */
-	protected function getEnclosureEndingAt($i)
-	{
+	protected function getEnclosureEndingAt($i) {
 		$enclosure = null;
 
 		foreach ($this->enclosures as $enclose) {
@@ -255,8 +243,7 @@ class Delete implements CommandInterface
 	 * @param int $i
 	 * @return int
 	 */
-	protected function getNumEnclosuresEndingAt($i)
-	{
+	protected function getNumEnclosuresEndingAt($i) {
 		$count = 0;
 
 		foreach ($this->enclosures as $enclose) {
@@ -273,8 +260,7 @@ class Delete implements CommandInterface
 	 *
 	 * @return array
 	 */
-	public function getParameters()
-	{
+	public function getParameters() {
 		$this->compile();
 		return $this->compiledParameters;
 	}
@@ -285,8 +271,7 @@ class Delete implements CommandInterface
 	 * @param string $tableName
 	 * @return $this
 	 */
-	public function from($tableName)
-	{
+	public function from($tableName) {
 		$this->table = $tableName;
 		return $this;
 	}
@@ -299,8 +284,7 @@ class Delete implements CommandInterface
 	 * @param mixed $equals
 	 * @return $this
 	 */
-	public function where($column, $operator, $equals, $separator = 'AND')
-	{
+	public function where($column, $operator, $equals, $separator = 'AND') {
 		$function = (is_array($equals)) ? $equals : null;
 
 		if (is_string($equals) && StringBuilder::isFunction($equals)) {
@@ -326,8 +310,7 @@ class Delete implements CommandInterface
 	 * @param mixed $equals
 	 * @return $this
 	 */
-	public function andWhere($column, $operator, $equals)
-	{
+	public function andWhere($column, $operator, $equals) {
 		return $this->where($column, $operator, $equals);
 	}
 
@@ -339,8 +322,7 @@ class Delete implements CommandInterface
 	 * @param mixed $equals
 	 * @return $this
 	 */
-	public function orWhere($column, $operator, $equals)
-	{
+	public function orWhere($column, $operator, $equals) {
 		return $this->where($column, $operator, $equals, 'OR');
 	}
 
@@ -351,8 +333,7 @@ class Delete implements CommandInterface
 	 * @param string $separator
 	 * @return $this
 	 */
-	public function enclose(callable $callback, $separator = 'AND')
-	{
+	public function enclose(callable $callback, $separator = 'AND') {
 		$startPosition = count($this->wheres);
 		$callback($this->builder);
 		$endPosition = count($this->wheres) - 1;
@@ -372,8 +353,7 @@ class Delete implements CommandInterface
 	 * @param callable $callback
 	 * @return $this
 	 */
-	public function orEnclose(callable $callback)
-	{
+	public function orEnclose(callable $callback) {
 		return $this->enclose($callback, 'OR');
 	}
 
@@ -383,8 +363,7 @@ class Delete implements CommandInterface
 	 * @param callable $callback
 	 * @return $this
 	 */
-	public function andEnclose(callable $callback)
-	{
+	public function andEnclose(callable $callback) {
 		return $this->enclose($callback);
 	}
 
@@ -394,8 +373,7 @@ class Delete implements CommandInterface
 	 * @param int $limit
 	 * @return $this
 	 */
-	public function limit($limit)
-	{
+	public function limit($limit) {
 		$this->limit = $limit;
 		return $this;
 	}
@@ -407,8 +385,7 @@ class Delete implements CommandInterface
 	 * @param string $direction,...
 	 * @return $this
 	 */
-	public function orderBy()
-	{
+	public function orderBy() {
 		$args = func_get_args();
 
 		if (count($args) == 1) {

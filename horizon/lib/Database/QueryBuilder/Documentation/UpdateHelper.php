@@ -26,7 +26,6 @@ use Horizon\Database\Model;
  * @method object[]|Model[] get() Fetches all rows in the query as objects, or models if configured.
  * @method object|Model first() Fetches the first row in the query as an object, or a model if configured.
  */
-abstract class UpdateHelper
-{
+abstract class UpdateHelper {
 
 }

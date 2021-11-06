@@ -4,20 +4,17 @@ namespace Horizon\Database\ORM\Traits;
 
 use DB;
 use Horizon\Database\QueryBuilder\Documentation\SelectHelper;
-use Horizon\Database\QueryBuilder\Documentation\UpdateHelper;
 use Horizon\Http\Exception\HttpResponseException;
 use Horizon\Database\Cache;
 
-trait QueryBuilding
-{
+trait QueryBuilding {
 
 	/**
 	 * Gets all rows. Careful!
 	 *
 	 * @return static[]
 	 */
-	public static function all()
-	{
+	public static function all() {
 		$o = (new static);
 
 		$builder = DB::connection($o->getConnection())->select()->from($o->getTable());
@@ -33,8 +30,7 @@ trait QueryBuilding
 	 * @param string $operator
 	 * @return SelectHelper
 	 */
-	public static function where($column, $operator, $equals)
-	{
+	public static function where($column, $operator, $equals) {
 		$o = (new static);
 
 		$builder = DB::connection($o->getConnection())->select()->from($o->getTable())->where($column, $operator, $equals);
@@ -48,8 +44,7 @@ trait QueryBuilding
 	 *
 	 * @return SelectHelper
 	 */
-	public static function query()
-	{
+	public static function query() {
 		$o = (new static);
 
 		$builder = DB::connection($o->getConnection())->select()->from($o->getTable());
@@ -63,8 +58,7 @@ trait QueryBuilding
 	 *
 	 * @return int
 	 */
-	public static function count()
-	{
+	public static function count() {
 		$o = (new static);
 		return DB::connection($o->getConnection())->select()->from($o->getTable())->count();
 	}
@@ -75,8 +69,7 @@ trait QueryBuilding
 	 * @param int $primaryKey
 	 * @return static
 	 */
-	public static function find($primaryKey)
-	{
+	public static function find($primaryKey) {
 		$o = (new static);
 
 		$table = $o->getTable();
@@ -108,8 +101,7 @@ trait QueryBuilding
 	 * @param int $code
 	 * @return static
 	 */
-	public static function findOrFail($primaryKey, $code = 404)
-	{
+	public static function findOrFail($primaryKey, $code = 404) {
 		$model = static::find($primaryKey);
 
 		if (is_null($model)) {
@@ -126,8 +118,7 @@ trait QueryBuilding
 	 * @param int $code
 	 * @return static
 	 */
-	public static function create(array $values)
-	{
+	public static function create(array $values) {
 		$o = (new static);
 
 		$table = $o->getTable();

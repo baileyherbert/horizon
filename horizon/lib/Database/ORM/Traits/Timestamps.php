@@ -2,8 +2,7 @@
 
 namespace Horizon\Database\ORM\Traits;
 
-trait Timestamps
-{
+trait Timestamps {
 
 	protected $timestamps = true;
 	protected $touches = array();

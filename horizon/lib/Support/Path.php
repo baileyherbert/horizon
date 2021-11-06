@@ -2,11 +2,9 @@
 
 namespace Horizon\Support;
 
-use Horizon\Support\Arr;
 use Horizon\Support\Str;
 
-class Path
-{
+class Path {
 
 	/**
 	 * Joins two or more paths together, separating them with the system's directory separator.
@@ -14,8 +12,7 @@ class Path
 	 * @param string $path,...
 	 * @return string
 	 */
-	public static function join()
-	{
+	public static function join() {
 		$paths = func_get_args();
 		$path = array_shift($paths);
 
@@ -43,8 +40,7 @@ class Path
 	 * @param string $path,...
 	 * @return string
 	 */
-	public static function resolve()
-	{
+	public static function resolve() {
 		$paths = func_get_args();
 		$path = array_shift($paths);
 
@@ -66,8 +62,7 @@ class Path
 		return static::makeProperPath($path);
 	}
 
-	protected static function makeProperPath($path)
-	{
+	protected static function makeProperPath($path) {
 		$parts = explode(DIRECTORY_SEPARATOR, $path);
 		$i = 0;
 
@@ -106,8 +101,7 @@ class Path
 	 * @param string|null $extension
 	 * @return string
 	 */
-	public static function basename($fileName, $extension = null)
-	{
+	public static function basename($fileName, $extension = null) {
 		return basename($fileName, $extension);
 	}
 
@@ -119,8 +113,7 @@ class Path
 	 * @param string $targetPath
 	 * @return string
 	 */
-	public static function getRelative($currentPath, $targetPath, $subdirectory = '')
-	{
+	public static function getRelative($currentPath, $targetPath, $subdirectory = '') {
 		$targetPath = str_replace('\\', '/', $targetPath);
 
 		$currentPath = trim($currentPath);
@@ -188,8 +181,7 @@ class Path
 	 * @param string $path
 	 * @return object[]
 	 */
-	public static function parse($path)
-	{
+	public static function parse($path) {
 		if (strpos($path, '?') !== false) {
 			$path = substr($path, 0, strpos($path, '?'));
 		}
@@ -232,8 +224,7 @@ class Path
 	 * @param array $nodes
 	 * @return string
 	 */
-	public static function compile(array $nodes)
-	{
+	public static function compile(array $nodes) {
 		$path = '/';
 
 		foreach ($nodes as $node) {

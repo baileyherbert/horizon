@@ -2,15 +2,12 @@
 
 namespace Horizon\Console;
 
-use Horizon\Console;
 use Horizon\Foundation\Application;
 use Horizon\Http\Response;
 use Exception;
-use Horizon\Foundation\Kernel;
 use Horizon\View\Template;
 
-class ConsoleResponse extends Response
-{
+class ConsoleResponse extends Response {
 
 	public function setHeader($key, $value) { throw new Exception('Headers cannot be set in console mode.'); }
 	public function getHeader($key, $default = null) { throw new Exception('Headers are not set in console mode.'); }
@@ -24,8 +21,7 @@ class ConsoleResponse extends Response
 	 *
 	 * @param mixed $data
 	 */
-	protected function writeObject($data = '')
-	{
+	protected function writeObject($data = '') {
 		if (is_bool($data)) {
 			$data = $data ? 'true' : 'false';
 		}
@@ -50,8 +46,7 @@ class ConsoleResponse extends Response
 	 *
 	 * @param mixed $data
 	 */
-	public function write()
-	{
+	public function write() {
 		$args = func_get_args();
 
 		if (empty($args)) {
@@ -70,8 +65,7 @@ class ConsoleResponse extends Response
 	/**
 	 * Writes a new line to the response content.
 	 */
-	public function writeLine()
-	{
+	public function writeLine() {
 		$args = func_get_args();
 
 		if (empty($args)) {
@@ -89,8 +83,7 @@ class ConsoleResponse extends Response
 		$this->write("\n");
 	}
 
-	public function view($templateFile, array $context = array())
-	{
+	public function view($templateFile, array $context = array()) {
 		$view = new Template($templateFile, $this->buildContextVariables($context));
 		$content = $view->render();
 

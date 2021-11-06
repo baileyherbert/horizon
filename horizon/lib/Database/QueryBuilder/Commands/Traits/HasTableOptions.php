@@ -4,8 +4,7 @@ namespace Horizon\Database\QueryBuilder\Commands\Traits;
 
 use Horizon\Support\Str;
 
-trait HasTableOptions
-{
+trait HasTableOptions {
 
 	/**
 	 * @var string[]
@@ -17,8 +16,7 @@ trait HasTableOptions
 	 *
 	 * @return string
 	 */
-	protected function compileOptions()
-	{
+	protected function compileOptions() {
 		$compiled = array();
 
 		foreach ($this->options as $option => $value) {
@@ -34,8 +32,7 @@ trait HasTableOptions
 	 * @param string $name
 	 * @return $this
 	 */
-	public function engine($name)
-	{
+	public function engine($name) {
 		$this->options['ENGINE'] = $name;
 		return $this;
 	}
@@ -46,8 +43,7 @@ trait HasTableOptions
 	 * @param string $charset
 	 * @return $this
 	 */
-	public function charset($charset)
-	{
+	public function charset($charset) {
 		$this->options['CHARACTER SET'] = $charset;
 		return $this;
 	}
@@ -58,8 +54,7 @@ trait HasTableOptions
 	 * @param string $collate
 	 * @return $this
 	 */
-	public function collate($collate)
-	{
+	public function collate($collate) {
 		$this->options['COLLATE'] = $collate;
 		return $this;
 	}
@@ -71,8 +66,7 @@ trait HasTableOptions
 	 * @param string $value
 	 * @return $this
 	 */
-	public function opt($name, $value)
-	{
+	public function opt($name, $value) {
 		$this->options[strtoupper($name)] = $value;
 		return $this;
 	}

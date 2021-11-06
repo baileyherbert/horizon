@@ -7,8 +7,7 @@ use Horizon\Database\Model;
 use Horizon\Database\QueryBuilder\StringBuilder;
 use Horizon\Database\Exception\DatabaseException;
 
-class BelongsToManyRelationship extends Relationship
-{
+class BelongsToManyRelationship extends Relationship {
 
 	protected $model;
 	protected $foreignModelName;
@@ -16,8 +15,7 @@ class BelongsToManyRelationship extends Relationship
 	protected $localKey;
 	protected $mapTable;
 
-	public function __construct(Model $model, $foreignModelName, $foreignKey, $localKey, $mapTable = null)
-	{
+	public function __construct(Model $model, $foreignModelName, $foreignKey, $localKey, $mapTable = null) {
 		$foreignModel = new $foreignModelName;
 
 		if (is_null($mapTable)) {
@@ -38,13 +36,11 @@ class BelongsToManyRelationship extends Relationship
 		$this->query->setModel($foreignModelName);
 	}
 
-	public function get()
-	{
+	public function get() {
 		return $this->query->get();
 	}
 
-	public function attach($model)
-	{
+	public function attach($model) {
 		$id = (is_object($model)) ? $model->getPrimaryKeyValue() : $model;
 
 		if (!is_numeric($id) && !is_null($id)) {
@@ -57,8 +53,7 @@ class BelongsToManyRelationship extends Relationship
 		$query->exec();
 	}
 
-	public function detach($model)
-	{
+	public function detach($model) {
 		$id = (is_object($model)) ? $model->getPrimaryKeyValue() : $model;
 
 		if (!is_numeric($id) && !is_null($id)) {

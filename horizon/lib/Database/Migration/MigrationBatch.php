@@ -4,7 +4,6 @@ namespace Horizon\Database\Migration;
 
 use Horizon\Database\Migration;
 use Horizon\Database\Migrator;
-use Horizon\Support\Arr;
 
 class MigrationBatch {
 

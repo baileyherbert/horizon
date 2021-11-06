@@ -5,26 +5,18 @@ namespace Horizon\Http\Cookie;
 use Horizon\Exception\HorizonException;
 use Horizon\Http\Cookie\Drivers\CookieDriver;
 
-class Session
-{
-
-	private $sessionData = array();
-
-	private $currentFlashData = array();
-	private $newFlashData = array();
+class Session {
 
 	/**
 	 * @var CookieDriver
 	 */
 	private $driver;
 
-	public function __construct($desiredDriver = null)
-	{
+	public function __construct($desiredDriver = null) {
 		$this->load($desiredDriver);
 	}
 
-	private function load($desiredDriver = null)
-	{
+	private function load($desiredDriver = null) {
 		static $DRIVERS = array(
 			'cookie' => 'Horizon\Http\Cookie\Drivers\CookieDriver',
 			'database' => 'Horizon\Http\Cookie\Drivers\DatabaseDriver',
@@ -58,8 +50,7 @@ class Session
 	 * @param string $key
 	 * @return bool
 	 */
-	public function has($key)
-	{
+	public function has($key) {
 		return $this->driver->has($key);
 	}
 
@@ -69,8 +60,7 @@ class Session
 	 * @param string $key
 	 * @return bool
 	 */
-	public function exists($key)
-	{
+	public function exists($key) {
 		return $this->driver->exists($key);
 	}
 
@@ -82,8 +72,7 @@ class Session
 	 *
 	 * @return void
 	 */
-	public function put($key, $value)
-	{
+	public function put($key, $value) {
 		return $this->driver->put($key, $value);
 	}
 
@@ -96,8 +85,7 @@ class Session
 	 *
 	 * @return mixed
 	 */
-	public function get($key, $default = null)
-	{
+	public function get($key, $default = null) {
 		return $this->driver->get($key, $default);
 	}
 
@@ -110,8 +98,7 @@ class Session
 	 *
 	 * @return mixed
 	 */
-	public function pull($key, $default = null)
-	{
+	public function pull($key, $default = null) {
 		return $this->driver->pull($key, $default);
 	}
 
@@ -121,8 +108,7 @@ class Session
 	 * @param string $key
 	 * @return void
 	 */
-	public function forget($key)
-	{
+	public function forget($key) {
 		return $this->driver->forget($key);
 	}
 
@@ -131,8 +117,7 @@ class Session
 	 *
 	 * @return void
 	 */
-	public function clear()
-	{
+	public function clear() {
 		return $this->driver->clear();
 	}
 
@@ -143,8 +128,7 @@ class Session
 	 * @param string $key
 	 * @param mixed $value
 	 */
-	public function flash($key, $value)
-	{
+	public function flash($key, $value) {
 		return $this->driver->flash($key, $value);
 	}
 
@@ -152,8 +136,7 @@ class Session
 	 * Reflashes the current flashed data, effectively persisting it until the next pageload. Note that if any keys in
 	 * the reflashed data have been written to the current flash, they will be overwritten with the old data.
 	 */
-	public function reflash()
-	{
+	public function reflash() {
 		return $this->driver->reflash();
 	}
 
@@ -163,8 +146,7 @@ class Session
 	 *
 	 * @param string[] $keys
 	 */
-	public function keep(array $keys)
-	{
+	public function keep(array $keys) {
 		return $this->driver->keep($keys);
 	}
 
@@ -173,8 +155,7 @@ class Session
 	 *
 	 * @return array
 	 */
-	public function all()
-	{
+	public function all() {
 		return $this->driver->all();
 	}
 
@@ -183,8 +164,7 @@ class Session
 	 *
 	 * @return string
 	 */
-	public function csrf()
-	{
+	public function csrf() {
 		return $this->driver->csrf();
 	}
 
@@ -193,8 +173,7 @@ class Session
 	 *
 	 * @return string
 	 */
-	public function renew()
-	{
+	public function renew() {
 		return $this->driver->renew();
 	}
 

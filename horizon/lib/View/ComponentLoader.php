@@ -2,7 +2,6 @@
 
 namespace Horizon\View;
 
-class ComponentLoader extends ViewLoader
-{
+class ComponentLoader extends ViewLoader {
 
 }

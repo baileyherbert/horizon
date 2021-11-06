@@ -12,8 +12,7 @@ use ReflectionParameter;
  * in the callable will be discovered via reflection and injected with an object provided from the service container.
  * Custom objects and variables can also be considered, which will take precedence over objects from the container.
  */
-class BoundCallable
-{
+class BoundCallable {
 
 	/**
 	 * @var Container
@@ -42,8 +41,7 @@ class BoundCallable
 	 * @param Container|null $container
 	 * @throws Exception
 	 */
-	public function __construct($callable, Container $container = null)
-	{
+	public function __construct($callable, Container $container = null) {
 		$this->callable = $this->getProperCallable($callable);
 		$this->container = $container;
 
@@ -57,8 +55,7 @@ class BoundCallable
 	 * @return mixed
 	 * @throws
 	 */
-	public function execute()
-	{
+	public function execute() {
 		$reflection = $this->getReflection();
 		$parameters = $this->resolve($reflection->getParameters());
 
@@ -72,8 +69,7 @@ class BoundCallable
 	 * @param object $object
 	 * @param boolean $subclasses
 	 */
-	public function with($object, $subclasses = false)
-	{
+	public function with($object, $subclasses = false) {
 		if (is_object($object)) {
 			$class = get_class($object);
 			$this->objects[$class] = $object;
@@ -93,8 +89,7 @@ class BoundCallable
 	 * @param string $name
 	 * @param mixed $value
 	 */
-	public function where($name, $value)
-	{
+	public function where($name, $value) {
 		$this->variables[$name] = $value;
 	}
 
@@ -104,8 +99,7 @@ class BoundCallable
 	 * @param string $name
 	 * @return bool
 	 */
-	public function has($name)
-	{
+	public function has($name) {
 		return isset($this->variables[$name]);
 	}
 
@@ -115,8 +109,7 @@ class BoundCallable
 	 * @param string $className
 	 * @return bool
 	 */
-	public function contains($className)
-	{
+	public function contains($className) {
 		return isset($this->objects[$className]);
 	}
 
@@ -128,8 +121,7 @@ class BoundCallable
 	 * @return array
 	 * @throws ReflectionException
 	 */
-	private function resolve($parameters)
-	{
+	private function resolve($parameters) {
 		$resolved = array();
 
 		foreach ($parameters as $parameter) {
@@ -172,8 +164,7 @@ class BoundCallable
 	 *
 	 * @return \ReflectionMethod|\ReflectionFunction
 	 */
-	private function getReflection()
-	{
+	private function getReflection() {
 		try {
 			if (is_string($this->callable)) {
 				return new \ReflectionMethod($this->callable);
@@ -199,8 +190,7 @@ class BoundCallable
 	 * @return callable
 	 * @throws Exception
 	 */
-	private function getProperCallable($callable)
-	{
+	private function getProperCallable($callable) {
 		if (is_array($callable)) {
 			if (!count($callable)) {
 				throw new Exception('Not a callable.');
@@ -235,8 +225,7 @@ class BoundCallable
 	 * @param callable $callable
 	 * @return BoundCallable
 	 */
-	public function copy($callable)
-	{
+	public function copy($callable) {
 		$callable = new BoundCallable($callable, $this->container);
 
 		foreach ($this->objects as $name => $instance) {

@@ -9,8 +9,7 @@ use Twig_SimpleFunction;
 /**
  * An extension which implements transpilers to support Blade template syntax.
  */
-class BladeExtension extends ViewExtension
-{
+class BladeExtension extends ViewExtension {
 
 	protected $endings = array();
 
@@ -20,8 +19,7 @@ class BladeExtension extends ViewExtension
 	 *
 	 * @return Twig_SimpleFunction[]
 	 */
-	public function getFunctions()
-	{
+	public function getFunctions() {
 		return array(
 			new Twig_SimpleFunction('camel_case', 'camel_case'),
 			new Twig_SimpleFunction('kebab_case', 'kebab_case'),
@@ -93,8 +91,7 @@ class BladeExtension extends ViewExtension
 	 *
 	 * @return array
 	 */
-	public function getTranspilers()
-	{
+	public function getTranspilers() {
 		return array(
 			'include' => function($template) { return "{% include $template %}"; },
 			'extend' => function($template) { return "{% extends $template %}"; },
@@ -197,8 +194,7 @@ class BladeExtension extends ViewExtension
 	 * @param string $args
 	 * @return string
 	 */
-	public function transpileFor($args)
-	{
+	public function transpileFor($args) {
 		if (preg_match('/^\$([\w.]+)\s+=\s+([^;]+);\s+\$([\w.]+)\s+(<|<=)\s+([^;]+);\s+\$([\w.]+)\+\+$/', $args, $matches)) {
 			$variableName = $matches[1];
 			$startValue = $matches[2];
@@ -232,8 +228,7 @@ class BladeExtension extends ViewExtension
 	 * @param string $args
 	 * @return string
 	 */
-	public function transpileForEach($args)
-	{
+	public function transpileForEach($args) {
 		if (preg_match('/^\$([\w.>-]+)\s*(\([^)]*\))?\s+as\s+\$([\w]+)$/', $args, $matches)) {
 			$this->endings[] = 'endfor';
 
@@ -257,8 +252,7 @@ class BladeExtension extends ViewExtension
 	 * @param string $args
 	 * @return string
 	 */
-	public function transpileElse($args)
-	{
+	public function transpileElse($args) {
 		return "{% else %}";
 	}
 
@@ -268,8 +262,7 @@ class BladeExtension extends ViewExtension
 	 * @param string $args
 	 * @return string
 	 */
-	public function transpileIf($args)
-	{
+	public function transpileIf($args) {
 		$meat = $this->transpileConditionLogic($args);
 		$this->endings[] = 'endif';
 
@@ -282,8 +275,7 @@ class BladeExtension extends ViewExtension
 	 * @param string $args
 	 * @return string
 	 */
-	public function transpileElseIf($args)
-	{
+	public function transpileElseIf($args) {
 		$meat = $this->transpileConditionLogic($args);
 
 		return "{% elseif {$meat} %}";
@@ -294,8 +286,7 @@ class BladeExtension extends ViewExtension
 	 *
 	 * @return string
 	 */
-	public function transpileVerbatim()
-	{
+	public function transpileVerbatim() {
 		$this->endings[] = 'endverbatim';
 
 		return "{% verbatim %}";
@@ -306,15 +297,13 @@ class BladeExtension extends ViewExtension
 	 *
 	 * @return string
 	 */
-	public function transpileUnescaped()
-	{
+	public function transpileUnescaped() {
 		$this->endings[] = 'endautoescape';
 
 		return "{% autoescape false %}";
 	}
 
-	protected function transpileConditionLogic($str)
-	{
+	protected function transpileConditionLogic($str) {
 		$statement = '';
 		$filters = array();
 
@@ -507,8 +496,7 @@ class BladeExtension extends ViewExtension
 		return $statement;
 	}
 
-	protected function getFilter($name)
-	{
+	protected function getFilter($name) {
 		static $filters = array(
 			'length' => 'length',
 			'count' => 'length',
@@ -562,8 +550,7 @@ class BladeExtension extends ViewExtension
 	 * @param string $args
 	 * @return string
 	 */
-	public function transpileEnd($args)
-	{
+	public function transpileEnd($args) {
 		if (empty($this->endings)) {
 			throw new \Exception('Invalid end tag with no matching statement');
 		}

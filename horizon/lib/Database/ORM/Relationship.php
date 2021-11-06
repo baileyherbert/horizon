@@ -2,11 +2,9 @@
 
 namespace Horizon\Database\ORM;
 
-use Horizon\Database\Model;
 use Horizon\Database\QueryBuilder\Documentation\SelectHelper;
 
-class Relationship extends SelectHelper
-{
+class Relationship extends SelectHelper {
 
 	/**
 	 * @var SelectHelper
@@ -21,8 +19,7 @@ class Relationship extends SelectHelper
 	 * @param mixed $equals
 	 * @return $this
 	 */
-	public function where()
-	{
+	public function where() {
 		call_user_func_array(array($this->query, 'where'), func_get_args());
 		return $this;
 	}
@@ -35,8 +32,7 @@ class Relationship extends SelectHelper
 	 * @param mixed $equals
 	 * @return $this
 	 */
-	public function andWhere()
-	{
+	public function andWhere() {
 		call_user_func_array(array($this->query, 'andWhere'), func_get_args());
 		return $this;
 	}
@@ -49,8 +45,7 @@ class Relationship extends SelectHelper
 	 * @param mixed $equals
 	 * @return $this
 	 */
-	public function orWhere()
-	{
+	public function orWhere() {
 		call_user_func_array(array($this->query, 'orWhere'), func_get_args());
 		return $this;
 	}
@@ -62,8 +57,7 @@ class Relationship extends SelectHelper
 	 * @param string $separator
 	 * @return $this
 	 */
-	public function enclose()
-	{
+	public function enclose() {
 		call_user_func_array(array($this->query, 'enclose'), func_get_args());
 		return $this;
 	}
@@ -74,8 +68,7 @@ class Relationship extends SelectHelper
 	 * @param callable $callback
 	 * @return $this
 	 */
-	public function orEnclose()
-	{
+	public function orEnclose() {
 		call_user_func_array(array($this->query, 'orEnclose'), func_get_args());
 		return $this;
 	}
@@ -86,8 +79,7 @@ class Relationship extends SelectHelper
 	 * @param callable $callback
 	 * @return $this
 	 */
-	public function andEnclose()
-	{
+	public function andEnclose() {
 		call_user_func_array(array($this->query, 'andEnclose'), func_get_args());
 		return $this;
 	}
@@ -98,8 +90,7 @@ class Relationship extends SelectHelper
 	 * @param bool $is
 	 * @return $this
 	 */
-	public function distinct()
-	{
+	public function distinct() {
 		call_user_func_array(array($this->query, 'distinct'), func_get_args());
 		return $this;
 	}
@@ -110,8 +101,7 @@ class Relationship extends SelectHelper
 	 * @param int $limit
 	 * @return $this
 	 */
-	public function limit()
-	{
+	public function limit() {
 		call_user_func_array(array($this->query, 'limit'), func_get_args());
 		return $this;
 	}
@@ -122,8 +112,7 @@ class Relationship extends SelectHelper
 	 * @param int $start
 	 * @return $this
 	 */
-	public function offset()
-	{
+	public function offset() {
 		call_user_func_array(array($this->query, 'offset'), func_get_args());
 		return $this;
 	}
@@ -135,8 +124,7 @@ class Relationship extends SelectHelper
 	 * @param string $direction,...
 	 * @return $this
 	 */
-	public function orderBy()
-	{
+	public function orderBy() {
 		call_user_func_array(array($this->query, 'orderBy'), func_get_args());
 		return $this;
 	}

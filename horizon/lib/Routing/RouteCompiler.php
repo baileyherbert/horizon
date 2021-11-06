@@ -4,8 +4,7 @@ namespace Horizon\Routing;
 
 use Symfony\Component\Routing\Route as SymfonyRoute;
 
-class RouteCompiler
-{
+class RouteCompiler {
 
 	/**
 	 * @var Route
@@ -15,13 +14,11 @@ class RouteCompiler
 	/**
 	 * Constructs a new RouteCompiler instance for the given Route instance.
 	 */
-	public function __construct(Route $route)
-	{
+	public function __construct(Route $route) {
 		$this->route = $route;
 	}
 
-	public function compile()
-	{
+	public function compile() {
 		$optionals = $this->getOptionalParameters();
 		$uri = preg_replace('/\{(\w+?)\?\}/', '{$1}', $this->route->uri());
 
@@ -30,8 +27,7 @@ class RouteCompiler
 		)->compile();
 	}
 
-	protected function getOptionalParameters()
-	{
+	protected function getOptionalParameters() {
 		preg_match_all('/\{(\w+?)\?\}/', $this->route->uri(), $matches);
 		return isset($matches[1]) ? array_fill_keys($matches[1], null) : array();
 	}

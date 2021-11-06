@@ -8,8 +8,7 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Horizon\View\Template;
 use Horizon\Support\Str;
 
-class Response extends SymfonyResponse
-{
+class Response extends SymfonyResponse {
 
 	/**
 	 * @var bool If the response has halted and page load should cease.
@@ -42,16 +41,14 @@ class Response extends SymfonyResponse
 	 * @param string $key
 	 * @param string $value
 	 */
-	public function setHeader($key, $value)
-	{
+	public function setHeader($key, $value) {
 		$this->headers->set($key, $value);
 	}
 
 	/**
 	 * Gets the value of a header in the response.
 	 */
-	public function getHeader($key, $default = null)
-	{
+	public function getHeader($key, $default = null) {
 		$this->headers->get($key, $default);
 	}
 
@@ -60,8 +57,7 @@ class Response extends SymfonyResponse
 	 *
 	 * @param mixed $data
 	 */
-	protected function writeObject($data = '')
-	{
+	protected function writeObject($data = '') {
 		if (is_bool($data)) {
 			$data = $data ? 'true' : 'false';
 		}
@@ -86,8 +82,7 @@ class Response extends SymfonyResponse
 	 *
 	 * @param mixed $data
 	 */
-	public function write()
-	{
+	public function write() {
 		$args = func_get_args();
 
 		if (empty($args)) {
@@ -106,8 +101,7 @@ class Response extends SymfonyResponse
 	/**
 	 * Writes a new line to the response content.
 	 */
-	public function writeLine()
-	{
+	public function writeLine() {
 		$args = func_get_args();
 
 		if (empty($args)) {
@@ -139,8 +133,7 @@ class Response extends SymfonyResponse
 	 * @param string $to
 	 * @param int $code
 	 */
-	public function redirect($to = null, $code = 302)
-	{
+	public function redirect($to = null, $code = 302) {
 		if ($to == null) {
 			$to = Application::kernel()->http()->request()->getRequestUri();
 		}
@@ -157,8 +150,7 @@ class Response extends SymfonyResponse
 	 * Stops page execution gracefully, meaning any currently-running code will continue, but further controllers or
 	 * middleware will not be executed.
 	 */
-	public function halt()
-	{
+	public function halt() {
 		$this->halted = true;
 	}
 
@@ -167,8 +159,7 @@ class Response extends SymfonyResponse
 	 *
 	 * @return bool
 	 */
-	public function isHalted()
-	{
+	public function isHalted() {
 		return $this->halted;
 	}
 
@@ -178,8 +169,7 @@ class Response extends SymfonyResponse
 	 * @param string $key
 	 * @param mixed $value
 	 */
-	public function with($key, $value)
-	{
+	public function with($key, $value) {
 		$this->with[$key] = $value;
 	}
 
@@ -188,8 +178,7 @@ class Response extends SymfonyResponse
 	 *
 	 * @param string $key
 	 */
-	public function without($key)
-	{
+	public function without($key) {
 		if (isset($this->with[$key])) {
 			unset($this->with[$key]);
 		}
@@ -201,8 +190,7 @@ class Response extends SymfonyResponse
 	 * @param string $templateName
 	 * @param array $context
 	 */
-	public function view($templateFile, array $context = array())
-	{
+	public function view($templateFile, array $context = array()) {
 		$variables = $this->buildContextVariables($context);
 		$view = new Template($templateFile, $variables);
 		$content = $view->render();
@@ -245,8 +233,7 @@ class Response extends SymfonyResponse
 	 *
 	 * @return $this
 	 */
-	public function send()
-	{
+	public function send() {
 		if (!is_null($this->sendFileHandle)) {
 			$handle = $this->sendFileHandle;
 			$name = $this->sendFileName;
@@ -292,10 +279,8 @@ class Response extends SymfonyResponse
 	 * @param array $context
 	 * @return array
 	 */
-	protected function buildContextVariables(array $context)
-	{
-		foreach ($this->with as $key => $value)
-		{
+	protected function buildContextVariables(array $context) {
+		foreach ($this->with as $key => $value) {
 			if (!array_key_exists($key, $context)) {
 				if (is_callable($value)) {
 					$value = call_user_func($value);

@@ -9,8 +9,7 @@ use Horizon\Database\Exception\DatabaseException;
 use Horizon\Foundation\Application;
 use Horizon\Support\Profiler;
 
-class Database extends EventEmitter
-{
+class Database extends EventEmitter {
 
 	/**
 	 * @var array
@@ -42,8 +41,7 @@ class Database extends EventEmitter
 	 *
 	 * @param array $config
 	 */
-	public function __construct(array $config)
-	{
+	public function __construct(array $config) {
 		$this->kernel = Application::kernel()->database();
 		$this->config = $config;
 		$this->loggingEnabled = $config['query_logging'] == true;
@@ -57,8 +55,7 @@ class Database extends EventEmitter
 	 *
 	 * @throws DatabaseException when no drivers are supported.
 	 */
-	protected function loadDriver()
-	{
+	protected function loadDriver() {
 		$this->driver = $this->getBestDriver();
 
 		if (is_null($this->driver)) {
@@ -71,8 +68,7 @@ class Database extends EventEmitter
 	 *
 	 * @return DriverInterface|null
 	 */
-	protected function getBestDriver()
-	{
+	protected function getBestDriver() {
 		$drivers = $this->getDrivers();
 		$preferredDriver = config('database.preferred_driver', 'none');
 
@@ -93,8 +89,7 @@ class Database extends EventEmitter
 	 *
 	 * @return array
 	 */
-	public function getDriverDetails()
-	{
+	public function getDriverDetails() {
 		$drivers = $this->getDrivers();
 		$preferredDriver = config('database.preferred_driver', 'none');
 		$selected = null;
@@ -122,8 +117,7 @@ class Database extends EventEmitter
 	 *
 	 * @return array
 	 */
-	protected function getDrivers()
-	{
+	protected function getDrivers() {
 		static $drivers = array(
 			'mysqli' => 'Horizon\Database\Drivers\ImprovedDriver',
 			'pdo' => 'Horizon\Database\Drivers\PdoDriver',
@@ -150,8 +144,7 @@ class Database extends EventEmitter
 	 * @param array $bindings
 	 * @return array|int|bool
 	 */
-	public function query($statement, array $bindings = array())
-	{
+	public function query($statement, array $bindings = array()) {
 		// Start timing the query
 		Profiler::start('database:query', $statement);
 
@@ -189,8 +182,7 @@ class Database extends EventEmitter
 	 * @param string|null $type
 	 * @return QueryBuilder
 	 */
-	public function createQueryBuilder($type = null)
-	{
+	public function createQueryBuilder($type = null) {
 		$type = strtolower($type);
 		$builder = new QueryBuilder($this->getPrefix(), $this);
 
@@ -206,8 +198,7 @@ class Database extends EventEmitter
 	 *
 	 * @return array
 	 */
-	public function getConfig()
-	{
+	public function getConfig() {
 		return $this->config;
 	}
 
@@ -216,8 +207,7 @@ class Database extends EventEmitter
 	 *
 	 * @return string
 	 */
-	public function getHost()
-	{
+	public function getHost() {
 		return $this->config['host'];
 	}
 
@@ -226,8 +216,7 @@ class Database extends EventEmitter
 	 *
 	 * @return string
 	 */
-	public function getPrefix()
-	{
+	public function getPrefix() {
 		return $this->config['prefix'];
 	}
 
@@ -236,8 +225,7 @@ class Database extends EventEmitter
 	 *
 	 * @return string
 	 */
-	public function getDatabaseName()
-	{
+	public function getDatabaseName() {
 		return $this->config['database'];
 	}
 
@@ -246,8 +234,7 @@ class Database extends EventEmitter
 	 *
 	 * @return string
 	 */
-	public function getUserName()
-	{
+	public function getUserName() {
 		return $this->config['user'];
 	}
 
@@ -256,8 +243,7 @@ class Database extends EventEmitter
 	 *
 	 * @return string
 	 */
-	public function getCharacterSet()
-	{
+	public function getCharacterSet() {
 		return $this->config['charset'];
 	}
 
@@ -266,8 +252,7 @@ class Database extends EventEmitter
 	 *
 	 * @return string
 	 */
-	public function getCollation()
-	{
+	public function getCollation() {
 		return $this->config['collation'];
 	}
 
@@ -276,8 +261,7 @@ class Database extends EventEmitter
 	 *
 	 * @return DriverInterface
 	 */
-	public function getDriver()
-	{
+	public function getDriver() {
 		return $this->driver;
 	}
 
@@ -287,8 +271,7 @@ class Database extends EventEmitter
 	 *
 	 * @return array
 	 */
-	public function getQueryLog()
-	{
+	public function getQueryLog() {
 		return $this->log;
 	}
 
@@ -297,16 +280,14 @@ class Database extends EventEmitter
 	 *
 	 * @param bool $enabled
 	 */
-	public function setQueryLogging($enabled = true)
-	{
+	public function setQueryLogging($enabled = true) {
 		$this->loggingEnabled = $enabled;
 	}
 
 	/**
 	 * Internal function for recording query logs.
 	 */
-	protected function doQueryLog()
-	{
+	protected function doQueryLog() {
 		$this->on('query', function ($statement, array $bindings, $millisTaken, $exception = null) {
 			if (!$this->loggingEnabled) {
 				return;
@@ -326,8 +307,7 @@ class Database extends EventEmitter
 	/**
 	 * Closes the database.
 	 */
-	public function close()
-	{
+	public function close() {
 		$this->driver->close();
 	}
 

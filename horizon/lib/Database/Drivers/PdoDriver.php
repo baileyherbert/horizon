@@ -5,16 +5,13 @@ namespace Horizon\Database\Drivers;
 use Horizon\Database\Database;
 use Horizon\Database\Exception\DatabaseDriverException;
 use Horizon\Database\Exception\DatabaseException;
-use Horizon\Database\QueryBuilder\StringBuilder;
 use Horizon\Support\Profiler;
 use Horizon\Support\Str;
 
 use PDO;
 use PDOException;
-use PDOStatement;
 
-class PdoDriver implements DriverInterface
-{
+class PdoDriver implements DriverInterface {
 
 	/**
 	 * @var Database
@@ -36,8 +33,7 @@ class PdoDriver implements DriverInterface
 	 *
 	 * @param Database $database
 	 */
-	public function __construct(Database $database)
-	{
+	public function __construct(Database $database) {
 		$this->database = $database;
 	}
 
@@ -46,8 +42,7 @@ class PdoDriver implements DriverInterface
 	 *
 	 * @throws DatabaseDriverException on error
 	 */
-	public function connect()
-	{
+	public function connect() {
 		if ($this->connected) {
 			return;
 		}
@@ -97,8 +92,7 @@ class PdoDriver implements DriverInterface
 	 *
 	 * @throws DatabaseException on error
 	 */
-	public function query($statement, $bindings = null)
-	{
+	public function query($statement, $bindings = null) {
 		$this->connect();
 
 		$statement = trim($statement);
@@ -135,8 +129,7 @@ class PdoDriver implements DriverInterface
 	 *
 	 * @throws DatabaseException on error
 	 */
-	protected function prepared($statement, array &$bindings = array())
-	{
+	protected function prepared($statement, array &$bindings = array()) {
 		$type = $this->getQueryType($statement);
 
 		try {
@@ -172,8 +165,7 @@ class PdoDriver implements DriverInterface
 	 *
 	 * @throws DatabaseException on error
 	 */
-	public function validate($statement)
-	{
+	public function validate($statement) {
 		try {
 			$this->handle->prepare($statement);
 		}
@@ -188,8 +180,7 @@ class PdoDriver implements DriverInterface
 	 * @param string $statement
 	 * @return string
 	 */
-	protected function getQueryType($statement)
-	{
+	protected function getQueryType($statement) {
 		$statement = strtolower($statement);
 
 		if (Str::startsWith($statement, 'select ')) return 'query';
@@ -203,16 +194,14 @@ class PdoDriver implements DriverInterface
 	 *
 	 * @return bool
 	 */
-	public static function supported()
-	{
+	public static function supported() {
 		return (class_exists('PDO') && defined('PDO::MYSQL_ATTR_LOCAL_INFILE'));
 	}
 
 	/**
 	 * Closes the connection.
 	 */
-	public function close()
-	{
+	public function close() {
 		$this->handle = null;
 	}
 

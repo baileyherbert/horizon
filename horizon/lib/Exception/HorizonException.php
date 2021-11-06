@@ -2,8 +2,7 @@
 
 namespace Horizon\Exception;
 
-class HorizonException extends \Exception
-{
+class HorizonException extends \Exception {
 
 	private $details;
 
@@ -11,8 +10,7 @@ class HorizonException extends \Exception
 	 * @param int $code Unique exception code.
 	 * @param string $details Optional additional information.
 	 */
-	public function __construct($code, $details = null)
-	{
+	public function __construct($code, $details = null) {
 		parent::__construct($this->generateMessage($code), $code);
 
 		$this->details = $details;
@@ -25,8 +23,7 @@ class HorizonException extends \Exception
 	 * @param int $code
 	 * @return string
 	 */
-	private function generateMessage($code)
-	{
+	private function generateMessage($code) {
 		static $ERRORS = array(
 			0x0001 => 'Missing required trait',
 			0x0002 => 'Missing configuration file',
@@ -48,19 +45,16 @@ class HorizonException extends \Exception
 		return 'Unknown exception';
 	}
 
-	public function getDetails()
-	{
+	public function getDetails() {
 		return $this->details;
 	}
 
-	public function getHex()
-	{
+	public function getHex() {
 		$hex = dechex($this->getCode());
 		return '0x' . str_pad($hex, 4, "0", STR_PAD_LEFT);
 	}
 
-	public function __toString()
-	{
+	public function __toString() {
 		return sprintf(
 			'HorizonException: %s',
 			$this->getMessage()

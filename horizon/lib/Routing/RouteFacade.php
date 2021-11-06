@@ -9,8 +9,7 @@ use Closure;
 /**
  * Interface class for creating routes globally.
  */
-class RouteFacade
-{
+class RouteFacade {
 
 	/**
 	 * Gets the router instance.
@@ -18,8 +17,7 @@ class RouteFacade
 	 * @internal
 	 * @return Router
 	 */
-	protected static function router()
-	{
+	protected static function router() {
 		return RouteLoader::getRouter();
 	}
 
@@ -31,8 +29,7 @@ class RouteFacade
 	 * @param string|null $fallback Path to a php file, relative to the root directory, to use for fallback routing.
 	 * @return Route
 	 */
-	public static function get($uri, $action = null, $fallback = null)
-	{
+	public static function get($uri, $action = null, $fallback = null) {
 		if (is_null($action)) {
 			$action = $uri;
 			$uri = '';
@@ -55,8 +52,7 @@ class RouteFacade
 	 * @param string|null $fallback Path to a php file, relative to the root directory, to use for fallback routing.
 	 * @return Route
 	 */
-	public static function post($uri, $action = null, $fallback = null)
-	{
+	public static function post($uri, $action = null, $fallback = null) {
 		if (is_null($action)) {
 			$action = $uri;
 			$uri = '';
@@ -79,8 +75,7 @@ class RouteFacade
 	 * @param string|null $fallback Path to a php file, relative to the root directory, to use for fallback routing.
 	 * @return Route
 	 */
-	public static function put($uri, $action = null, $fallback = null)
-	{
+	public static function put($uri, $action = null, $fallback = null) {
 		if (is_null($action)) {
 			$action = $uri;
 			$uri = '';
@@ -103,8 +98,7 @@ class RouteFacade
 	 * @param string|null $fallback Path to a php file, relative to the root directory, to use for fallback routing.
 	 * @return Route
 	 */
-	public static function patch($uri, $action = null, $fallback = null)
-	{
+	public static function patch($uri, $action = null, $fallback = null) {
 		if (is_null($action)) {
 			$action = $uri;
 			$uri = '';
@@ -127,8 +121,7 @@ class RouteFacade
 	 * @param string|null $fallback Path to a php file, relative to the root directory, to use for fallback routing.
 	 * @return Route
 	 */
-	public static function delete($uri, $action = null, $fallback = null)
-	{
+	public static function delete($uri, $action = null, $fallback = null) {
 		if (is_null($action)) {
 			$action = $uri;
 			$uri = '';
@@ -151,8 +144,7 @@ class RouteFacade
 	 * @param string|null $fallback Path to a php file, relative to the root directory, to use for fallback routing.
 	 * @return Route
 	 */
-	public static function options($uri, $action = null, $fallback = null)
-	{
+	public static function options($uri, $action = null, $fallback = null) {
 		if (is_null($action)) {
 			$action = $uri;
 			$uri = '';
@@ -175,8 +167,7 @@ class RouteFacade
 	 * @param string|null $fallback Path to a php file, relative to the root directory, to use for fallback routing.
 	 * @return Route
 	 */
-	public static function any($uri, $action = null, $fallback = null)
-	{
+	public static function any($uri, $action = null, $fallback = null) {
 		if (is_null($action)) {
 			$action = $uri;
 			$uri = '';
@@ -200,8 +191,7 @@ class RouteFacade
 	 * @param string|null $fallback Path to a php file, relative to the root directory, to use for fallback routing.
 	 * @return Route
 	 */
-	public static function match(array $methods, $uri, $action, $fallback = null)
-	{
+	public static function match(array $methods, $uri, $action, $fallback = null) {
 		$route = static::router()->createMatchRoute($methods, $uri, $action);
 
 		if (!is_null($fallback)) {
@@ -221,8 +211,7 @@ class RouteFacade
 	 * @param string|null $fallback Path to a php file, relative to the root directory, to use for fallback routing.
 	 * @return Route
 	 */
-	public static function view($uri, $view, array $variables = array(), $fallback = null)
-	{
+	public static function view($uri, $view, array $variables = array(), $fallback = null) {
 		$route = static::router()->createViewRoute($uri, $view, $variables);
 
 		if (!is_null($fallback)) {
@@ -243,8 +232,7 @@ class RouteFacade
 	 * @param string|null $fallback Path to a php file, relative to the root directory, to use for fallback routing.
 	 * @return Route
 	 */
-	public static function redirect($uri, $to, $code = 302, $fallback = null)
-	{
+	public static function redirect($uri, $to, $code = 302, $fallback = null) {
 		$route = static::router()->createRedirectRoute($uri, $to, $code);
 
 		if (!is_null($fallback)) {
@@ -274,8 +262,7 @@ class RouteFacade
 	 * @param int $timeout Number of seconds to wait before timing out the request.
 	 * @return Route
 	 */
-	public static function tcp($uri, $address, $port = 80, $timeout = 30, $caBundle = null, $fallback = null)
-	{
+	public static function tcp($uri, $address, $port = 80, $timeout = 30, $caBundle = null, $fallback = null) {
 		$route = static::router()->createTcpProxyRoute($uri, $address, $port, $caBundle, $timeout);
 
 		if (!is_null($fallback)) {
@@ -292,8 +279,7 @@ class RouteFacade
 	 * @param Closure $callback
 	 * @return RouteGroup
 	 */
-	public static function group($propertiesOrCallback = null, $callback = null)
-	{
+	public static function group($propertiesOrCallback = null, $callback = null) {
 		return static::router()->createGroup($propertiesOrCallback, $callback);
 	}
 
@@ -305,8 +291,7 @@ class RouteFacade
 	 * @param Closure|null $callback
 	 * @return RouteGroup|void
 	 */
-	public static function prefix($prefix, Closure $callback = null)
-	{
+	public static function prefix($prefix, Closure $callback = null) {
 		return static::router()->createPrefix($prefix, $callback);
 	}
 
@@ -319,8 +304,7 @@ class RouteFacade
 	 * @param Closure|null $callback
 	 * @return RouteGroup|void
 	 */
-	public static function middleware($middleware, Closure $callback = null)
-	{
+	public static function middleware($middleware, Closure $callback = null) {
 		return static::router()->createMiddleware($middleware, $callback);
 	}
 
@@ -333,8 +317,7 @@ class RouteFacade
 	 * @param Closure|null $callback
 	 * @return RouteGroup|void
 	 */
-	public static function name($name, Closure $callback = null)
-	{
+	public static function name($name, Closure $callback = null) {
 		return static::router()->createName($name, $callback);
 	}
 
@@ -349,8 +332,7 @@ class RouteFacade
 	 * @param Closure|null $callback
 	 * @return RouteGroup
 	 */
-	public static function domain($domain, Closure $callback = null)
-	{
+	public static function domain($domain, Closure $callback = null) {
 		return static::router()->createDomain($domain, $callback);
 	}
 
@@ -362,8 +344,7 @@ class RouteFacade
 	 * @param Closure|array|string $action
 	 * @return Route
 	 */
-	public static function catch($action)
-	{
+	public static function catch($action) {
 		return static::router()->setExceptionHandler($action);
 	}
 
@@ -374,8 +355,7 @@ class RouteFacade
 	 * @param string $fileName
 	 * @param bool $reset Enable to clear all previous middleware and groups before loading the file.
 	 */
-	public static function load($fileName, $reset = false)
-	{
+	public static function load($fileName, $reset = false) {
 		if (!Str::endsWith($fileName, '.php')) {
 			$fileName .= '.php';
 		}
@@ -388,8 +368,7 @@ class RouteFacade
 	 *
 	 * @return void
 	 */
-	public static function reset()
-	{
+	public static function reset() {
 		RouteLoader::reset();
 	}
 

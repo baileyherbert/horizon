@@ -4,8 +4,7 @@ namespace Horizon\View\Twig;
 
 use Horizon\View\ViewExtension;
 
-class TwigTranspiler
-{
+class TwigTranspiler {
 
 	/**
 	 * @var ViewExtension[]
@@ -37,8 +36,7 @@ class TwigTranspiler
 	 *
 	 * @param TwigFileLoader $loader
 	 */
-	public function __construct(TwigFileLoader $loader)
-	{
+	public function __construct(TwigFileLoader $loader) {
 		$this->extensions = (new TwigExtensionLoader($loader))->getExtensions();
 		$this->transpilers = $this->findTranspilers();
 	}
@@ -48,8 +46,7 @@ class TwigTranspiler
 	 *
 	 * @return string[]
 	 */
-	protected function findTranspilers()
-	{
+	protected function findTranspilers() {
 		$found = array();
 
 		foreach ($this->extensions as $extension) {
@@ -74,8 +71,7 @@ class TwigTranspiler
 	 * @param string $templateFileName
 	 * @return string
 	 */
-	public function precompile($value, $templateFileName = null)
-	{
+	public function precompile($value, $templateFileName = null) {
 		$this->templateFileName = $templateFileName;
 
 		$value = $this->correctWhitespace($value);
@@ -108,8 +104,7 @@ class TwigTranspiler
 	 * @param string $value
 	 * @return string
 	 */
-	public function compileStatements($value)
-	{
+	public function compileStatements($value) {
 		return preg_replace_callback(
 			'/\B@(@?\w+(?:::\w+)?)([ \t]*)(\( ( (?>[^()]+) | (?3) )* \)[;]*)?/x', function ($match) {
 				return $this->compileStatement($match);
@@ -123,8 +118,7 @@ class TwigTranspiler
 	 * @param array $match
 	 * @return string
 	 */
-	public function compileStatement($match)
-	{
+	public function compileStatement($match) {
 		if (count($match) < 2) {
 			return $match[0];
 		}
@@ -166,8 +160,7 @@ class TwigTranspiler
 	 * @param string $value
 	 * @return array
 	 */
-	protected function parseArguments($value)
-	{
+	protected function parseArguments($value) {
 		$value = rtrim($value, ';');
 
 		if (substr($value, 0, 1) != "(") return array();
@@ -184,8 +177,7 @@ class TwigTranspiler
 	 * @param string $arguments
 	 * @return string
 	 */
-	protected function transpile($shortcutName, $targetName, $arguments)
-	{
+	protected function transpile($shortcutName, $targetName, $arguments) {
 		return sprintf('{{ %s(%s) }}', $targetName, $this->buildArgumentString($arguments));
 	}
 
@@ -195,8 +187,7 @@ class TwigTranspiler
 	 * @param string $arguments
 	 * @return string
 	 */
-	protected function buildArgumentString($arguments)
-	{
+	protected function buildArgumentString($arguments) {
 		$result = '';
 		$i = 0;
 
@@ -249,8 +240,7 @@ class TwigTranspiler
 		return $result;
 	}
 
-	protected function compileVariables($value)
-	{
+	protected function compileVariables($value) {
 		$result = '';
 		$i = 0;
 
@@ -367,8 +357,7 @@ class TwigTranspiler
 		return $result;
 	}
 
-	protected function compileTags($value)
-	{
+	protected function compileTags($value) {
 		$result = '';
 		$i = 0;
 
@@ -458,8 +447,7 @@ class TwigTranspiler
 		return $result;
 	}
 
-	protected function correctWhitespace($str)
-	{
+	protected function correctWhitespace($str) {
 		$lines = explode("\n", $str);
 		$newLines = array();
 		$correctionIndent = null;

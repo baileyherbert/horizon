@@ -5,8 +5,7 @@ namespace Horizon\Database\Migration\Schema;
 /**
  * Utility class to assist with building SQL statements.
  */
-class Grammar
-{
+class Grammar {
 
 	/**
 	 * Compiles a name for use in a query. Works with names for tables, columns, and keys.
@@ -14,8 +13,7 @@ class Grammar
 	 * @param string $columnName
 	 * @return string
 	 */
-	public static function compileName($columnName)
-	{
+	public static function compileName($columnName) {
 		$columnName = trim($columnName, '`');
 		return '`' . $columnName . '`';
 	}
@@ -26,8 +24,7 @@ class Grammar
 	 * @param string $value
 	 * @return string
 	 */
-	public static function compileString($value)
-	{
+	public static function compileString($value) {
 		$value = str_replace(chr(39), chr(92) . chr(39), $value);
 		return "'{$value}'";
 	}
@@ -38,8 +35,7 @@ class Grammar
 	 * @param array $columns
 	 * @return string
 	 */
-	public static function compileColumnList(array $columns)
-	{
+	public static function compileColumnList(array $columns) {
 		$compiled = array();
 
 		foreach ($columns as $column) {
@@ -56,8 +52,7 @@ class Grammar
 	 * @param mixed $value
 	 * @return string|false
 	 */
-	public static function compileDefault($value)
-	{
+	public static function compileDefault($value) {
 		if (is_null($value)) {
 			return 'NULL';
 		}
@@ -88,8 +83,7 @@ class Grammar
 	 * @param string $comment
 	 * @return string
 	 */
-	public static function compileComment($comment)
-	{
+	public static function compileComment($comment) {
 		$comment = str_replace(chr(39), chr(92) . chr(39), $comment);
 		return "'{$comment}'";
 	}
@@ -100,8 +94,7 @@ class Grammar
 	 * @param string $type
 	 * @return string|null
 	 */
-	public static function getColumnCategory($type)
-	{
+	public static function getColumnCategory($type) {
 		foreach (static::getColumns() as $category => $columns) {
 			foreach ($columns as $columnType) {
 				if ($columnType === $type) {
@@ -119,8 +112,7 @@ class Grammar
 	 * @param string $type
 	 * @return bool
 	 */
-	public static function isNumeric($type)
-	{
+	public static function isNumeric($type) {
 		foreach (static::getColumns() as $category => $columns) {
 			foreach ($columns as $columnType) {
 				if ($columnType === $type) {
@@ -138,8 +130,7 @@ class Grammar
 	 * @param string $type
 	 * @return bool
 	 */
-	public static function isFloatingPoint($type)
-	{
+	public static function isFloatingPoint($type) {
 		return ($type == 'float' || $type == 'double' || $type == 'decimal');
 	}
 
@@ -149,8 +140,7 @@ class Grammar
 	 * @param string $type
 	 * @return bool
 	 */
-	public static function isVariableLength($type)
-	{
+	public static function isVariableLength($type) {
 		return ($type == 'char' || $type == 'string');
 	}
 
@@ -160,8 +150,7 @@ class Grammar
 	 * @param string $type
 	 * @return string|null
 	 */
-	public static function getColumnType($type)
-	{
+	public static function getColumnType($type) {
 		foreach (static::getColumnTypes() as $blueprintType => $sqlType) {
 			if ($blueprintType === $type) {
 				return $sqlType;
@@ -177,8 +166,7 @@ class Grammar
 	 * @param string $type
 	 * @return string
 	 */
-	public static function getKey($type)
-	{
+	public static function getKey($type) {
 		$type = strtolower(str_replace('drop', '', $type));
 
 		if ($type === 'primary') return 'PRIMARY KEY';
@@ -193,8 +181,7 @@ class Grammar
 	 *
 	 * @return array
 	 */
-	public static function getColumns()
-	{
+	public static function getColumns() {
 		static $columns = array(
 			'textual' => array('char', 'string', 'text', 'mediumText', 'longText', 'binary', 'json'),
 			'numeric' => array('integer', 'tinyInteger', 'smallInteger', 'mediumInteger', 'bigInteger', 'float', 'double', 'decimal', 'boolean'),
@@ -209,8 +196,7 @@ class Grammar
 	 *
 	 * @return array
 	 */
-	public static function getColumnTypes()
-	{
+	public static function getColumnTypes() {
 		static $types = array(
 			'char' => 'CHAR',
 			'string' => 'VARCHAR',

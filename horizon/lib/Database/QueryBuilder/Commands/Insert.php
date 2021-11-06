@@ -5,11 +5,9 @@ namespace Horizon\Database\QueryBuilder\Commands;
 use Horizon\Database\QueryBuilder;
 use Horizon\Support\Str;
 use Horizon\Database\QueryBuilder\StringBuilder;
-use Horizon\Support\Arr;
 use Horizon\Database\Exception\QueryBuilderException;
 
-class Insert implements CommandInterface
-{
+class Insert implements CommandInterface {
 
 	/**
 	 * @var QueryBuilder
@@ -36,8 +34,7 @@ class Insert implements CommandInterface
 	 *
 	 * @param QueryBuilder $builder
 	 */
-	public function __construct(QueryBuilder $builder)
-	{
+	public function __construct(QueryBuilder $builder) {
 		$this->builder = $builder;
 	}
 
@@ -46,8 +43,7 @@ class Insert implements CommandInterface
 	 *
 	 * @return string
 	 */
-	public function compile()
-	{
+	public function compile() {
 		$this->compiledParameters = array();
 
 		return Str::join(
@@ -58,8 +54,7 @@ class Insert implements CommandInterface
 		) . ';';
 	}
 
-	protected function compileTable()
-	{
+	protected function compileTable() {
 		$prefix = $this->builder->getPrefix();
 
 		if (!$prefix) {
@@ -69,8 +64,7 @@ class Insert implements CommandInterface
 		return StringBuilder::formatTableName($prefix . $this->table);
 	}
 
-	protected function compileColumns()
-	{
+	protected function compileColumns() {
 		$columns = $this->getColumns();
 		$compiled = array();
 
@@ -81,8 +75,7 @@ class Insert implements CommandInterface
 		return '(' . implode(', ', $compiled) . ')';
 	}
 
-	protected function compileValues()
-	{
+	protected function compileValues() {
 		$columns = $this->getColumns();
 		$compiled = array();
 
@@ -111,8 +104,7 @@ class Insert implements CommandInterface
 		return sprintf('VALUES %s', implode(', ', $compiled));
 	}
 
-	protected function compileFunction($function)
-	{
+	protected function compileFunction($function) {
 		$functionString = array_shift($function);
 
 		if (!preg_match('/^([A-Z]+)(\([^)]*\))$/', $functionString, $matches)) {
@@ -136,8 +128,7 @@ class Insert implements CommandInterface
 	 *
 	 * @return array
 	 */
-	public function getParameters()
-	{
+	public function getParameters() {
 		$this->compile();
 		return $this->compiledParameters;
 	}
@@ -147,8 +138,7 @@ class Insert implements CommandInterface
 	 *
 	 * @return array
 	 */
-	protected function getColumns()
-	{
+	protected function getColumns() {
 		$columns = array();
 
 		foreach ($this->values as $row) {
@@ -162,14 +152,12 @@ class Insert implements CommandInterface
 		return $columns;
 	}
 
-	public function into($tableName)
-	{
+	public function into($tableName) {
 		$this->table = $tableName;
 		return $this;
 	}
 
-	public function values(array $values = array())
-	{
+	public function values(array $values = array()) {
 		if (func_num_args() > 1) {
 			$values = func_get_args();
 		}
@@ -189,8 +177,7 @@ class Insert implements CommandInterface
 		return $this;
 	}
 
-	protected function prepareValues(array &$values)
-	{
+	protected function prepareValues(array &$values) {
 		if (count($values) > 0) {
 			if (isset($values[0]) && is_array($values[0])) {
 				return $values;

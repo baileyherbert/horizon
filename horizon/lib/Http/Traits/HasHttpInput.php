@@ -4,8 +4,7 @@ namespace Horizon\Http\Traits;
 
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-trait HasHttpInput
-{
+trait HasHttpInput {
 
 	/**
 	 * Gets the value of the query parameter with the specified key.
@@ -13,8 +12,7 @@ trait HasHttpInput
 	 * @param string|null $default Return value to use if the key is not found.
 	 * @return string|null
 	 */
-	public function query($key = null, $default = null)
-	{
+	public function query($key = null, $default = null) {
 		return $this->getWithDefault('query', $key, $default);
 	}
 
@@ -24,8 +22,7 @@ trait HasHttpInput
 	 * @param string|null $default Return value to use if the key is not found.
 	 * @return string|null
 	 */
-	public function post($key = null, $default = null)
-	{
+	public function post($key = null, $default = null) {
 		return $this->getWithDefault('request', $key, $default);
 	}
 
@@ -36,8 +33,7 @@ trait HasHttpInput
 	 * @param string|null $default Return value to use if the key is not found.
 	 * @return string|null
 	 */
-	public function input($key, $default = null)
-	{
+	public function input($key, $default = null) {
 		$input = ($this->post() + $this->query());
 
 		if (isset($input[$key])) {
@@ -52,8 +48,7 @@ trait HasHttpInput
 	 *
 	 * @return UploadedFile[]
 	 */
-	public function files()
-	{
+	public function files() {
 		return $this->files->all();
 	}
 
@@ -64,8 +59,7 @@ trait HasHttpInput
 	 *
 	 * @return UploadedFile|mixed|null
 	 */
-	public function file($key, $property = null)
-	{
+	public function file($key, $property = null) {
 		$file = $this->files->get($key, null);
 
 		if (!is_null($property) && is_array($file)) {
@@ -85,8 +79,7 @@ trait HasHttpInput
 	 *
 	 * @return mixed
 	 */
-	public function getWithDefault($bag, $key = null, $default = null)
-	{
+	public function getWithDefault($bag, $key = null, $default = null) {
 		if (is_null($key)) {
 			return $this->$bag->all();
 		}

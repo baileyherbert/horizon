@@ -2,11 +2,7 @@
 
 namespace Horizon\View\Twig;
 
-use Horizon\Foundation\Framework;
-use Horizon\Support\Path;
-
-class TwigExtensionLoader
-{
+class TwigExtensionLoader {
 
 	/**
 	 * @var TwigFileLoader
@@ -18,8 +14,7 @@ class TwigExtensionLoader
 	 *
 	 * @param TwigFileLoader $loader
 	 */
-	public function __construct(TwigFileLoader $loader)
-	{
+	public function __construct(TwigFileLoader $loader) {
 		$this->loader = $loader;
 	}
 
@@ -28,8 +23,7 @@ class TwigExtensionLoader
 	 *
 	 * @return \Twig_Extension[]
 	 */
-	public function getExtensions()
-	{
+	public function getExtensions() {
 		$collection = app()->all('Horizon\View\ViewExtension', $this->loader);
 		return $collection->all();
 	}

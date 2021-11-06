@@ -7,8 +7,7 @@ use Horizon\Support\Path;
 /**
  * Base class for an extension loaded from the "/app/extensions/" directory.
  */
-class Extension
-{
+class Extension {
 
 	/**
 	 * Absolute path to the extension's root directory.
@@ -44,8 +43,7 @@ class Extension
 	 * @param string $path
 	 * @throws Exception
 	 */
-	public function __construct($path)
-	{
+	public function __construct($path) {
 		$this->path = $path;
 		$this->configFilePath = Path::join($path, basename($path) . '.php');
 
@@ -61,8 +59,7 @@ class Extension
 	 *
 	 * @return string
 	 */
-	public function getPath()
-	{
+	public function getPath() {
 		return $this->path;
 	}
 
@@ -71,8 +68,7 @@ class Extension
 	 *
 	 * @return string
 	 */
-	public function getName()
-	{
+	public function getName() {
 		return array_get($this->config, 'name');
 	}
 
@@ -81,8 +77,7 @@ class Extension
 	 *
 	 * @return string
 	 */
-	public function getDescription()
-	{
+	public function getDescription() {
 		return array_get($this->config, 'description');
 	}
 
@@ -91,8 +86,7 @@ class Extension
 	 *
 	 * @return string
 	 */
-	public function getVersion()
-	{
+	public function getVersion() {
 		return array_get($this->config, 'version');
 	}
 
@@ -101,8 +95,7 @@ class Extension
 	 *
 	 * @return string|null
 	 */
-	public function getMainClassName()
-	{
+	public function getMainClassName() {
 		return array_get($this->config, 'main');
 	}
 
@@ -112,8 +105,7 @@ class Extension
 	 *
 	 * @return string[]
 	 */
-	public function getNamespaces()
-	{
+	public function getNamespaces() {
 		static $processed;
 
 		if (is_null($processed)) {
@@ -137,8 +129,7 @@ class Extension
 	 *
 	 * @return string[]
 	 */
-	public function getFiles()
-	{
+	public function getFiles() {
 		static $processed;
 
 		if (is_null($processed)) {
@@ -161,8 +152,7 @@ class Extension
 	 *
 	 * @return string[]
 	 */
-	public function getProviders()
-	{
+	public function getProviders() {
 		return array_get($this->config, 'providers');
 	}
 
@@ -171,8 +161,7 @@ class Extension
 	 *
 	 * @return bool
 	 */
-	public function isEnabled()
-	{
+	public function isEnabled() {
 		return true;
 	}
 
@@ -181,8 +170,7 @@ class Extension
 	 *
 	 * @return object|null
 	 */
-	public function instance()
-	{
+	public function instance() {
 		if (is_null($this->instance)) {
 			$className = $this->getMainClassName();
 
@@ -201,8 +189,7 @@ class Extension
 	 *
 	 * @throws Exception
 	 */
-	protected function loadConfiguration()
-	{
+	protected function loadConfiguration() {
 		$this->config = require($this->configFilePath);
 
 		if (!is_array($this->config)) throw new Exception($this->path, 'Extension\'s main configuration file did not return an array.');

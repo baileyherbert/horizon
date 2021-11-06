@@ -5,8 +5,7 @@ namespace Horizon\Database\ORM\Relationships;
 use Horizon\Database\ORM\Relationship;
 use Horizon\Database\Model;
 
-class OneToManyRelationship extends Relationship
-{
+class OneToManyRelationship extends Relationship {
 
 	protected $model;
 	protected $foreignModelName;
@@ -14,8 +13,7 @@ class OneToManyRelationship extends Relationship
 	protected $localKey;
 	protected $foreignTableName;
 
-	public function __construct(Model $model, $foreignModelName, $foreignKey, $localKey)
-	{
+	public function __construct(Model $model, $foreignModelName, $foreignKey, $localKey) {
 		$foreignModel = new $foreignModelName;
 
 		$this->model = $model;
@@ -31,33 +29,28 @@ class OneToManyRelationship extends Relationship
 		$this->query->setModel($this->foreignModelName);
 	}
 
-	public function get()
-	{
+	public function get() {
 		$results = $this->query->get();
 		return $results;
 	}
 
-	public function first()
-	{
+	public function first() {
 		$result = $this->query->first();
 		return $result;
 	}
 
-	public function count()
-	{
+	public function count() {
 		return $this->query->count();
 	}
 
-	public function attach(Model $model)
-	{
+	public function attach(Model $model) {
 		$foreignKey = $this->foreignKey;
 
 		$model->$foreignKey = $this->model->{$this->localKey};
 		$model->save();
 	}
 
-	public function detach($model)
-	{
+	public function detach($model) {
 		$query = \DB::update()->table($this->foreignTableName);
 		$query->where($this->foreignKey, '=', $this->model->{$this->localKey});
 		$query->andWhere($model->getPrimaryKey(), '=', $model->getPrimaryKeyValue());

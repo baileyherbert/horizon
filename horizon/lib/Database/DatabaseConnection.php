@@ -2,11 +2,7 @@
 
 namespace Horizon\Database;
 
-use Horizon\Database\Exception\DatabaseDriverException;
-use Horizon\Database\Exception\MigrationException;
-use Horizon\Database\Migration\Migration;
 use Horizon\Foundation\Application;
-use Horizon\Foundation\Kernel;
 use Horizon\Database\QueryBuilder\Documentation\AlterHelper;
 use Horizon\Database\QueryBuilder\Documentation\CreateHelper;
 use Horizon\Database\QueryBuilder\Documentation\DeleteHelper;
@@ -17,13 +13,11 @@ use Horizon\Database\QueryBuilder\Documentation\ShowHelper;
 use Horizon\Database\QueryBuilder\Documentation\UpdateHelper;
 use Horizon\Database\Exception\DatabaseException;
 
-class DatabaseConnection
-{
+class DatabaseConnection {
 
 	private $name;
 
-	public function __construct($name)
-	{
+	public function __construct($name) {
 		$this->name = $name;
 	}
 
@@ -44,8 +38,7 @@ class DatabaseConnection
 	 * @param array $bindings
 	 * @return array|int|bool
 	 */
-	public function query($statement, array $bindings = array())
-	{
+	public function query($statement, array $bindings = array()) {
 		return $this->getDatabase()->query($statement, $bindings);
 	}
 
@@ -54,8 +47,7 @@ class DatabaseConnection
 	 *
 	 * @return AlterHelper
 	 */
-	public function alter()
-	{
+	public function alter() {
 		return $this->getDatabase()->createQueryBuilder('ALTER');
 	}
 
@@ -64,8 +56,7 @@ class DatabaseConnection
 	 *
 	 * @return CreateHelper
 	 */
-	public function create()
-	{
+	public function create() {
 		return $this->getDatabase()->createQueryBuilder('CREATE');
 	}
 
@@ -74,8 +65,7 @@ class DatabaseConnection
 	 *
 	 * @return DeleteHelper
 	 */
-	public function delete()
-	{
+	public function delete() {
 		return $this->getDatabase()->createQueryBuilder('DELETE');
 	}
 
@@ -84,8 +74,7 @@ class DatabaseConnection
 	 *
 	 * @return DropHelper
 	 */
-	public function drop()
-	{
+	public function drop() {
 		return $this->getDatabase()->createQueryBuilder('DROP');
 	}
 
@@ -94,8 +83,7 @@ class DatabaseConnection
 	 *
 	 * @return InsertHelper
 	 */
-	public function insert()
-	{
+	public function insert() {
 		return $this->getDatabase()->createQueryBuilder('INSERT');
 	}
 
@@ -104,8 +92,7 @@ class DatabaseConnection
 	 *
 	 * @return SelectHelper
 	 */
-	public function select()
-	{
+	public function select() {
 		return $this->getDatabase()->createQueryBuilder('SELECT');
 	}
 
@@ -114,8 +101,7 @@ class DatabaseConnection
 	 *
 	 * @return ShowHelper
 	 */
-	public function show()
-	{
+	public function show() {
 		return $this->getDatabase()->createQueryBuilder('SHOW');
 	}
 
@@ -124,8 +110,7 @@ class DatabaseConnection
 	 *
 	 * @return UpdateHelper
 	 */
-	public function update()
-	{
+	public function update() {
 		return $this->getDatabase()->createQueryBuilder('UPDATE');
 	}
 
@@ -135,8 +120,7 @@ class DatabaseConnection
 	 *
 	 * @return Database
 	 */
-	public function getDatabase()
-	{
+	public function getDatabase() {
 		return Application::kernel()->database()->get($this->name);
 	}
 
@@ -145,8 +129,7 @@ class DatabaseConnection
 	 *
 	 * @return bool
 	 */
-	public function transaction()
-	{
+	public function transaction() {
 		try {
 			$this->query('START TRANSACTION;');
 			return true;
@@ -161,8 +144,7 @@ class DatabaseConnection
 	 *
 	 * @return bool
 	 */
-	public function commit()
-	{
+	public function commit() {
 		try {
 			$this->query('COMMIT;');
 			return true;
@@ -177,8 +159,7 @@ class DatabaseConnection
 	 *
 	 * @return bool
 	 */
-	public function rollback()
-	{
+	public function rollback() {
 		try {
 			$this->query('ROLLBACK;');
 			return true;

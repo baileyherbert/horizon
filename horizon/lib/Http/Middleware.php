@@ -6,16 +6,14 @@ use Horizon\Foundation\Application;
 use Horizon\Http\Request;
 use Horizon\Http\Response;
 
-class Middleware
-{
+class Middleware {
 
 	/**
 	 * Gets the Request instance for this middleware.
 	 *
 	 * @return Request
 	 */
-	public function getRequest()
-	{
+	public function getRequest() {
 		return Application::kernel()->http()->request();
 	}
 
@@ -24,8 +22,7 @@ class Middleware
 	 *
 	 * @return Response
 	 */
-	public function getResponse()
-	{
+	public function getResponse() {
 		return Application::kernel()->http()->response();
 	}
 

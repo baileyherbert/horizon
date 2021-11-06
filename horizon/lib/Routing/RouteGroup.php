@@ -2,8 +2,7 @@
 
 namespace Horizon\Routing;
 
-class RouteGroup
-{
+class RouteGroup {
 
 	/**
 	 * An array of properties the group will apply to child routes.
@@ -25,8 +24,7 @@ class RouteGroup
 	 * @param array $properties
 	 * @param RouteGroup $parentGroup
 	 */
-	public function __construct(array $properties, RouteGroup $parentGroup = null)
-	{
+	public function __construct(array $properties, RouteGroup $parentGroup = null) {
 		$this->properties = $properties;
 		$this->parent = $parentGroup;
 	}
@@ -38,8 +36,7 @@ class RouteGroup
 	 * @param mixed $default
 	 * @return mixed or $default
 	 */
-	protected function property($name, $default = null)
-	{
+	protected function property($name, $default = null) {
 		if (isset($this->properties[$name])) {
 			return $this->properties[$name];
 		}
@@ -51,8 +48,7 @@ class RouteGroup
 	 * Sets the prefix of the group. This does not modify the prefix of routes already added to the group, but will
 	 * affect routes added afterwards.
 	 */
-	public function setPrefix($prefix = null)
-	{
+	public function setPrefix($prefix = null) {
 		$this->properties['prefix'] = $prefix;
 	}
 
@@ -60,8 +56,7 @@ class RouteGroup
 	 * Sets the namespace of the group. This does not modify the namespace of routes already added to the group, but will
 	 * affect routes added afterwards.
 	 */
-	public function setNamespace($namespace = null)
-	{
+	public function setNamespace($namespace = null) {
 		$this->properties['namespace'] = $namespace;
 	}
 
@@ -69,8 +64,7 @@ class RouteGroup
 	 * Sets the name prefix of the group. This does not modify the name of routes already added to the group, but will
 	 * affect routes added afterwards.
 	 */
-	public function setName($name = null)
-	{
+	public function setName($name = null) {
 		$this->properties['name'] = $name;
 	}
 
@@ -78,8 +72,7 @@ class RouteGroup
 	 * Sets the domain of the group. This does not modify the name of routes already added to the group, but will
 	 * affect routes added afterwards.
 	 */
-	public function setDomain($domain = null)
-	{
+	public function setDomain($domain = null) {
 		$this->properties['domain'] = $domain;
 	}
 
@@ -89,8 +82,7 @@ class RouteGroup
 	 *
 	 * @param string[] $middleware
 	 */
-	public function addMiddleware(array $middleware)
-	{
+	public function addMiddleware(array $middleware) {
 		if (!isset($this->properties['middleware'])) {
 			$this->properties['middleware'] = array();
 		}
@@ -109,8 +101,7 @@ class RouteGroup
 	 * @param string|null $uri
 	 * @return string
 	 */
-	public function prefix($uri = null)
-	{
+	public function prefix($uri = null) {
 		$parents = $this->parent ? $this->parent->prefix() : '';
 
 		if (!is_null($uri)) {
@@ -127,8 +118,7 @@ class RouteGroup
 	 * @param string|null $name
 	 * @return string
 	 */
-	public function namePrefix($name = null)
-	{
+	public function namePrefix($name = null) {
 		$parents = $this->parent ? $this->parent->namePrefix() : '';
 
 		if (!is_null($name)) {
@@ -141,8 +131,7 @@ class RouteGroup
 	/**
 	 * Gets the group's domain if it has one set, overriding parent domains.
 	 */
-	public function domain()
-	{
+	public function domain() {
 		$parent = $this->parent ? $this->parent->domain() : null;
 		$self = $this->property('domain', null);
 
@@ -160,8 +149,7 @@ class RouteGroup
 	 * @param string|null $name
 	 * @return string
 	 */
-	public function namespacePrefix($namespace = null)
-	{
+	public function namespacePrefix($namespace = null) {
 		$parents = $this->parent ? $this->parent->namespacePrefix() : '';
 
 		if (!is_null($namespace)) {
@@ -178,8 +166,7 @@ class RouteGroup
 	 * @param array $existing
 	 * @return array
 	 */
-	public function middleware($existing = array())
-	{
+	public function middleware($existing = array()) {
 		$parentMiddleware = $this->parent ? $this->parent->middleware() : array();
 		$thisMiddleware = $this->property('middleware', array());
 
@@ -206,8 +193,7 @@ class RouteGroup
 	 * @param Closure|string|null $action
 	 * @return void
 	 */
-	public function setExceptionHandler($action)
-	{
+	public function setExceptionHandler($action) {
 		$this->properties['exceptionHandler'] = $action;
 	}
 
@@ -216,8 +202,7 @@ class RouteGroup
 	 *
 	 * @return Closure|string|null
 	 */
-	public function getExceptionHandler()
-	{
+	public function getExceptionHandler() {
 		$handler = $this->property('exceptionHandler');
 
 		if (!is_null($handler)) {

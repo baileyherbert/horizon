@@ -2,8 +2,7 @@
 
 namespace Horizon\Extension;
 
-class Exception extends \Exception
-{
+class Exception extends \Exception {
 
 	/**
 	 * @var string
@@ -16,8 +15,7 @@ class Exception extends \Exception
 	 * @param string $extensionPath
 	 * @param string $message
 	 */
-	public function __construct($extensionPath, $message)
-	{
+	public function __construct($extensionPath, $message) {
 		parent::__construct($message);
 		$this->path = $extensionPath;
 	}
@@ -27,8 +25,7 @@ class Exception extends \Exception
 	 *
 	 * @return string
 	 */
-	public function getPath()
-	{
+	public function getPath() {
 		return $this->path;
 	}
 
@@ -37,8 +34,7 @@ class Exception extends \Exception
 	 *
 	 * @return string
 	 */
-	public function getName()
-	{
+	public function getName() {
 		return basename($this->path);
 	}
 

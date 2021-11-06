@@ -8,8 +8,7 @@ use InvalidArgumentException;
 /**
  * Facade for interacting with components.
  */
-class Component
-{
+class Component {
 
 	/**
 	 * Registers the given component name to a template at the given absolute path.
@@ -17,8 +16,7 @@ class Component
 	 * @param string $componentName
 	 * @param string $absolutePath
 	 */
-	public static function register($componentName, $absolutePath)
-	{
+	public static function register($componentName, $absolutePath) {
 		\Horizon\Foundation\Application::kernel()->view()->componentManager()->register($componentName, $absolutePath);
 	}
 
@@ -32,8 +30,7 @@ class Component
 	 * @throws InvalidArgumentException if the component cannot be found.
 	 * @throws ViewException if the component encounters a render error.
 	 */
-	public static function compile($componentName)
-	{
+	public static function compile($componentName) {
 		$args = func_get_args();
 		$componentName = array_shift($args);
 

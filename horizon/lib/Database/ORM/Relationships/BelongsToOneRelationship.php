@@ -5,10 +5,8 @@ namespace Horizon\Database\ORM\Relationships;
 use Horizon\Database\ORM\Relationship;
 use Horizon\Database\Model;
 use Horizon\Database\Exception\DatabaseException;
-use Horizon\Database\QueryBuilder\StringBuilder;
 
-class BelongsToOneRelationship extends Relationship
-{
+class BelongsToOneRelationship extends Relationship {
 
 	protected $model;
 	protected $foreignModelName;
@@ -16,8 +14,7 @@ class BelongsToOneRelationship extends Relationship
 	protected $localKey;
 	protected $foreignTableName;
 
-	public function __construct(Model $model, $foreignModelName, $foreignKey, $localKey)
-	{
+	public function __construct(Model $model, $foreignModelName, $foreignKey, $localKey) {
 		$foreignModel = new $foreignModelName;
 
 		$this->model = $model;
@@ -34,8 +31,7 @@ class BelongsToOneRelationship extends Relationship
 		$this->query->setModel($this->foreignModelName);
 	}
 
-	public function get()
-	{
+	public function get() {
 		if (is_null($this->model->{$this->localKey})) {
 			return null;
 		}
@@ -47,16 +43,14 @@ class BelongsToOneRelationship extends Relationship
 		}
 	}
 
-	public function set(Model $model)
-	{
+	public function set(Model $model) {
 		$localKey = $this->localKey;
 		$foreignKey = $this->foreignKey;
 
 		$this->model->$localKey = $model->$foreignKey;
 	}
 
-	public function attach($model)
-	{
+	public function attach($model) {
 		$id = (is_object($model)) ? $model->getPrimaryKeyValue() : $model;
 
 		if (!is_numeric($id) && !is_null($id)) {
@@ -69,8 +63,7 @@ class BelongsToOneRelationship extends Relationship
 		$query->exec();
 	}
 
-	public function detach()
-	{
+	public function detach() {
 		$query = \DB::update()->table($this->model->getTable());
 		$query->values(array(($this->localKey) => null));
 		$query->where($this->model->getPrimaryKey(), '=', $this->model->getPrimaryKeyValue());

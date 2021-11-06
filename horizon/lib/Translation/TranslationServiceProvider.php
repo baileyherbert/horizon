@@ -4,7 +4,6 @@ namespace Horizon\Translation;
 
 use Horizon\Foundation\Application;
 use Horizon\Support\Services\ServiceProvider;
-
 use Horizon\Support\Str;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
@@ -12,11 +11,9 @@ use RecursiveDirectoryIterator;
 /**
  * Provides translations for views and controllers.
  */
-class TranslationServiceProvider extends ServiceProvider
-{
+class TranslationServiceProvider extends ServiceProvider {
 
-	public function register()
-	{
+	public function register() {
 		$this->bind('Horizon\Translation\Language', function() {
 			$translationsPath = Application::path('app/translations');
 			if (!file_exists($translationsPath)) return;
@@ -37,8 +34,7 @@ class TranslationServiceProvider extends ServiceProvider
 		});
 	}
 
-	public function provides()
-	{
+	public function provides() {
 		return array(
 			'Horizon\Translation\Language'
 		);

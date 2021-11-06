@@ -7,10 +7,7 @@ use Horizon\Http\Cookie\Session;
 use Horizon\Exception\HorizonException;
 use Horizon\Encryption\FastEncrypt;
 
-class CookieDriver implements DriverInterface
-{
-
-	private $session;
+class CookieDriver implements DriverInterface {
 
 	private $sessionData = array();
 	private $currentFlashData = array();
@@ -18,8 +15,7 @@ class CookieDriver implements DriverInterface
 
 	private $token = null;
 
-	public function __construct(Session $session)
-	{
+	public function __construct(Session $session) {
 		$this->session = $session;
 		$this->token = $this->getToken();
 
@@ -34,16 +30,14 @@ class CookieDriver implements DriverInterface
 	 *
 	 * @return string
 	 */
-	public function getToken()
-	{
+	public function getToken() {
 		return 'horizon_' . md5(__DIR__);
 	}
 
 	/**
 	 * Starts the session if output has not already been sent to the client.
 	 */
-	private function startSession()
-	{
+	private function startSession() {
 		if (session_status() == PHP_SESSION_NONE) {
 			if (!headers_sent()) {
 				@session_name(config('session.name'));
@@ -60,8 +54,7 @@ class CookieDriver implements DriverInterface
 	/**
 	 * Loads the current session data into the driver.
 	 */
-	private function load()
-	{
+	private function load() {
 		// Create a default empty payload under our token if needed
 		if (!isset($_SESSION[$this->token])) {
 			$this->createDefaultSession();
@@ -96,8 +89,7 @@ class CookieDriver implements DriverInterface
 	/**
 	 * Rewrites the session payload and flash to exclude encryption.
 	 */
-	private function rewriteDisableEncryption()
-	{
+	private function rewriteDisableEncryption() {
 		// Decrypt flash data
 		foreach ($_SESSION[$this->token . '_flash'] as $key => $value) {
 			$_SESSION[$this->token . '_flash'][$key] = FastEncrypt::decrypt($value);
@@ -115,8 +107,7 @@ class CookieDriver implements DriverInterface
 	/**
 	 * Rewrites the session payload and flash to include encryption.
 	 */
-	private function rewriteEnableEncryption()
-	{
+	private function rewriteEnableEncryption() {
 		// Encrypt flash data
 		foreach ($_SESSION[$this->token . '_flash'] as $key => $value) {
 			$_SESSION[$this->token . '_flash'][$key] = FastEncrypt::encrypt($value);
@@ -134,8 +125,7 @@ class CookieDriver implements DriverInterface
 	/**
 	 * Creates the default session arrays.
 	 */
-	private function createDefaultSession()
-	{
+	private function createDefaultSession() {
 		$_SESSION['horizon_framework_token'] = $this->token;
 
 		$_SESSION[$this->token] = array();
@@ -148,8 +138,7 @@ class CookieDriver implements DriverInterface
 	 * Deletes expired flash data from the session. This does not impact any of the accessible data from within the
 	 * current flash.
 	 */
-	private function expireFlash()
-	{
+	private function expireFlash() {
 		$_SESSION[$this->token . '_flash'] = array();
 	}
 
@@ -158,8 +147,7 @@ class CookieDriver implements DriverInterface
 	 *
 	 * @return bool
 	 */
-	public function isEncryptionEnabled()
-	{
+	public function isEncryptionEnabled() {
 		return config('session.encrypt');
 	}
 
@@ -169,8 +157,7 @@ class CookieDriver implements DriverInterface
 	 * @param string $str
 	 * @return string
 	 */
-	private function encrypt($str)
-	{
+	private function encrypt($str) {
 		if ($this->isEncryptionEnabled()) {
 			return FastEncrypt::encrypt($str);
 		}
@@ -184,8 +171,7 @@ class CookieDriver implements DriverInterface
 	 * @param string $str
 	 * @return string
 	 */
-	private function decrypt($str)
-	{
+	private function decrypt($str) {
 		if ($this->isEncryptionEnabled()) {
 			return FastEncrypt::decrypt($str);
 		}
@@ -199,8 +185,7 @@ class CookieDriver implements DriverInterface
 	 * @param string $key
 	 * @return bool
 	 */
-	public function has($key)
-	{
+	public function has($key) {
 		return isset($this->sessionData[$key]);
 	}
 
@@ -210,8 +195,7 @@ class CookieDriver implements DriverInterface
 	 * @param string $key
 	 * @return bool
 	 */
-	public function exists($key)
-	{
+	public function exists($key) {
 		return array_key_exists($key, $this->sessionData);
 	}
 
@@ -223,8 +207,7 @@ class CookieDriver implements DriverInterface
 	 *
 	 * @return void
 	 */
-	public function put($key, $value)
-	{
+	public function put($key, $value) {
 		$this->sessionData[$key] = $value;
 		$_SESSION[$this->token][$key] = $this->encrypt(json_encode($value));
 	}
@@ -238,8 +221,7 @@ class CookieDriver implements DriverInterface
 	 *
 	 * @return mixed
 	 */
-	public function get($key, $default = null)
-	{
+	public function get($key, $default = null) {
 		if ($this->exists($key)) {
 			return $this->sessionData[$key];
 		}
@@ -256,8 +238,7 @@ class CookieDriver implements DriverInterface
 	 *
 	 * @return mixed
 	 */
-	public function pull($key, $default = null)
-	{
+	public function pull($key, $default = null) {
 		if ($this->exists($key)) {
 			// Get the value
 			$value = $this->get($key);
@@ -278,8 +259,7 @@ class CookieDriver implements DriverInterface
 	 * @param string $key
 	 * @return void
 	 */
-	public function forget($key)
-	{
+	public function forget($key) {
 		if ($this->exists($key)) {
 			unset($this->sessionData[$key]);
 
@@ -295,8 +275,7 @@ class CookieDriver implements DriverInterface
 	 *
 	 * @return void
 	 */
-	public function clear()
-	{
+	public function clear() {
 		$this->sessionData = array();
 		$this->currentFlashData = array();
 		$this->newFlashData = array();
@@ -312,8 +291,7 @@ class CookieDriver implements DriverInterface
 	 * @param string $key
 	 * @param mixed $value
 	 */
-	public function flash($key, $value)
-	{
+	public function flash($key, $value) {
 		$this->newFlashData[$key] = $value;
 		$_SESSION[$this->token . '_flash'][$key] = $this->encrypt(json_encode($value));
 	}
@@ -322,8 +300,7 @@ class CookieDriver implements DriverInterface
 	 * Reflashes the current flashed data, effectively persisting it until the next pageload. Note that if any keys in
 	 * the reflashed data have been written to the current flash, they will be overwritten with the old data.
 	 */
-	public function reflash()
-	{
+	public function reflash() {
 		foreach ($this->currentFlashData as $key => $value) {
 			$this->flash($key, $value);
 		}
@@ -335,8 +312,7 @@ class CookieDriver implements DriverInterface
 	 *
 	 * @param string[] $keys
 	 */
-	public function keep(array $keys)
-	{
+	public function keep(array $keys) {
 		foreach ($this->currentFlashData as $key => $value) {
 			if (in_array($key, $keys)) {
 				$this->flash($key, $value);
@@ -349,8 +325,7 @@ class CookieDriver implements DriverInterface
 	 *
 	 * @return array
 	 */
-	public function all()
-	{
+	public function all() {
 		return $this->sessionData;
 	}
 
@@ -359,8 +334,7 @@ class CookieDriver implements DriverInterface
 	 *
 	 * @return string
 	 */
-	public function csrf()
-	{
+	public function csrf() {
 		if (!isset($_SESSION[$this->token . '_sectoken'])) {
 			$this->renew();
 		}
@@ -373,8 +347,7 @@ class CookieDriver implements DriverInterface
 	 *
 	 * @return string
 	 */
-	public function renew()
-	{
+	public function renew() {
 		$_SESSION[$this->token . '_sectoken'] = bin2hex(\phpseclib\Crypt\Random::string(16));
 	}
 

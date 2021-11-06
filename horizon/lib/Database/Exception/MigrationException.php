@@ -2,7 +2,6 @@
 
 namespace Horizon\Database\Exception;
 
-class MigrationException extends \Exception
-{
+class MigrationException extends \Exception {
 
 }

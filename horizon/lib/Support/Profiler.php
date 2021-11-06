@@ -2,8 +2,7 @@
 
 namespace Horizon\Support;
 
-class Profiler
-{
+class Profiler {
 
 	protected static $records = array();
 	protected static $active = array();
@@ -15,8 +14,7 @@ class Profiler
 	 * @param string $profile
 	 * @param mixed $data Optional data to attach to the profile.
 	 */
-	public static function start($profile, $data = null)
-	{
+	public static function start($profile, $data = null) {
 		if (!isset(static::$active[$profile])) {
 			static::$active[$profile] = array(
 				'start' => static::getTime(),
@@ -56,8 +54,7 @@ class Profiler
 	 * @param string $profile
 	 * @return float
 	 */
-	public static function stop($profile)
-	{
+	public static function stop($profile) {
 		if (!isset(static::$active[$profile])) {
 			return;
 		}
@@ -89,8 +86,7 @@ class Profiler
 	 * @param string $profileName
 	 * @return float
 	 */
-	public static function time($profileName)
-	{
+	public static function time($profileName) {
 		$total = 0;
 
 		// Add historical totals
@@ -112,8 +108,7 @@ class Profiler
 	 *
 	 * @return float
 	 */
-	protected static function getTime()
-	{
+	protected static function getTime() {
 		return microtime(true);
 	}
 

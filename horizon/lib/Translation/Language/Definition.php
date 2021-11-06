@@ -2,8 +2,7 @@
 
 namespace Horizon\Translation\Language;
 
-class Definition
-{
+class Definition {
 
 	/**
 	 * @var string
@@ -37,8 +36,7 @@ class Definition
 	 * @param string $translated
 	 * @param string[] $flags
 	 */
-	public function __construct($original, $translated = null, $flags = array())
-	{
+	public function __construct($original, $translated = null, $flags = array()) {
 		$this->originalText = $original;
 		$this->translatedText = ($translated != $original) ? $translated : null;
 		$this->flags = $flags;
@@ -59,8 +57,7 @@ class Definition
 	 *
 	 * @return string
 	 */
-	public function getOriginal()
-	{
+	public function getOriginal() {
 		return $this->originalText;
 	}
 
@@ -69,8 +66,7 @@ class Definition
 	 *
 	 * @return string
 	 */
-	public function getTranslation()
-	{
+	public function getTranslation() {
 		if ($this->translatedText == null) {
 			return $this->getOriginal();
 		}
@@ -83,8 +79,7 @@ class Definition
 	 *
 	 * @return string[]
 	 */
-	public function getFlags()
-	{
+	public function getFlags() {
 		return $this->flags;
 	}
 
@@ -94,8 +89,7 @@ class Definition
 	 * @param string $flag
 	 * @return bool
 	 */
-	public function hasFlag($flag)
-	{
+	public function hasFlag($flag) {
 		return in_array($flag, $this->flags);
 	}
 
@@ -105,8 +99,7 @@ class Definition
 	 * @param string $text
 	 * @return bool
 	 */
-	public function is($text)
-	{
+	public function is($text) {
 		$original = (!is_null($this->formattedText)) ? $this->formattedText : $this->getOriginal();
 
 		if ($text == $original) {
@@ -142,8 +135,7 @@ class Definition
 	 *
 	 * @return string
 	 */
-	public function compile()
-	{
+	public function compile() {
 		if (!is_null($this->compiled)) {
 			return $this->compiled;
 		}

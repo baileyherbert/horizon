@@ -9,8 +9,7 @@ use Horizon\Support\Services\ServiceProvider;
  * A very basic service container implementation which can help resolve dependencies where necessary. It's not very
  * powerful and is only meant to be a drop-in utility where necessary.
  */
-class Container
-{
+class Container {
 
 	/**
 	 * All service providers registered in the container.
@@ -39,8 +38,7 @@ class Container
 	 * @param ServiceProvider[] $providers
 	 * @param ServiceProvider[][] $map
 	 */
-	public function __construct($providers = array(), $map = array())
-	{
+	public function __construct($providers = array(), $map = array()) {
 		$this->providers = $providers;
 		$this->providersMap = $map;
 	}
@@ -51,8 +49,7 @@ class Container
 	 * @param ServiceProvider $provider
 	 * @return void
 	 */
-	public function register(ServiceProvider $provider)
-	{
+	public function register(ServiceProvider $provider) {
 		$this->providers[] = $provider;
 
 		foreach ($provider->provides() as $className) {
@@ -72,8 +69,7 @@ class Container
 	/**
 	 * Boots the service providers registered in the container.
 	 */
-	public function boot()
-	{
+	public function boot() {
 		foreach ($this->providers as $provider) {
 			if ($provider->isDeferred()) continue;
 			if (in_array($provider, static::$booted)) continue;
@@ -90,8 +86,7 @@ class Container
 	 * @param mixed ...$args
 	 * @return ServiceObjectCollection
 	 */
-	public function all($className, $args = null)
-	{
+	public function all($className, $args = null) {
 		$args = func_get_args();
 		$collection = null;
 
@@ -131,8 +126,7 @@ class Container
 	 * @param mixed ...$args
 	 * @return object|null
 	 */
-	public function make($className, $args = null)
-	{
+	public function make($className, $args = null) {
 		$args = func_get_args();
 		$className = array_shift($args);
 
@@ -141,7 +135,7 @@ class Container
 			$reverse = array_reverse($providers);
 
 			foreach ($reverse as $provider) {
-				if ($providers->isDeferred() && !in_array($provider, static::$booted)) {
+				if ($provider->isDeferred() && !in_array($provider, static::$booted)) {
 					$provider->boot();
 				}
 
@@ -166,8 +160,7 @@ class Container
 	 *
 	 * @return Container
 	 */
-	public function derive()
-	{
+	public function derive() {
 		return new Container($this->providers, $this->providersMap);
 	}
 

@@ -6,8 +6,7 @@ namespace Horizon\Foundation;
  * Utility class for getting information about the framework.
  * @internal
  */
-class Framework
-{
+class Framework {
 
 	/**
 	 * @var object
@@ -19,8 +18,7 @@ class Framework
 	 *
 	 * @return object
 	 */
-	public static function composer()
-	{
+	public static function composer() {
 		if (is_null(static::$composer)) {
 			$path = Application::path('horizon/composer.json');
 			static::$composer = json_decode(file_get_contents($path));
@@ -34,8 +32,7 @@ class Framework
 	 *
 	 * @return string
 	 */
-	public static function version()
-	{
+	public static function version() {
 		return static::composer()->version;
 	}
 
@@ -44,8 +41,7 @@ class Framework
 	 *
 	 * @return string
 	 */
-	public static function edition()
-	{
+	public static function edition() {
 		$name = static::composer()->name;
 
 		if (preg_match('/[a-z]+\/([a-z]+)/', $name, $matches)) {
@@ -62,8 +58,7 @@ class Framework
 	 * @param string|null $relative
 	 * @return string
 	 */
-	public static function path($relative = null)
-	{
+	public static function path($relative = null) {
 		return Application::path($relative);
 	}
 
@@ -76,8 +71,7 @@ class Framework
 	 * @param string $matches
 	 * @return string|bool
 	 */
-	public static function environment($matches = null)
-	{
+	public static function environment($matches = null) {
 		$value = Application::environment();
 
 		// Test against $matches argument

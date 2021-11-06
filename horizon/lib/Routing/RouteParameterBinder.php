@@ -4,8 +4,7 @@ namespace Horizon\Routing;
 
 use Horizon\Http\Request;
 
-class RouteParameterBinder
-{
+class RouteParameterBinder {
 
 	/**
 	 * @var Route
@@ -17,13 +16,11 @@ class RouteParameterBinder
 	 *
 	 * @param Route $route
 	 */
-	public function __construct(Route $route)
-	{
+	public function __construct(Route $route) {
 		$this->route = $route;
 	}
 
-	public function bind(Request $request)
-	{
+	public function bind(Request $request) {
 		$parameters = $this->bindPathParameters($request);
 
 		if (!is_null($this->route->compile()->getHostRegex())) {
@@ -41,8 +38,7 @@ class RouteParameterBinder
 	 * @param Request $request
 	 * @return array
 	 */
-	public function bindPathParameters(Request $request)
-	{
+	public function bindPathParameters(Request $request) {
 		$path = $request->path();
 
 		preg_match($this->route->compile()->getRegex(), $path, $matches);
@@ -57,8 +53,7 @@ class RouteParameterBinder
 	 * @param array $parameters
 	 * @return array
 	 */
-	protected function bindHostParameters($request, $parameters)
-	{
+	protected function bindHostParameters($request, $parameters) {
 		preg_match($this->route->compile()->getHostRegex(), $request->getHost(), $matches);
 		return array_merge($this->matchToKeys(array_slice($matches, 1)), $parameters);
 	}
@@ -69,8 +64,7 @@ class RouteParameterBinder
 	 * @param array $matches
 	 * @return array
 	 */
-	protected function matchToKeys(array $matches)
-	{
+	protected function matchToKeys(array $matches) {
 		$parameterNames = $this->route->parameterNames();
 
 		if (empty($parameterNames)) {
@@ -90,8 +84,7 @@ class RouteParameterBinder
 	 * @param array $parameters
 	 * @return array
 	 */
-	protected function replaceDefaults(array $parameters)
-	{
+	protected function replaceDefaults(array $parameters) {
 		foreach ($parameters as $key => $value) {
 			if (!$parameters[$key]) {
 				if (isset($this->route->defaults[$key])) {

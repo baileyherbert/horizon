@@ -5,8 +5,7 @@ namespace Horizon\Routing;
 use Horizon\Exception\HorizonException;
 use Horizon\Support\Facades\Application;
 
-class RouteLoader
-{
+class RouteLoader {
 
 	/**
 	 * @var Router
@@ -21,8 +20,7 @@ class RouteLoader
 	/**
 	 * Creates a router instance.
 	 */
-	protected static function createRouter()
-	{
+	protected static function createRouter() {
 		static::$router = new Router();
 	}
 
@@ -32,8 +30,7 @@ class RouteLoader
 	 * @internal
 	 * @return Router
 	 */
-	public static function getRouter()
-	{
+	public static function getRouter() {
 		if (is_null(static::$router)) {
 			static::createRouter();
 		}
@@ -46,8 +43,7 @@ class RouteLoader
 	 *
 	 * @param string $filePath
 	 */
-	public static function loadRouteFile($filePath, $reset = false)
-	{
+	public static function loadRouteFile($filePath, $reset = false) {
 		// Store the previous directory
 		$previous = static::$currentDirectory;
 
@@ -75,8 +71,7 @@ class RouteLoader
 	 *
 	 * @return void
 	 */
-	public static function reset()
-	{
+	public static function reset() {
 		// Tell the router to generate a new top level group
 		static::getRouter()->resetMainGroup();
 	}
@@ -87,8 +82,7 @@ class RouteLoader
 	 * @internal
 	 * @return string
 	 */
-	public static function getLastDirectory()
-	{
+	public static function getLastDirectory() {
 		if (is_null(static::$currentDirectory)) {
 			return Application::path('app/routes/');
 		}

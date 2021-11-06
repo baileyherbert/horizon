@@ -31,8 +31,7 @@ class SchemaConnection {
 	 * @param callable $callable
 	 * @return bool
 	 */
-	public function create($name, $callable)
-	{
+	public function create($name, $callable) {
 		$blueprint = new Blueprint($name, $this);
 		$blueprint->create();
 
@@ -49,8 +48,7 @@ class SchemaConnection {
 	 * @param callable $callable
 	 * @return bool
 	 */
-	public function table($name, $callable)
-	{
+	public function table($name, $callable) {
 		$blueprint = new Blueprint($name, $this);
 		$callable($blueprint);
 
@@ -64,8 +62,7 @@ class SchemaConnection {
 	 * @param string $to New table name.
 	 * @return bool
 	 */
-	public function rename($from, $to)
-	{
+	public function rename($from, $to) {
 		$query = str_join(
 			'ALTER TABLE',
 			Grammar::compileName($this->prefix($from)),
@@ -97,8 +94,7 @@ class SchemaConnection {
 	 * @param string $name
 	 * @return bool
 	 */
-	public function drop($name)
-	{
+	public function drop($name) {
 		$query = str_join(
 			'DROP TABLE',
 			Grammar::compileName($this->prefix($name))
@@ -113,8 +109,7 @@ class SchemaConnection {
 	 * @param string $name
 	 * @return bool
 	 */
-	public function dropIfExists($name)
-	{
+	public function dropIfExists($name) {
 		$query = str_join(
 			'DROP TABLE',
 			'IF EXISTS',
@@ -130,8 +125,7 @@ class SchemaConnection {
 	 * @param string $name
 	 * @return string
 	 */
-	public function prefix($name = null)
-	{
+	public function prefix($name = null) {
 		$prefix = $this->database->getDatabase()->getPrefix();
 
 		if (!is_null($name)) {
@@ -147,8 +141,7 @@ class SchemaConnection {
 	 * @param string $tableName
 	 * @return bool
 	 */
-	public function hasTable($tableName)
-	{
+	public function hasTable($tableName) {
 		$query = str_join(
 			'SHOW TABLES LIKE',
 			Grammar::compileString($this->prefix($tableName))
@@ -165,8 +158,7 @@ class SchemaConnection {
 	 * @param string $columnName
 	 * @return bool
 	 */
-	public function hasColumn($tableName, $columnName)
-	{
+	public function hasColumn($tableName, $columnName) {
 		$query = str_join(
 			'SHOW COLUMNS FROM',
 			Grammar::compileName($this->prefix($tableName)),

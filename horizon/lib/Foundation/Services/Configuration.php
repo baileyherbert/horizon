@@ -8,8 +8,7 @@ use Horizon\Foundation\Framework;
 /**
  * Utility class which loads configuration.
  */
-class Configuration
-{
+class Configuration {
 
 	private static $config = array();
 
@@ -21,8 +20,7 @@ class Configuration
 	 * @throws HorizonException
 	 * @return mixed
 	 */
-	public static function get($key, $default = null)
-	{
+	public static function get($key, $default = null) {
 		// Parse the key
 		$configFile = self::getConfigFileName($key);
 		$segments = self::getConfigFileSegments($key);
@@ -47,8 +45,7 @@ class Configuration
 	 * @param mixed $default
 	 * @return mixed
 	 */
-	private static function getConfigValue(array &$config, array &$segments, &$default)
-	{
+	private static function getConfigValue(array &$config, array &$segments, &$default) {
 		$pointer = $config;
 
 		foreach ($segments as $name) {
@@ -71,8 +68,7 @@ class Configuration
 	 * @throws HorizonException
 	 * @return void
 	 */
-	public static function loadConfigurationFile($name)
-	{
+	public static function loadConfigurationFile($name) {
 		$path = Framework::path('app/config') . DIRECTORY_SEPARATOR . $name . '.php';
 
 		// Throw an exception if the file doesn't exist
@@ -98,8 +94,7 @@ class Configuration
 	 * @param string $path
 	 * @return string
 	 */
-	private static function getConfigFileName($path)
-	{
+	private static function getConfigFileName($path) {
 		$root = $path;
 
 		if (strpos($path, '.') !== false) {
@@ -119,8 +114,7 @@ class Configuration
 	 * @param string $path
 	 * @return string[]
 	 */
-	private static function getConfigFileSegments($path)
-	{
+	private static function getConfigFileSegments($path) {
 		$root = self::getConfigFileName($path) . '.';
 		$path = trim(substr($path, strlen($root)), '/.');
 

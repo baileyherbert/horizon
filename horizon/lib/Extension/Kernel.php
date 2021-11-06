@@ -9,8 +9,7 @@ use Horizon\Support\Services\ServiceProvider;
 /**
  * Kernel for extensions.
  */
-class Kernel
-{
+class Kernel {
 
 	/**
 	 * @var Extension[]
@@ -25,16 +24,14 @@ class Kernel
 	/**
 	 * Boots the extension kernel.
 	 */
-	public function boot()
-	{
+	public function boot() {
 		$this->resolve();
 	}
 
 	/**
 	 * Autoloads extensions through their namespace mapping and vendor directories.
 	 */
-	public function autoload()
-	{
+	public function autoload() {
 		foreach ($this->extensions as $extension) {
 			// Autoload namespaces
 			foreach ($extension->getNamespaces() as $namespace => $absolutePath) {
@@ -51,8 +48,7 @@ class Kernel
 	/**
 	 * Loads providers from extensions and registers them in the application.
 	 */
-	public function provide()
-	{
+	public function provide() {
 		foreach ($this->extensions as $extension) {
 			$providers = $extension->getProviders();
 
@@ -73,8 +69,7 @@ class Kernel
 	 *
 	 * @return Extension[]
 	 */
-	public function get()
-	{
+	public function get() {
 		return $this->extensions;
 	}
 
@@ -84,16 +79,14 @@ class Kernel
 	 *
 	 * @return Exception[]
 	 */
-	public function getExceptions()
-	{
+	public function getExceptions() {
 		return $this->exceptions;
 	}
 
 	/**
 	 * Resolves extensions from service providers and stores them internally.
 	 */
-	private function resolve()
-	{
+	private function resolve() {
 		foreach (Application::collect('Horizon\Extension\Extension') as $extension) {
 			$this->extensions[] = $extension;
 		}

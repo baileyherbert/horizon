@@ -2,14 +2,14 @@
 
 namespace Horizon\Database\Drivers;
 
+use Exception;
 use Horizon\Database\Database;
 use Horizon\Database\Exception\DatabaseDriverException;
 use Horizon\Database\Exception\DatabaseException;
 use Horizon\Support\Profiler;
 use Horizon\Support\Str;
 
-class LegacyDriver implements DriverInterface
-{
+class LegacyDriver implements DriverInterface {
 
 	/**
 	 * @var Database
@@ -31,8 +31,7 @@ class LegacyDriver implements DriverInterface
 	 *
 	 * @param Database $database
 	 */
-	public function __construct(Database $database)
-	{
+	public function __construct(Database $database) {
 		$this->database = $database;
 	}
 
@@ -41,8 +40,7 @@ class LegacyDriver implements DriverInterface
 	 *
 	 * @throws DatabaseDriverException on error
 	 */
-	public function connect()
-	{
+	public function connect() {
 		if ($this->connected) {
 			return;
 		}
@@ -81,8 +79,7 @@ class LegacyDriver implements DriverInterface
 	 *
 	 * @throws DatabaseException on error
 	 */
-	public function query($statement, $bindings = null)
-	{
+	public function query($statement, $bindings = null) {
 		$this->connect();
 
 		$statement = trim($statement);
@@ -123,8 +120,7 @@ class LegacyDriver implements DriverInterface
 	 *
 	 * @throws DatabaseException on error
 	 */
-	public function validate($statement)
-	{
+	public function validate($statement) {
 		// Not supported
 		return;
 	}
@@ -138,8 +134,7 @@ class LegacyDriver implements DriverInterface
 	 *
 	 * @throws DatabaseException on error
 	 */
-	protected function prepared($statement, array &$bindings = array())
-	{
+	protected function prepared($statement, array &$bindings = array()) {
 		$marks = array();
 		$replacements = array();
 
@@ -167,8 +162,7 @@ class LegacyDriver implements DriverInterface
 	 * @param mixed $value
 	 * @return string
 	 */
-	protected function prepareValue($value)
-	{
+	protected function prepareValue($value) {
 		if (is_numeric($value)) {
 			return $value;
 		}
@@ -183,16 +177,14 @@ class LegacyDriver implements DriverInterface
 	 *
 	 * @return bool
 	 */
-	public static function supported()
-	{
+	public static function supported() {
 		return (function_exists('mysql_connect'));
 	}
 
 	/**
 	 * Closes the connection.
 	 */
-	public function close()
-	{
+	public function close() {
 		@mysql_close($this->handle);
 	}
 

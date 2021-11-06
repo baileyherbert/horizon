@@ -4,13 +4,11 @@ namespace Horizon\View;
 
 use Horizon\Foundation\Application;
 use Horizon\View\Component\Manager;
-use InvalidArgumentException;
 
 /**
  * Kernel for views.
  */
-class Kernel
-{
+class Kernel {
 
 	/**
 	 * @var ViewLoader[]
@@ -32,8 +30,7 @@ class Kernel
 	/**
 	 * Boots the kernel.
 	 */
-	public function boot()
-	{
+	public function boot() {
 		$this->viewLoaders = Application::collect('Horizon\View\ViewLoader');
 	}
 
@@ -43,8 +40,7 @@ class Kernel
 	 * @param string $templateName
 	 * @return string|null
 	 */
-	public function resolveView($templateName)
-	{
+	public function resolveView($templateName) {
 		$path = null;
 
 		foreach ($this->viewLoaders as $loader) {
@@ -63,8 +59,7 @@ class Kernel
 	 *
 	 * @param array $context
 	 */
-	public function setContext($context = array())
-	{
+	public function setContext($context = array()) {
 		$this->context = $context;
 	}
 
@@ -73,8 +68,7 @@ class Kernel
 	 *
 	 * @return array
 	 */
-	public function getContext()
-	{
+	public function getContext() {
 		return $this->context;
 	}
 
@@ -83,8 +77,7 @@ class Kernel
 	 *
 	 * @return Manager
 	 */
-	public function componentManager()
-	{
+	public function componentManager() {
 		if (is_null($this->componentManager)) {
 			$this->componentManager = new Manager();
 		}

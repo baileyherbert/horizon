@@ -11,11 +11,9 @@ use Horizon\View\Twig\TwigFileLoader;
 /**
  * Provides view mounts that can be used to load view files.
  */
-class ViewServiceProvider extends ServiceProvider
-{
+class ViewServiceProvider extends ServiceProvider {
 
-	public function register()
-	{
+	public function register() {
 		$this->bind('Horizon\View\ViewLoader', function() {
 			return new ViewLoader(Application::path('app/views'));
 		});
@@ -35,8 +33,7 @@ class ViewServiceProvider extends ServiceProvider
 		});
 	}
 
-	public function provides()
-	{
+	public function provides() {
 		return array(
 			'Horizon\View\ViewLoader',
 			'Horizon\View\ViewExtension',
@@ -50,8 +47,7 @@ class ViewServiceProvider extends ServiceProvider
 	 *
 	 * @return \Twig_Extension[]
 	 */
-	protected function fetchExtensionDirectory($namespace, $dir, $loader)
-	{
+	protected function fetchExtensionDirectory($namespace, $dir, $loader) {
 		if (!file_exists($dir) || !is_dir($dir)) {
 			return array();
 		}
@@ -94,8 +90,7 @@ class ViewServiceProvider extends ServiceProvider
 	 *
 	 * @return array
 	 */
-	protected function getExtensionDirectories()
-	{
+	protected function getExtensionDirectories() {
 		return array(
 			'App\View\Extensions' => Path::join(Framework::path('app/src'), 'View', 'Extensions'),
 			'Horizon\View\Extensions' => Path::join(Framework::path('horizon/lib'), 'View', 'Extensions')

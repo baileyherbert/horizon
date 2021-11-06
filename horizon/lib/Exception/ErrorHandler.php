@@ -5,8 +5,7 @@ namespace Horizon\Exception;
 use Horizon\Foundation\Application;
 use Horizon\Http\Exception\HttpResponseException;
 
-class ErrorHandler implements ErrorHandlerInterface
-{
+class ErrorHandler implements ErrorHandlerInterface {
 
 	/**
 	 * Called automatically by the framework when the exception kernel is booted. Useful for initializing a global
@@ -22,8 +21,7 @@ class ErrorHandler implements ErrorHandlerInterface
 	 * @param HttpResponseException $ex
 	 * @return void
 	 */
-	public function http(HttpResponseException $ex)
-	{
+	public function http(HttpResponseException $ex) {
 		Application::kernel()->http()->error($ex->getCode());
 	}
 
@@ -35,8 +33,7 @@ class ErrorHandler implements ErrorHandlerInterface
 	 * @param HorizonError $error
 	 * @return void
 	 */
-	public function render(HorizonError $error)
-	{
+	public function render(HorizonError $error) {
 		$message = !$this->useHtml() ? "%s: %s in %s on line %d\n"
 						: "<strong>%s</strong>: %s in <strong>%s</strong> on line <strong>%d</strong> <br>\n";
 
@@ -55,8 +52,7 @@ class ErrorHandler implements ErrorHandlerInterface
 	 * @param HorizonError $error
 	 * @return void
 	 */
-	public function log(HorizonError $error)
-	{
+	public function log(HorizonError $error) {
 		$logFile = ini_get('error_log');
 		$logDir = dirname($logFile);
 
@@ -92,8 +88,7 @@ class ErrorHandler implements ErrorHandlerInterface
 	 * @param HorizonError $error
 	 * @return void
 	 */
-	public function report(HorizonError $error)
-	{
+	public function report(HorizonError $error) {
 		$originalException = $error->getException();
 
 		if (!is_null($originalException)) {
@@ -109,8 +104,7 @@ class ErrorHandler implements ErrorHandlerInterface
 	 * @param string $message
 	 * @return string
 	 */
-	private function formatMessage($message)
-	{
+	private function formatMessage($message) {
 		$message = preg_replace("/\r?\n/", "\n", $message);
 		$lines = explode("\n", $message);
 
@@ -128,8 +122,7 @@ class ErrorHandler implements ErrorHandlerInterface
 	 *
 	 * @return bool
 	 */
-	private function useHtml()
-	{
+	private function useHtml() {
 		return (Application::environment() == 'production');
 	}
 

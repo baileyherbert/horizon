@@ -2,15 +2,13 @@
 
 namespace Horizon\Foundation\Services;
 
-use Horizon\Foundation\Application;
 use Horizon\Support\Path;
 use Horizon\Support\Profiler;
 
 /**
  * Utility class which sets up core autoloading for the application and framework.
  */
-class Autoloader
-{
+class Autoloader {
 
 	/**
 	 * @var array<string, string>
@@ -29,8 +27,7 @@ class Autoloader
 	 * @param string $namespace
 	 * @param string $path
 	 */
-	public static function mount($namespace, $path)
-	{
+	public static function mount($namespace, $path) {
 		static::$map[$namespace] = $path;
 
 		if (!static::$started) {
@@ -43,8 +40,7 @@ class Autoloader
 	 *
 	 * @param string $path
 	 */
-	public static function vendor($path)
-	{
+	public static function vendor($path) {
 		if (file_exists($path)) {
 			Profiler::start('autoloader:vendor', $path);
 			require $path;
@@ -55,8 +51,7 @@ class Autoloader
 	/**
 	 * Starts the SPL autoloader.
 	 */
-	private static function start()
-	{
+	private static function start() {
 		static::$started = true;
 
 		spl_autoload_register(function($className) {

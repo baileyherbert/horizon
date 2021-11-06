@@ -2,7 +2,6 @@
 
 namespace Horizon\Database\Exception;
 
-class DatabaseException extends \Exception
-{
+class DatabaseException extends \Exception {
 
 }

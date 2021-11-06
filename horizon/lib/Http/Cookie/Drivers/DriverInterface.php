@@ -4,8 +4,7 @@ namespace Horizon\Http\Cookie\Drivers;
 
 use Horizon\Http\Cookie\Session;
 
-interface DriverInterface
-{
+interface DriverInterface {
 
 	function __construct(Session $session);
 

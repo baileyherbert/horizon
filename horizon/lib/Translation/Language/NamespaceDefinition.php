@@ -2,8 +2,7 @@
 
 namespace Horizon\Translation\Language;
 
-class NamespaceDefinition
-{
+class NamespaceDefinition {
 
 	/**
 	 * @var string
@@ -20,8 +19,7 @@ class NamespaceDefinition
 	 *
 	 * @param string $name
 	 */
-	public function __construct($name)
-	{
+	public function __construct($name) {
 		$this->name = $name;
 	}
 
@@ -30,8 +28,7 @@ class NamespaceDefinition
 	 *
 	 * @param Definition $definition
 	 */
-	public function addDefinition(Definition $definition)
-	{
+	public function addDefinition(Definition $definition) {
 		$this->definitions[$definition->getOriginal()] = $definition;
 	}
 
@@ -41,8 +38,7 @@ class NamespaceDefinition
 	 * @param string $originalText
 	 * @return Definition|null
 	 */
-	public function getDefinition($originalText)
-	{
+	public function getDefinition($originalText) {
 		foreach ($this->definitions as $original => $definition) {
 			if ($original == $originalText || $definition->is($originalText)) {
 				return $definition;
@@ -57,8 +53,7 @@ class NamespaceDefinition
 	 *
 	 * @return Definition[]
 	 */
-	public function getDefinitions()
-	{
+	public function getDefinitions() {
 		return $this->definitions;
 	}
 
@@ -68,8 +63,7 @@ class NamespaceDefinition
 	 * @param string $originalText
 	 * @return string|null
 	 */
-	public function translate($originalText)
-	{
+	public function translate($originalText) {
 		$definition = $this->getDefinition($originalText);
 
 		if ($definition) {
@@ -79,8 +73,7 @@ class NamespaceDefinition
 		return null;
 	}
 
-	public function mergeWith(NamespaceDefinition $neighbor, $override = true)
-	{
+	public function mergeWith(NamespaceDefinition $neighbor, $override = true) {
 		foreach ($neighbor->getDefinitions() as $key => $value) {
 			if (!isset($this->definitions[$key]) || (isset($this->definitions[$key]) && $override)) {
 				$this->definitions[$key] = $value;

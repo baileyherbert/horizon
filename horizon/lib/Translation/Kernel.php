@@ -7,8 +7,7 @@ use Horizon\Foundation\Application;
 /**
  * Kernel for translation files.
  */
-class Kernel
-{
+class Kernel {
 
 	/**
 	 * @var LanguageBucket
@@ -18,8 +17,7 @@ class Kernel
 	/**
 	 * Starts the translation kernel.
 	 */
-	public function boot()
-	{
+	public function boot() {
 		$this->bucket = new LanguageBucket();
 
 		foreach (Application::collect('Horizon\Translation\Language') as $language) {
@@ -32,8 +30,7 @@ class Kernel
 	 *
 	 * @return LanguageBucket
 	 */
-	public function bucket()
-	{
+	public function bucket() {
 		return $this->bucket;
 	}
 
@@ -42,8 +39,7 @@ class Kernel
 	 *
 	 * @param Language $language
 	 */
-	public function add(Language $language)
-	{
+	public function add(Language $language) {
 		$this->bucket->add($language);
 	}
 

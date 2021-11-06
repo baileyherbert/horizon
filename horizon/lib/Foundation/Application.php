@@ -13,8 +13,7 @@ use Horizon\Exception\HorizonException;
  * The base application class.
  * @internal
  */
-class Application
-{
+class Application {
 
 	/**
 	 * @var Kernel
@@ -33,8 +32,7 @@ class Application
 	 *
 	 * @return Container
 	 */
-	public static function container()
-	{
+	public static function container() {
 		if (is_null(static::$container)) {
 			static::$container = new Container();
 		}
@@ -48,16 +46,14 @@ class Application
 	 * @param ServiceProvider $provider
 	 * @return void
 	 */
-	public static function register(ServiceProvider $provider)
-	{
+	public static function register(ServiceProvider $provider) {
 		static::container()->register($provider);
 	}
 
 	/**
 	 * Boots the service providers registered to the application.
 	 */
-	public static function boot()
-	{
+	public static function boot() {
 		static::container()->boot();
 	}
 
@@ -67,8 +63,7 @@ class Application
 	 * @param string $className
 	 * @return ServiceObjectCollection
 	 */
-	public static function collect($className)
-	{
+	public static function collect($className) {
 		return static::container()->all($className);
 	}
 
@@ -78,8 +73,7 @@ class Application
 	 * @param string $className
 	 * @return object|null
 	 */
-	public static function make($className)
-	{
+	public static function make($className) {
 		return static::container()->make($className);
 	}
 
@@ -90,8 +84,7 @@ class Application
 	 * @param string $relative
 	 * @return string
 	 */
-	public static function path($relative = '')
-	{
+	public static function path($relative = '') {
 		$basedir = dirname(dirname(dirname(__DIR__)));
 		$relative = ltrim($relative, '\\/');
 
@@ -105,8 +98,7 @@ class Application
 	 * @param string $relative
 	 * @return string
 	 */
-	public static function asset($relative = '')
-	{
+	public static function asset($relative = '') {
 		$root = rtrim(self::basedir(), '/');
 
 		if (USE_LEGACY_ROUTING) {
@@ -121,8 +113,7 @@ class Application
 	 *
 	 * @return string
 	 */
-	public static function environment()
-	{
+	public static function environment() {
 		if (($environment = getenv('HORIZON_ENVIRONMENT')) === false) {
 			if (defined('CONSOLE_MODE')) return 'console';
 			if (defined('USE_LEGACY_ROUTING')) return 'production';
@@ -138,8 +129,7 @@ class Application
 	 *
 	 * @return string
 	 */
-	public static function routing()
-	{
+	public static function routing() {
 		if (defined('USE_LEGACY_ROUTING')) {
 			return USE_LEGACY_ROUTING ? 'legacy' : 'rewrite';
 		}
@@ -156,8 +146,7 @@ class Application
 	 *
 	 * @return string
 	 */
-	public static function basedir()
-	{
+	public static function basedir() {
 		$directory = trim($_SERVER['SUBDIRECTORY'], '/');
 		$directory = str_replace('\\', '/', $directory);
 
@@ -170,8 +159,7 @@ class Application
 	 * @return string
 	 * @throws HorizonException
 	 */
-	public static function version()
-	{
+	public static function version() {
 		return static::config('app.version', '1.0');
 	}
 
@@ -185,8 +173,7 @@ class Application
 	 * @return mixed
 	 * @throws HorizonException
 	 */
-	public static function config($key, $default = null)
-	{
+	public static function config($key, $default = null) {
 		return Configuration::get($key, $default);
 	}
 
@@ -195,8 +182,7 @@ class Application
 	 *
 	 * @return Kernel
 	 */
-	public static function kernel()
-	{
+	public static function kernel() {
 		return static::$kernel ?: (static::$kernel = new Kernel());
 	}
 

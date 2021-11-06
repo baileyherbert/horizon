@@ -25,7 +25,6 @@ use Horizon\Database\QueryBuilder\ColumnDefinition;
  *
  * @method object|int|bool exec() Executes the query.
  */
-abstract class CreateHelper
-{
+abstract class CreateHelper {
 
 }

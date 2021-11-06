@@ -4,8 +4,7 @@ namespace Horizon\Database\QueryBuilder\Commands;
 
 use Horizon\Database\QueryBuilder;
 
-interface CommandInterface
-{
+interface CommandInterface {
 
 	/**
 	 * Constructs a new command instance.

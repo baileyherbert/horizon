@@ -6,8 +6,7 @@ use Exception;
 use Horizon\Foundation\Application;
 use Horizon\Http\Exception\HttpResponseException;
 
-class ErrorMiddleware
-{
+class ErrorMiddleware {
 
 	/**
 	 * Handles a runtime error (a standard error that occurs while the page is running).
@@ -18,8 +17,7 @@ class ErrorMiddleware
 	 * @param int $line
 	 * @return void
 	 */
-	public static function executeRuntimeError($severity, $message, $file, $line)
-	{
+	public static function executeRuntimeError($severity, $message, $file, $line) {
 		$error = new HorizonError($message, $severity, $file, $line, 'runtime');
 		static::execute($error);
 	}
@@ -33,8 +31,7 @@ class ErrorMiddleware
 	 * @param int $line
 	 * @return void
 	 */
-	public static function executeShutdownError($severity, $message, $file, $line)
-	{
+	public static function executeShutdownError($severity, $message, $file, $line) {
 		$error = new HorizonError($message, $severity, $file, $line, 'shutdown');
 		static::execute($error);
 	}
@@ -45,8 +42,7 @@ class ErrorMiddleware
 	 * @param Exception|Error $exception
 	 * @return void
 	 */
-	public static function executeException($exception)
-	{
+	public static function executeException($exception) {
 		// Redirect console errors
 		if (Application::environment() == 'console') {
 			return Application::kernel()->console()->handleException($exception);
@@ -75,8 +71,7 @@ class ErrorMiddleware
 	 * @param HorizonError $error
 	 * @return void
 	 */
-	public static function execute(HorizonError $error)
-	{
+	public static function execute(HorizonError $error) {
 		$errorHandler = static::getErrorHandler();
 
 		// Report the error
@@ -109,8 +104,7 @@ class ErrorMiddleware
 	 * Logs and reports the given error silently, the caller assumes responsibility to terminate the page and show the
 	 * error.
 	 */
-	public static function executeSilently(HorizonError $error)
-	{
+	public static function executeSilently(HorizonError $error) {
 		// Redirect console errors
 		if (Application::environment() == 'console') {
 			return Application::kernel()->console()->handleException($error->getException());
@@ -135,8 +129,7 @@ class ErrorMiddleware
 	 * @param HorizonError $error
 	 * @return bool
 	 */
-	public static function canReport(HorizonError $error)
-	{
+	public static function canReport(HorizonError $error) {
 		// Handle silence operator (@)
 		if (error_reporting() === 0 && config('errors.silent_reporting')) {
 			if ($error->getLevel() < 5) {
@@ -159,8 +152,7 @@ class ErrorMiddleware
 	 * @param HorizonError $error
 	 * @return bool
 	 */
-	public static function canLog(HorizonError $error)
-	{
+	public static function canLog(HorizonError $error) {
 		// Always false when error logging is disabled
 		if (!config('errors.log_errors', true)) {
 			return false;
@@ -188,8 +180,7 @@ class ErrorMiddleware
 	 * @param HorizonError $error
 	 * @return bool
 	 */
-	public static function canRender(HorizonError $error)
-	{
+	public static function canRender(HorizonError $error) {
 		// Always false when error rendering is disabled
 		if (!config('errors.display_errors', true)) {
 			return false;
@@ -217,8 +208,7 @@ class ErrorMiddleware
 	 * @param HorizonError $error
 	 * @return bool
 	 */
-	public static function canTerminate(HorizonError $error)
-	{
+	public static function canTerminate(HorizonError $error) {
 		return ($error->getLevel() >= 5);
 	}
 
@@ -227,8 +217,7 @@ class ErrorMiddleware
 	 *
 	 * @return ErrorHandlerInterface
 	 */
-	public static function getErrorHandler()
-	{
+	public static function getErrorHandler() {
 		$errorHandler = config('errors.handler', 'Horizon\Exception\ErrorHandler');
 
 		// Ensure existence

@@ -4,11 +4,9 @@ namespace Horizon\Translation;
 
 use Horizon\Translation\Language;
 use Horizon\Translation\Language\Definition;
-use Horizon\Translation\Language\NamespaceDefinition;
 use Horizon\Support\Arr;
 
-class LanguageBucket
-{
+class LanguageBucket {
 
 	/**
 	 * @var Language
@@ -28,8 +26,7 @@ class LanguageBucket
 	/**
 	 * Constructs a new LanguageBucket instance.
 	 */
-	public function __construct()
-	{
+	public function __construct() {
 
 	}
 
@@ -42,8 +39,7 @@ class LanguageBucket
 	 *
 	 * If an array of $namespaces are provided, only those namespaces will be used for translation.
 	 */
-	public function autoTranslate($text, $variables = array(), $namespaces = array())
-	{
+	public function autoTranslate($text, $variables = array(), $namespaces = array()) {
 		list($keys, $values) = $this->getFlattenedVariables($variables);
 
 		// Get all compiled definitions
@@ -63,8 +59,7 @@ class LanguageBucket
 	 * @param array $variables
 	 * @return array
 	 */
-	protected function getCompiledDefinitions(array &$namespaces, array &$variableKeys = array(), &$variableValues = array())
-	{
+	protected function getCompiledDefinitions(array &$namespaces, array &$variableKeys = array(), &$variableValues = array()) {
 		$targets = $this->namespaces;
 		$compiled = array();
 
@@ -103,8 +98,7 @@ class LanguageBucket
 	 * @param string $text
 	 * @param array $variables
 	 */
-	public function translate($text, $variables = array())
-	{
+	public function translate($text, $variables = array()) {
 		$text = preg_replace("/({{\s*)([a-zA-Z._]+)(\s*}})/", "{{ $2 }}", $text);
 		$match = $this->fastLookup($text);
 
@@ -125,8 +119,7 @@ class LanguageBucket
 	 * @param array $variables
 	 * @return array
 	 */
-	protected function getFlattenedVariables(array &$variables)
-	{
+	protected function getFlattenedVariables(array &$variables) {
 		$replacements = Arr::dot($variables);
 
 		$keys = array();
@@ -149,8 +142,7 @@ class LanguageBucket
 	 * @param array $variables
 	 * @return string
 	 */
-	protected function replaceVariables(&$match, array &$variables)
-	{
+	protected function replaceVariables(&$match, array &$variables) {
 		list($keys, $values) = $this->getFlattenedVariables($variables);
 		$text = preg_replace($keys, $values, $match);
 
@@ -163,8 +155,7 @@ class LanguageBucket
 	 * @param string $name
 	 * @return NamespaceDefinition|null
 	 */
-	public function getNamespace($name)
-	{
+	public function getNamespace($name) {
 		if (isset($this->namespaces[$name])) {
 			return $this->namespaces[$name];
 		}
@@ -175,8 +166,7 @@ class LanguageBucket
 	/**
 	 * Adds a language to the bucket.
 	 */
-	public function add(Language $language)
-	{
+	public function add(Language $language) {
 		$this->languages[] = $language;
 
 		// Store namespaces
@@ -191,8 +181,7 @@ class LanguageBucket
 	 *
 	 * @param Language $language
 	 */
-	protected function storeNamespaces(Language $language)
-	{
+	protected function storeNamespaces(Language $language) {
 		foreach ($language->getNamespaces() as $name => $namespace) {
 			if (isset($this->namespaces[$name])) {
 				$this->namespaces[$name]->mergeWith($namespace);
@@ -208,8 +197,7 @@ class LanguageBucket
 	 *
 	 * @param Language $language
 	 */
-	protected function storeDefinitions(Language $language)
-	{
+	protected function storeDefinitions(Language $language) {
 		foreach ($language->getNamespaces() as $name => $namespace) {
 			foreach ($namespace->getDefinitions() as $key => $definition) {
 				if (!isset($this->definitions[$key])) {
@@ -226,8 +214,7 @@ class LanguageBucket
 	 * @param string $text
 	 * @return string|null
 	 */
-	protected function fastLookup($text)
-	{
+	protected function fastLookup($text) {
 		$lookup = array($text, trim($text));
 
 		foreach ($lookup as $key) {

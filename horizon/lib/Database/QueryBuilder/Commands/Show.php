@@ -4,9 +4,6 @@ namespace Horizon\Database\QueryBuilder\Commands;
 
 use Horizon\Database\QueryBuilder;
 use Horizon\Database\QueryBuilder\StringBuilder;
-use Horizon\Support\Str;
-use Horizon\Support\Arr;
-use Horizon\Database\Exception\QueryBuilderException;
 
 /**
  * @method ShowHelper tables() Sets the query to show tables.
@@ -18,8 +15,7 @@ use Horizon\Database\Exception\QueryBuilderException;
  *
  * @method string compile() Gets the query as a prepared string.
  */
-class Show implements CommandInterface
-{
+class Show implements CommandInterface {
 
 	/**
 	 * @var QueryBuilder
@@ -36,8 +32,7 @@ class Show implements CommandInterface
 	 *
 	 * @param QueryBuilder $builder
 	 */
-	public function __construct(QueryBuilder $builder)
-	{
+	public function __construct(QueryBuilder $builder) {
 		$this->builder = $builder;
 	}
 
@@ -46,8 +41,7 @@ class Show implements CommandInterface
 	 *
 	 * @return string
 	 */
-	public function compile()
-	{
+	public function compile() {
 		return "{$this->query};";
 	}
 
@@ -56,8 +50,7 @@ class Show implements CommandInterface
 	 *
 	 * @return $this
 	 */
-	public function databases()
-	{
+	public function databases() {
 		$this->query = 'SHOW DATABASES';
 		return $this;
 	}
@@ -67,8 +60,7 @@ class Show implements CommandInterface
 	 *
 	 * @return $this
 	 */
-	public function tables()
-	{
+	public function tables() {
 		$this->query = 'SHOW TABLES';
 		return $this;
 	}
@@ -78,8 +70,7 @@ class Show implements CommandInterface
 	 *
 	 * @return $this
 	 */
-	public function tableStatus()
-	{
+	public function tableStatus() {
 		$this->query = 'SHOW TABLE STATUS';
 		return $this;
 	}
@@ -89,8 +80,7 @@ class Show implements CommandInterface
 	 *
 	 * @return $this
 	 */
-	public function columns($table)
-	{
+	public function columns($table) {
 		$this->query = 'SHOW COLUMNS FROM ' . StringBuilder::formatTableName($this->builder->getPrefix() . $table);
 		return $this;
 	}
@@ -100,14 +90,12 @@ class Show implements CommandInterface
 	 *
 	 * @return $this
 	 */
-	public function createTable($table)
-	{
+	public function createTable($table) {
 		$this->query = 'SHOW CREATE TABLE ' . StringBuilder::formatTableName($this->builder->getPrefix() . $table);
 		return $this;
 	}
 
-	public function getParameters()
-	{
+	public function getParameters() {
 		return array();
 	}
 

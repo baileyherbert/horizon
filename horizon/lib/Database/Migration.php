@@ -4,15 +4,12 @@ namespace Horizon\Database;
 
 use Exception;
 use Horizon\Database\Exception\DatabaseException;
-use Horizon\Database\Exception\MigrationException;
 use Horizon\Database\Exception\SkipMigrationException;
 use Horizon\Database\Migration\MigrationBatch;
 use Horizon\Database\Migration\Schema;
-use Horizon\Database\Migration\SchemaConnection;
 use Horizon\Database\Migration\SchemaRecorder;
 use Horizon\Database\Migration\SchemaRecorderBucket;
 use Horizon\Database\Migration\SchemaStatement;
-use Horizon\Events\EventEmitter;
 use Horizon\Foundation\Application;
 use Horizon\Foundation\Framework;
 use Horizon\Support\Path;
