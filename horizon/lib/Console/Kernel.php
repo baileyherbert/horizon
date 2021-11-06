@@ -77,6 +77,14 @@ class Kernel
     {
         $commands = config('console.commands', array());
 
+        $commands = array_merge($commands, array(
+            'make:migration' => 'Horizon\Ace\Commands\Make\MakeMigrationCommand',
+            'migration:fresh' => 'Horizon\Ace\Commands\Migrations\MigrationFreshCommand',
+            'migration:rollback' => 'Horizon\Ace\Commands\Migrations\MigrationRollbackCommand',
+            'migration:run' => 'Horizon\Ace\Commands\Migrations\MigrationRunCommand',
+            'migration:status' => 'Horizon\Ace\Commands\Migrations\MigrationStatusCommand',
+        ));
+
         foreach ($commands as $key => $className) {
             if (class_exists($className)) {
                 $this->consoleApp->add(new $className($key));
