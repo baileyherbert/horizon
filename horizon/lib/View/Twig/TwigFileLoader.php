@@ -64,6 +64,16 @@ class TwigFileLoader extends Twig_Loader_Filesystem
 
         $path = Application::kernel()->view()->resolveView($name);
 
+        // Check for a valid file if the view is an absolute path
+        if ($path === null) {
+            if (starts_with($name, '/') || !!preg_match("/^[A-Z]:/", $name)) {
+                if (file_exists($name)) {
+                    $path = $name;
+                }
+            }
+        }
+
+        // Throw an error if no view could be found
         if ($path === null) {
             throw new ViewException(sprintf('View "%s" not found in any provider.', $name));
         }
