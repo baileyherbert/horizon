@@ -84,6 +84,11 @@ class Kernel
             $output = new ConsoleOutput();
             $this->consoleApp->setCatchExceptions(false);
             $this->consoleApp->run(null, $output);
+
+            // Write an extra line at the end for powershell (it removes the last line from stdout)
+            if (env('PSModulePath')) {
+                $output->writeln('');
+            }
         }
         catch (\Exception $e) {
             $error = HorizonError::fromException($e);
