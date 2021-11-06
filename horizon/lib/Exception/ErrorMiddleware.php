@@ -3,6 +3,7 @@
 namespace Horizon\Exception;
 
 use Exception;
+use Horizon\Foundation\Application;
 use Horizon\Http\Exception\HttpResponseException;
 
 class ErrorMiddleware
@@ -46,6 +47,11 @@ class ErrorMiddleware
      */
     public static function executeException($exception)
     {
+        // Redirect console errors
+        if (Application::environment() == 'console') {
+            return Application::kernel()->console()->handleException($exception);
+        }
+
         $reflect = new \ReflectionClass($exception);
         $shortName = $reflect->getShortName();
 
@@ -105,6 +111,11 @@ class ErrorMiddleware
      */
     public static function executeSilently(HorizonError $error)
     {
+        // Redirect console errors
+        if (Application::environment() == 'console') {
+            return Application::kernel()->console()->handleException($error->getException());
+        }
+
         $errorHandler = static::getErrorHandler();
 
         // Report the error

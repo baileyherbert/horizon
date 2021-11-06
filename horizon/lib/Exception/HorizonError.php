@@ -178,10 +178,10 @@ class HorizonError
     /**
      * Converts the given exception into a HorizonError instance.
      *
-     * @param Exception $ex
+     * @param Exception|Error $ex
      * @return HorizonError
      */
-    public static function fromException(Exception $exception, $uncaught = true) {
+    public static function fromException($exception, $uncaught = true) {
         $reflect = new \ReflectionClass($exception);
         $shortName = $reflect->getShortName();
         $prefix = $uncaught ? 'Uncaught ' : '';

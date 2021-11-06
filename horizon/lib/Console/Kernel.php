@@ -82,16 +82,32 @@ class Kernel
     {
         try {
             $output = new ConsoleOutput();
+
+            $this->consoleApp->setAutoExit(false);
             $this->consoleApp->setCatchExceptions(false);
-            $this->consoleApp->run(null, $output);
+            $code = $this->consoleApp->run(null, $output);
 
             // Write an extra line at the end for powershell (it removes the last line from stdout)
             if (env('PSModulePath')) {
                 $output->writeln('');
             }
+
+            abort($code);
         }
-        catch (\Exception $e) {
-            $error = HorizonError::fromException($e);
+        catch (\Exception $ex) {
+            $this->handleException($ex);
+        }
+    }
+
+    /**
+     * Handles the given exception from within a console command.
+     *
+     * @param Exception|Error $ex
+     * @return void
+     */
+    public function handleException($ex) {
+        if (!($ex instanceof RuntimeException)) {
+            $error = HorizonError::fromException($ex);
             $handler = ErrorMiddleware::getErrorHandler();
 
             if (config('errors.console_logging', true)) {
@@ -104,6 +120,29 @@ class Kernel
 
             $this->consoleApp->renderException($e, $output);
         }
+
+        $this->consoleApp->renderException($ex, $this->output);
+        abort($this->getExitCodeForThrowable($ex));
     }
 
+    /**
+     * @param \Exception|\Throwable $throwable
+     * @return int
+     */
+    private function getExitCodeForThrowable($throwable) {
+        $exitCode = $throwable->getCode();
+
+        if (is_numeric($exitCode)) {
+            $exitCode = (int) $exitCode;
+
+            if (0 === $exitCode) {
+                $exitCode = 1;
+            }
+        }
+        else {
+            $exitCode = 1;
+        }
+
+        return $exitCode;
+    }
 }

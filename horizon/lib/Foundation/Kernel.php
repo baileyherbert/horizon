@@ -107,11 +107,14 @@ class Kernel
 
     /**
      * Shuts down the framework.
+     *
+     * @param int $code Exit code.
+     * @return void
      */
-    public function shutdown()
+    public function shutdown($code = 0)
     {
         $this->database()->close();
-        die;
+        exit($code);
     }
 
     /**
