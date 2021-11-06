@@ -65,7 +65,7 @@ class Session {
 	}
 
 	/**
-	 * Stores data in the session under the specified key, overwriting any existing values.
+	 * Alias for `set()`.
 	 *
 	 * @param string $key
 	 * @param mixed $value
@@ -73,6 +73,18 @@ class Session {
 	 * @return void
 	 */
 	public function put($key, $value) {
+		return $this->driver->put($key, $value);
+	}
+
+	/**
+	 * Stores data in the session under the specified key, overwriting any existing values.
+	 *
+	 * @param string $key
+	 * @param mixed $value
+	 *
+	 * @return void
+	 */
+	public function set($key, $value) {
 		return $this->driver->put($key, $value);
 	}
 
