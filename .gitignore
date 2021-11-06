@@ -1,5 +1,6 @@
 .idea/
 horizon/vendor/
+app/cache
 app/vendor/
 app/extensions/*/vendor/
 .vscode/
