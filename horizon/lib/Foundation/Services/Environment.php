@@ -167,26 +167,36 @@ class Environment {
 
 		foreach ($targetFiles as $targetFilePath) {
 			if (file_exists($targetFilePath) && is_readable($targetFilePath)) {
-				$contents = preg_split("/\r\n|\n|\r/", trim(file_get_contents($targetFilePath)));
-
-				foreach ($contents as $lineNumber => $line) {
-					$line = trim($line);
-					$splitIndex = strpos($line, '=');
-
-					if (empty($line) || starts_with($line, '#')) {
-						continue;
-					}
-
-					if ($splitIndex === false) {
-						throw new Exception("Error parsing .env file on line $lineNumber");
-					}
-
-					$key = strtolower(substr($line, 0, $splitIndex));
-					$value = substr($line, $splitIndex + 1);
-
-					static::$fileData[$key] = $value;
-				}
+				static::injectDotEnvString(file_get_contents($targetFilePath));
 			}
+		}
+	}
+
+	/**
+	 * Parses and loads environment variables from a string in dotenv format.
+	 *
+	 * @param string $data
+	 * @return void
+	 */
+	private static function injectDotEnvString($data) {
+		$contents = preg_split("/\r\n|\n|\r/", trim($data));
+
+		foreach ($contents as $lineNumber => $line) {
+			$line = trim($line);
+			$splitIndex = strpos($line, '=');
+
+			if (empty($line) || starts_with($line, '#')) {
+				continue;
+			}
+
+			if ($splitIndex === false) {
+				throw new Exception("Error parsing .env file on line $lineNumber");
+			}
+
+			$key = strtolower(substr($line, 0, $splitIndex));
+			$value = substr($line, $splitIndex + 1);
+
+			static::$fileData[$key] = $value;
 		}
 	}
 
@@ -203,6 +213,11 @@ class Environment {
 		foreach ($targetFiles as $targetFilePath) {
 			if (file_exists($targetFilePath) && is_readable($targetFilePath)) {
 				$contents = require $targetFilePath;
+
+				if (is_string($contents)) {
+					static::injectDotEnvString($contents);
+					continue;
+				}
 
 				if (!is_array($contents)) {
 					throw new Exception('Expected env.php file to return array, got ' . gettype($contents));
