@@ -44,8 +44,8 @@ class CookieDriver implements DriverInterface {
 				session_start();
 			}
 			else {
-				if (config('session.throws') && !Framework::environment('test')) {
-					throw new HorizonException(0x0004, 'CookieDriver init (cannot initialize session: headers already sent)');
+				if (!Framework::environment('test')) {
+					throw new HorizonException(0x0004, 'Cannot initialize cookie session because headers are marked as sent');
 				}
 			}
 		}
