@@ -486,9 +486,10 @@ class Arr
      *
      * @param array $array
      * @param callable|string $callback
+     * @param int $flags The sorting algorithm to use
      * @return array
      */
-    public static function sort($array, $callback)
+    public static function sort($array, $callback, $flags = SORT_REGULAR)
     {
         $results = array();
 
@@ -496,7 +497,7 @@ class Arr
             $results[$key] = $callback($value, $key);
         }
 
-        asort($results, SORT_REGULAR);
+        asort($results, $flags);
 
         foreach (array_keys($results) as $key) {
             $results[$key] = $array[$key];
