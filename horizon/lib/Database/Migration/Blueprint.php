@@ -66,53 +66,53 @@ class Blueprint {
 	}
 
 	/**
-	 * Create a new auto-incrementing integer (4-byte) column on the table.
+	 * Create a new auto-incrementing integer (4-byte) column on the table as a primary key.
 	 *
 	 * @param string $column
 	 * @return Column
 	 */
 	public function increments($column) {
-		return $this->unsignedInteger($column, true);
+		return $this->unsignedInteger($column, true)->primary();
 	}
 
 	/**
-	 * Create a new auto-incrementing tiny integer (1-byte) column on the table.
+	 * Create a new auto-incrementing tiny integer (1-byte) column on the table as a primary key.
 	 *
 	 * @param string $column
 	 * @return Column
 	 */
 	public function tinyIncrements($column) {
-		return $this->unsignedTinyInteger($column, true);
+		return $this->unsignedTinyInteger($column, true)->primary();
 	}
 
 	/**
-	 * Create a new auto-incrementing small integer (2-byte) column on the table.
+	 * Create a new auto-incrementing small integer (2-byte) column on the table as a primary key.
 	 *
 	 * @param string $column
 	 * @return Column
 	 */
 	public function smallIncrements($column) {
-		return $this->unsignedSmallInteger($column, true);
+		return $this->unsignedSmallInteger($column, true)->primary();
 	}
 
 	/**
-	 * Create a new auto-incrementing medium integer (3-byte) column on the table.
+	 * Create a new auto-incrementing medium integer (3-byte) column on the table as a primary key.
 	 *
 	 * @param string $column
 	 * @return Column
 	 */
 	public function mediumIncrements($column) {
-		return $this->unsignedMediumInteger($column, true);
+		return $this->unsignedMediumInteger($column, true)->primary();
 	}
 
 	/**
-	 * Create a new auto-incrementing big integer (8-byte) column on the table.
+	 * Create a new auto-incrementing big integer (8-byte) column on the table as a primary key.
 	 *
 	 * @param string $column
 	 * @return Column
 	 */
 	public function bigIncrements($column) {
-		return $this->unsignedBigInteger($column, true);
+		return $this->unsignedBigInteger($column, true)->primary();
 	}
 
 	/**
