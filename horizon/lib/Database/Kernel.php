@@ -202,4 +202,34 @@ class Kernel
         return $this->validationEnabled = $enabled;
     }
 
+    /**
+     * Returns an array of all registered databases.
+     *
+     * @return Database[]
+     */
+    public function getDatabases() {
+        $databases = array();
+
+        foreach (config('database') as $name => $config) {
+            $databases[$name] = $this->get($name);
+        }
+
+        return $databases;
+    }
+
+    /**
+     * Returns an array of connection interfaces for all registered databases.
+     *
+     * @return DatabaseConnection[]
+     */
+    public function getConnections() {
+        $connections = array();
+
+        foreach (config('database') as $name => $config) {
+            $connections[$name] = DatabaseFacade::connection($name);
+        }
+
+        return $connections;
+    }
+
 }
