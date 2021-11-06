@@ -138,7 +138,7 @@ class Kernel {
 	 * @return void
 	 */
 	public function handleException($ex) {
-		if (!($ex instanceof RuntimeException)) {
+		if (!($ex instanceof RuntimeException) && is_mode('production')) {
 			$error = HorizonError::fromException($ex);
 			$handler = ErrorMiddleware::getErrorHandler();
 
