@@ -188,25 +188,4 @@ class DatabaseConnection
         }
     }
 
-    /**
-     * Starts a database migration. Expects a callable or closure to be passed which will be called and passed a Schema
-     * instance as its only parameter.
-     *
-     * @param callable $callback
-     * @return bool
-     *
-     * @throws DatabaseException When a migration fails due to a query error.
-     * @throws MigrationException When an illegal migration operation is requested.
-     * @throws DatabaseDriverException When the database driver encounters a fatal error.
-     */
-    public function migrate($callback)
-    {
-        if (!is_callable($callback)) {
-            throw new DatabaseException('Database migration expects a callable, ' . gettype($callback) . ' received.');
-        }
-
-        $migration = new Migration($this);
-        return $migration->run($callback);
-    }
-
 }

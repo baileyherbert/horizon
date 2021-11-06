@@ -388,8 +388,11 @@ class Str
      */
     public static function plural($value, $count = 2)
     {
+        if ($count === 1) return $value;
+        if (static::endsWith($value, ['ch', 'sh', 'x', 'ss'])) return $value . 'es';
         if (static::endsWith($value, 's')) return $value;
-        return $count === 1 ? $value : $value . 's';
+
+        return $value . 's';
     }
 
     /**

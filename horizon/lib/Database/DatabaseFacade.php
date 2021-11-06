@@ -202,20 +202,4 @@ class DatabaseFacade
         }
     }
 
-    /**
-     * Starts a database migration. Expects a callable or closure to be passed which will be called and passed a Schema
-     * instance as its only parameter.
-     *
-     * @param callable $callback
-     * @return bool
-     *
-     * @throws DatabaseException When a migration fails due to a query error.
-     * @throws MigrationException When an illegal migration operation is requested.
-     * @throws DatabaseDriverException When the database driver encounters a fatal error.
-     */
-    public static function migrate($callback)
-    {
-        return static::connection()->migrate($callback);
-    }
-
 }

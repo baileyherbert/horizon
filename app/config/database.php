@@ -69,7 +69,16 @@ return array(
 
             Recommended value: 'mysqli'
         */
-        'preferred_driver' => env('db_driver', 'mysqli')
+        'preferred_driver' => env('db_driver', 'mysqli'),
+
+        /**
+         * An array of directories, relative to the application's root directory, where migrations should be created in
+         * and loaded from. The `ace make:migration` command line tool will create new migrations in the first entry
+         * here.
+         */
+        'migrations' => array(
+            'app/database/migrations'
+        )
     )
 
 );

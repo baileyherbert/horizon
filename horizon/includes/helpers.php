@@ -1270,11 +1270,12 @@ if (!function_exists('abort')) {
     /**
      * Terminates the page. Equivalent to die(), but it gives the kernel a chance for any last-minute work.
      *
+     * @param int $code Exit code.
      * @return false
      */
-    function abort()
+    function abort($code = 0)
     {
-        Application::kernel()->shutdown();
+        Application::kernel()->shutdown($code);
         return false;
     }
 }
@@ -1468,5 +1469,44 @@ if (!function_exists('env')) {
     function env($name, $default = null)
     {
         return Environment::get($name, $default);
+    }
+}
+
+if (!function_exists('datetime_to_timestamp')) {
+    /**
+     * Converts a SQL `DATETIME` value to a unix seconds timestamp with an optional timezone.
+     *
+     * Passing a timezone into the second parameter will override the application's global timezone as configured in
+     * your `app/config/app.php` file. We recommend using a consistent timezone across your application and database.
+     *
+     * @param string $datetime
+     * @param string|null $timezone
+     * @return int
+     */
+    function datetime_to_timestamp($datetime, $timezone = null) {
+        $time = new DateTime($datetime, $timezone !== null ? new DateTimeZone($timezone) : null);
+        return $time->getTimestamp();
+    }
+}
+
+if (!function_exists('timestamp_to_datetime')) {
+    /**
+     * Converts a unix seconds timestamp to a SQL `DATETIME` value with an optional timezone.
+     *
+     * Passing a timezone into the second parameter will override the application's global timezone as configured in
+     * your `app/config/app.php` file. We recommend using a consistent timezone across your application and database.
+     *
+     * @param int $timestamp
+     * @param string|null $timezone
+     * @return string
+     */
+    function timestamp_to_datetime($timestamp, $timezone = null) {
+        $date = DateTime::createFromFormat('U', $timestamp);
+
+        if ($timezone !== null) {
+            $date->setTimezone(new DateTimeZone($timezone));
+        }
+
+        return $date->format('Y-m-d H:i:s');
     }
 }

@@ -59,9 +59,9 @@ class Blueprint
      * Blueprint constructor.
      *
      * @param string $name
-     * @param Schema $schema
+     * @param SchemaConnection $schema
      */
-    public function __construct($name, Schema $schema)
+    public function __construct($name, SchemaConnection $schema)
     {
         $this->table = $name;
         $this->schema = $schema;

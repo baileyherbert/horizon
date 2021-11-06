@@ -7,6 +7,7 @@ use Horizon\Foundation\Application;
 use Horizon\Http\Response;
 use Exception;
 use Horizon\Foundation\Kernel;
+use Horizon\View\Template;
 
 class ConsoleResponse extends Response
 {

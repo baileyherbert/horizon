@@ -2,28 +2,71 @@
 
 namespace Horizon\Database\Migration;
 
-use Horizon\Database\Migration\Schema\Grammar;
+use Database;
+use Exception;
 
 /**
  * Utility class for building, managing, and testing database schemas.
  */
-class Schema
-{
+class Schema {
 
     /**
-     * @var Migration
+     * @var SchemaConnection|null
      */
-    private $migration;
+	protected static $connection;
 
     /**
-     * Constructs a new Schema instance.
-     *
-     * @param Migration $migration
+     * @var SchemaConnection[]
      */
-    public function __construct(Migration $migration)
-    {
-        $this->migration = $migration;
-    }
+	protected static $connectionCache = array();
+
+	/**
+	 * Returns a schema instance for the given connection.
+	 *
+	 * @param string|null $name
+	 * @return SchemaConnection
+	 */
+	public static function connection($name = null) {
+		if ($name === null) {
+			if (static::$connection === null) {
+				static::$connection = static::connection('main');
+			}
+
+			return static::$connection;
+		}
+
+		if (array_key_exists($name, static::$connectionCache)) {
+			$cached = static::$connectionCache[$name];
+
+            return $cached;
+		}
+
+		$cached = static::$connectionCache[$name] = new SchemaConnection(Database::connection($name));
+
+		return $cached;
+	}
+
+	/**
+	 * Executes the given callable with the default connection set to the given connection name.
+	 *
+	 * @param string $connectionName
+	 * @param callable $callable
+	 * @return void
+	 */
+	public static function withDefaultConnection($connectionName, $callable) {
+		$previous = static::$connection;
+		static::$connection = static::connection($connectionName);
+
+        try {
+		    $callable();
+        }
+        catch (Exception $ex) {
+            static::$connection = $previous;
+            throw $ex;
+        }
+
+		static::$connection = $previous;
+	}
 
     /**
      * Spawns a table blueprint for creating a new table schema. The callable will be passed the Blueprint instance.
@@ -32,14 +75,8 @@ class Schema
      * @param callable $callable
      * @return bool
      */
-    public function create($name, $callable)
-    {
-        $blueprint = new Blueprint($name, $this);
-        $blueprint->create();
-
-        $callable($blueprint);
-
-        return $this->migration->connection()->query((string)$blueprint);
+    public static function create($name, $callable) {
+        static::connection()->create($name, $callable);
     }
 
     /**
@@ -50,12 +87,8 @@ class Schema
      * @param callable $callable
      * @return bool
      */
-    public function table($name, $callable)
-    {
-        $blueprint = new Blueprint($name, $this);
-        $callable($blueprint);
-
-        return $this->migration->connection()->query((string)$blueprint);
+    public static function table($name, $callable) {
+        return static::connection()->table($name, $callable);
     }
 
     /**
@@ -65,17 +98,19 @@ class Schema
      * @param string $to New table name.
      * @return bool
      */
-    public function rename($from, $to)
-    {
-        $query = str_join(
-            'ALTER TABLE',
-            Grammar::compileName($this->prefix($from)),
-            'RENAME',
-            Grammar::compileName($this->prefix($to))
-        ) . ';';
-
-        return $this->migration->connection()->query($query);
+    public static function rename($from, $to) {
+        return static::connection()->rename($from, $to);
     }
+
+	/**
+	 * Truncates a table.
+	 *
+	 * @param string $name
+	 * @return bool
+	 */
+	public static function truncate($name) {
+		return static::connection()->truncate($name);
+	}
 
     /**
      * Drops a table. Will error if the table does not exist.
@@ -83,14 +118,8 @@ class Schema
      * @param string $name
      * @return bool
      */
-    public function drop($name)
-    {
-        $query = str_join(
-            'DROP TABLE',
-            Grammar::compileName($this->prefix($name))
-        ) . ';';
-
-        return $this->migration->connection()->query($query);
+    public static function drop($name) {
+        return static::connection()->drop($name);
     }
 
     /**
@@ -99,15 +128,8 @@ class Schema
      * @param string $name
      * @return bool
      */
-    public function dropIfExists($name)
-    {
-        $query = str_join(
-            'DROP TABLE',
-            'IF EXISTS',
-            Grammar::compileName($this->prefix($name))
-        ) . ';';
-
-        return $this->migration->connection()->query($query);
+    public static function dropIfExists($name) {
+        return static::connection()->dropIfExists($name);
     }
 
     /**
@@ -116,15 +138,8 @@ class Schema
      * @param string $name
      * @return string
      */
-    public function prefix($name = null)
-    {
-        $prefix = $this->migration->connection()->getDatabase()->getPrefix();
-
-        if (!is_null($name)) {
-            return $prefix . $name;
-        }
-
-        return $prefix;
+    public static function prefix($name = null) {
+		return static::connection()->prefix($name);
     }
 
     /**
@@ -133,15 +148,8 @@ class Schema
      * @param string $tableName
      * @return bool
      */
-    public function hasTable($tableName)
-    {
-        $query = str_join(
-            'SHOW TABLES LIKE',
-            Grammar::compileString($this->prefix($tableName))
-        ) . ';';
-
-        $rows = $this->migration->connection()->query($query);
-        return count($rows) > 0;
+    public static function hasTable($tableName) {
+        return static::connection()->hasTable($tableName);
     }
 
     /**
@@ -151,17 +159,8 @@ class Schema
      * @param string $columnName
      * @return bool
      */
-    public function hasColumn($tableName, $columnName)
-    {
-        $query = str_join(
-            'SHOW COLUMNS FROM',
-            Grammar::compileName($this->prefix($tableName)),
-            'LIKE',
-            Grammar::compileString($columnName)
-        ) . ';';
-
-        $rows = $this->migration->connection()->query($query);
-        return count($rows) > 0;
+    public static function hasColumn($tableName, $columnName) {
+        return static::connection()->hasColumn($tableName, $columnName);
     }
 
 }

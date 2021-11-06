@@ -164,6 +164,25 @@ class PdoDriver implements DriverInterface
     }
 
     /**
+     * Validates a query using prepared statements and throws an exception upon invalid syntax. This is ignored on
+     * unsupported drivers or platforms.
+     *
+     * @param string $statement
+     * @return void
+     *
+     * @throws DatabaseException on error
+     */
+    public function validate($statement)
+    {
+        try {
+            $this->handle->prepare($statement);
+        }
+        catch (PDOException $e) {
+            throw new DatabaseException($this->handle->errorInfo()[2]);
+        }
+    }
+
+    /**
      * Gets whether the query should be ran with query() or exec().
      *
      * @param string $statement

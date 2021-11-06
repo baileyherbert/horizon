@@ -19,6 +19,16 @@ class Kernel
     private $databases = array();
 
     /**
+     * @var bool
+     */
+    private $sandboxEnabled = false;
+
+    /**
+     * @var bool
+     */
+    private $validationEnabled = false;
+
+    /**
      * Gets (and loads if necessary) the database with the specified name. If no name is specified, then the default
      * database is used (usually 'main').
      *
@@ -147,6 +157,79 @@ class Kernel
 
         // No match or no databases configured
         return null;
+    }
+
+    /**
+     * Sets whether database connections should run in a sandboxed mode. When true, all queries sent to databases will
+     * be accepted and logged as normal, but the queries will not actually execute.
+     *
+     * If a boolean is not supplied, returns the current state.
+     *
+     * @param bool|null $enabled
+     * @return bool
+     */
+    public function sandboxMode($enabled = null) {
+        if (is_null($enabled)) {
+            return $this->sandboxEnabled;
+        }
+
+        if ($enabled && $this->validationEnabled) {
+            $this->validationEnabled = false;
+        }
+
+        return $this->sandboxEnabled = $enabled;
+    }
+
+    /**
+     * Sets whether database connections should run in a validation mode. When true, all queries sent to databases will
+     * be accepted and logged as normal, but the queries will not fully execute. Instead, they will be compiled using
+     * prepared statements (when supported) to check for syntax errors.
+     *
+     * If a boolean is not supplied, returns the current state.
+     *
+     * @param bool|null $enabled
+     * @return bool
+     */
+    public function validationMode($enabled = null) {
+        if (is_null($enabled)) {
+            return $this->validationEnabled;
+        }
+
+        if ($enabled && $this->sandboxEnabled) {
+            $this->sandboxEnabled = false;
+        }
+
+        return $this->validationEnabled = $enabled;
+    }
+
+    /**
+     * Returns an array of all registered databases.
+     *
+     * @return Database[]
+     */
+    public function getDatabases() {
+        $databases = array();
+
+        foreach (config('database') as $name => $config) {
+            $databases[$name] = $this->get($name);
+        }
+
+        return $databases;
+    }
+
+    /**
+     * Returns an array of connection interfaces for all registered databases.
+     *
+     * @return DatabaseConnection[]
+     */
+    public function getConnections() {
+        $connections = array();
+
+        foreach (config('database') as $name => $config) {
+            $connections[$name] = DatabaseFacade::connection($name);
+        }
+
+        return $connections;
     }
 
 }

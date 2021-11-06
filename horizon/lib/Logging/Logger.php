@@ -2,97 +2,89 @@
 
 namespace Horizon\Logging;
 
-use Horizon\Enum\Log\LogType;
+use Horizon\Events\EventEmitter;
 
+class Logger extends EventEmitter {
 
-class Logger
-{
-
+    /**
+     * The name of the logger (if applicable).
+     *
+     * @var string
+     */
     protected $name;
-    protected $log = '';
-
-    public function __construct($loggerName = '')
-    {
-        $this->name = $loggerName;
-    }
 
     /**
-     * Writes information to the logger.
-     */
-    public function info()
-    {
-        $parts = array();
-        foreach (func_get_args() as $value) $parts[] = strval($value);
-        $this->log(LogType::INFO, implode(' ', $parts));
-    }
-
-    /**
-     * Writes debugging information to the logger.
-     */
-    public function debug()
-    {
-        $parts = array();
-        foreach (func_get_args() as $value) $parts[] = strval($value);
-        $this->log(LogType::DEBUG, implode(' ', $parts));
-    }
-
-    /**
-     * Writes a notice to the logger.
-     */
-    public function notice()
-    {
-        $parts = array();
-        foreach (func_get_args() as $value) $parts[] = strval($value);
-        $this->log(LogType::NOTICE, implode(' ', $parts));
-    }
-
-    /**
-     * Writes a warning to the logger.
-     */
-    public function warn()
-    {
-        $parts = array();
-        foreach (func_get_args() as $value) $parts[] = strval($value);
-        $this->log(LogType::WARN, implode(' ', $parts));
-    }
-
-    /**
-     * Writes an error to the logger.
-     */
-    public function error()
-    {
-        $parts = array();
-        foreach (func_get_args() as $value) $parts[] = strval($value);
-        $this->log(LogType::ERROR, implode(' ', $parts));
-    }
-
-    /**
-     * Writes a line of the specified type to the logger.
+     * The parent logger instance (if applicable). When set, all logging input sent to this instance will be forwarded
+     * up to the parent.
      *
-     * @param string $logType
-     * @param string $message
+     * @var Logger
      */
-    protected function log($logType, $message)
-    {
-        $message = explode("\n", $message);
-        if (count($message) > 1) {
-            for ($x = 1; $x < count($message); $x++) {
-                $message[$x] = '           ' . str_repeat(' ', strlen($logType)) . $message[$x];
-            }
+    protected $parent;
+
+    /**
+     * Constructs a new `Logger` instance.
+     *
+     * @param string $name
+     * @param Logger|null $parent
+     */
+    public function __construct($name, $parent = null) {
+        $this->name = $name;
+        $this->parent = $parent;
+
+        // Forward events to the parent if applicable
+        if ($parent !== null) {
+            $this->on('log', function($event) use ($parent) {
+                $parent->emit('log', $event);
+            });
         }
-
-        $formatted = sprintf("%s %s: %s\n", date('H:i:s'), $logType, implode("\n", $message));
-        $this->log .= $formatted;
     }
 
     /**
-     * Gets the log output.
+     * Creates a new child logger instance that forwards events up to this logger.
      *
-     * @return string
+     * @param string $name
+     * @return static
      */
-    public function __toString()
-    {
-        return $this->log;
+    public function createLogger($name) {
+        return new static($name, $this);
+    }
+
+    public function verbose() {
+        return $this->writeLine(LogLevel::VERBOSE, func_get_args());
+    }
+
+    public function debug() {
+        return $this->writeLine(LogLevel::DEBUG, func_get_args());
+    }
+
+    public function info() {
+        return $this->writeLine(LogLevel::INFO, func_get_args());
+    }
+
+    public function warn() {
+        return $this->writeLine(LogLevel::WARN, func_get_args());
+    }
+
+    public function error() {
+        return $this->writeLine(LogLevel::ERROR, func_get_args());
+    }
+
+    /**
+     * Writes a log event to the event.
+     *
+     * @param int $level
+     * @param array $args
+     * @return void
+     */
+    protected function writeLine($level, $args) {
+        $event = new LogEvent();
+        $event->level = $level;
+        $event->name = $this->name;
+        $event->logger = $this;
+        $event->timestamp = time();
+        $event->args = $args;
+
+        $this->emit('log', $event);
     }
 
 }

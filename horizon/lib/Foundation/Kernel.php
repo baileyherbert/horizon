@@ -107,11 +107,14 @@ class Kernel
 
     /**
      * Shuts down the framework.
+     *
+     * @param int $code Exit code.
+     * @return void
      */
-    public function shutdown()
+    public function shutdown($code = 0)
     {
         $this->database()->close();
-        die;
+        exit($code);
     }
 
     /**
@@ -194,28 +197,44 @@ class Kernel
         Profiler::stop('services:load');
     }
 
-    /* @return HttpKernel */
+    /**
+     * @return HttpKernel
+     */
     public function http() { return $this->http ?: ($this->http = new HttpKernel()); }
 
-    /* @return DatabaseKernel */
+    /**
+     * @return DatabaseKernel
+     */
     public function database() { return $this->database ?: ($this->database = new DatabaseKernel()); }
 
-    /* @return TranslationKernel */
+    /**
+     * @return TranslationKernel
+     */
     public function translation() { return $this->translation ?: ($this->translation = new TranslationKernel()); }
 
-    /* @return ViewKernel */
+    /**
+     * @return ViewKernel
+     */
     public function view() { return $this->view ?: ($this->view = new ViewKernel()); }
 
-    /* @return ConsoleKernel */
+    /**
+     * @return ConsoleKernel
+     */
     public function console() { return $this->console ?: ($this->console = new ConsoleKernel()); }
 
-    /* @return ExtensionKernel */
+    /**
+     * @return ExtensionKernel
+     */
     public function extension() { return $this->extension ?: ($this->extension = new ExtensionKernel()); }
 
-    /* @return ExceptionKernel */
+    /**
+     * @return ExceptionKernel
+     */
     public function exception() { return $this->exception ?: ($this->exception = new ExceptionKernel()); }
 
-    /* @return RoutingKernel */
+    /**
+     * @return RoutingKernel
+     */
     public function routing() { return $this->routing ?: ($this->routing = new RoutingKernel()); }
 
 }

@@ -2,9 +2,15 @@
 
 namespace Horizon\Console;
 
+use Exception;
+use Horizon\Exception\ErrorMiddleware;
+use Horizon\Exception\HorizonError;
 use Horizon\Foundation\Framework;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Exception\RuntimeException;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -71,6 +77,14 @@ class Kernel
     {
         $commands = config('console.commands', array());
 
+        $commands = array_merge($commands, array(
+            'make:migration' => 'Horizon\Ace\Commands\Make\MakeMigrationCommand',
+            'migration:fresh' => 'Horizon\Ace\Commands\Migrations\MigrationFreshCommand',
+            'migration:rollback' => 'Horizon\Ace\Commands\Migrations\MigrationRollbackCommand',
+            'migration:run' => 'Horizon\Ace\Commands\Migrations\MigrationRunCommand',
+            'migration:status' => 'Horizon\Ace\Commands\Migrations\MigrationStatusCommand',
+        ));
+
         foreach ($commands as $key => $className) {
             if (class_exists($className)) {
                 $this->consoleApp->add(new $className($key));
@@ -82,11 +96,58 @@ class Kernel
     {
         try {
             $output = new ConsoleOutput();
+
+            $this->consoleApp->setAutoExit(false);
             $this->consoleApp->setCatchExceptions(false);
-            $this->consoleApp->run(null, $output);
+            $code = $this->consoleApp->run(null, $output);
+
+            // Write an extra line at the end for powershell (it removes the last line from stdout)
+            if (env('PSModulePath')) {
+                $output->writeln('');
+            }
+
+            abort($code);
         }
-        catch (\Exception $e) {
-            $error = HorizonError::fromException($e);
+        catch (\Exception $ex) {
+            $this->handleException($ex);
+        }
+    }
+
+    /**
+     * Executes the given command on the internal command line tool with the specified arguments array. Errors will
+     * not be caught. The exit code is returned.
+     *
+     * @param string[] $args
+     * @param OutputInterface|null $output
+     * @return int
+     */
+    public function execute(array $args, OutputInterface $output = null) {
+        $input = new ArrayInput($args);
+        $output = $output ?: new ConsoleOutput();
+
+        $this->consoleApp->setAutoExit(false);
+        $this->consoleApp->setCatchExceptions(false);
+        return $this->consoleApp->run($input, $output);
+    }
+
+    /**
+     * Returns the current console app (if we are running in a console context) or null otherwise.
+     *
+     * @return Application|null
+     */
+    public function getConsoleApp() {
+        return $this->consoleApp;
+    }
+
+    /**
+     * Handles the given exception from within a console command.
+     *
+     * @param Exception|Error $ex
+     * @return void
+     */
+    public function handleException($ex) {
+        if (!($ex instanceof RuntimeException)) {
+            $error = HorizonError::fromException($ex);
             $handler = ErrorMiddleware::getErrorHandler();
 
             if (config('errors.console_logging', true)) {
@@ -96,9 +157,30 @@ class Kernel
             if (config('errors.console_reporting', true)) {
                 $handler->report($error);
             }
-
-            $this->consoleApp->renderException($e, $output);
         }
+
+        $this->consoleApp->renderException($ex, $this->output);
+        abort($this->getExitCodeForThrowable($ex));
     }
 
+    /**
+     * @param \Exception|\Throwable $throwable
+     * @return int
+     */
+    private function getExitCodeForThrowable($throwable) {
+        $exitCode = $throwable->getCode();
+
+        if (is_numeric($exitCode)) {
+            $exitCode = (int) $exitCode;
+
+            if (0 === $exitCode) {
+                $exitCode = 1;
+            }
+        }
+        else {
+            $exitCode = 1;
+        }
+
+        return $exitCode;
+    }
 }
