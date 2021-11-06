@@ -10,25 +10,25 @@
 
 return array(
 
-    'env' => array(
-        'max_execution_time' => 120
-    ),
+	'env' => array(
+		'max_execution_time' => 120
+	),
 
-    'ssl' => array(
-        'certificate_authority' => 'horizon/resources/ca-bundle.crt',
-        'peer_validation' => true,
-        'enforce_security_policy' => false
-    ),
+	'ssl' => array(
+		'certificate_authority' => 'horizon/resources/ca-bundle.crt',
+		'peer_validation' => true,
+		'enforce_security_policy' => false
+	),
 
-    'timeout' => array(
-        'default' => 3,
-        'ns' => 6,
-        'init' => 10,
-        'repository' => null,
-        'channel' => null,
-        'version' => null,
-        'payload' => 30,
-        'script' => 6
-    )
+	'timeout' => array(
+		'default' => 3,
+		'ns' => 6,
+		'init' => 10,
+		'repository' => null,
+		'channel' => null,
+		'version' => null,
+		'payload' => 30,
+		'script' => 6
+	)
 
 );

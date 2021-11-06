@@ -12,73 +12,73 @@ use Horizon\Support\Profiler;
 class Autoloader
 {
 
-    /**
-     * @var array<string, string>
-     */
-    private static $map = array();
+	/**
+	 * @var array<string, string>
+	 */
+	private static $map = array();
 
-    /**
-     * @var bool
-     */
-    private static $started = false;
+	/**
+	 * @var bool
+	 */
+	private static $started = false;
 
-    /**
-     * Mounts a namespace to the given path. The path should either be absolute or relative to the application's root
-     * directory.
-     *
-     * @param string $namespace
-     * @param string $path
-     */
-    public static function mount($namespace, $path)
-    {
-        static::$map[$namespace] = $path;
+	/**
+	 * Mounts a namespace to the given path. The path should either be absolute or relative to the application's root
+	 * directory.
+	 *
+	 * @param string $namespace
+	 * @param string $path
+	 */
+	public static function mount($namespace, $path)
+	{
+		static::$map[$namespace] = $path;
 
-        if (!static::$started) {
-            static::start();
-        }
-    }
+		if (!static::$started) {
+			static::start();
+		}
+	}
 
-    /**
-     * Includes a composer vendor file to be autoloaded.
-     *
-     * @param string $path
-     */
-    public static function vendor($path)
-    {
-        if (file_exists($path)) {
-            Profiler::start('autoloader:vendor', $path);
-            require $path;
-            Profiler::stop('autoloader:vendor');
-        }
-    }
+	/**
+	 * Includes a composer vendor file to be autoloaded.
+	 *
+	 * @param string $path
+	 */
+	public static function vendor($path)
+	{
+		if (file_exists($path)) {
+			Profiler::start('autoloader:vendor', $path);
+			require $path;
+			Profiler::stop('autoloader:vendor');
+		}
+	}
 
-    /**
-     * Starts the SPL autoloader.
-     */
-    private static function start()
-    {
-        static::$started = true;
+	/**
+	 * Starts the SPL autoloader.
+	 */
+	private static function start()
+	{
+		static::$started = true;
 
-        spl_autoload_register(function($className) {
-            $className = ltrim($className, '\\');
+		spl_autoload_register(function($className) {
+			$className = ltrim($className, '\\');
 
-            foreach (static::$map as $prefix => $mount) {
-                $len = strlen($prefix);
+			foreach (static::$map as $prefix => $mount) {
+				$len = strlen($prefix);
 
-                if (strncmp($prefix, $className, $len) !== 0) {
-                    continue;
-                }
+				if (strncmp($prefix, $className, $len) !== 0) {
+					continue;
+				}
 
-                $relativeClass = substr($className, $len);
-                $file = Path::join($mount, str_replace('\\', DIRECTORY_SEPARATOR, $relativeClass) . '.php');
+				$relativeClass = substr($className, $len);
+				$file = Path::join($mount, str_replace('\\', DIRECTORY_SEPARATOR, $relativeClass) . '.php');
 
-                if (file_exists($file)) {
-                    Profiler::start('autoloader:require', $file);
-                    require $file;
-                    Profiler::stop('autoloader:require');
-                }
-            }
-        });
-    }
+				if (file_exists($file)) {
+					Profiler::start('autoloader:require', $file);
+					require $file;
+					Profiler::stop('autoloader:require');
+				}
+			}
+		});
+	}
 
 }

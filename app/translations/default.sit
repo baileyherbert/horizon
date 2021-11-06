@@ -1,6 +1,6 @@
 @namespace horizon.start
 
-    "Title"            "Start · Horizon Framework"
-    "Heading"          "Horizon is ready to go!"
-    "Paragraph"        "Now you can start coding your new application."
+	"Title"				"Start · Horizon Framework"
+	"Heading"			"Horizon is ready to go!"
+	"Paragraph"			"Now you can start coding your new application."
 

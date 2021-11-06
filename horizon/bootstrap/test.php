@@ -9,10 +9,10 @@ $appVendor = dirname(dirname(__DIR__)) . '/app/vendor/autoload.php';
 
 // Require horizon/vendor
 if (file_exists($horizonVendor)) {
-    require $horizonVendor;
+	require $horizonVendor;
 }
 
 // Require app/vendor
 if (file_exists($appVendor)) {
-    require $appVendor;
+	require $appVendor;
 }

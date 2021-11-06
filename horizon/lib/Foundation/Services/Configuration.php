@@ -11,132 +11,132 @@ use Horizon\Foundation\Framework;
 class Configuration
 {
 
-    private static $config = array();
+	private static $config = array();
 
-    /**
-     * Gets the value of the specified configuration key from the app\config directory.
-     *
-     * @param string $key
-     * @param mixed $default
-     * @throws HorizonException
-     * @return mixed
-     */
-    public static function get($key, $default = null)
-    {
-        // Parse the key
-        $configFile = self::getConfigFileName($key);
-        $segments = self::getConfigFileSegments($key);
+	/**
+	 * Gets the value of the specified configuration key from the app\config directory.
+	 *
+	 * @param string $key
+	 * @param mixed $default
+	 * @throws HorizonException
+	 * @return mixed
+	 */
+	public static function get($key, $default = null)
+	{
+		// Parse the key
+		$configFile = self::getConfigFileName($key);
+		$segments = self::getConfigFileSegments($key);
 
-        // Load the configuration file if it isn't cached
-        if (!array_key_exists($configFile, self::$config)) {
-            static::loadConfigurationFile($configFile);
-        }
+		// Load the configuration file if it isn't cached
+		if (!array_key_exists($configFile, self::$config)) {
+			static::loadConfigurationFile($configFile);
+		}
 
-        // Get the configuration as an array
-        $config = self::$config[$configFile];
+		// Get the configuration as an array
+		$config = self::$config[$configFile];
 
-        // Return the desired value
-        return self::getConfigValue($config, $segments, $default);
-    }
+		// Return the desired value
+		return self::getConfigValue($config, $segments, $default);
+	}
 
-    /**
-     * Iterates a configuration array to find the value of a namespaced config key (separated by periods).
-     *
-     * @param array $config
-     * @param array $segments
-     * @param mixed $default
-     * @return mixed
-     */
-    private static function getConfigValue(array &$config, array &$segments, &$default)
-    {
-        $pointer = $config;
+	/**
+	 * Iterates a configuration array to find the value of a namespaced config key (separated by periods).
+	 *
+	 * @param array $config
+	 * @param array $segments
+	 * @param mixed $default
+	 * @return mixed
+	 */
+	private static function getConfigValue(array &$config, array &$segments, &$default)
+	{
+		$pointer = $config;
 
-        foreach ($segments as $name) {
-            if (array_key_exists($name, $pointer)) {
-                $pointer = $pointer[$name];
-            }
-            else {
-                return $default;
-            }
-        }
+		foreach ($segments as $name) {
+			if (array_key_exists($name, $pointer)) {
+				$pointer = $pointer[$name];
+			}
+			else {
+				return $default;
+			}
+		}
 
-        return $pointer;
-    }
+		return $pointer;
+	}
 
-    /**
-     * Loads a configuration file with the specified name. The name must not include '.php' and loads from the
-     * app's config directory.
-     *
-     * @param string $name
-     * @throws HorizonException
-     * @return void
-     */
-    public static function loadConfigurationFile($name)
-    {
-        $path = Framework::path('app/config') . DIRECTORY_SEPARATOR . $name . '.php';
+	/**
+	 * Loads a configuration file with the specified name. The name must not include '.php' and loads from the
+	 * app's config directory.
+	 *
+	 * @param string $name
+	 * @throws HorizonException
+	 * @return void
+	 */
+	public static function loadConfigurationFile($name)
+	{
+		$path = Framework::path('app/config') . DIRECTORY_SEPARATOR . $name . '.php';
 
-        // Throw an exception if the file doesn't exist
-        if (!file_exists($path)) {
-            throw new HorizonException(0x0002, $path);
-        }
+		// Throw an exception if the file doesn't exist
+		if (!file_exists($path)) {
+			throw new HorizonException(0x0002, $path);
+		}
 
-        // Require the file - it should return an array
-        $config = require $path;
+		// Require the file - it should return an array
+		$config = require $path;
 
-        // Verify type array
-        if (!is_array($config)) {
-            throw new HorizonException(0x0003, $path);
-        }
+		// Verify type array
+		if (!is_array($config)) {
+			throw new HorizonException(0x0003, $path);
+		}
 
-        // Store the array
-        self::$config[$name] = $config;
-    }
+		// Store the array
+		self::$config[$name] = $config;
+	}
 
-    /**
-     * Extracts the name of the config file (the first segment) from a namespaced config key.
-     *
-     * @param string $path
-     * @return string
-     */
-    private static function getConfigFileName($path)
-    {
-        $root = $path;
+	/**
+	 * Extracts the name of the config file (the first segment) from a namespaced config key.
+	 *
+	 * @param string $path
+	 * @return string
+	 */
+	private static function getConfigFileName($path)
+	{
+		$root = $path;
 
-        if (strpos($path, '.') !== false) {
-            $root = strtok($path, '.');
-        }
+		if (strpos($path, '.') !== false) {
+			$root = strtok($path, '.');
+		}
 
-        elseif (strpos($path, '/') !== false) {
-            $root = strtok($path, '/');
-        }
+		elseif (strpos($path, '/') !== false) {
+			$root = strtok($path, '/');
+		}
 
-        return trim($root);
-    }
+		return trim($root);
+	}
 
-    /**
-     * Extracts the segments, not including the config file name, of the namespaced config key.
-     *
-     * @param string $path
-     * @return string[]
-     */
-    private static function getConfigFileSegments($path)
-    {
-        $root = self::getConfigFileName($path) . '.';
-        $path = trim(substr($path, strlen($root)), '/.');
+	/**
+	 * Extracts the segments, not including the config file name, of the namespaced config key.
+	 *
+	 * @param string $path
+	 * @return string[]
+	 */
+	private static function getConfigFileSegments($path)
+	{
+		$root = self::getConfigFileName($path) . '.';
+		$path = trim(substr($path, strlen($root)), '/.');
 
-        if (strlen($path) == 0) {
-            return array();
-        }
+		if (strlen($path) == 0) {
+			return array();
+		}
 
-        if (strpos($path, '.') >= 0) {
-            return explode('.', $path);
-        }
+		if (strpos($path, '.') >= 0) {
+			return explode('.', $path);
+		}
 
-        if (strpos($path, '/') >= 0) {
-            return explode('/', $path);
-        }
+		if (strpos($path, '/') >= 0) {
+			return explode('/', $path);
+		}
 
-        return array($path);
-    }
+		return array($path);
+	}
 
 }

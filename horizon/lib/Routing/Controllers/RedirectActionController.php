@@ -9,9 +9,9 @@ use Horizon\Http\Controller;
 class RedirectActionController extends Controller
 {
 
-    public function __invoke(Request $request, Response $response, $to, $code)
-    {
-        $response->redirect($to, $code);
-    }
+	public function __invoke(Request $request, Response $response, $to, $code)
+	{
+		$response->redirect($to, $code);
+	}
 
 }

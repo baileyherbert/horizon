@@ -14,107 +14,107 @@ use InvalidArgumentException;
 class ServiceProvider
 {
 
-    /**
-     * Indicates if the boot method should be deferred (called immediately before the provider is first invoked).
-     *
-     * @var bool
-     */
-    protected $defer = false;
+	/**
+	 * Indicates if the boot method should be deferred (called immediately before the provider is first invoked).
+	 *
+	 * @var bool
+	 */
+	protected $defer = false;
 
-    /**
-     * Whether the provider has been registered yet.
-     * @var bool
-     */
-    private $registered = false;
+	/**
+	 * Whether the provider has been registered yet.
+	 * @var bool
+	 */
+	private $registered = false;
 
-    /**
-     * Binds between classes and provider callables.
-     *
-     * @var callable[]
-     */
-    private $binds = array();
+	/**
+	 * Binds between classes and provider callables.
+	 *
+	 * @var callable[]
+	 */
+	private $binds = array();
 
-    /**
-     * Boots the service provider.
-     */
-    public function boot()
-    {
+	/**
+	 * Boots the service provider.
+	 */
+	public function boot()
+	{
 
-    }
+	}
 
-    /**
-     * Registers the bindings in the service provider.
-     */
-    public function register()
-    {
+	/**
+	 * Registers the bindings in the service provider.
+	 */
+	public function register()
+	{
 
-    }
+	}
 
-    /**
-     * Gets a list of all class names that the service provider can provide.
-     *
-     * @return string[]
-     */
-    public function provides()
-    {
-        return array();
-    }
+	/**
+	 * Gets a list of all class names that the service provider can provide.
+	 *
+	 * @return string[]
+	 */
+	public function provides()
+	{
+		return array();
+	}
 
-    /**
-     * Binds a class name to a callable which can provide instances of that class name. The callable is expected to
-     * return either a single instance or an array of instances.
-     *
-     * @param string $className
-     * @param callable $callable
-     */
-    protected function bind($className, $callable)
-    {
-        if (!is_callable($callable)) {
-            throw new InvalidArgumentException('Service providers must bind class names to callables.');
-        }
+	/**
+	 * Binds a class name to a callable which can provide instances of that class name. The callable is expected to
+	 * return either a single instance or an array of instances.
+	 *
+	 * @param string $className
+	 * @param callable $callable
+	 */
+	protected function bind($className, $callable)
+	{
+		if (!is_callable($callable)) {
+			throw new InvalidArgumentException('Service providers must bind class names to callables.');
+		}
 
-        $this->binds[$className] = $callable;
-    }
+		$this->binds[$className] = $callable;
+	}
 
-    /**
-     * Resolves a class name and returns an array of objects.
-     *
-     * @param string $className
-     * @param mixed[] $args
-     * @return object[]
-     */
-    public function resolve($className, $args = array())
-    {
-        if (!$this->registered) {
-            $this->register();
-            $this->registered = true;
-        }
+	/**
+	 * Resolves a class name and returns an array of objects.
+	 *
+	 * @param string $className
+	 * @param mixed[] $args
+	 * @return object[]
+	 */
+	public function resolve($className, $args = array())
+	{
+		if (!$this->registered) {
+			$this->register();
+			$this->registered = true;
+		}
 
-        if (!array_key_exists($className, $this->binds)) {
-            return array();
-        }
+		if (!array_key_exists($className, $this->binds)) {
+			return array();
+		}
 
-        $callable = $this->binds[$className];
-        $response = call_user_func_array($callable, $args);
+		$callable = $this->binds[$className];
+		$response = call_user_func_array($callable, $args);
 
-        if (is_array($response)) {
-            return $response;
-        }
-        else if (is_object($response) && $response instanceof $className) {
-            return array($response);
-        }
+		if (is_array($response)) {
+			return $response;
+		}
+		else if (is_object($response) && $response instanceof $className) {
+			return array($response);
+		}
 
-        return array();
-    }
+		return array();
+	}
 
-    /**
-     * Gets whether the provider is deferred.
-     *
-     * @return bool
-     */
-    public function isDeferred()
-    {
-        return $this->defer;
-    }
+	/**
+	 * Gets whether the provider is deferred.
+	 *
+	 * @return bool
+	 */
+	public function isDeferred()
+	{
+		return $this->defer;
+	}
 
 }

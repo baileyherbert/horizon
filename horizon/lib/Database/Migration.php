@@ -364,8 +364,8 @@ abstract class Migration implements JsonSerializable {
 	 *
 	 * @return void
 	 */
-    public function jsonSerialize() {
-        return array(
+	public function jsonSerialize() {
+		return array(
 			'id' => $this->getRecordId(),
 			'name' => $this->getRecordName(),
 			'path' => $this->getPath(),
@@ -373,6 +373,6 @@ abstract class Migration implements JsonSerializable {
 			'status' => $this->isFinished() ? 'finished' : 'pending',
 			'timestamp' => $this->getTime()
 		);
-    }
+	}
 
 }

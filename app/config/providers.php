@@ -10,11 +10,11 @@
 
 return array(
 
-    'Horizon\Routing\RoutingServiceProvider',
-    'Horizon\View\ViewServiceProvider',
-    'Horizon\Extension\ExtensionServiceProvider',
-    'Horizon\Translation\TranslationServiceProvider',
-    'Horizon\Database\MigrationServiceProvider',
-    'Horizon\Updates\UpdateServiceProvider'
+	'Horizon\Routing\RoutingServiceProvider',
+	'Horizon\View\ViewServiceProvider',
+	'Horizon\Extension\ExtensionServiceProvider',
+	'Horizon\Translation\TranslationServiceProvider',
+	'Horizon\Database\MigrationServiceProvider',
+	'Horizon\Updates\UpdateServiceProvider'
 
 );

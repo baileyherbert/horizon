@@ -21,94 +21,94 @@ use Horizon\Database\Exception\QueryBuilderException;
 class Show implements CommandInterface
 {
 
-    /**
-     * @var QueryBuilder
-     */
-    protected $builder;
+	/**
+	 * @var QueryBuilder
+	 */
+	protected $builder;
 
-    /**
-     * @var string
-     */
-    protected $query = '';
+	/**
+	 * @var string
+	 */
+	protected $query = '';
 
-    /**
-     * Constructs a new instance.
-     *
-     * @param QueryBuilder $builder
-     */
-    public function __construct(QueryBuilder $builder)
-    {
-        $this->builder = $builder;
-    }
+	/**
+	 * Constructs a new instance.
+	 *
+	 * @param QueryBuilder $builder
+	 */
+	public function __construct(QueryBuilder $builder)
+	{
+		$this->builder = $builder;
+	}
 
-    /**
-     * Gets the query as a string.
-     *
-     * @return string
-     */
-    public function compile()
-    {
-        return "{$this->query};";
-    }
+	/**
+	 * Gets the query as a string.
+	 *
+	 * @return string
+	 */
+	public function compile()
+	{
+		return "{$this->query};";
+	}
 
-    /**
-     * SHOW DATABASES
-     *
-     * @return $this
-     */
-    public function databases()
-    {
-        $this->query = 'SHOW DATABASES';
-        return $this;
-    }
+	/**
+	 * SHOW DATABASES
+	 *
+	 * @return $this
+	 */
+	public function databases()
+	{
+		$this->query = 'SHOW DATABASES';
+		return $this;
+	}
 
-    /**
-     * SHOW TABLES
-     *
-     * @return $this
-     */
-    public function tables()
-    {
-        $this->query = 'SHOW TABLES';
-        return $this;
-    }
+	/**
+	 * SHOW TABLES
+	 *
+	 * @return $this
+	 */
+	public function tables()
+	{
+		$this->query = 'SHOW TABLES';
+		return $this;
+	}
 
-    /**
-     * SHOW TABLE STATUS
-     *
-     * @return $this
-     */
-    public function tableStatus()
-    {
-        $this->query = 'SHOW TABLE STATUS';
-        return $this;
-    }
+	/**
+	 * SHOW TABLE STATUS
+	 *
+	 * @return $this
+	 */
+	public function tableStatus()
+	{
+		$this->query = 'SHOW TABLE STATUS';
+		return $this;
+	}
 
-    /**
-     * SHOW TABLES FROM {tbl}
-     *
-     * @return $this
-     */
-    public function columns($table)
-    {
-        $this->query = 'SHOW COLUMNS FROM ' . StringBuilder::formatTableName($this->builder->getPrefix() . $table);
-        return $this;
-    }
+	/**
+	 * SHOW TABLES FROM {tbl}
+	 *
+	 * @return $this
+	 */
+	public function columns($table)
+	{
+		$this->query = 'SHOW COLUMNS FROM ' . StringBuilder::formatTableName($this->builder->getPrefix() . $table);
+		return $this;
+	}
 
-    /**
-     * SHOW CREATE TABLE {tbl}
-     *
-     * @return $this
-     */
-    public function createTable($table)
-    {
-        $this->query = 'SHOW CREATE TABLE ' . StringBuilder::formatTableName($this->builder->getPrefix() . $table);
-        return $this;
-    }
+	/**
+	 * SHOW CREATE TABLE {tbl}
+	 *
+	 * @return $this
+	 */
+	public function createTable($table)
+	{
+		$this->query = 'SHOW CREATE TABLE ' . StringBuilder::formatTableName($this->builder->getPrefix() . $table);
+		return $this;
+	}
 
-    public function getParameters()
-    {
-        return array();
-    }
+	public function getParameters()
+	{
+		return array();
+	}
 
 }

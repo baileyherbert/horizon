@@ -11,164 +11,164 @@ use Horizon\Support\Services\ServiceProvider;
  */
 class Container
 {
-    
-    /**
-     * All service providers registered in the container.
-     *
-     * @var ServiceProvider[]
-     */
-    private $providers = array();
 
-    /**
-     * Maps provided classes (as the key) to all of their providers (array value).
-     *
-     * @var ServiceProvider[][]
-     */
-    private $providersMap = array();
+	/**
+	 * All service providers registered in the container.
+	 *
+	 * @var ServiceProvider[]
+	 */
+	private $providers = array();
 
-    /**
-     * Stores an array of service providers that have been booted.
-     * @var ServiceProvider[]
-     */
-    private static $booted = array();
+	/**
+	 * Maps provided classes (as the key) to all of their providers (array value).
+	 *
+	 * @var ServiceProvider[][]
+	 */
+	private $providersMap = array();
 
-    /**
-     * Constructs a new container instance. The constructor parameters should normally be left blank as they are used
-     * internally for cloning containers.
-     *
-     * @param ServiceProvider[] $providers
-     * @param ServiceProvider[][] $map
-     */
-    public function __construct($providers = array(), $map = array())
-    {
-        $this->providers = $providers;
-        $this->providersMap = $map;
-    }
+	/**
+	 * Stores an array of service providers that have been booted.
+	 * @var ServiceProvider[]
+	 */
+	private static $booted = array();
 
-    /**
-     * Registers a service provider in the container.
-     *
-     * @param ServiceProvider $provider
-     * @return void
-     */
-    public function register(ServiceProvider $provider)
-    {
-        $this->providers[] = $provider;
+	/**
+	 * Constructs a new container instance. The constructor parameters should normally be left blank as they are used
+	 * internally for cloning containers.
+	 *
+	 * @param ServiceProvider[] $providers
+	 * @param ServiceProvider[][] $map
+	 */
+	public function __construct($providers = array(), $map = array())
+	{
+		$this->providers = $providers;
+		$this->providersMap = $map;
+	}
 
-        foreach ($provider->provides() as $className) {
-            // Make sure the array exists
-            if (!array_key_exists($className, $this->providersMap)) {
-                $this->providersMap[$className] = array();
-            }
+	/**
+	 * Registers a service provider in the container.
+	 *
+	 * @param ServiceProvider $provider
+	 * @return void
+	 */
+	public function register(ServiceProvider $provider)
+	{
+		$this->providers[] = $provider;
 
-            // Do not continue if the provider is already in the array
-            if (in_array($provider, $this->providersMap[$className])) continue;
+		foreach ($provider->provides() as $className) {
+			// Make sure the array exists
+			if (!array_key_exists($className, $this->providersMap)) {
+				$this->providersMap[$className] = array();
+			}
 
-            // Add the provider to the class name mapping
-            $this->providersMap[$className][] = $provider;
-        }
-    }
+			// Do not continue if the provider is already in the array
+			if (in_array($provider, $this->providersMap[$className])) continue;
 
-    /**
-     * Boots the service providers registered in the container.
-     */
-    public function boot()
-    {
-        foreach ($this->providers as $provider) {
-            if ($provider->isDeferred()) continue;
-            if (in_array($provider, static::$booted)) continue;
+			// Add the provider to the class name mapping
+			$this->providersMap[$className][] = $provider;
+		}
+	}
 
-            $provider->boot();
-            static::$booted[] = $provider;
-        }
-    }
+	/**
+	 * Boots the service providers registered in the container.
+	 */
+	public function boot()
+	{
+		foreach ($this->providers as $provider) {
+			if ($provider->isDeferred()) continue;
+			if (in_array($provider, static::$booted)) continue;
 
-    /**
-     * Returns a collection of all service objects derived from the given class name.
-     *
-     * @param string $className
-     * @param mixed ...$args
-     * @return ServiceObjectCollection
-     */
-    public function all($className, $args = null)
-    {
-        $args = func_get_args();
-        $collection = null;
+			$provider->boot();
+			static::$booted[] = $provider;
+		}
+	}
 
-        $className = array_shift($args);
+	/**
+	 * Returns a collection of all service objects derived from the given class name.
+	 *
+	 * @param string $className
+	 * @param mixed ...$args
+	 * @return ServiceObjectCollection
+	 */
+	public function all($className, $args = null)
+	{
+		$args = func_get_args();
+		$collection = null;
 
-        // Resolve from service providers
-        if (array_key_exists($className, $this->providersMap)) {
-            $providers = $this->providersMap[$className];
-            $objects = array();
+		$className = array_shift($args);
 
-            foreach ($providers as $provider) {
-                if ($provider->isDeferred() && !in_array($provider, static::$booted)) {
-                    $provider->boot();
-                }
+		// Resolve from service providers
+		if (array_key_exists($className, $this->providersMap)) {
+			$providers = $this->providersMap[$className];
+			$objects = array();
 
-                foreach ($provider->resolve($className, $args) as $resolved) {
-                    if ($resolved instanceof $className) {
-                        $objects[] = $resolved;
-                    }
-                }
-            }
+			foreach ($providers as $provider) {
+				if ($provider->isDeferred() && !in_array($provider, static::$booted)) {
+					$provider->boot();
+				}
 
-            $collection = new ServiceObjectCollection($objects);
-        }
+				foreach ($provider->resolve($className, $args) as $resolved) {
+					if ($resolved instanceof $className) {
+						$objects[] = $resolved;
+					}
+				}
+			}
 
-        if (is_null($collection)) {
-            $collection = new ServiceObjectCollection();
-        }
+			$collection = new ServiceObjectCollection($objects);
+		}
 
-        return $collection;
-    }
+		if (is_null($collection)) {
+			$collection = new ServiceObjectCollection();
+		}
 
-    /**
-     * Returns a singleton of the given class name from the last service provider that can provide it.
-     *
-     * @param string $className
-     * @param mixed ...$args
-     * @return object|null
-     */
-    public function make($className, $args = null)
-    {
-        $args = func_get_args();
-        $className = array_shift($args);
+		return $collection;
+	}
 
-        if (array_key_exists($className, $this->providersMap)) {
-            $providers = $this->providersMap[$className];
-            $reverse = array_reverse($providers);
+	/**
+	 * Returns a singleton of the given class name from the last service provider that can provide it.
+	 *
+	 * @param string $className
+	 * @param mixed ...$args
+	 * @return object|null
+	 */
+	public function make($className, $args = null)
+	{
+		$args = func_get_args();
+		$className = array_shift($args);
 
-            foreach ($reverse as $provider) {
-                if ($providers->isDeferred() && !in_array($provider, static::$booted)) {
-                    $provider->boot();
-                }
+		if (array_key_exists($className, $this->providersMap)) {
+			$providers = $this->providersMap[$className];
+			$reverse = array_reverse($providers);
 
-                $resolved = $provider->resolve($className, $args);
+			foreach ($reverse as $provider) {
+				if ($providers->isDeferred() && !in_array($provider, static::$booted)) {
+					$provider->boot();
+				}
 
-                if (!is_null($resolved)) {
-                    $resolved = (array) $resolved;
+				$resolved = $provider->resolve($className, $args);
 
-                    if (!empty($resolved)) {
-                        return head($resolved);
-                    }
-                }
-            }
-        }
+				if (!is_null($resolved)) {
+					$resolved = (array) $resolved;
 
-        return null;
-    }
+					if (!empty($resolved)) {
+						return head($resolved);
+					}
+				}
+			}
+		}
 
-    /**
-     * Returns a new service container derived from this container. It will contain the same providers and registering
-     * new providers to the new container will not affect this one.
-     *
-     * @return Container
-     */
-    public function derive()
-    {
-        return new Container($this->providers, $this->providersMap);
-    }
+		return null;
+	}
+
+	/**
+	 * Returns a new service container derived from this container. It will contain the same providers and registering
+	 * new providers to the new container will not affect this one.
+	 *
+	 * @return Container
+	 */
+	public function derive()
+	{
+		return new Container($this->providers, $this->providersMap);
+	}
 
 }

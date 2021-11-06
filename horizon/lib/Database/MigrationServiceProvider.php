@@ -12,8 +12,8 @@ use RecursiveIteratorIterator;
  */
 class MigrationServiceProvider extends ServiceProvider {
 
-    public function register() {
-        $this->bind('Horizon\Database\Migration', function() {
+	public function register() {
+		$this->bind('Horizon\Database\Migration', function() {
 			$paths = config('database.migrations', array('app/database/migrations'));
 			$migrations = array();
 
@@ -44,13 +44,13 @@ class MigrationServiceProvider extends ServiceProvider {
 			}
 
 			return $migrations;
-        });
-    }
+		});
+	}
 
-    public function provides() {
-        return array(
-            'Horizon\Database\Migration'
-        );
-    }
+	public function provides() {
+		return array(
+			'Horizon\Database\Migration'
+		);
+	}
 
 }

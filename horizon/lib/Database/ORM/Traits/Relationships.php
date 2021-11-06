@@ -11,66 +11,66 @@ use Horizon\Database\QueryBuilder\StringBuilder;
 trait Relationships
 {
 
-    protected function hasOne($model, $foreignKey = null, $localKey = null)
-    {
-        if (is_null($localKey)) {
-            $localKey = $this->primaryKey;
-        }
+	protected function hasOne($model, $foreignKey = null, $localKey = null)
+	{
+		if (is_null($localKey)) {
+			$localKey = $this->primaryKey;
+		}
 
-        if (is_null($foreignKey)) {
-            $foreignKey = StringBuilder::getSingularModelName($this) . '_' . $localKey;
-        }
+		if (is_null($foreignKey)) {
+			$foreignKey = StringBuilder::getSingularModelName($this) . '_' . $localKey;
+		}
 
-        return new OneToOneRelationship($this, $model, $foreignKey, $localKey);
-    }
+		return new OneToOneRelationship($this, $model, $foreignKey, $localKey);
+	}
 
-    protected function belongsTo($model, $localKey = null, $parentKey = null)
-    {
-        $o = new $model;
+	protected function belongsTo($model, $localKey = null, $parentKey = null)
+	{
+		$o = new $model;
 
-        if (is_null($localKey)) {
-            $localKey = StringBuilder::getSingularModelName($model) . '_' . $o->getPrimaryKey();
-        }
+		if (is_null($localKey)) {
+			$localKey = StringBuilder::getSingularModelName($model) . '_' . $o->getPrimaryKey();
+		}
 
-        if (is_null($parentKey)) {
-            $parentKey = $o->getPrimaryKey();
-        }
-        unset($o);
+		if (is_null($parentKey)) {
+			$parentKey = $o->getPrimaryKey();
+		}
+		unset($o);
 
-        return new BelongsToOneRelationship($this, $model, $parentKey, $localKey);
-    }
+		return new BelongsToOneRelationship($this, $model, $parentKey, $localKey);
+	}
 
-    protected function hasMany($model, $foreignKey = null, $localKey = null)
-    {
-        if (is_null($localKey)) {
-            $localKey = $this->primaryKey;
-        }
+	protected function hasMany($model, $foreignKey = null, $localKey = null)
+	{
+		if (is_null($localKey)) {
+			$localKey = $this->primaryKey;
+		}
 
-        if (is_null($foreignKey)) {
-            $foreignKey = StringBuilder::getSingularModelName($this) . '_' . $this->getPrimaryKey();
-        }
+		if (is_null($foreignKey)) {
+			$foreignKey = StringBuilder::getSingularModelName($this) . '_' . $this->getPrimaryKey();
+		}
 
-        return new OneToManyRelationship($this, $model, $foreignKey, $localKey);
-    }
+		return new OneToManyRelationship($this, $model, $foreignKey, $localKey);
+	}
 
-    protected function belongsToMany($model, $mapTable = null, $localKey = null, $parentKey = null)
-    {
-        if (is_null($localKey)) {
-            $localKey = StringBuilder::getSingularModelName($this) . '_' . $this->getPrimaryKey();
-        }
+	protected function belongsToMany($model, $mapTable = null, $localKey = null, $parentKey = null)
+	{
+		if (is_null($localKey)) {
+			$localKey = StringBuilder::getSingularModelName($this) . '_' . $this->getPrimaryKey();
+		}
 
-        if (is_null($parentKey)) {
-            $o = new $model();
-            $parentKey = StringBuilder::getSingularModelName($model) . '_' . $o->getPrimaryKey();
-            unset($o);
-        }
+		if (is_null($parentKey)) {
+			$o = new $model();
+			$parentKey = StringBuilder::getSingularModelName($model) . '_' . $o->getPrimaryKey();
+			unset($o);
+		}
 
-        return new BelongsToManyRelationship($this, $model, $parentKey, $localKey, $mapTable);
-    }
+		return new BelongsToManyRelationship($this, $model, $parentKey, $localKey, $mapTable);
+	}
 
-    protected static function has($relationship, $operator = '>', $count = 0)
-    {
+	protected static function has($relationship, $operator = '>', $count = 0)
+	{
 
-    }
+	}
 
 }

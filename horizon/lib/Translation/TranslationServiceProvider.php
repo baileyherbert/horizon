@@ -15,33 +15,33 @@ use RecursiveDirectoryIterator;
 class TranslationServiceProvider extends ServiceProvider
 {
 
-    public function register()
-    {
-        $this->bind('Horizon\Translation\Language', function() {
-            $translationsPath = Application::path('app/translations');
-            if (!file_exists($translationsPath)) return;
+	public function register()
+	{
+		$this->bind('Horizon\Translation\Language', function() {
+			$translationsPath = Application::path('app/translations');
+			if (!file_exists($translationsPath)) return;
 
-            $dirIterator = new RecursiveDirectoryIterator($translationsPath);
-            $fileIterator = new RecursiveIteratorIterator($dirIterator);
+			$dirIterator = new RecursiveDirectoryIterator($translationsPath);
+			$fileIterator = new RecursiveIteratorIterator($dirIterator);
 
-            $languages = array();
+			$languages = array();
 
-            foreach ($fileIterator as $file) {
-                if ($file->isDir()) continue;
-                if (!Str::endsWith($file->getFilename(), '.sit')) continue;
+			foreach ($fileIterator as $file) {
+				if ($file->isDir()) continue;
+				if (!Str::endsWith($file->getFilename(), '.sit')) continue;
 
-                $languages[] = new Language($file->getPathname());
-            }
+				$languages[] = new Language($file->getPathname());
+			}
 
-            return $languages;
-        });
-    }
+			return $languages;
+		});
+	}
 
-    public function provides()
-    {
-        return array(
-            'Horizon\Translation\Language'
-        );
-    }
+	public function provides()
+	{
+		return array(
+			'Horizon\Translation\Language'
+		);
+	}
 
 }

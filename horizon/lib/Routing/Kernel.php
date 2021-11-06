@@ -11,18 +11,18 @@ use Horizon\Support\Profiler;
 class Kernel
 {
 
-    /**
-     * Loads route files from service providers and executes them.
-     */
-    public function boot()
-    {
-        Profiler::start('router:boot');
-        $routeFiles = Application::collect('Horizon\Routing\RouteFile');
+	/**
+	 * Loads route files from service providers and executes them.
+	 */
+	public function boot()
+	{
+		Profiler::start('router:boot');
+		$routeFiles = Application::collect('Horizon\Routing\RouteFile');
 
-        foreach ($routeFiles as $file) {
-            $file->load();
-        }
-        Profiler::stop('router:boot');
-    }
+		foreach ($routeFiles as $file) {
+			$file->load();
+		}
+		Profiler::stop('router:boot');
+	}
 
 }

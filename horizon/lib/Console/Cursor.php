@@ -17,11 +17,11 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @author Pierre du Plessis <pdples@gmail.com>
  */
 class Cursor {
-    private $output;
+	private $output;
 
-    public function __construct(OutputInterface $output) {
-        $this->output = $output;
-    }
+	public function __construct(OutputInterface $output) {
+		$this->output = $output;
+	}
 
 	/**
 	 * Moves up by the given number of lines.
@@ -29,11 +29,11 @@ class Cursor {
 	 * @param int $lines
 	 * @return self
 	 */
-    public function moveUp($lines = 1) {
-        $this->output->write(sprintf("\x1b[%dA", $lines));
+	public function moveUp($lines = 1) {
+		$this->output->write(sprintf("\x1b[%dA", $lines));
 
-        return $this;
-    }
+		return $this;
+	}
 
 	/**
 	 * Moves down by the given number of lines.
@@ -41,11 +41,11 @@ class Cursor {
 	 * @param int $lines
 	 * @return self
 	 */
-    public function moveDown($lines = 1) {
-        $this->output->write(sprintf("\x1b[%dB", $lines));
+	public function moveDown($lines = 1) {
+		$this->output->write(sprintf("\x1b[%dB", $lines));
 
-        return $this;
-    }
+		return $this;
+	}
 
 	/**
 	 * Moves right by the given number of columns.
@@ -53,11 +53,11 @@ class Cursor {
 	 * @param int $columns
 	 * @return self
 	 */
-    public function moveRight($columns = 1) {
-        $this->output->write(sprintf("\x1b[%dC", $columns));
+	public function moveRight($columns = 1) {
+		$this->output->write(sprintf("\x1b[%dC", $columns));
 
-        return $this;
-    }
+		return $this;
+	}
 
 	/**
 	 * Moves left by the given number of columns.
@@ -65,11 +65,11 @@ class Cursor {
 	 * @param int $columns
 	 * @return self
 	 */
-    public function moveLeft($columns = 1) {
-        $this->output->write(sprintf("\x1b[%dD", $columns));
+	public function moveLeft($columns = 1) {
+		$this->output->write(sprintf("\x1b[%dD", $columns));
 
-        return $this;
-    }
+		return $this;
+	}
 
 	/**
 	 * Moves to the specified column on the current line.
@@ -77,11 +77,11 @@ class Cursor {
 	 * @param int $column
 	 * @return self
 	 */
-    public function moveToColumn($column) {
-        $this->output->write(sprintf("\x1b[%dG", $column));
+	public function moveToColumn($column) {
+		$this->output->write(sprintf("\x1b[%dG", $column));
 
-        return $this;
-    }
+		return $this;
+	}
 
 	/**
 	 * Moves to the specified column and row.
@@ -90,97 +90,97 @@ class Cursor {
 	 * @param int $row
 	 * @return self
 	 */
-    public function moveToPosition($column, $row) {
-        $this->output->write(sprintf("\x1b[%d;%dH", $row + 1, $column));
+	public function moveToPosition($column, $row) {
+		$this->output->write(sprintf("\x1b[%d;%dH", $row + 1, $column));
 
-        return $this;
-    }
+		return $this;
+	}
 
 	/**
 	 * Saves the cursor position internally.
 	 *
 	 * @return self
 	 */
-    public function savePosition() {
-        $this->output->write("\x1b7");
+	public function savePosition() {
+		$this->output->write("\x1b7");
 
-        return $this;
-    }
+		return $this;
+	}
 
 	/**
 	 * Moves the cursor back to the last saved position.
 	 *
 	 * @return self
 	 */
-    public function restorePosition() {
-        $this->output->write("\x1b8");
+	public function restorePosition() {
+		$this->output->write("\x1b8");
 
-        return $this;
-    }
+		return $this;
+	}
 
 	/**
 	 * Hides the cursor. Please be sure to `show()` it again before closing your application.
 	 *
 	 * @return self
 	 */
-    public function hide() {
-        $this->output->write("\x1b[?25l");
+	public function hide() {
+		$this->output->write("\x1b[?25l");
 
-        return $this;
-    }
+		return $this;
+	}
 
 	/**
 	 * Shows the cursor.
 	 *
 	 * @return self
 	 */
-    public function show() {
-        $this->output->write("\x1b[?25h\x1b[?0c");
+	public function show() {
+		$this->output->write("\x1b[?25h\x1b[?0c");
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Clears all the output from the current line.
+	/**
+	 * Clears all the output from the current line.
 	 *
 	 * @return self
-     */
-    public function clearLine() {
-        $this->output->write("\x1b[2K");
+	 */
+	public function clearLine() {
+		$this->output->write("\x1b[2K");
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Clears all the output from the current line after the current position.
+	/**
+	 * Clears all the output from the current line after the current position.
 	 *
 	 * @return self
-     */
-    public function clearLineAfter() {
-        $this->output->write("\x1b[K");
+	 */
+	public function clearLineAfter() {
+		$this->output->write("\x1b[K");
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Clears all the output from the cursors' current position to the end of the screen.
+	/**
+	 * Clears all the output from the cursors' current position to the end of the screen.
 	 *
 	 * @return self
-     */
-    public function clearOutput() {
-        $this->output->write("\x1b[0J");
+	 */
+	public function clearOutput() {
+		$this->output->write("\x1b[0J");
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Clears the entire screen.
+	/**
+	 * Clears the entire screen.
 	 *
 	 * @return self
-     */
-    public function clearScreen() {
-        $this->output->write("\x1b[2J");
+	 */
+	public function clearScreen() {
+		$this->output->write("\x1b[2J");
 
-        return $this;
-    }
+		return $this;
+	}
 }

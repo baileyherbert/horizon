@@ -10,7 +10,7 @@
  */
 
 return array(
-    'map' => array(
-        'App\\' => '/app/src'
-    )
+	'map' => array(
+		'App\\' => '/app/src'
+	)
 );

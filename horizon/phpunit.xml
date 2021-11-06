@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <phpunit bootstrap="bootstrap/test.php"
-         color="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         stopOnFailure="false"
-         syntaxCheck="false">
-    <testsuite>
-        <testsuite name="Horizon Framework">
-            <directory>./tests</directory>
-            <directory>../app/tests</directory>
-        </testsuite>
-    </testsuite>
-    <php>
-        <env name="HORIZON_ENVIRONMENT" value="test" />
-        <env name="HORIZON_TEST" value="1" />
-    </php>
+		 color="true"
+		 convertErrorsToExceptions="true"
+		 convertNoticesToExceptions="true"
+		 convertWarningsToExceptions="true"
+		 stopOnFailure="false"
+		 syntaxCheck="false">
+	<testsuite>
+		<testsuite name="Horizon Framework">
+			<directory>./tests</directory>
+			<directory>../app/tests</directory>
+		</testsuite>
+	</testsuite>
+	<php>
+		<env name="HORIZON_ENVIRONMENT" value="test" />
+		<env name="HORIZON_TEST" value="1" />
+	</php>
 </phpunit>

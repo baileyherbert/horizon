@@ -10,14 +10,14 @@ use Exception;
  */
 class Schema {
 
-    /**
-     * @var SchemaConnection|null
-     */
+	/**
+	 * @var SchemaConnection|null
+	 */
 	protected static $connection;
 
-    /**
-     * @var SchemaConnection[]
-     */
+	/**
+	 * @var SchemaConnection[]
+	 */
 	protected static $connectionCache = array();
 
 	/**
@@ -38,7 +38,7 @@ class Schema {
 		if (array_key_exists($name, static::$connectionCache)) {
 			$cached = static::$connectionCache[$name];
 
-            return $cached;
+			return $cached;
 		}
 
 		$cached = static::$connectionCache[$name] = new SchemaConnection(Database::connection($name));
@@ -57,50 +57,50 @@ class Schema {
 		$previous = static::$connection;
 		static::$connection = static::connection($connectionName);
 
-        try {
-		    $callable();
-        }
-        catch (Exception $ex) {
-            static::$connection = $previous;
-            throw $ex;
-        }
+		try {
+			$callable();
+		}
+		catch (Exception $ex) {
+			static::$connection = $previous;
+			throw $ex;
+		}
 
 		static::$connection = $previous;
 	}
 
-    /**
-     * Spawns a table blueprint for creating a new table schema. The callable will be passed the Blueprint instance.
-     *
-     * @param string $name
-     * @param callable $callable
-     * @return bool
-     */
-    public static function create($name, $callable) {
-        static::connection()->create($name, $callable);
-    }
+	/**
+	 * Spawns a table blueprint for creating a new table schema. The callable will be passed the Blueprint instance.
+	 *
+	 * @param string $name
+	 * @param callable $callable
+	 * @return bool
+	 */
+	public static function create($name, $callable) {
+		static::connection()->create($name, $callable);
+	}
 
-    /**
-     * Spawns a table blueprint for modifying an existing table schema. The callable will be passed the Blueprint
-     * instance.
-     *
-     * @param string $name
-     * @param callable $callable
-     * @return bool
-     */
-    public static function table($name, $callable) {
-        return static::connection()->table($name, $callable);
-    }
+	/**
+	 * Spawns a table blueprint for modifying an existing table schema. The callable will be passed the Blueprint
+	 * instance.
+	 *
+	 * @param string $name
+	 * @param callable $callable
+	 * @return bool
+	 */
+	public static function table($name, $callable) {
+		return static::connection()->table($name, $callable);
+	}
 
-    /**
-     * Renames a table if it exists.
-     *
-     * @param string $from Current table name.
-     * @param string $to New table name.
-     * @return bool
-     */
-    public static function rename($from, $to) {
-        return static::connection()->rename($from, $to);
-    }
+	/**
+	 * Renames a table if it exists.
+	 *
+	 * @param string $from Current table name.
+	 * @param string $to New table name.
+	 * @return bool
+	 */
+	public static function rename($from, $to) {
+		return static::connection()->rename($from, $to);
+	}
 
 	/**
 	 * Truncates a table.
@@ -112,55 +112,55 @@ class Schema {
 		return static::connection()->truncate($name);
 	}
 
-    /**
-     * Drops a table. Will error if the table does not exist.
-     *
-     * @param string $name
-     * @return bool
-     */
-    public static function drop($name) {
-        return static::connection()->drop($name);
-    }
+	/**
+	 * Drops a table. Will error if the table does not exist.
+	 *
+	 * @param string $name
+	 * @return bool
+	 */
+	public static function drop($name) {
+		return static::connection()->drop($name);
+	}
 
-    /**
-     * Checks if the table exists and drops it.
-     *
-     * @param string $name
-     * @return bool
-     */
-    public static function dropIfExists($name) {
-        return static::connection()->dropIfExists($name);
-    }
+	/**
+	 * Checks if the table exists and drops it.
+	 *
+	 * @param string $name
+	 * @return bool
+	 */
+	public static function dropIfExists($name) {
+		return static::connection()->dropIfExists($name);
+	}
 
-    /**
-     * Gets the current prefix or prepends it to the given table name.
-     *
-     * @param string $name
-     * @return string
-     */
-    public static function prefix($name = null) {
+	/**
+	 * Gets the current prefix or prepends it to the given table name.
+	 *
+	 * @param string $name
+	 * @return string
+	 */
+	public static function prefix($name = null) {
 		return static::connection()->prefix($name);
-    }
+	}
 
-    /**
-     * Checks if the table exists in the database.
-     *
-     * @param string $tableName
-     * @return bool
-     */
-    public static function hasTable($tableName) {
-        return static::connection()->hasTable($tableName);
-    }
+	/**
+	 * Checks if the table exists in the database.
+	 *
+	 * @param string $tableName
+	 * @return bool
+	 */
+	public static function hasTable($tableName) {
+		return static::connection()->hasTable($tableName);
+	}
 
-    /**
-     * Checks if the column exists in the database.
-     *
-     * @param string $tableName
-     * @param string $columnName
-     * @return bool
-     */
-    public static function hasColumn($tableName, $columnName) {
-        return static::connection()->hasColumn($tableName, $columnName);
-    }
+	/**
+	 * Checks if the column exists in the database.
+	 *
+	 * @param string $tableName
+	 * @param string $columnName
+	 * @return bool
+	 */
+	public static function hasColumn($tableName, $columnName) {
+		return static::connection()->hasColumn($tableName, $columnName);
+	}
 
 }

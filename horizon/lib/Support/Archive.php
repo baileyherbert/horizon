@@ -295,19 +295,19 @@ class Archive
 			$entrya['dir'] = ($entrya['dir'] == '.' ? '' : $entrya['dir']);
 			$entrya['name'] = basename($entrya['name']);
 
-            if ($entrya['dir'] != '') {
-                $bp = '';
-                $dirpieces = explode('/', $entrya['dir']);
+			if ($entrya['dir'] != '') {
+				$bp = '';
+				$dirpieces = explode('/', $entrya['dir']);
 
-                foreach ($dirpieces as $p) {
-                    $bp .= $p . '/';
+				foreach ($dirpieces as $p) {
+					$bp .= $p . '/';
 					$dname = substr($bp, 0, -1);
 
-                    if (!in_array($dname, $this->dirs)) {
+					if (!in_array($dname, $this->dirs)) {
 						$this->dirs[] = $dname;
 					}
-                }
-            }
+				}
+			}
 
 			$filedata = substr($filedata, 26 + $unpackeda['filename_length']);
 

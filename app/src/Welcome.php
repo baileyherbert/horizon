@@ -8,9 +8,9 @@ use Horizon\Http\Response;
 class Welcome extends Controller
 {
 
-    public function __invoke(Response $response)
-    {
-        view('start');
-    }
+	public function __invoke(Response $response)
+	{
+		view('start');
+	}
 
 }

@@ -8,65 +8,65 @@ use Horizon\Database\Model;
 class OneToOneRelationship extends Relationship
 {
 
-    protected $model;
-    protected $foreignModelName;
-    protected $foreignKey;
-    protected $localKey;
-    protected $foreignTableName;
+	protected $model;
+	protected $foreignModelName;
+	protected $foreignKey;
+	protected $localKey;
+	protected $foreignTableName;
 
-    public function __construct(Model $model, $foreignModelName, $foreignKey, $localKey)
-    {
-        $foreignModel = new $foreignModelName;
+	public function __construct(Model $model, $foreignModelName, $foreignKey, $localKey)
+	{
+		$foreignModel = new $foreignModelName;
 
-        $this->model = $model;
-        $this->foreignModelName = $foreignModelName;
-        $this->foreignKey = $foreignKey;
-        $this->localKey = $localKey;
-        $this->foreignTableName = $foreignModel->getTable();
+		$this->model = $model;
+		$this->foreignModelName = $foreignModelName;
+		$this->foreignKey = $foreignKey;
+		$this->localKey = $localKey;
+		$this->foreignTableName = $foreignModel->getTable();
 
-        unset($foreignModel);
+		unset($foreignModel);
 
-        $this->query = \DB::select()->from($this->foreignTableName);
-        $this->query->where($this->foreignKey, '=', $this->model->{$this->localKey});
-        $this->query->limit(1);
-        $this->query->setModel($this->foreignModelName);
-    }
+		$this->query = \DB::select()->from($this->foreignTableName);
+		$this->query->where($this->foreignKey, '=', $this->model->{$this->localKey});
+		$this->query->limit(1);
+		$this->query->setModel($this->foreignModelName);
+	}
 
-    public function get()
-    {
-        $results = $this->query->get();
+	public function get()
+	{
+		$results = $this->query->get();
 
-        if (isset($results[0])) {
-            return $results[0];
-        }
-    }
+		if (isset($results[0])) {
+			return $results[0];
+		}
+	}
 
-    public function set(Model $model)
-    {
-        $localKey = $this->localKey;
-        $foreignKey = $this->foreignKey;
+	public function set(Model $model)
+	{
+		$localKey = $this->localKey;
+		$foreignKey = $this->foreignKey;
 
-        $model->$foreignKey = $this->model->$localKey;
-        $model->save();
-    }
+		$model->$foreignKey = $this->model->$localKey;
+		$model->save();
+	}
 
-    public function attach(Model $model)
-    {
-        $foreignKey = $this->foreignKey;
+	public function attach(Model $model)
+	{
+		$foreignKey = $this->foreignKey;
 
-        $model->$foreignKey = $this->{$this->model->localKey};
-        $model->save();
-    }
+		$model->$foreignKey = $this->{$this->model->localKey};
+		$model->save();
+	}
 
-    public function detach()
-    {
-        $query = \DB::update()->table($this->foreignTableName);
-        $query->values(array(
-            ($this->foreignKey) => null
-        ));
-        $query->where($this->foreignKey, '=', $this->model->{$this->localKey});
-        $query->limit(1);
-        $query->exec();
-    }
+	public function detach()
+	{
+		$query = \DB::update()->table($this->foreignTableName);
+		$query->values(array(
+			($this->foreignKey) => null
+		));
+		$query->where($this->foreignKey, '=', $this->model->{$this->localKey});
+		$query->limit(1);
+		$query->exec();
+	}
 
 }

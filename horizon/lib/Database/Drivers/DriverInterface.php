@@ -8,52 +8,52 @@ use Horizon\Database\Exception\DatabaseException;
 interface DriverInterface
 {
 
-    /**
-     * Creates a new driver instance.
-     *
-     * @param Database $database
-     */
-    public function __construct(Database $database);
+	/**
+	 * Creates a new driver instance.
+	 *
+	 * @param Database $database
+	 */
+	public function __construct(Database $database);
 
-    /**
-     * Connects to the database server.
-     *
-     * @throws DatabaseException on error
-     */
-    public function connect();
+	/**
+	 * Connects to the database server.
+	 *
+	 * @throws DatabaseException on error
+	 */
+	public function connect();
 
-    /**
-     * Executes a query on the database server and returns the results.
-     *
-     * @param string $statement
-     * @param array $bindings
-     * @return int|object|bool
-     *
-     * @throws DatabaseException on error
-     */
-    public function query($statement, $bindings = null);
+	/**
+	 * Executes a query on the database server and returns the results.
+	 *
+	 * @param string $statement
+	 * @param array $bindings
+	 * @return int|object|bool
+	 *
+	 * @throws DatabaseException on error
+	 */
+	public function query($statement, $bindings = null);
 
-    /**
-     * Validates a query using prepared statements and throws an exception upon invalid syntax. This is ignored on
-     * unsupported drivers or platforms.
-     *
-     * @param string $statement
-     * @return void
-     *
-     * @throws DatabaseException on error
-     */
-    public function validate($statement);
+	/**
+	 * Validates a query using prepared statements and throws an exception upon invalid syntax. This is ignored on
+	 * unsupported drivers or platforms.
+	 *
+	 * @param string $statement
+	 * @return void
+	 *
+	 * @throws DatabaseException on error
+	 */
+	public function validate($statement);
 
-    /**
-     * Checks if the server supports this driver.
-     *
-     * @return bool
-     */
-    public static function supported();
+	/**
+	 * Checks if the server supports this driver.
+	 *
+	 * @return bool
+	 */
+	public static function supported();
 
-    /**
-     * Closes the connection.
-     */
-    public function close();
+	/**
+	 * Closes the connection.
+	 */
+	public function close();
 
 }

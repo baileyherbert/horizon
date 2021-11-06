@@ -19,168 +19,168 @@ use Symfony\Component\Console\Output\OutputInterface;
 class Kernel
 {
 
-    /**
-     * @var Application
-     */
-    private $consoleApp;
+	/**
+	 * @var Application
+	 */
+	private $consoleApp;
 
-    /**
-     * @var InputInterface
-     */
-    private $input;
+	/**
+	 * @var InputInterface
+	 */
+	private $input;
 
-    /**
-     * @var OutputInterface
-     */
-    private $output;
+	/**
+	 * @var OutputInterface
+	 */
+	private $output;
 
-    /**
-     * Boots the console kernel.
-     */
-    public function boot()
-    {
-        $this->initConsoleApp();
-        $this->initCommands();
-        $this->runConsoleApp();
-    }
+	/**
+	 * Boots the console kernel.
+	 */
+	public function boot()
+	{
+		$this->initConsoleApp();
+		$this->initCommands();
+		$this->runConsoleApp();
+	}
 
-    public function inject(InputInterface $input, OutputInterface $output)
-    {
-        $this->input = $input;
-        $this->output = $output;
-    }
+	public function inject(InputInterface $input, OutputInterface $output)
+	{
+		$this->input = $input;
+		$this->output = $output;
+	}
 
-    /**
-     * @return InputInterface
-     */
-    public function input()
-    {
-        return $this->input;
-    }
+	/**
+	 * @return InputInterface
+	 */
+	public function input()
+	{
+		return $this->input;
+	}
 
-    /**
-     * @return OutputInterface
-     */
-    public function output()
-    {
-        return $this->output;
-    }
+	/**
+	 * @return OutputInterface
+	 */
+	public function output()
+	{
+		return $this->output;
+	}
 
-    private function initConsoleApp()
-    {
-        $this->consoleApp = new Application();
-        $this->consoleApp->setName(config('console.name', 'Horizon'));
-        $this->consoleApp->setVersion(config('console.version', Framework::version()));
-    }
+	private function initConsoleApp()
+	{
+		$this->consoleApp = new Application();
+		$this->consoleApp->setName(config('console.name', 'Horizon'));
+		$this->consoleApp->setVersion(config('console.version', Framework::version()));
+	}
 
-    private function initCommands()
-    {
-        $commands = config('console.commands', array());
+	private function initCommands()
+	{
+		$commands = config('console.commands', array());
 
-        $commands = array_merge($commands, array(
-            'make:migration' => 'Horizon\Ace\Commands\Make\MakeMigrationCommand',
-            'migration:fresh' => 'Horizon\Ace\Commands\Migrations\MigrationFreshCommand',
-            'migration:rollback' => 'Horizon\Ace\Commands\Migrations\MigrationRollbackCommand',
-            'migration:run' => 'Horizon\Ace\Commands\Migrations\MigrationRunCommand',
-            'migration:status' => 'Horizon\Ace\Commands\Migrations\MigrationStatusCommand',
-        ));
+		$commands = array_merge($commands, array(
+			'make:migration' => 'Horizon\Ace\Commands\Make\MakeMigrationCommand',
+			'migration:fresh' => 'Horizon\Ace\Commands\Migrations\MigrationFreshCommand',
+			'migration:rollback' => 'Horizon\Ace\Commands\Migrations\MigrationRollbackCommand',
+			'migration:run' => 'Horizon\Ace\Commands\Migrations\MigrationRunCommand',
+			'migration:status' => 'Horizon\Ace\Commands\Migrations\MigrationStatusCommand',
+		));
 
-        foreach ($commands as $key => $className) {
-            if (class_exists($className)) {
-                $this->consoleApp->add(new $className($key));
-            }
-        }
-    }
+		foreach ($commands as $key => $className) {
+			if (class_exists($className)) {
+				$this->consoleApp->add(new $className($key));
+			}
+		}
+	}
 
-    private function runConsoleApp()
-    {
-        try {
-            $output = new ConsoleOutput();
+	private function runConsoleApp()
+	{
+		try {
+			$output = new ConsoleOutput();
 
-            $this->consoleApp->setAutoExit(false);
-            $this->consoleApp->setCatchExceptions(false);
-            $code = $this->consoleApp->run(null, $output);
+			$this->consoleApp->setAutoExit(false);
+			$this->consoleApp->setCatchExceptions(false);
+			$code = $this->consoleApp->run(null, $output);
 
-            // Write an extra line at the end for powershell (it removes the last line from stdout)
-            if (env('PSModulePath')) {
-                $output->writeln('');
-            }
+			// Write an extra line at the end for powershell (it removes the last line from stdout)
+			if (env('PSModulePath')) {
+				$output->writeln('');
+			}
 
-            abort($code);
-        }
-        catch (\Exception $ex) {
-            $this->handleException($ex);
-        }
-    }
+			abort($code);
+		}
+		catch (\Exception $ex) {
+			$this->handleException($ex);
+		}
+	}
 
-    /**
-     * Executes the given command on the internal command line tool with the specified arguments array. Errors will
-     * not be caught. The exit code is returned.
-     *
-     * @param string[] $args
-     * @param OutputInterface|null $output
-     * @return int
-     */
-    public function execute(array $args, OutputInterface $output = null) {
-        $input = new ArrayInput($args);
-        $output = $output ?: new ConsoleOutput();
+	/**
+	 * Executes the given command on the internal command line tool with the specified arguments array. Errors will
+	 * not be caught. The exit code is returned.
+	 *
+	 * @param string[] $args
+	 * @param OutputInterface|null $output
+	 * @return int
+	 */
+	public function execute(array $args, OutputInterface $output = null) {
+		$input = new ArrayInput($args);
+		$output = $output ?: new ConsoleOutput();
 
-        $this->consoleApp->setAutoExit(false);
-        $this->consoleApp->setCatchExceptions(false);
-        return $this->consoleApp->run($input, $output);
-    }
+		$this->consoleApp->setAutoExit(false);
+		$this->consoleApp->setCatchExceptions(false);
+		return $this->consoleApp->run($input, $output);
+	}
 
-    /**
-     * Returns the current console app (if we are running in a console context) or null otherwise.
-     *
-     * @return Application|null
-     */
-    public function getConsoleApp() {
-        return $this->consoleApp;
-    }
+	/**
+	 * Returns the current console app (if we are running in a console context) or null otherwise.
+	 *
+	 * @return Application|null
+	 */
+	public function getConsoleApp() {
+		return $this->consoleApp;
+	}
 
-    /**
-     * Handles the given exception from within a console command.
-     *
-     * @param Exception|Error $ex
-     * @return void
-     */
-    public function handleException($ex) {
-        if (!($ex instanceof RuntimeException)) {
-            $error = HorizonError::fromException($ex);
-            $handler = ErrorMiddleware::getErrorHandler();
+	/**
+	 * Handles the given exception from within a console command.
+	 *
+	 * @param Exception|Error $ex
+	 * @return void
+	 */
+	public function handleException($ex) {
+		if (!($ex instanceof RuntimeException)) {
+			$error = HorizonError::fromException($ex);
+			$handler = ErrorMiddleware::getErrorHandler();
 
-            if (config('errors.console_logging', true)) {
-                $handler->log($error);
-            }
+			if (config('errors.console_logging', true)) {
+				$handler->log($error);
+			}
 
-            if (config('errors.console_reporting', true)) {
-                $handler->report($error);
-            }
-        }
+			if (config('errors.console_reporting', true)) {
+				$handler->report($error);
+			}
+		}
 
-        $this->consoleApp->renderException($ex, $this->output);
-        abort($this->getExitCodeForThrowable($ex));
-    }
+		$this->consoleApp->renderException($ex, $this->output);
+		abort($this->getExitCodeForThrowable($ex));
+	}
 
-    /**
-     * @param \Exception|\Throwable $throwable
-     * @return int
-     */
-    private function getExitCodeForThrowable($throwable) {
-        $exitCode = $throwable->getCode();
+	/**
+	 * @param \Exception|\Throwable $throwable
+	 * @return int
+	 */
+	private function getExitCodeForThrowable($throwable) {
+		$exitCode = $throwable->getCode();
 
-        if (is_numeric($exitCode)) {
-            $exitCode = (int) $exitCode;
+		if (is_numeric($exitCode)) {
+			$exitCode = (int) $exitCode;
 
-            if (0 === $exitCode) {
-                $exitCode = 1;
-            }
-        }
-        else {
-            $exitCode = 1;
-        }
+			if (0 === $exitCode) {
+				$exitCode = 1;
+			}
+		}
+		else {
+			$exitCode = 1;
+		}
 
-        return $exitCode;
-    }
+		return $exitCode;
+	}
 }

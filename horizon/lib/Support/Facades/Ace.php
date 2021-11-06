@@ -8,8 +8,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 class Ace {
 
 	/**
-     * Executes the given command on the internal command line tool with the specified arguments array. Errors will
-     * not be caught. The exit code is returned, and output is sent directly to stdout unless an output stream is
+	 * Executes the given command on the internal command line tool with the specified arguments array. Errors will
+	 * not be caught. The exit code is returned, and output is sent directly to stdout unless an output stream is
 	 * provided in the third argument.
 	 *
 	 * @param string $command
