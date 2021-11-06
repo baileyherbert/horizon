@@ -41,10 +41,8 @@ class FastEncrypt {
 	 */
 	private static function generateCipher($iv) {
 		$cipher = new AES();
-		$blockLength = ($cipher->getBlockLength() >> 3);
-
-		$cipher->setKey($blockLength, self::generateKey());
-		$cipher->setIV($blockLength, $iv);
+		$cipher->setKey(self::generateKey());
+		$cipher->setIV($iv);
 
 		return $cipher;
 	}
