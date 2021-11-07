@@ -41,7 +41,7 @@ class MakeMigrationCommand extends Command {
 		$name = $this->getNormalizedName($in->getArgument('name'));
 		$timestamp = time();
 
-		$migrationPath = config('database.migrations', ['app/database/migrations'])[0];
+		$migrationPath = config('app.paths.migrations', ['app/database/migrations'])[0];
 
 		$fileName = "{$timestamp}_{$name}.php";
 		$dirPath = Framework::path($migrationPath);

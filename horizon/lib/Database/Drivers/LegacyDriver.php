@@ -47,7 +47,9 @@ class LegacyDriver implements DriverInterface {
 
 		Profiler::start('database:connect', 'mysql');
 		$config = $this->database->getConfig();
-		$handle = @mysql_connect($config['host'], $config['username'], $config['password']);
+		$port = isset($config['port']) ? $config['port'] : 3306;
+		$host = $config['host'] . ':' . $port;
+		$handle = @mysql_connect($host, $config['username'], $config['password']);
 
 		if (!$handle) {
 			throw new DatabaseDriverException(sprintf('Failed to connect to database: %s', mysql_error($this->handle)), mysql_errno($this->handle));
@@ -183,7 +185,7 @@ class LegacyDriver implements DriverInterface {
 	 * @return bool
 	 */
 	public static function supported() {
-		return (function_exists('mysql_connect'));
+		return true;//(function_exists('mysql_ping'));
 	}
 
 	/**

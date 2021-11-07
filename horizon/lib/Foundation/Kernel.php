@@ -130,7 +130,7 @@ class Kernel {
 	 */
 	private function autoload() {
 		// Get namespaces from configuration
-		foreach (config('namespaces.map') as $namespace => $relativePath) {
+		foreach (config('autoloader.namespaces') as $namespace => $relativePath) {
 			Autoloader::mount($namespace, Application::path($relativePath));
 		}
 

@@ -14,7 +14,7 @@ class MigrationServiceProvider extends ServiceProvider {
 
 	public function register() {
 		$this->bind('Horizon\Database\Migration', function() {
-			$paths = config('database.migrations', array('app/database/migrations'));
+			$paths = config('app.paths.migrations', array('app/database/migrations'));
 			$migrations = array();
 
 			foreach ($paths as $relativePath) {

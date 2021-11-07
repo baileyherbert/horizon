@@ -51,10 +51,12 @@ class PdoDriver implements DriverInterface {
 
 		try {
 			$config = $this->database->getConfig();
+			$port = isset($config['port']) ? (int)$config['port'] : 3306;
 			$handle = new PDO(
 				sprintf(
-					'mysql:host=%s;dbname=%s;charset=%s',
+					'mysql:host=%s;port=%s;dbname=%s;charset=%s',
 					$config['host'],
+					$port,
 					$config['database'],
 					$config['charset']
 				),

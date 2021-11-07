@@ -1,91 +1,70 @@
 <?php
 
 /**
- * Configuration: Database
- * Level: Easy
- *
- * This file sets the target database settings for the framework to use when query building. If you are not using a
- * database, you can leave these settings as-is; they are only loaded and used when calling methods in the database
- * component of Horizon.
+ * This file configures the databases that the application can use.
  */
+return [
 
-return array(
+	/**
+	 * The `main` connection is the default connection that will be used across the application. You can add additional
+	 * connections by giving them different names.
+	 */
+	'main' => [
 
-	'main' => array(
+		/**
+		 * The connection details for the database. It is recommended to set these using environment variables.
+		 */
 		'host' => env('db_host', '127.0.0.1'),
+		'port' => env('db_port', 3306),
 		'database' => env('db_database', 'database'),
 		'username' => env('db_username', 'root'),
 		'password' => env('db_password', ''),
 
-		/*
-			The default character set for the database.
-			Recommended value: 'utf8mb4'
-		*/
+		/**
+		 * The default character set for the database connection.
+		 */
 		'charset' => env('db_charset', 'utf8mb4'),
-
-		/*
-			The default character set collation for the database.
-			Recommended value: 'utf8mb4_unicode_ci'
-		*/
 		'collation' => env('db_collation', 'utf8mb4_unicode_ci'),
 
-		/*
-			A prefix to apply to table names. This can help isolate tables in a shared database. Leave blank to disable.
-		*/
+		/**
+		 * The prefix to use for tables. This can be used to isolate tables in a shared database.
+		 */
 		'prefix' => env('db_prefix', ''),
 
-		/*
-			Determines whether query logging is enabled by default. This can use a large amount of memory in applications
-			which run large amounts of queries, but can be used to identify slow queries in debugging.
-
-			Recommended value: false
-		*/
+		/**
+		 * Sets whether to log queries for this database. This log can be retrieved at runtime to help track down
+		 * problems or to detect slow queries, but it can also use a large amount of memory, so it's recommended to
+		 * leave it off on production.
+		 */
 		'query_logging' => env('db_query_logging', false),
 
-		/*
-			Determines whether model objects loaded via the Horizon ORM will be cached in memory. This can prevent repeated
-			queries and improve performance, but may use more memory depending on the number of objects.
-
-			Recommended value: true
-		*/
+		/**
+		 * Sets whether model objects will be cached under their primary keys when loaded through this database. This
+		 * can grant a massive performance boost when frequently querying by primary key, but will use more memory.
+		 */
 		'cache' => env('db_caching', true),
 
-		/*
-			Horizon supports the MySQLi, PDO, and MySQL extensions, and will automatically detect and use them in that order.
-			However, you may wish to prioritize a certain driver. If the specified driver is available on the system, it will
-			be preferred above any others. If it is not available on the system, the next best available driver will be used
-			instead.
-
-			Available options:
-
-				- 'mysqli'      The mysql improved extension from PHP. Uses secure prepared statements.
-				- 'pdo'         The PDO extension from PECL. Uses secure prepared statements.
-				- 'mysql'       The legacy mysql extension from PHP. Uses real escaping.
-				- 'none'        No preference, best available driver is used.
-
-			Disclaimer: The 'mysql' extension does not support prepared statements and has been deprecated since PHP 5.5.
-			Its usage should generally be avoided, but if the application uses Horizon's query builder, it will use real
-			escaping to implement psuedo-prepared statements.
-
-			Recommended value: 'mysqli'
-		*/
-		'preferred_driver' => env('db_driver', 'mysqli'),
-
-		/*
-			Determines whether the application's timezone will be set on database connections. This will execute as a
-			single query and will slow down database initialization variably based on latency. If you know that your
-			database server and application share the same time zone, disable this.
-		*/
-		'send_timezone' => true,
+		/**
+		 * Sets the preferred driver to use for this connection. The default value (`none`) will automatically choose
+		 * from the best available driver.
+		 *
+		 * 	- 'mysqli'    The mysql improved extension from PHP.
+		 * 	- 'pdo'       The PDO extension from PECL.
+		 * 	- 'mysql'     The legacy deprecated mysql extension.
+		 * 	- 'none'      No preference, best available driver is used.
+		 *
+		 * Disclaimer: The 'mysql' driver does not support prepared statements and has been deprecated since PHP 5.5.
+		 * Its usage should be avoided, but Horizon's query builder will use real escaping to implement psuedo-prepared
+		 * statements.
+		 */
+		'preferred_driver' => env('db_driver', 'none'),
 
 		/**
-		 * An array of directories, relative to the application's root directory, where migrations should be created in
-		 * and loaded from. The `ace make:migration` command line tool will create new migrations in the first entry
-		 * here.
+		 * Sets whether to apply the application's timezone to this database connection. This will execute as a single
+		 * query and will slow down database initialization variably based on latency. If you know that your database
+		 * server and application share the same time zone, disable this.
 		 */
-		'migrations' => array(
-			'app/database/migrations'
-		)
-	)
+		'send_timezone' => true
+	]
 
-);
+];

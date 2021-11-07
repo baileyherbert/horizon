@@ -28,6 +28,7 @@ class Autoloader {
 	 * @param string $path
 	 */
 	public static function mount($namespace, $path) {
+		$namespace = rtrim($namespace, '\\') . '\\';
 		static::$map[$namespace] = $path;
 
 		if (!static::$started) {

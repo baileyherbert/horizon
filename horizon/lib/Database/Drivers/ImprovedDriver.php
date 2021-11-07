@@ -49,7 +49,8 @@ class ImprovedDriver implements DriverInterface {
 
 		Profiler::start('database:connect', 'mysqli');
 		$config = $this->database->getConfig();
-		$handle = @new mysqli($config['host'], $config['username'], $config['password'], $config['database']);
+		$port = isset($config['port']) ? (int)$config['port'] : 3306;
+		$handle = @new mysqli($config['host'], $config['username'], $config['password'], $config['database'], $port);
 
 		if ($handle->connect_error) {
 			throw new DatabaseDriverException(sprintf('Failed to connect to database: %s', $handle->connect_error), $handle->connect_errno);

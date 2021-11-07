@@ -1,73 +1,30 @@
 <?php
 
 /**
- * Configuration: Session
- * Level: Advanced
- *
- * This file allows you to customize how Horizon's HTTP component manages user sessions. It is important to configure
- * these settings properly in shared hosting environments if you're storing sensitive information.
- *
- * Horizon automatically generates a unique 'key' for its sessions in which all session data is placed under. This
- * means if you have other applications using PHP sessions on the same website, they will not conflict.
+ * This file configures how the application manages sessions.
  */
-
 return array(
 
-	/*
-		Sets the public session name. This is visible to users from within their browser's Inspect Element panel
-		or via scripts, but isn't significant. Must contain only letters and numbers, and cannot consist entirely
-		of digits.
-
-		Warning: Changing this value will delete all sessions under the old value. Data will not transfer, so
-		changing this in production isn't a good idea.
-
-		Default value: 'Horizon'
-	*/
+	/**
+	 * Sets the name for the session cookie.
+	 */
 	'name' => env('session_name', 'Horizon'),
 
-	/*
-		Determines which driver to use for storing persistent user data between pageloads.
-		Available values:
-
-			- 'cookie'      Stores the session in a secure PHP session which is persisted using cookies.
-			- 'database'    Stores the session in the sessions table of the configured mysql database.
-			- 'array'       Stores the session in memory via a PHP array. This does not persist.
-
-		Default value: 'cookie'
-	*/
-	'driver' => env('session_driver', 'cookie'),
-
-	/*
-		Determines whether to encrypt the data payload stored within the session. While this may not be necessary
-		on a private server, it's still probably a good idea. Session drivers use symmetric key encryption which is
-		lightweight, fast, and has no extension or server requirements. The key is configured automatically.
-
-		Changing this value will automatically convert existing sessions to encrypted/decrypted format, if needed.
-
-		Available values:
-
-			- true          Enables automatic encryption and decryption of session payloads.
-			- false         Does not encrypt the session payloads.
-
-		Default value: true
-	*/
+	/**
+	 * Sets whether the session cookie contents will be encrypted before saving them to the disk. This protects the
+	 * contents of the cookie from being read or modified by other users on the server. Please set the `APP_SECRET`
+	 * environment variable to a secure, random string to strengthen this encryption.
+	 */
 	'encrypt' => env('session_encryption', true),
 
-	/*
-		Determines whether to use `serialize()` or `json_encode()` for data stored in the session. Using native
-		serialization allows more advanced data types to be stored, but causes decreased session write performance.
-		JSON restricts data types to a safe selection, but causes slower read performance.
-
-		Changing this will cause existing sessions to become invalidated. The cookie driver will clear all affected
-		cookies automatically.
-
-		Available values:
-
-			- true          Uses native serialization (faster read / accepts all types).
-			- false         Uses JSON serialization (faster write / accepts basic types).
-
-		Default value: true
-	*/
+	/**
+	 * Sets whether session cookie contents will be serialized with the `serialize()` function. This allows most data
+	 * types to be stored, but poses a security risk if data written to the session isn't controlled. When disabled,
+	 * session cookies will store data using `json_encode()` instead.
+	 *
+	 * Note: Changing this will cause all existing sessions to become invalidated. The cookie driver will reset the
+	 * affected cookies automatically.
+	 */
 	'serialize' => true
 
 );

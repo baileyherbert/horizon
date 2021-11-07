@@ -1,161 +1,68 @@
 <?php
 
 /**
- * Configuration: Errors
- * Level: Advanced
- *
- * This file provides settings for error handling, reporting, and logging.
+ * This file configures default error handling behaviors for the application.
  */
+return [
 
-return array(
-
-	/*
-		Sets the class to use for error reporting and displaying. If your application is using its own error handler,
-		be sure to implement the Horizon\Exception\ErrorHandlerInterface, otherwise it will be ignored.
-
-		Default value: 'Horizon\Exception\ErrorHandler'
-	*/
+	/**
+	 * Sets the class to use for error handling. This class will receive all uncaught errors and is responsible for
+	 * displaying, logging, and reporting them.
+	 */
 	'handler' => 'Horizon\Exception\ErrorHandler',
 
-	/*
-		Determines whether errors in the framework or app will be displayed in detail in the response. This is
-		not recommended in a production environment because some errors and exceptions could potentially contain
-		sensitive details.
-
-		Available values:
-
-			- true          Errors and exceptions will be included in the output.
-			- false         Errors and exceptions will be silently ignored if possible.
-
-		Default value: development=true, production=false
-	*/
+	/**
+	 * Sets whether errors should be printed to the output. When disabled, fatal errors will trigger a dedicated error
+	 * page to be sent instead.
+	 */
 	'display_errors' => env('display_errors', is_mode('development')),
 
-	/*
-		Determines the error severity level at which errors should be displayed. Severity levels which are lower will not
-		be displayed. This only applies if 'display_errors' is set to true.
-
-		Available values:
-
-			- 1             Shows errors, warnings, deprecations, strict violations, notices.
-			- 2             Shows errors, warnings, deprecations, strict violations.
-			- 3             Shows errors, warnings, deprecations.
-			- 4             Shows errors, warnings.
-			- 5             Shows errors.
-
-		Default value: 4
-	*/
+	/**
+	 * Sets the severity level at which errors should be printed.
+	 *
+	 * - 1 => Shows errors, warnings, deprecations, strict violations, notices.
+	 * - 2 => Shows errors, warnings, deprecations, strict violations.
+	 * - 3 => Shows errors, warnings, deprecations.
+	 * - 4 => Shows errors, warnings.
+	 * - 5 => Shows errors.
+	 */
 	'display_sensitivity' => env('display_errors_level', 3),
 
-	/*
-		Determines whether errors in the framework or app will be logged to the filesystem. Errors are always logged
-		to the 'app' directory of the framework.
-
-		Available values:
-
-			- true          Errors and exceptions will be logged.
-			- false         Errors and exceptions will not be logged.
-
-		Default value: true
-	*/
+	/**
+	 * Sets whether errors should be logged to the `app/error_log` file.
+	 */
 	'log_errors' => env('error_logging', true),
 
-	/*
-		Determines the error severity level at which errors should be logged. Severity levels which are lower will not
-		be displayed. This only applies if 'display_errors' is set to true.
-
-		Available values:
-
-			- 1             Shows errors, warnings, deprecations, strict violations, notices.
-			- 2             Shows errors, warnings, deprecations, strict violations.
-			- 3             Shows errors, warnings, deprecations.
-			- 4             Shows errors, warnings.
-			- 5             Shows errors.
-
-		Default value: 3
-	*/
+	/**
+	 * Sets the severity level at which errors should be logged.
+	 *
+	 * - 1 => Shows errors, warnings, deprecations, strict violations, notices.
+	 * - 2 => Shows errors, warnings, deprecations, strict violations.
+	 * - 3 => Shows errors, warnings, deprecations.
+	 * - 4 => Shows errors, warnings.
+	 * - 5 => Shows errors.
+	 */
 	'log_sensitivity' => env('error_logging_level', 3),
 
-	/*
-		Determines the error severity level at which errors should be logged. Severity levels which are lower will not
-		be displayed. This only applies if 'display_errors' is set to true.
-
-		Available values:
-
-			- 1             Shows errors, warnings, deprecations, strict violations, notices.
-			- 2             Shows errors, warnings, deprecations, strict violations.
-			- 3             Shows errors, warnings, deprecations.
-			- 4             Shows errors, warnings.
-			- 5             Shows errors.
-
-		Default value: 3
-	*/
+	/**
+	 * Sets the severity level at which errors should be reported.
+	 *
+	 * - 1 => Shows errors, warnings, deprecations, strict violations, notices.
+	 * - 2 => Shows errors, warnings, deprecations, strict violations.
+	 * - 3 => Shows errors, warnings, deprecations.
+	 * - 4 => Shows errors, warnings.
+	 * - 5 => Shows errors.
+	 */
 	'report_sensitivity' => env('error_reporting_level', 4),
 
-	/*
-		Determines whether code in the application can use the '@' operator to silence their errors. If enabled, any
-		errors occurring from code using this operator will not be logged. However, any fatal, page-breaking errors
-		will still be  logged if 'log_errors' is set to true.
-
-		Available values:
-
-			- true          Silenced errors and exceptions will not be logged.
-			- false         Silenced errors and exceptions will be logged.
-
-		Default value: true
-	*/
-	'silent_logging' => env('error_logging_silence_enabled', true),
-
-	/*
-		Determines whether code in the application can use the '@' operator to silence their errors. If enabled, any
-		errors occurring from code using this operator will not be displayed. However, any fatal, page-breaking errors
-		will still be displayed if 'display_errors' is set to true.
-
-		Available values:
-
-			- true          Silenced errors and exceptions will not be rendered.
-			- false         Silenced errors and exceptions will be rendered.
-
-		Default value: true
-	*/
-	'silent_display' => env('display_errors_silence_enabled', true),
-
-	/*
-		Determines whether code in the application can use the '@' operator to silence their errors. If enabled, any
-		errors occurring from code using this operator will not be reported. However, any fatal, page-breaking errors
-		will still be reported.
-
-		Available values:
-
-			- true          Silenced errors and exceptions will not be reported.
-			- false         Silenced errors and exceptions will be reported.
-
-		Default value: true
-	*/
-	'silent_reporting' => env('error_reporting_silence_enabled', true),
-
-	/*
-		Determines whether errors that occur within a console command are logged.
-
-		Available values:
-
-			- true          Console command errors are logged.
-			- false         Console command errors are not logged.
-
-		Default value: true
+	/**
+	 * Sets whether errors that occur within console commands are logged.
 	 */
-	'console_logging' => env('console_error_logging', true),
+	'console_logging' => env('console_logging', is_mode('production')),
 
-	/*
-		Determines whether errors that occur within a console command are reported.
-
-		Available values:
-
-			- true          Console command errors are reported.
-			- false         Console command errors are not reported.
-
-		Default value: true
+	/**
+	 * Sets whether errors that occur within console commands are reported.
 	 */
-	'console_reporting' => env('console_error_reporting', true),
+	'console_reporting' => env('console_logging', is_mode('production'))
 
-);
+];

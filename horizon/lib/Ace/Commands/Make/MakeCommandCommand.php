@@ -104,7 +104,7 @@ class MakeCommandCommand extends Command {
 	private function addCommandToConfig($commandName, $className, OutputInterface $out) {
 		$configPath = Framework::path('app/config/console.php');
 		$content = file_get_contents($configPath);
-		$expression = "/^([\t ]*)(['\"])commands(?:['\"]) => (?:array\(|\[) *(.*?)^[\t ]*\)(,?)/ms";
+		$expression = "/^([\t ]*)(['\"])commands(?:['\"]) => (?:array\(|\[) *([^\]\)]*)[\]\)](,?)/ms";
 
 		if (!preg_match_all($expression, $content, $matches)) {
 			return $out->writeln('<fg=red>[×]</> couldn\'t add command to app/config/console.php');
@@ -141,9 +141,9 @@ class MakeCommandCommand extends Command {
 		ksort($newLines);
 
 		$newArray = implode('', [
-			$indentation, $quoteCharacter, 'commands', $quoteCharacter, " => array(\n",
+			$indentation, $quoteCharacter, 'commands', $quoteCharacter, " => [\n",
 			rtrim(implode("\n", $newLines), ','),
-			"\n", $indentation, ')', $trailingComma
+			"\n", $indentation, ']', $trailingComma
 		]);
 
 		$content = preg_replace($expression, $newArray, $content);

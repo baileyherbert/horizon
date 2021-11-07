@@ -72,7 +72,7 @@ class Database extends EventEmitter {
 	 */
 	protected function getBestDriver() {
 		$drivers = $this->getDrivers();
-		$preferredDriver = config('database.preferred_driver', 'none');
+		$preferredDriver = isset($this->config['preferred_driver']) ? $this->config['preferred_driver'] : 'none';
 
 		if (isset($drivers[$preferredDriver])) {
 			$class = $drivers[$preferredDriver];
@@ -93,7 +93,7 @@ class Database extends EventEmitter {
 	 */
 	public function getDriverDetails() {
 		$drivers = $this->getDrivers();
-		$preferredDriver = config('database.preferred_driver', 'none');
+		$preferredDriver = isset($this->config['preferred_driver']) ? $this->config['preferred_driver'] : 'none';
 		$selected = null;
 
 		if (isset($drivers[$preferredDriver])) {

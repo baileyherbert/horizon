@@ -1,23 +1,25 @@
 # Horizon
 
-This is my personal framework for writing web applications. The goal with this framework was to support as many server
-configurations as possible, and reduce requirements to a minimum. I'd like to say I succeeded.
+This is a web application framework that was designed from the ground up to work on virtually all servers.
 
-## Requirements
+## Inspiration
 
-The requirements are pretty simple:
+Laravel is a great framework, but it isn't suitable for building distributed web applications because:
 
-- PHP 5.4 or higher.
-- One supported database extension (currently `mysql`, `mysqli`, and `pdo_mysql`).
+- It requires rewrite rules.
+- It requires the latest PHP versions.
+- It requires several extensions including PDO.
+- It won't work in subdirectories.
 
-The following are optional but recommended. If they are missing, the framework can compensate:
+Horizon has none of these constraints. It will automatically choose from the database extensions installed on the
+server. It will switch to legacy routing with `.php` files on servers that don't support rewrite rules. It works as
+far back as PHP 5.4. All of that, while still offering many of the same features, albeit with less depth.
 
-- Rewrite rules.
-- Mbstring.
+Horizon is intended to be used for developing applications that will be sold on [CodeCanyon](https://codecanyon.net).
 
 ## Documentation
 
-The documentation is hosted in a [separate repository](https://github.com/baileyherbert/horizon-docs). Here are some quick links.
+This framework is undergoing some heavy reworking and documentation is out of date.
 
 **Get started**
 - [Introduction](https://github.com/baileyherbert/horizon-docs/blob/master/index.md)
@@ -28,6 +30,7 @@ The documentation is hosted in a [separate repository](https://github.com/bailey
 - [File Structure](https://github.com/baileyherbert/horizon-docs/blob/master/architecture/files.md)
 - [Service Container](https://github.com/baileyherbert/horizon-docs/blob/master/architecture/container.md)
 - [Service Providers](https://github.com/baileyherbert/horizon-docs/blob/master/architecture/providers.md)
+- [Environment](https://github.com/baileyherbert/horizon-docs/blob/master/architecture/environment.md)
 - [Facades](https://github.com/baileyherbert/horizon-docs/blob/master/architecture/facades.md)
 
 **Essentials**

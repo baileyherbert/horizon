@@ -1,14 +1,13 @@
 <?php
 
 /**
- * Configuration: Providers
- * Level: Developer
+ * This file configures the service providers to boot.
  *
- * This file allows you to add or modify the framework's service providers. These providers are middleware used for the
- * sole purpose of retrieving and/or loading relevant data and files.
+ * Most core services will offer a provider class that loads the resources necessary to perform the service. For
+ * example, the `ViewServiceProvider` helps the framework understand where your view templates can be found. If there
+ * is something in this list that you're not using, remove it to reduce the app's boot time.
  */
-
-return array(
+return [
 
 	'Horizon\Routing\RoutingServiceProvider',
 	'Horizon\View\ViewServiceProvider',
@@ -16,4 +15,4 @@ return array(
 	'Horizon\Translation\TranslationServiceProvider',
 	'Horizon\Database\MigrationServiceProvider'
 
-);
+];
