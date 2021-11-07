@@ -5,7 +5,8 @@
 		convertNoticesToExceptions="true"
 		convertWarningsToExceptions="true"
 		stopOnFailure="false"
-		syntaxCheck="false">
+		syntaxCheck="false"
+		backupGlobals="true">
 	<testsuite>
 		<testsuite name="Horizon Framework">
 			<directory>./tests</directory>

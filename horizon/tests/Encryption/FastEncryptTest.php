@@ -19,8 +19,8 @@ class FastEncryptTest extends TestCase
         $response1 = FastEncrypt::encrypt($random);
         $response2 = FastEncrypt::encrypt($random);
 
-        // Verify we're getting the same encrypted data
-        $this->assertEquals($response1, $response2, 'Encrypted data does not match.');
+        // Verify we're not getting the same encrypted data
+        $this->assertNotEquals($response1, $response2, 'Encrypted data does not match.');
     }
 
     /**

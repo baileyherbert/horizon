@@ -259,10 +259,6 @@ class CookieDriver implements DriverInterface {
 	 * @return void
 	 */
 	public function put($key, $value) {
-		if (is_null($value)) {
-			return $this->forget($key);
-		}
-
 		$this->sessionData[$key] = $value;
 		$_SESSION[$this->token][$key] = $this->encrypt($this->serialize($value));
 	}

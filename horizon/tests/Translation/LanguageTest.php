@@ -71,7 +71,6 @@ class LanguageTest extends TestCase
 
         // With a constraint
         $this->assertEquals('Translated text!', $language->translate('Original text...'), 'horizon.index');
-        $this->assertEquals('Translated text!', $language->translate('Original text...'), ['horizon.index']);
 
         // With flags
         $this->assertEquals('It works.', $language->translate('this is case-insensitive.'));

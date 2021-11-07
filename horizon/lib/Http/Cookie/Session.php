@@ -25,7 +25,7 @@ class Session {
 
 		// Load from configuration if no driver was specified at runtime
 		if (is_null($desiredDriver)) {
-			$desiredDriver = config('session.driver');
+			$desiredDriver = config('session.driver', 'cookie');
 		}
 
 		// Throw an exception if the session driver is not found
