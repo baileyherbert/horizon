@@ -71,6 +71,7 @@ class Kernel {
 		$commands = config('console.commands', array());
 
 		$commands = array_merge($commands, array(
+			'build' => 'Horizon\Ace\Commands\Core\BuildCommand',
 			'make:command' => 'Horizon\Ace\Commands\Make\MakeCommandCommand',
 			'make:controller' => 'Horizon\Ace\Commands\Make\MakeControllerCommand',
 			'make:migration' => 'Horizon\Ace\Commands\Make\MakeMigrationCommand',
@@ -97,16 +98,26 @@ class Kernel {
 			$this->consoleApp->setCatchExceptions(false);
 			$code = $this->consoleApp->run(null, $output);
 
-			// Write an extra line at the end for powershell (it removes the last line from stdout)
-			if (env('PSModulePath')) {
-				$output->writeln('');
-			}
-
-			abort($code);
+			$this->exit($code);
 		}
 		catch (\Exception $ex) {
 			$this->handleException($ex);
 		}
+	}
+
+	/**
+	 * Exits the application.
+	 *
+	 * @param int $code
+	 * @return void
+	 */
+	public function exit($code = 0) {
+		// Write an extra line at the end for powershell (it removes the last line from stdout)
+		if (env('PSModulePath') && $this->output != null) {
+			$this->output->writeln('');
+		}
+
+		abort($code);
 	}
 
 	/**

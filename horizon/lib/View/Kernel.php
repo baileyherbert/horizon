@@ -31,7 +31,10 @@ class Kernel {
 	 * Boots the kernel.
 	 */
 	public function boot() {
-		$this->viewLoaders = Application::collect('Horizon\View\ViewLoader');
+		$this->viewLoaders = array_merge(
+			Application::collect('Horizon\View\ViewLoader')->all(),
+			Application::collect('Horizon\View\ComponentLoader')->all(),
+		);
 	}
 
 	/**
@@ -83,6 +86,15 @@ class Kernel {
 		}
 
 		return $this->componentManager;
+	}
+
+	/**
+	 * Returns an array of view loaders.
+	 *
+	 * @return ViewLoader[]
+	 */
+	public function getLoaders() {
+		return array_values($this->viewLoaders);
 	}
 
 }

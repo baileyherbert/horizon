@@ -41,4 +41,14 @@ class Command extends SymfonyCommand {
 		return Application::kernel()->console()->output();
 	}
 
+	/**
+	 * Exits the application with the optional code.
+	 *
+	 * @param int $code
+	 * @return void
+	 */
+	protected function exit($code = 0) {
+		Application::kernel()->console()->exit($code);
+	}
+
 }

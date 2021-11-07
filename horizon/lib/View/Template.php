@@ -3,6 +3,7 @@
 namespace Horizon\View;
 
 use Horizon\Foundation\Application;
+use Horizon\View\Twig\TwigCacheLoader;
 use Horizon\View\Twig\TwigLoader;
 
 class Template {
@@ -63,6 +64,16 @@ class Template {
 		}
 
 		return $response;
+	}
+
+	/**
+	 * Compiles the template and generates cache, even if cache is disabled.
+	 *
+	 * @return string
+	 */
+	public function cache() {
+		$loader = new TwigCacheLoader($this);
+		$loader->cache();
 	}
 
 }

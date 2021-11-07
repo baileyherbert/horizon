@@ -48,4 +48,48 @@ class ViewLoader {
 		return null;
 	}
 
+	/**
+	 * Returns the path to the directory where this loader's files are stored.
+	 *
+	 * @return string
+	 */
+	public function getPath() {
+		return $this->path;
+	}
+
+	/**
+	 * Resolves all view templates in the loader and returns them as absolute paths.
+	 *
+	 * @return string[]
+	 */
+	public function resolveAll() {
+		return $this->getFiles($this->path);
+	}
+
+	/**
+	 * Recursively fetches templates from a directory.
+	 *
+	 * @param string $dir
+	 * @param string[] $results
+	 * @return string[]
+	 */
+	private function getFiles($dir, &$results = array()) {
+		$files = scandir($dir);
+
+		foreach ($files as $key => $value) {
+			$path = realpath($dir . DIRECTORY_SEPARATOR . $value);
+
+			if (!is_dir($path)) {
+				if (ends_with($path, ['.blade.php', '.twig', '.html'])) {
+					$results[] = $path;
+				}
+			}
+			else if ($value != "." && $value != "..") {
+				$this->getFiles($path, $results);
+			}
+		}
+
+		return $results;
+	}
+
 }

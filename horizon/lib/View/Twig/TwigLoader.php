@@ -56,6 +56,15 @@ class TwigLoader {
 	}
 
 	/**
+	 * Compiles and caches the template (if caching is enabled).
+	 *
+	 * @return string
+	 */
+	public function cache() {
+		$this->environment->loadTemplate($this->template->getPath());
+	}
+
+	/**
 	 * Creates the twig loader instance.
 	 *
 	 * @return TwigFileLoader

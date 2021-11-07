@@ -96,6 +96,22 @@ class Manager {
 	}
 
 	/**
+	 * Prepares the specified component for compilation. This is done automatically when using `compile()`.
+	 *
+	 * @param string $componentName
+	 * @return void
+	 */
+	public function prepare($componentName) {
+		$this->currentlyCompiling[$componentName] = true;
+
+		$viewName = '@component/' . $componentName;
+		$absoluteFilePath = $this->getComponentPath($componentName);
+		$component = $this->getComponent($absoluteFilePath);
+
+		$this->contents[$viewName] = $component['contents'];
+	}
+
+	/**
 	 * Prepares the component and returns an array consisting of the file 'contents' with the dependency line removed,
 	 * and 'className' with the extracted dependency class name.
 	 *
