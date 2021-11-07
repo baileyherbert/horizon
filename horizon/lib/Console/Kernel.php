@@ -71,7 +71,11 @@ class Kernel {
 		$commands = config('console.commands', array());
 
 		$commands = array_merge($commands, array(
+			'make:command' => 'Horizon\Ace\Commands\Make\MakeCommandCommand',
+			'make:controller' => 'Horizon\Ace\Commands\Make\MakeControllerCommand',
 			'make:migration' => 'Horizon\Ace\Commands\Make\MakeMigrationCommand',
+			'make:model' => 'Horizon\Ace\Commands\Make\MakeModelCommand',
+			'make:view' => 'Horizon\Ace\Commands\Make\MakeViewCommand',
 			'migration:fresh' => 'Horizon\Ace\Commands\Migrations\MigrationFreshCommand',
 			'migration:rollback' => 'Horizon\Ace\Commands\Migrations\MigrationRollbackCommand',
 			'migration:run' => 'Horizon\Ace\Commands\Migrations\MigrationRunCommand',

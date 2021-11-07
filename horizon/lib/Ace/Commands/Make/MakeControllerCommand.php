@@ -12,18 +12,25 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class MakeMigrationCommand extends Command {
+class MakeControllerCommand extends Command {
 
 	/**
 	 * Configures the command.
 	 */
 	protected function configure() {
-		$this->setDescription('Makes a new migration file');
+		$this->setDescription('Makes a new controller file');
 
 		$this->addArgument(
 			'name',
 			InputArgument::REQUIRED,
-			'The name of the migration.'
+			'The name of the controller.'
+		);
+
+		$this->addOption(
+			'root',
+			'r',
+			InputOption::VALUE_NONE,
+			'Uses the root source directory.'
 		);
 
 		$this->addOption(
@@ -39,14 +46,22 @@ class MakeMigrationCommand extends Command {
 	 */
 	protected function execute(InputInterface $in, OutputInterface $out) {
 		$name = $this->getNormalizedName($in->getArgument('name'));
-		$timestamp = time();
+		$className = Path::basename($name);
 
-		$migrationPath = config('database.migrations', ['app/database/migrations'])[0];
+		if (in_array($className, ['Controller', 'Request', 'Response'])) {
+			throw new RuntimeException('Cannot use reserved class name "' . $className . '"');
+		}
 
-		$fileName = "{$timestamp}_{$name}.php";
-		$dirPath = Framework::path($migrationPath);
-		$filePath = Path::resolve($dirPath, $fileName);
+		$filePath = Path::resolve(
+			Framework::path($in->getOption('root') ? 'app/src' : 'app/src/Http/Controllers'),
+			"$name.php"
+		);
+
+		$dirPath = Path::dirname($filePath);
 		$filePathRelative = str_replace('\\', '/', substr($filePath, strlen(Framework::path()) + 1));
+
+		$namespace = ($in->getOption('root') ? 'App/' : 'App/Http/Controllers/') . $name;
+		$namespace = str_replace('/', '\\', $namespace);
 
 		if (!file_exists($dirPath)) {
 			mkdir($dirPath, 0755, true);
@@ -57,8 +72,8 @@ class MakeMigrationCommand extends Command {
 		}
 
 		$result = file_put_contents($filePath, $this->getTemplate([
-			'timestamp' => $timestamp,
-			'description' => 'Describe the migration.'
+			'name' => $className,
+			'namespace' => $namespace
 		]));
 
 		$out->writeln("<fg=green>[✓]</> create $filePathRelative");
@@ -79,11 +94,12 @@ class MakeMigrationCommand extends Command {
 	 * @return string
 	 */
 	protected function getNormalizedName($name) {
-		$name = trim(str_lower($name));
-		$name = str_replace("'", '', $name);
-		$name = preg_replace("/[^a-z0-9_]+/", "_", $name);
-		$name = preg_replace("/_+/", '_', $name);
-		$name = trim($name, '_-');
+		$name = str_replace('\\', '/', $name);
+		$name = ucfirst(trim(trim($name), '/'));
+
+		if (!ends_with($name, 'controller', true)) {
+			$name .= 'Controller';
+		}
 
 		return $name;
 	}
@@ -95,7 +111,7 @@ class MakeMigrationCommand extends Command {
 	 * @return string
 	 */
 	protected function getTemplate($context) {
-		$path = Path::join(Framework::path('horizon'), 'resources/ace/make/migration.twig');
+		$path = Path::join(Framework::path('horizon'), 'resources/ace/make/controller.twig');
 		$view = new Template($path, $context);
         return $view->render();
 	}

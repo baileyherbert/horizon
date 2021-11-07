@@ -106,6 +106,16 @@ class Path {
 	}
 
 	/**
+	 * Returns the parent directory of the given path.
+	 *
+	 * @param string $fileName
+	 * @return string
+	 */
+	public static function dirname($fileName) {
+		return dirname($fileName);
+	}
+
+	/**
 	 * Calculates and returns the relative path required to go from $currentPath to $targetPath in a browser
 	 * link.
 	 *

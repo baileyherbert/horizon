@@ -1,0 +1,25 @@
+<?php
+
+namespace {{ $namespace }};
+
+use Horizon\Console\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
+class {{ $name }} extends Command {
+
+	/**
+	 * Configures the command.
+	 */
+	protected function configure() {
+		$this->setDescription('Runs some code');
+	}
+
+	/**
+	 * Executes the command.
+	 */
+	protected function execute(InputInterface $in, OutputInterface $out) {
+
+	}
+
+}
