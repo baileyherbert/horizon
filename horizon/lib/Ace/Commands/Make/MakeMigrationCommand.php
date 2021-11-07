@@ -53,7 +53,7 @@ class MakeMigrationCommand extends Command {
 		}
 
 		if (file_exists($filePath)) {
-			throw new RuntimeException('File already exists: ' . $fileName);
+			throw new RuntimeException('<fg=red>[×]</> conflict ' . $fileName);
 		}
 
 		$result = file_put_contents($filePath, $this->getTemplate([
@@ -61,7 +61,7 @@ class MakeMigrationCommand extends Command {
 			'description' => 'Describe the migration.'
 		]));
 
-		$out->writeln("<fg=green>[✓]</> Created migration file at <fg=yellow>$filePathRelative</>");
+		$out->writeln("<fg=green>[✓]</> create $filePathRelative");
 
 		if ($result === false) {
 			throw new RuntimeException('Error writing file: ' . $filePath);

@@ -44,13 +44,13 @@ class MigrationRunCommand extends Command {
 		$count = count($migrator->getPendingMigrations());
 
 		if ($count === 0) {
-			return $out->writeln('<fg=green>✔</>  nothing to do');
+			return $out->writeln('<fg=green>[✓]</> nothing to do');
 		}
 
 		// Print the migrations as we start them
 		$migrator->on('migration:start', function(Migration $migration) use ($migrator, $out) {
 			$verb = $migrator->dryRun ? 'test' : 'migrate';
-			$out->write("$verb <fg=yellow>{$migration->getRecordName()}</> ");
+			$out->write("<fg=yellow>[ᐅ]</> $verb <fg=white>{$migration->getRecordName()}</> ");
 
 			// For dry runs, the next output will be captured queries, so push a newline now
 			if ($migrator->dryRun) {
@@ -77,8 +77,8 @@ class MigrationRunCommand extends Command {
 
 		$plural = $count !== 1 ? 's' : '';
 		$out->writeln($migrator->dryRun ?
-			"<fg=green>✔</>  all migrations passed" :
-			"<fg=green>✔</>  committed {$count} migration{$plural} as batch #{$batch->getId()}"
+			"<fg=green>[✓]</> all migrations passed" :
+			"<fg=green>[✓]</> committed {$count} migration{$plural} as batch #{$batch->getId()}"
 		);
 	}
 

@@ -35,12 +35,12 @@ class MigrationRollbackCommand extends Command {
 		$migrations = 0;
 
 		if ($count === 0) {
-			return $out->writeln('<fg=green>✔</>  nothing to do');
+			return $out->writeln('<fg=green>[✓]</> nothing to do');
 		}
 
 		// Print the migrations as we start them
 		$migrator->on('migration:start', function(Migration $migration) use ($migrator, $out) {
-			$out->write("rollback <fg=yellow>{$migration->getRecordName()}</> ");
+			$out->write("<fg=yellow>[ᐅ]</> rollback {$migration->getRecordName()} ");
 		});
 
 		// Print the time it takes migrations to finish
@@ -55,13 +55,13 @@ class MigrationRollbackCommand extends Command {
 		});
 
 		foreach ($batches as $batch) {
-			$out->writeln(sprintf('rollback <fg=yellow>batch #%d</>', $batch->getId()));
+			$out->writeln(sprintf('<fg=yellow>[ᐅ]</> rollback batch #%d', $batch->getId()));
 			$migrations += count($batch->getMigrations());
 			$batch->rollback();
 		}
 
 		$out->writeln(sprintf(
-			'<fg=green>✔</>  rolled back %d %s (%d %s)',
+			'<fg=green>[✓]</> reverted %d %s (%d %s)',
 			$count,
 			str_plural('batch', $count),
 			$migrations,

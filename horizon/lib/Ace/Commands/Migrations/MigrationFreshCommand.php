@@ -21,11 +21,11 @@ class MigrationFreshCommand extends Command {
 	 * Executes the command.
 	 */
 	protected function execute(InputInterface $in, OutputInterface $out) {
-		$out->writeln('dropping all tables');
+		$out->writeln('<fg=blue>[drop all tables]</>');
 		$this->clearTables($out);
 		$out->writeln('');
 
-		$out->writeln('running migrations');
+		$out->writeln('<fg=blue>[run migrations]</>');
 		Ace::run('migration:run', [], $out);
 	}
 
@@ -35,6 +35,8 @@ class MigrationFreshCommand extends Command {
 	 * @return void
 	 */
 	protected function clearTables(OutputInterface $out) {
+		$numTables = 0;
+
 		foreach (Application::kernel()->database()->getConnections() as $connectionName => $connection) {
 			$database = $connection->getDatabase()->getDatabaseName();
 
@@ -42,18 +44,22 @@ class MigrationFreshCommand extends Command {
 			$connection->query('SET FOREIGN_KEY_CHECKS = 0;');
 
 			foreach ($rows as $row) {
+				$numTables++;
 				$tableName = array_values((array) $row)[0];
 				$out->writeln(sprintf(
-					'%s: <fg=yellow>%s.%s</>',
+					'<fg=yellow>[ᐅ]</> [%s] %s.%s',
 					$connectionName,
 					$database,
 					$tableName
 				));
+
 				$connection->query('DROP TABLE IF EXISTS `' . $tableName . '`;');
 			}
 
 			$connection->query('SET FOREIGN_KEY_CHECKS = 1;');
 		}
+
+		$out->writeln('<fg=green>[✓]</> dropped tables');
 	}
 
 }

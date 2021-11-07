@@ -38,7 +38,7 @@ class AsciiTable {
 	 *
 	 * @var string
 	 */
-	public $noResultsText = 'Nothing to show.';
+	public $noResultsText = 'nothing to show';
 
 	/**
 	 * Adds a column to the table.
