@@ -321,7 +321,7 @@ class Migrator extends EventEmitter {
 	private function createSchemaTable() {
 		if (!Schema::hasTable('horizon_schema')) {
 			Schema::create('horizon_schema', function(Blueprint $blueprint) {
-				$blueprint->increments('id')->primary();
+				$blueprint->increments('id');
 				$blueprint->string('name')->unique();
 				$blueprint->integer('batch', false, true);
 				$blueprint->dateTime('migration_time');
