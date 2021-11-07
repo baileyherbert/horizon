@@ -64,7 +64,7 @@ return [
 		 * query and will slow down database initialization variably based on latency. If you know that your database
 		 * server and application share the same time zone, disable this.
 		 */
-		'send_timezone' => true
+		'send_timezone' => env('db_send_timezone', true)
 	]
 
 ];
