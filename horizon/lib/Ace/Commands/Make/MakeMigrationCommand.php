@@ -19,19 +19,8 @@ class MakeMigrationCommand extends Command {
 	 */
 	protected function configure() {
 		$this->setDescription('Makes a new migration file');
-
-		$this->addArgument(
-			'name',
-			InputArgument::REQUIRED,
-			'The name of the migration.'
-		);
-
-		$this->addOption(
-			'open',
-			'o',
-			InputOption::VALUE_NONE,
-			'Opens the file with your default PHP editor.'
-		);
+		$this->addArgument('name', InputArgument::REQUIRED, 'The name of the migration.' );
+		$this->addOption('open', 'o', InputOption::VALUE_NONE, 'Opens the file with your default PHP editor.');
 	}
 
 	/**
