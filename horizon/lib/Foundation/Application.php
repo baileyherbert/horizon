@@ -102,10 +102,12 @@ class Application {
 		$root = rtrim(self::basedir(), '/');
 
 		if (Application::routing() === 'legacy') {
-			return $root . '/app/public/' . ltrim($relative, '/');
+			$target = trim(config('app.paths.public_legacy', 'app/public'), '/');
+			return $root . '/' . $target . '/' . ltrim($relative, '/');
 		}
 
-		return $root . '/assets/' . ltrim($relative, '/');
+		$target = trim(config('app.paths.public', 'assets'), '/');
+		return $root . '/' . $target . '/' . ltrim($relative, '/');
 	}
 
 	/**
