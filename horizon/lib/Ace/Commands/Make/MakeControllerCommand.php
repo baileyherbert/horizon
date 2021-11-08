@@ -2,11 +2,8 @@
 
 namespace Horizon\Ace\Commands\Make;
 
+use Horizon\Ace\Util\FileGenerator;
 use Horizon\Console\Command;
-use Horizon\Foundation\Framework;
-use Horizon\Support\Path;
-use Horizon\View\Template;
-use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -19,101 +16,50 @@ class MakeControllerCommand extends Command {
 	 */
 	protected function configure() {
 		$this->setDescription('Makes a new controller file');
+		$this->addArgument('name', InputArgument::REQUIRED, 'The name of the controller.');
+		$this->addOption('root', 'r', InputOption::VALUE_NONE, 'Uses the root source directory.');
+		$this->addOption('open', 'o', InputOption::VALUE_NONE, 'Opens the file with your default PHP editor.');
 
-		$this->addArgument(
-			'name',
-			InputArgument::REQUIRED,
-			'The name of the controller.'
-		);
-
-		$this->addOption(
-			'root',
-			'r',
-			InputOption::VALUE_NONE,
-			'Uses the root source directory.'
-		);
-
-		$this->addOption(
-			'open',
-			'o',
-			InputOption::VALUE_NONE,
-			'Opens the file with your default PHP editor.'
-		);
+		$this->addOption('post', null, InputOption::VALUE_NONE, 'Adds a POST route method.');
+		$this->addOption('delete', null, InputOption::VALUE_NONE, 'Adds a DELETE route method.');
+		$this->addOption('put', null, InputOption::VALUE_NONE, 'Adds a PUT route method.');
+		$this->addOption('patch', null, InputOption::VALUE_NONE, 'Adds a PATCH route method.');
+		$this->addOption('blank', null, InputOption::VALUE_NONE, 'Skips adding route methods.');
 	}
 
 	/**
 	 * Executes the command.
 	 */
 	protected function execute(InputInterface $in, OutputInterface $out) {
-		$name = $this->getNormalizedName($in->getArgument('name'));
-		$className = Path::basename($name);
+		$generator = new FileGenerator($in->getArgument('name'));
+		$generator->namespace = $in->getOption('root') ? 'App' : 'App/Http/Controllers';
+		$generator->baseDir = $in->getOption('root') ? 'app/src' : 'app/src/Http/Controllers';
+		$generator->classNameSuffix = 'Controller';
 
-		if (in_array($className, ['Controller', 'Request', 'Response'])) {
-			throw new RuntimeException('Cannot use reserved class name "' . $className . '"');
-		}
-
-		$filePath = Path::resolve(
-			Framework::path($in->getOption('root') ? 'app/src' : 'app/src/Http/Controllers'),
-			"$name.php"
-		);
-
-		$dirPath = Path::dirname($filePath);
-		$filePathRelative = str_replace('\\', '/', substr($filePath, strlen(Framework::path()) + 1));
-
-		$namespace = ($in->getOption('root') ? 'App/' : 'App/Http/Controllers/') . $name;
-		$namespace = str_replace('/', '\\', $namespace);
-
-		if (!file_exists($dirPath)) {
-			mkdir($dirPath, 0755, true);
-		}
-
-		if (file_exists($filePath)) {
-			throw new RuntimeException('File conflict: ' . $filePath);
-		}
-
-		$result = file_put_contents($filePath, $this->getTemplate([
-			'name' => $className,
-			'namespace' => $namespace
-		]));
-
-		$out->writeln("<fg=green>[✓]</> create $filePathRelative");
-
-		if ($result === false) {
-			throw new RuntimeException('Error writing file: ' . $filePath);
-		}
+		$generator->assertClassName(['Controller', 'Request', 'Response']);
+		$generator->renderClassFile('make/controller', $this->getRouteMethods($in), $out);
 
 		if ($in->getOption('open')) {
-			exec('start ' . $filePath);
+			exec('start ' . $generator->resolveClassPath());
 		}
 	}
 
 	/**
-	 * Returns the migration name as a normalized string for use in the file name.
+	 * Returns an array of route methods to include in the generated template.
 	 *
-	 * @param string $name
-	 * @return string
+	 * @param InputInterface $in
+	 * @return string[]
 	 */
-	protected function getNormalizedName($name) {
-		$name = str_replace('\\', '/', $name);
-		$name = ucfirst(trim(trim($name), '/'));
+	protected function getRouteMethods(InputInterface $in) {
+		$methods = ['get' => true];
 
-		if (!ends_with($name, 'controller', true)) {
-			$name .= 'Controller';
-		}
+		if ($in->getOption('blank')) return [];
+		if ($in->getOption('post')) $methods['post'] = true;
+		if ($in->getOption('put')) $methods['put'] = true;
+		if ($in->getOption('patch')) $methods['patch'] = true;
+		if ($in->getOption('delete')) $methods['delete'] = true;
 
-		return $name;
-	}
-
-	/**
-	 * Renders the migration class template.
-	 *
-	 * @param array $context
-	 * @return string
-	 */
-	protected function getTemplate($context) {
-		$path = Path::join(Framework::path('horizon'), 'resources/ace/make/controller.twig');
-		$view = new Template($path, $context);
-        return $view->render();
+		return $methods;
 	}
 
 }

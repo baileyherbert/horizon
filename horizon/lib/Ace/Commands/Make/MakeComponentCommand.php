@@ -17,33 +17,10 @@ class MakeComponentCommand extends Command {
 	 */
 	protected function configure() {
 		$this->setDescription('Makes a new component file');
-
-		$this->addArgument(
-			'name',
-			InputArgument::REQUIRED,
-			'The name of the component.'
-		);
-
-		$this->addOption(
-			'root',
-			'r',
-			InputOption::VALUE_NONE,
-			'Uses the root source directory.'
-		);
-
-		$this->addOption(
-			'open',
-			'o',
-			InputOption::VALUE_NONE,
-			'Opens the file with your default PHP editor.'
-		);
-
-		$this->addOption(
-			'class',
-			'c',
-			InputOption::VALUE_OPTIONAL,
-			'Creates a class for the component (optionally with a specified name).'
-		);
+		$this->addArgument('name', InputArgument::REQUIRED, 'The name of the component.');
+		$this->addOption('root', 'r', InputOption::VALUE_NONE, 'Uses the root source directory.');
+		$this->addOption('open', 'o', InputOption::VALUE_NONE, 'Opens the file with your default PHP editor.');
+		$this->addOption('class', 'c', InputOption::VALUE_OPTIONAL, 'Creates a class for the component.');
 	}
 
 	/**
@@ -61,10 +38,12 @@ class MakeComponentCommand extends Command {
 		if (isset($class)) {
 			$class->assertClassName(['Component']);
 			$class->renderClassFile('make/components/class', [
-				'classNamespace' => $class->getClassNamespace(),
-				'className' => $class->getClassName(),
 				'componentName' => $name->getFileInputName(false)
 			], $out);
+		}
+
+		if ($in->getOption('open')) {
+			exec('start ' . $name->resolveFilePath());
 		}
 	}
 

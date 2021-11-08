@@ -2,6 +2,7 @@
 
 namespace Horizon\Ace\Commands\Make;
 
+use Horizon\Ace\Util\FileGenerator;
 use Horizon\Console\Command;
 use Horizon\Foundation\Framework;
 use Horizon\Support\Path;
@@ -43,35 +44,13 @@ class MakeViewCommand extends Command {
 	 * Executes the command.
 	 */
 	protected function execute(InputInterface $in, OutputInterface $out) {
-		$name = $this->getNormalizedName($in->getArgument('name'));
+		$generator = new FileGenerator($in->getArgument('name'));
+		$generator->baseDir = 'app/views';
+		$generator->extension = 'twig';
+		$generator->writeFile($this->getSchematic($in->getArgument('schematic')), $out);
 
-		$targetFilePath = Path::resolve(Framework::path('app/views'), $name) . '.twig';
-		$targetDirPath = Path::dirname($targetFilePath);
-		$relativeFilePath = str_replace('\\', '/', substr($targetFilePath, strlen(Framework::path()) + 1));
-
-		// Ensure the target directory exists
-		if (!file_exists($targetDirPath)) {
-			if (!mkdir($targetDirPath, 0755, true)) {
-				throw new RuntimeException("Failed to create directory: $targetDirPath");
-			}
-		}
-
-		// Make sure the file doesn't exist
-		if (file_exists($targetFilePath)) {
-			throw new RuntimeException("Existing file conflict: $targetFilePath");
-		}
-
-		// Create the file
-		$content = $this->getSchematic($in->getArgument('schematic'));
-		if (false === file_put_contents($targetFilePath, $content)) {
-			throw new RuntimeException("Failed to create file: $targetFilePath");
-		}
-
-		$out->writeln("<fg=green>[✓]</> create $relativeFilePath");
-
-		// Open in editor
 		if ($in->getOption('open')) {
-			exec('start ' . $targetFilePath);
+			exec('start ' . $generator->resolveFilePath());
 		}
 	}
 

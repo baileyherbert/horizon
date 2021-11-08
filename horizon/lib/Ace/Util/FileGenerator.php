@@ -45,6 +45,14 @@ class FileGenerator {
 	public $extension;
 
 	/**
+	 * Allows the class resolver to treat colons (`:`) as path separators and namespace prefixes. This is useful for
+	 * generating command classes.
+	 *
+	 * @var bool
+	 */
+	public $enableColonNamespacing = false;
+
+	/**
 	 * Constructs a new `PathBuilder` instance.
 	 *
 	 * @param string $input
@@ -59,7 +67,8 @@ class FileGenerator {
 	 * @return string
 	 */
 	public function getClassInputName() {
-		$segments = preg_split("/[_.-]+/", $this->input);
+		$pattern = $this->enableColonNamespacing ? "/[_.:-]+/" : "/[_.-]+/";
+		$segments = preg_split($pattern, $this->input);
 		$segments = array_map('ucfirst', $segments);
 		$name = implode('', $segments);
 		$name = implode('/', array_map('ucfirst', preg_split("/[\/\\\]+/", $name)));
@@ -74,6 +83,7 @@ class FileGenerator {
 	 */
 	public function getClass() {
 		$name = $this->getClassInputName();
+		$name = $this->getClassPrefix() . $name;
 
 		if ($this->namespace !== null) {
 			$name = rtrim($this->namespace, '/\\') . '\\' . $name;
@@ -125,6 +135,7 @@ class FileGenerator {
 	public function getClassPath() {
 		$name = $this->getClassInputName();
 		$name = trim(str_replace('\\', '/', $name), '/');
+		$name = $this->getClassPrefix() . $name;
 
 		if (isset($this->classNameSuffix)) {
 			$suffix = str_replace('\\', '/', $this->classNameSuffix);
@@ -151,6 +162,27 @@ class FileGenerator {
 	 */
 	public function resolveClassPath() {
 		return Framework::path($this->getClassPath());
+	}
+
+	/**
+	 * Returns the prefix to use for the class when colon namespacing is enabled.
+	 *
+	 * @return string
+	 */
+	protected function getClassPrefix() {
+		if ($this->enableColonNamespacing && str_contains($this->input, ':')) {
+			$segments = explode(':', $this->input);
+			$segments = array_map('ucfirst', $segments);
+			$path = Path::dirname(implode('/', $segments));
+
+			$segments = preg_split("/[_.-]+/", $path);
+			$segments = array_map('ucfirst', $segments);
+			$prefix = implode('', $segments);
+
+			return $prefix . '/';
+		}
+
+		return '';
 	}
 
 	/**
@@ -280,6 +312,13 @@ class FileGenerator {
 		if (!ends_with($templateName, '.twig')) {
 			$templateName .= '.twig';
 		}
+
+		$context = array_merge([
+			'className' => $this->getClassName(),
+			'classNamespace' => $this->getClassNamespace(),
+			'classPath' => $this->getClassPath(),
+			'classNameFull' => $this->getClass()
+		], $context);
 
 		$path = Path::resolve(Framework::path('horizon/resources/ace'), $templateName);
 		$view = new Template($path, $context);

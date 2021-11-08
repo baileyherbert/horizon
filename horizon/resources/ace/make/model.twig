@@ -1,9 +1,9 @@
 <?php
 
-namespace {{ $namespace }};
+namespace {{ $classNamespace }};
 
 use Horizon\Database\Model;
-{%if timestamps %}
+{%if withTimestamps %}
 use Horizon\Database\ORM\Traits\Timestamps;
 {%endif%}
 
@@ -12,8 +12,8 @@ use Horizon\Database\ORM\Traits\Timestamps;
  *
  * @property int $id
  */
-class {{ $name }} extends Model {
-{%if timestamps %}
+class {{ $className }} extends Model {
+{%if withTimestamps %}
 
 	/**
 	 * Adds the `created_at` and `updated_at` columns to the model as DateTime objects.
