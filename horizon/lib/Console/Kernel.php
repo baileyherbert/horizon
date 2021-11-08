@@ -73,6 +73,7 @@ class Kernel {
 		$commands = array_merge($commands, array(
 			'build' => 'Horizon\Ace\Commands\Core\BuildCommand',
 			'make:command' => 'Horizon\Ace\Commands\Make\MakeCommandCommand',
+			'make:component' => 'Horizon\Ace\Commands\Make\MakeComponentCommand',
 			'make:controller' => 'Horizon\Ace\Commands\Make\MakeControllerCommand',
 			'make:migration' => 'Horizon\Ace\Commands\Make\MakeMigrationCommand',
 			'make:model' => 'Horizon\Ace\Commands\Make\MakeModelCommand',
