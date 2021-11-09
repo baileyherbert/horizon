@@ -15,6 +15,7 @@ class MigrationServiceProvider extends ServiceProvider {
 	public function register() {
 		$this->bind('Horizon\Database\Migration', function() {
 			$path = Application::paths()->migrations();
+			$migrations = [];
 
 			if (is_dir($path)) {
 				$dirIterator = new RecursiveDirectoryIterator($path);
@@ -33,10 +34,11 @@ class MigrationServiceProvider extends ServiceProvider {
 					$className = 'Migration_' . $timestamp;
 
 					require $filePath;
-
-					return new $className($filePath);
+					$migrations[] = new $className($filePath);
 				}
 			}
+
+			return $migrations;
 		});
 	}
 
