@@ -149,19 +149,26 @@ class Application {
 	 * Returns a path to an asset in the `public` folder intended for use in link, script, and image references on
 	 * the outputted pages.
 	 *
-	 * @param string $relative
+	 * @param string $relativePath
 	 * @return string
 	 */
-	public static function asset($relative = '') {
-		$root = rtrim(self::basedir(), '/');
+	public static function asset($relativePath = '') {
+		$relativePath = trim($relativePath, '/');
+		$root = trim($_SERVER['SUBDIRECTORY'], '/');
 
 		if (Application::routing() === 'legacy') {
-			$target = trim(config('app.paths.assets_legacy', ''), '/');
-			return $root . '/' . $target . '/' . ltrim($relative, '/');
+			$uri = trim(config('app.paths.assets_legacy', ''), '/');
+			$path = Path::join('/', $root, $uri, $relativePath);
+			$path = str_replace('\\', '/', $path);
+
+			return $path;
 		}
 
-		$target = trim(config('app.paths.assets', ''), '/');
-		return $root . '/' . $target . '/' . ltrim($relative, '/');
+		$uri = trim(config('app.paths.assets', ''), '/');
+		$path = Path::join('/', $root, $uri, $relativePath);
+		$path = str_replace('\\', '/', $path);
+
+		return $path;
 	}
 
 	/**

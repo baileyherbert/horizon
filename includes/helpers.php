@@ -1257,22 +1257,7 @@ if (!function_exists('asset')) {
 	 * @return string
 	 */
 	function asset($relativePath) {
-		$relativePath = trim($relativePath, '/');
-		$root = trim($_SERVER['SUBDIRECTORY'], '/');
-
-		if (Application::routing() === 'legacy') {
-			$uri = trim(config('app.paths.assets_legacy', ''), '/');
-			$path = Path::join('/', $root, $uri, $relativePath);
-			$path = str_replace('\\', '/', $path);
-
-			return $path;
-		}
-
-		$uri = trim(config('app.paths.assets', ''), '/');
-		$path = Path::join('/', $root, $uri, $relativePath);
-		$path = str_replace('\\', '/', $path);
-
-		return $path;
+		return Application::asset($relativePath);
 	}
 }
 
