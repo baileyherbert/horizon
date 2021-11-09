@@ -8,7 +8,7 @@ be distributed. It comes with all the files needed to host it with Docker and ha
 Run the following commands to clone this template and install dependencies into the current working directory.
 
 ```bash
-npx degit baileyherbert/horizon
+npx degit baileyherbert/horizon/starters/dedicated
 composer install
 ```
 

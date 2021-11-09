@@ -12,8 +12,8 @@ automatically kick in.
 Run the following commands to clone this template and install dependencies into the current working directory.
 
 ```bash
-npx degit baileyherbert/horizon
-composer install
+npx degit baileyherbert/horizon/starters/shared
+composer install -d horizon
 ```
 
 If you haven't done so already, consider installing the `ace` command line tool globally as well.
