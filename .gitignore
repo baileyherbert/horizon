@@ -1,12 +1,6 @@
-.idea/
-horizon/vendor/
-app/cache
-app/vendor/
-app/extensions/*/vendor/
-.vscode/
-.vs/
-error_log
-
-# Environment variables
-.env
-.env.php
+.DS_Store
+.cache
+Thumbs.db
+/vendor/
+/.vs
+/.idea

@@ -1,0 +1,98 @@
+site_name: Horizon
+site_url: https://bailey.sh/packages/horizon/docs/
+repo_url: https://github.com/baileyherbert/horizon
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.top
+  palette:
+    accent: orange
+  icon:
+    repo: fontawesome/brands/github
+
+extra_css:
+  - assets/stylesheets/extra.css
+
+markdown_extensions:
+  - attr_list
+  - toc:
+      permalink: True
+      separator: "_"
+  - admonition
+  - footnotes
+  - pymdownx.highlight:
+      extend_pygments_lang:
+        - name: php
+          lang: php
+          options:
+            startinline: true
+        - name: php-html
+          lang: php
+          options:
+            startinline: false
+  - pymdownx.superfences
+  - pymdownx.magiclink:
+      repo_url_shortener: True
+      provider: github
+      user: containrrr
+      repo: watchtower
+  - pymdownx.saneheaders
+  - pymdownx.tabbed
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+
+nav:
+  - Home: index.md
+    # - Features: features.md
+    # - Requirements: requirements.md
+
+  # - Getting started:
+  #   - Installation: getting-started/installation.md
+  #   - Configuration: getting-started/configuration.md
+  #   - Deployment: getting-started/deployment.md
+
+  # - Reference:
+  #   - Architecture:
+  #     - File structure: reference/architecture/file-structure.md
+  #     - Autoloader: reference/architecture/autoloader.md
+  #     - Service container: reference/architecture/service-container.md
+  #     - Service providers: reference/architecture/service-providers.md
+  #     - Facades: reference/architecture/facades.md
+  #   - Essentials:
+  #     - Routing: reference/essentials/routing.md
+  #     - Middleware: reference/essentials/middleware.md
+  #     - Controllers: reference/essentials/controllers.md
+  #     - Requests: reference/essentials/requests.md
+  #     - Responses: reference/essentials/responses.md
+  #     - Views: reference/essentials/views.md
+  #     - Sessions: reference/essentials/sessions.md
+  #     - Errors: reference/essentials/errors.md
+  #     - Extensions: reference/essentials/extensions.md
+  #   - Frontend:
+  #     - Templates: reference/frontend/templates.md
+  #     - Components: reference/frontend/components.md
+  #     - Localization: reference/frontend/localization.md
+  #   - Database:
+  #     - Query builder: reference/database/query-builder.md
+  #     - Migrations: reference/database/migrations.md
+  #   - ORM:
+  #     - Models: reference/orm/models.md
+  #     - Relationships: reference/orm/relationships.md
+  #     - Serialization: reference/orm/serialization.md
+  #   - Updates:
+  #     - Repositories: reference/updates/repositories.md
+  #     - Scripting: reference/updates/scripting.md
+  #     - Client: reference/updates/client.md
+
+plugins:
+  - search
+
+copyright: Copyright &copy; 2021 Bailey Herbert
+
+extra:
+  version:
+    provider: mike

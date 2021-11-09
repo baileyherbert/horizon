@@ -1,0 +1,14 @@
+:root {
+	--md-primary-fg-color:        #4c5066;
+	--md-primary-fg-color--light: #8c8fa3;
+	--md-primary-fg-color--dark:  #393c4d;
+}
+
+.md-main__inner {
+	margin-bottom: 1.5rem;
+}
+
+.md-content {
+	max-width: 900px;
+	margin: 0 auto;
+}

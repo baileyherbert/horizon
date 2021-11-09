@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpunit bootstrap="tests/@environment/init.php"
+		color="true"
+		convertErrorsToExceptions="true"
+		convertNoticesToExceptions="true"
+		convertWarningsToExceptions="true"
+		stopOnFailure="false"
+		syntaxCheck="false"
+		backupGlobals="true">
+	<testsuite>
+		<testsuite name="Horizon Framework">
+			<directory>./tests</directory>
+		</testsuite>
+	</testsuite>
+	<php>
+		<env name="HORIZON_MODE" value="test" />
+	</php>
+</phpunit>

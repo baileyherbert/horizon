@@ -1,0 +1,10 @@
+# This file is responsible for sending requests to the application's router
+# When possible, hardcode these rules into the virtual host and disable overrides
+
+RewriteEngine On
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . index.php [L]
+
+DirectoryIndex index.php

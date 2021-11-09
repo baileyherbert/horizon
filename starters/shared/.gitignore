@@ -1,0 +1,8 @@
+/horizon/vendor/
+/.vs/
+/.vscode/
+/.idea/
+/app/cache/
+/app/error_log
+/.env
+/.env.php

@@ -1,5 +1,11 @@
-<p align="center">
-	<img alt="Illustration of sun behind mountains" src="https://i.bailey.sh/JjnmDLX.png" width="250" />
+---
+hide:
+  - navigation
+  - toc
+---
+
+<p style="text-align: center; margin-left: 1.6rem;">
+	<img alt="Illustration of sun behind mountains" src="./assets/images/logo-450.png" width="400" />
 </p>
 
 <h1 align="center">
@@ -19,4 +25,15 @@
 	<a href="https://packagist.org/packages/baileyherbert/horizon"><img src="https://img.shields.io/packagist/l/baileyherbert/horizon" alt="License"></a>
 </p>
 
-Work in progress!
+## Introduction
+
+Horizon is a framework designed for distributed web applications which need to support as many end servers as possible. It doesn't
+impose any strict extension or web server requirements, and still offers an excellent feature set for rapid and organized development.
+
+## Quick start
+
+Clone one of the official starter templates and start developing in seconds! You can also install the framework manually or add it into an
+existing project to take advantage of its features.
+
+[Browse templates](https://github.com/baileyherbert/horizon/tree/master/starters){ .md-button target="_blank" }
+[Get started](#){ .md-button .md-button--primary }

@@ -1,0 +1,55 @@
+{
+    "name": "baileyherbert/horizon",
+    "description": "Framework for building distributed web applications that need to work on most servers.",
+    "support": {
+        "issues": "https://github.com/baileyherbert/horizon/issues",
+        "source": "https://github.com/baileyherbert/horizon"
+    },
+	"authors": [
+		{
+			"name": "Bailey Herbert",
+			"email": "hello@bailey.sh",
+			"homepage": "https://bailey.sh/"
+		}
+	],
+    "scripts": {
+        "docs": "mkdocs build --config-file=mkdocs.insiders.yml"
+    },
+    "autoload": {
+        "psr-4": {
+            "Horizon\\": "src"
+        },
+        "files": [
+            "includes/helpers.php",
+            "includes/aliases.php"
+        ]
+    },
+    "require": {
+        "php": ">=5.4.0",
+        "symfony/http-foundation": "^2.8",
+        "symfony/routing": "^2.8",
+        "symfony/console": "^2.8",
+        "symfony/polyfill-php55": "^1.8",
+        "twig/twig": "~1.41.0",
+        "phpseclib/phpseclib": "^2.0",
+        "myclabs/deep-copy": "1.6.1",
+        "symfony/polyfill-mbstring": "^1.10",
+        "paragonie/random_compat": "^2.0",
+        "symfony/polyfill-iconv": "^1.12",
+        "baileyherbert/ace": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6"
+    },
+	"archive": {
+		"exclude": [
+			"/docs",
+			"/starters",
+            "/tests",
+            "/phpunit.xml",
+            "/mkdocs.yml",
+            "/mkdocs.insiders.yml",
+            "/.git*"
+		]
+	}
+}

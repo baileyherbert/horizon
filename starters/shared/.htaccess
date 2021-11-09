@@ -1,0 +1,34 @@
+# This file is responsible for sending requests to the application's router
+
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+
+	# Redirect the index to the route loader
+	# If this rule doesn't work, then the index will load with fallback routing
+	RewriteRule ^index\.php$ route.php [L]
+
+	# Route to public files
+	RewriteRule ^assets/(.*)$ app/public/$1 [L,QSA,NC]
+
+	# Alias common files into the root directory
+	RewriteRule ^favicon.ico$ app/public/favicon.ico [L,QSA,NC]
+	RewriteRule ^robots.txt$ app/public/robots.txt [L,QSA,NC]
+	RewriteRule ^sitemap.xml$ app/public/sitemap.xml [L,QSA,NC]
+
+	# Block access to secure files
+	RewriteRule ^\.env route.php [L]
+	RewriteRule ^\.env\.php route.php [L]
+	RewriteRule ^README\.md$ route.php [L]
+	RewriteRule ^horizon/(.*)$ route.php [L]
+
+	# Send the request to the Horizon router
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteRule . route.php [L]
+
+	# Hide sensitive files
+	RedirectMatch 404 (\.git)
+</IfModule>
+
+Options -Indexes
+DirectoryIndex index.php
