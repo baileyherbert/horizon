@@ -31,7 +31,7 @@
         "symfony/routing": "^2.8",
         "symfony/console": "^2.8",
         "symfony/polyfill-php55": "^1.8",
-        "twig/twig": "~1.41.0",
+        "baileyherbert/twig-compat": "~1.41.0",
         "phpseclib/phpseclib": "^2.0",
         "myclabs/deep-copy": "1.6.1",
         "symfony/polyfill-mbstring": "^1.10",

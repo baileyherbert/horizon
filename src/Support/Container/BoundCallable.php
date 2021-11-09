@@ -126,7 +126,13 @@ class BoundCallable {
 
 		foreach ($parameters as $parameter) {
 			$name = $parameter->getName();
-			$class = $parameter->getClass() ? $parameter->getClass()->name : null;
+
+			if (version_compare(PHP_VERSION, '8.0.0') >= 0) {
+				$class = $parameter->getType() ? $parameter->getType()->getName() : null;
+			}
+			else {
+				$class = $parameter->getClass() ? $parameter->getClass()->name : null;
+			}
 
 			if (!is_null($class)) {
 				// Resolve parameter as an added class dependency

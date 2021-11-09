@@ -7,6 +7,7 @@ use Twig_SimpleFunction;
 use Horizon\Support\Profiler;
 use Horizon\View\ViewExtension;
 use Horizon\Support\Str;
+use Twig\TwigFilter;
 
 class HorizonExtension extends ViewExtension {
 
@@ -109,7 +110,7 @@ class HorizonExtension extends ViewExtension {
 
 	public function getFilters() {
 		return array(
-			'evaluate' => new \Twig_Filter_Method($this, 'evaluate', array(
+			'evaluate' => new TwigFilter('evaluate', array($this, 'evaluate'), array(
 				'needs_environment' => true,
 				'needs_context' => true,
 				'is_safe' => array(
