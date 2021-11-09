@@ -223,7 +223,7 @@ class Router {
 	 * @return Route
 	 */
 	public function createViewRoute($uri, $view, array $variables = array()) {
-		return $this->addRoute(static::$verbs, $uri, get_class(new ViewActionController()))
+		return $this->addRoute(static::$verbs, $uri, get_class(new ViewActionController()) . '::__invoke')
 			   ->defaults('view', $view)
 			   ->defaults('variables', $variables);
 	}
@@ -239,37 +239,9 @@ class Router {
 	 * @return Route
 	 */
 	public function createRedirectRoute($uri, $to, $code = 302) {
-		return $this->addRoute(static::$verbs, $uri, get_class(new RedirectActionController()))
+		return $this->addRoute(static::$verbs, $uri, get_class(new RedirectActionController()) . '::__invoke')
 			   ->defaults('to', $to)
 			   ->defaults('code', $code);
-	}
-
-	/**
-	 * Registers a new TCP proxy route with the router. All traffic to this route will be forwarded to the specified
-	 * address and port as an HTTP connection, with all request information sent as originally received locally.
-	 * If the timeout reaches before the connection completes, the user will receive a 504 Gateway Timeout error.
-	 *
-	 * Data received from the remote server will be forwarded to the response, including any headers or status codes.
-	 *
-	 * The $address will be formatted to HTTP if not done already. If it already has query arguments, they will be
-	 * appended to if the current request has query arguments, overwriting as necessary.
-	 *
-	 * For HTTPS addresses, a valid SSL certificate is required on the remote server, and the default CA bundle will be
-	 * applied if $caBundle is not specified.
-	 *
-	 * @param string $uri
-	 * @param string $address Hostname, URL, or IP address.
-	 * @param int $port Port number of the remote server (HTTP = 80, HTTPS = 443, custom is allowed).
-	 * @param string|null $caBundle Path relative to the framework's root directory to a CA bundle for SSL peer validation.
-	 * @param int $timeout Number of seconds to wait before timing out the request.
-	 * @return Route
-	 */
-	public function createTcpProxyRoute($uri, $address, $port = 80, $caBundle = null, $timeout = 30) {
-		return $this->addRoute(static::$verbs, $uri, get_class(new TcpProxyController()))
-			   ->defaults('_address', $address)
-			   ->defaults('_port', $port)
-			   ->defaults('_timeout', $timeout)
-			   ->defaults('_caBundle', $caBundle);
 	}
 
 	/**
