@@ -1,6 +1,7 @@
 {
     "name": "baileyherbert/horizon",
     "description": "Framework for building distributed web applications that need to work on most servers.",
+    "license": "MIT",
     "support": {
         "issues": "https://github.com/baileyherbert/horizon/issues",
         "source": "https://github.com/baileyherbert/horizon"
