@@ -43,13 +43,7 @@
     },
 	"archive": {
 		"exclude": [
-			"/docs",
-			"/starters",
-            "/tests",
-            "/phpunit.xml",
-            "/mkdocs.yml",
-            "/mkdocs.insiders.yml",
-            "/.git*"
+			"/starters"
 		]
 	}
 }
