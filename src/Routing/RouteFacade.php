@@ -197,7 +197,7 @@ class RouteFacade {
 	 * @return Route
 	 */
 	public static function rest($uri, $action = null, $fallback = null) {
-		return static::rest($uri, $action, $fallback);
+		return static::any($uri, $action, $fallback);
 	}
 
 	/**
