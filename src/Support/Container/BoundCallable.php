@@ -246,4 +246,15 @@ class BoundCallable {
 		return $callable;
 	}
 
+	/**
+	 * Returns the instance that will be invoked upon if available, or `null`.
+	 *
+	 * @return object|null
+	 */
+	public function instance() {
+		if (isset($this->callable) && is_array($this->callable)) {
+			return head($this->callable);
+		}
+	}
+
 }

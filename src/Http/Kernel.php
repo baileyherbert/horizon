@@ -79,15 +79,20 @@ class Kernel {
 			}
 
 			try {
-				// Run middleware
+				// Run middleware (beforeExecute)
 				Profiler::start('http:middleware');
-				$this->executeMiddleware($route);
+				$this->executeMiddleware($route, 'before');
 				Profiler::stop('http:middleware');
 
 				// Run the controller
 				Profiler::start('http:controller');
 				$this->executeController($route);
 				Profiler::stop('http:controller');
+
+				// Run middleware (afterExecute)
+				Profiler::start('http:middleware');
+				$this->executeMiddleware($route, 'after');
+				Profiler::stop('http:middleware');
 			}
 			catch (Exception $e) {
 				$this->handleException($e, $route);
@@ -244,37 +249,49 @@ class Kernel {
 	 * Executes middleware.
 	 *
 	 * @param Route $route
+	 * @param string $method `before` or `after`
 	 * @throws HorizonException Middleware could not be found.
 	 * @throws Exception Failed to bind contextual parameters.
 	 */
-	private function executeMiddleware(Route $route) {
+	private function executeMiddleware(Route $route, $method) {
 		$middlewares = $route->middleware();
+		$requestMethod = $this->request->getMethod();
+
+		if ($this->response->isHalted()) {
+			return;
+		}
 
 		foreach ($middlewares as $middleware) {
-			$action = Str::parseCallback($middleware, '__invoke');
+			$action = Str::parseCallback($middleware, $method . 'Execute');
 			$className = head($action);
 
 			if (class_exists($className)) {
 				$callable = new BoundCallable($action, Application::container());
+				$instance = $callable->instance();
 
-				// Add basic objects for dependency resolution
-				$callable->with($route);
-				$callable->with($this->request);
-				$callable->with($this->response);
+				// Is this a valid middleware?
+				if ($instance instanceof Middleware) {
+					if (in_array($requestMethod, $instance->methods)) {
+						// Add basic objects for dependency resolution
+						$callable->with($route);
+						$callable->with($this->request);
+						$callable->with($this->response);
 
-				// Add attribute objects
-				if (!is_null($this->request)) {
-					foreach ($this->request->attributes->all() as $name => $value) {
-						if (is_object($value)) {
-							$callable->with($value);
+						// Add attribute objects
+						if (!is_null($this->request)) {
+							foreach ($this->request->attributes->all() as $name => $value) {
+								if (is_object($value)) {
+									$callable->with($value);
+								}
+
+								$callable->where($name, $value);
+							}
 						}
 
-						$callable->where($name, $value);
+						// Run the middleware
+						$callable->execute();
 					}
 				}
-
-				// Run the middleware
-				$callable->execute();
 			}
 			else {
 				throw new HorizonException(0x0006, sprintf('Middleware (%s)', $className));

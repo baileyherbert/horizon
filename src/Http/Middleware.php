@@ -2,28 +2,38 @@
 
 namespace Horizon\Http;
 
-use Horizon\Foundation\Application;
 use Horizon\Http\Request;
 use Horizon\Http\Response;
 
-class Middleware {
+abstract class Middleware {
 
 	/**
-	 * Gets the Request instance for this middleware.
+	 * The methods that this middleware will be invoked for. Defaults to all methods.
 	 *
-	 * @return Request
+	 * @var string[]
 	 */
-	public function getRequest() {
-		return Application::kernel()->http()->request();
+	public $methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
+
+	/**
+	 * Invoked before the controller for the current request is executed.
+	 *
+	 * @param Request $request
+	 * @param Response $response
+	 * @return void
+	 */
+	public function beforeExecute(Request $request, Response $response) {
+
 	}
 
 	/**
-	 * Gets the Response instance for this middleware.
+	 * Invoked after the controller for the current request has finished executing successfully.
 	 *
-	 * @return Response
+	 * @param Request $request
+	 * @param Response $response
+	 * @return void
 	 */
-	public function getResponse() {
-		return Application::kernel()->http()->response();
+	public function afterExecute(Request $request, Response $response) {
+
 	}
 
 }
