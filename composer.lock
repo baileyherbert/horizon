@@ -47,16 +47,16 @@
         },
         {
             "name": "baileyherbert/twig-compat",
-            "version": "v1.41.1",
+            "version": "v1.41.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/baileyherbert/twig-compat.git",
-                "reference": "ebc960a2fee9a559e1349ad096bec02ef7be5a33"
+                "reference": "fc6c4453b2c18800feb5d439cd8dc02d251d55d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/baileyherbert/twig-compat/zipball/ebc960a2fee9a559e1349ad096bec02ef7be5a33",
-                "reference": "ebc960a2fee9a559e1349ad096bec02ef7be5a33",
+                "url": "https://api.github.com/repos/baileyherbert/twig-compat/zipball/fc6c4453b2c18800feb5d439cd8dc02d251d55d9",
+                "reference": "fc6c4453b2c18800feb5d439cd8dc02d251d55d9",
                 "shasum": ""
             },
             "require": {
@@ -111,9 +111,9 @@
             ],
             "support": {
                 "issues": "https://github.com/baileyherbert/twig-compat/issues",
-                "source": "https://github.com/baileyherbert/twig-compat/tree/v1.41.1"
+                "source": "https://github.com/baileyherbert/twig-compat/tree/v1.41.2"
             },
-            "time": "2021-11-09T18:06:36+00:00"
+            "time": "2021-11-10T09:14:36+00:00"
         },
         {
             "name": "myclabs/deep-copy",
