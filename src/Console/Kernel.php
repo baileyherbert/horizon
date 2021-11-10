@@ -75,6 +75,7 @@ class Kernel {
 			'make:command' => 'Horizon\Ace\Commands\Make\MakeCommandCommand',
 			'make:component' => 'Horizon\Ace\Commands\Make\MakeComponentCommand',
 			'make:controller' => 'Horizon\Ace\Commands\Make\MakeControllerCommand',
+			'make:middleware' => 'Horizon\Ace\Commands\Make\MakeMiddlewareCommand',
 			'make:migration' => 'Horizon\Ace\Commands\Make\MakeMigrationCommand',
 			'make:model' => 'Horizon\Ace\Commands\Make\MakeModelCommand',
 			'make:view' => 'Horizon\Ace\Commands\Make\MakeViewCommand',

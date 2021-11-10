@@ -1,0 +1,33 @@
+<?php
+
+namespace {{ $classNamespace }};
+
+use Horizon\Http\Middleware;
+use Horizon\Http\Request;
+use Horizon\Http\Response;
+
+class {{ $className }} extends Middleware {
+
+	/**
+	 * Invoked before the controller for the current request is executed.
+	 *
+	 * @param Request $request
+	 * @param Response $response
+	 * @return void
+	 */
+	public function beforeExecute(Request $request, Response $response) {
+
+	}
+
+	/**
+	 * Invoked after the controller for the current request has finished executing successfully.
+	 *
+	 * @param Request $request
+	 * @param Response $response
+	 * @return void
+	 */
+	public function afterExecute(Request $request, Response $response) {
+
+	}
+
+}
