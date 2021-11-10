@@ -77,10 +77,15 @@ class BuildCommand extends Command {
 				if ($loader instanceof ComponentLoader) {
 					$componentName = substr($fileName, strlen($loader->getPath()) + 1);
 					$componentName = preg_replace("/(\.blade\.php|\.twig|\.html)$/", "", $componentName);
-					$fileName = "@component/$componentName";
+					$fileName = str_replace('\\', '/', "@component/$componentName");
 
 					// Manually warm the component manager
 					Application::kernel()->view()->componentManager()->prepare($componentName);
+				}
+				else {
+					// Calculate the path relative to the loader's directory
+					$fileName = substr($fileName, strlen($loader->getPath()) + 1);
+					$fileName = str_replace('\\', '/', $fileName);
 				}
 
 				try {

@@ -63,6 +63,7 @@ class Manager {
 
 		$this->currentlyCompiling[$componentName] = true;
 
+		$componentName = str_replace('\\', '/', $componentName);
 		$viewName = '@component/' . $componentName;
 		$absoluteFilePath = $this->getComponentPath($componentName);
 		$component = $this->getComponent($absoluteFilePath);
@@ -102,6 +103,7 @@ class Manager {
 	 * @return void
 	 */
 	public function prepare($componentName) {
+		$componentName = str_replace('\\', '/', $componentName);
 		$this->currentlyCompiling[$componentName] = true;
 
 		$viewName = '@component/' . $componentName;

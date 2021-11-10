@@ -98,4 +98,15 @@ class TwigFileLoader extends Twig_Loader_Filesystem {
 		return parent::isFresh($name, $time);
     }
 
+    public function getCacheKey($name) {
+        $key = parent::getCacheKey($name);
+
+		if (starts_with($key, Application::root(), true)) {
+			$key = substr($key, strlen(Application::root()) + 1);
+		}
+
+		$key = str_replace('\\', '/', $key);
+		return $key;
+    }
+
 }
