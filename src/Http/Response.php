@@ -18,7 +18,7 @@ class Response extends SymfonyResponse {
 	/**
 	 * @var array Variables to be sent to the view during rendering.
 	 */
-	protected $with = array();
+	protected $context = array();
 
 	/**
 	 * @var resource|null The file handle to stream.
@@ -164,24 +164,61 @@ class Response extends SymfonyResponse {
 	}
 
 	/**
-	 * Sets a variable which is sent to views during rendering.
+	 * Returns the value of the specified context variable or `null` if not set.
+	 *
+	 * @param string $key
+	 * @return mixed|null
+	 */
+	public function getContext($key) {
+		if (isset($this->context[$key])) {
+			return $this->context[$key];
+		}
+	}
+
+	/**
+	 * Sets a context variable for the response. Template files can access these context variables using their names.
 	 *
 	 * @param string $key
 	 * @param mixed $value
+	 * @return void
 	 */
-	public function with($key, $value) {
-		$this->with[$key] = $value;
+	public function setContext($key, $value) {
+		$this->context[$key] = $value;
 	}
 
 	/**
 	 * Removes a variable included in the response if it exists.
 	 *
 	 * @param string $key
+	 * @return void
+	 */
+	public function removeContext($key) {
+		if (isset($this->context[$key])) {
+			unset($this->context[$key]);
+		}
+	}
+
+	/**
+	 * Alias for `setContext()`
+	 *
+	 * @deprecated Please use `setContext()` instead.
+	 * @param string $key
+	 * @param string $value
+	 * @return void
+	 */
+	public function with($key, $value) {
+		return $this->setContext($key, $value);
+	}
+
+	/**
+	 * Alias for `removeContext()`
+	 *
+	 * @deprecated Please use `removeContext()` instead.
+	 * @param string $key
+	 * @return void
 	 */
 	public function without($key) {
-		if (isset($this->with[$key])) {
-			unset($this->with[$key]);
-		}
+		return $this->removeContext($key);
 	}
 
 	/**
@@ -280,7 +317,7 @@ class Response extends SymfonyResponse {
 	 * @return array
 	 */
 	protected function buildContextVariables(array $context) {
-		foreach ($this->with as $key => $value) {
+		foreach ($this->context as $key => $value) {
 			if (!array_key_exists($key, $context)) {
 				if (is_callable($value)) {
 					$value = call_user_func($value);
