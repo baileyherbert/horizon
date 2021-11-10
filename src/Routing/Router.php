@@ -8,6 +8,7 @@ use Horizon\Routing\Route;
 use Horizon\Routing\RouteGroup;
 use Horizon\Routing\Controllers\ViewActionController;
 use Horizon\Routing\Controllers\RedirectActionController;
+use Horizon\Routing\Controllers\SinglePageActionController;
 use Horizon\Routing\Controllers\TcpProxyController;
 
 class Router {
@@ -226,6 +227,22 @@ class Router {
 		return $this->addRoute(static::$verbs, $uri, get_class(new ViewActionController()) . '::__invoke')
 			   ->defaults('view', $view)
 			   ->defaults('variables', $variables);
+	}
+
+	/**
+	 * Registers a route with a default controller which renders the specified view. An array of variables can be sent
+	 * to the view through the third parameter.
+	 *
+	 * @param string $prefix
+	 * @param string $filePath
+	 * @return Route
+	 */
+	public function createSPARoute($prefix, $filePath) {
+		$uri = $prefix . '{suffix?}';
+
+		return $this->addRoute(static::$verbs, $uri, get_class(new SinglePageActionController()) . '::__invoke')
+			->defaults('spaFilePath', $filePath)
+			->where('suffix', '.*');
 	}
 
 	/**

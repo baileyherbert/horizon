@@ -222,6 +222,21 @@ class RouteFacade {
 	}
 
 	/**
+	 * For single page applications. Registers a route that handles all requests starting with the given prefix and
+	 * sends the contents of the specified file.
+	 *
+	 * An example would be creating an route on `/admin/` after which all requests within the `/admin/` directory,
+	 * including in subdirectories, will be sent to the SPA view.
+	 *
+	 * @param string $prefix
+	 * @param string $filePath
+	 * @return Route
+	 */
+	public static function spa($prefix, $filePath) {
+		return static::router()->createSPARoute($prefix, $filePath);
+	}
+
+	/**
 	 * Registers a new redirection route with the router, which applies to all methods. The $to parameter can
 	 * contain an absolute or relative link, or another route, including its object, name, or URI (with variables filled).
 	 * The default redirection code is 302 and can be overridden with the third argument.
