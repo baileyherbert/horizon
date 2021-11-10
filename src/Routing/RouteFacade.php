@@ -160,7 +160,9 @@ class RouteFacade {
 	}
 
 	/**
-	 * Registers a new route with the router which applies to all methods.
+	 * Registers a new route with the router which applies to all methods. When a controller is specified, a method
+	 * on the controller whose name matches the request method will be used, and a `404` response will be sent if no
+	 * match is found.
 	 *
 	 * @param string $uri
 	 * @param Closure|array|string $action
@@ -180,6 +182,22 @@ class RouteFacade {
 		}
 
 		return $route;
+	}
+
+	/**
+	 * Registers a new route with the router which applies to all methods. When a controller is specified, a method
+	 * on the controller whose name matches the request method will be used, and a `404` response will be sent if no
+	 * match is found.
+	 *
+	 * Alias for `any()`.
+	 *
+	 * @param string $uri
+	 * @param Closure|array|string $action
+	 * @param string|null $fallback Path to a php file, relative to the root directory, to use for fallback routing.
+	 * @return Route
+	 */
+	public static function rest($uri, $action = null, $fallback = null) {
+		return static::rest($uri, $action, $fallback);
 	}
 
 	/**
