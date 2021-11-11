@@ -23,7 +23,7 @@ class Migrator extends EventEmitter {
 	private $migrations;
 
 	/**
-	 * An array of all schema records from the `horizon_schema` table. The keys in this array are the migration record
+	 * An array of all schema records from the `@schema` table. The keys in this array are the migration record
 	 * names.
 	 *
 	 * @var array
@@ -31,7 +31,7 @@ class Migrator extends EventEmitter {
 	private $schemaRecords;
 
 	/**
-	 * An array of previously-executed batches, reconstructed from the `horizon_schema` table. The keys in this array
+	 * An array of previously-executed batches, reconstructed from the `@schema` table. The keys in this array
 	 * are the batch numbers, starting at 1.
 	 *
 	 * @var MigrationBatch[]
@@ -66,7 +66,7 @@ class Migrator extends EventEmitter {
 
 	/**
 	 * The default connection to use for all migrations that run inside this migrator. This is also where the
-	 * `horizon_schema` table will be hosted.
+	 * `@schema` table will be hosted.
 	 *
 	 * @var string
 	 */
@@ -119,16 +119,16 @@ class Migrator extends EventEmitter {
 	}
 
 	/**
-	 * Initializes schema records from the `horizon_schema` table.
+	 * Initializes schema records from the `@schema` table.
 	 *
 	 * @return void
 	 */
 	private function initSchemaRecords() {
 		$this->schemaRecords = array();
 
-		if (Schema::hasTable('horizon_schema')) {
+		if (Schema::hasTable('@schema')) {
 			$records = DatabaseFacade::select()
-				->from('horizon_schema')
+				->from('@schema')
 				->orderBy('id', 'asc')
 				->get();
 
@@ -231,7 +231,7 @@ class Migrator extends EventEmitter {
 	}
 
 	/**
-	 * Queries and returns an array of migration records from the `horizon_schema` table.
+	 * Queries and returns an array of migration records from the `@schema` table.
 	 *
 	 * @return object[]
 	 */
@@ -257,7 +257,7 @@ class Migrator extends EventEmitter {
 	}
 
 	/**
-	 * Returns `true` if the given migration has a record in the `horizon_schema` table. You can use this to check if
+	 * Returns `true` if the given migration has a record in the `@schema` table. You can use this to check if
 	 * a migration has run yet.
 	 *
 	 * @param Migration $migration
@@ -314,13 +314,13 @@ class Migrator extends EventEmitter {
 	}
 
 	/**
-	 * Creates the `horizon_schema` table if it doesn't exist.
+	 * Creates the `@schema` table if it doesn't exist.
 	 *
 	 * @return void
 	 */
 	private function createSchemaTable() {
-		if (!Schema::hasTable('horizon_schema')) {
-			Schema::create('horizon_schema', function(Blueprint $blueprint) {
+		if (!Schema::hasTable('@schema')) {
+			Schema::create('@schema', function(Blueprint $blueprint) {
 				$blueprint->increments('id');
 				$blueprint->string('name')->unique();
 				$blueprint->integer('batch', false, true);

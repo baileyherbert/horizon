@@ -270,7 +270,7 @@ abstract class Migration implements JsonSerializable {
 				'migration_time' => timestamp_to_datetime($startTime)
 			);
 
-			$record['id'] = $schemaConnection->insert()->into('horizon_schema')->values($record)->exec();
+			$record['id'] = $schemaConnection->insert()->into('@schema')->values($record)->exec();
 			$migrator->setBatchMilestone(
 				$batch,
 				$this,
@@ -280,7 +280,7 @@ abstract class Migration implements JsonSerializable {
 
 		// For downward migrations, delete the record from the schema table
 		else {
-			$schemaConnection->delete()->from('horizon_schema')->where('id', '=', $this->getRecordId())->exec();
+			$schemaConnection->delete()->from('@schema')->where('id', '=', $this->getRecordId())->exec();
 			$migrator->removeBatchMilestone(
 				$batch,
 				$this
