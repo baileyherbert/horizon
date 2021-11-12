@@ -13,7 +13,7 @@ class Cache {
 	 * Checks if there is a cached instance for a model given its classname and primary key.
 	 *
 	 * @param Model|string $model The fully-qualified class name or an instance of the model.
-	 * @param int $id The primary key value for the model row.
+	 * @param mixed $id The primary key value for the model row.
 	 *
 	 * @return bool
 	 */
@@ -30,6 +30,9 @@ class Cache {
 			return false;
 		}
 
+		// Normalize the id
+		$id = static::serializePrimaryKey($id);
+
 		if (!isset(static::$models[$model][$id])) {
 			return false;
 		}
@@ -41,7 +44,7 @@ class Cache {
 	 * Gets the cached instance for a model given its classname and primary key.
 	 *
 	 * @param Model|string $model The fully-qualified class name or an instance of the model.
-	 * @param int $id The primary key value for the model row.
+	 * @param mixed $id The primary key value for the model row.
 	 * @param mixed $default What to return when the cache does not exist.
 	 *
 	 * @return Model|mixed
@@ -55,6 +58,9 @@ class Cache {
 			$model = get_class($model);
 		}
 
+		// Normalize the id
+		$id = static::serializePrimaryKey($id);
+
 		if (static::hasModelInstance($model, $id)) {
 			return static::$models[$model][$id];
 		}
@@ -66,7 +72,7 @@ class Cache {
 	 * Removes a cached instance by its classname and primary key, if it exists.
 	 *
 	 * @param Model|string $model The fully-qualified class name or an instance of the model.
-	 * @param int $id The primary key value for the model row.
+	 * @param mixed $id The primary key value for the model row.
 	 *
 	 * @return bool
 	 */
@@ -78,6 +84,9 @@ class Cache {
 		if (is_object($model)) {
 			$model = get_class($model);
 		}
+
+		// Normalize the id
+		$id = static::serializePrimaryKey($id);
 
 		if (isset(static::$models[$model])) {
 			foreach (static::$models[$model] as $key => $instance) {
@@ -96,7 +105,7 @@ class Cache {
 	 *
 	 * @param Model|string $model The fully-qualified class name or an instance of the model.
 	 * @param Model $instance The row instance.
-	 * @param int $id The primary key value to use, or null to determine from the model automatically.
+	 * @param mixed $id The primary key value to use, or null to determine from the model automatically.
 	 *
 	 * @return void
 	 */
@@ -118,6 +127,9 @@ class Cache {
 			$id = $instance->getPrimaryKeyValue();
 		}
 
+		// Normalize the id
+		$id = static::serializePrimaryKey($id);
+
 		// Save the instance
 		static::$models[$model][$id] = $instance;
 
@@ -133,6 +145,10 @@ class Cache {
 				static::setModelInstance($model, $instance, $propValue);
 			}
 		});
+	}
+
+	private static function serializePrimaryKey($value) {
+		return serialize($value);
 	}
 
 }

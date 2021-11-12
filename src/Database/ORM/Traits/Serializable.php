@@ -2,7 +2,9 @@
 
 namespace Horizon\Database\ORM\Traits;
 
+use DateTime;
 use Horizon\Database\Model;
+use Horizon\Database\ORM\DocParser;
 use Horizon\Database\ORM\Relationship;
 
 /**
@@ -81,18 +83,19 @@ trait Serializable {
 	 */
 	protected function getSerializeData($skipped = array()) {
 		$permitted = array();
+		$storage = $this->getCommittedFields();
 
 		// Columns
-		foreach ($this->storage as $name => $value) {
+		foreach ($storage as $name => $field) {
 			if ($this->isColumnSerializable($name)) {
-				$getterName = '__get' . str_replace('_', '', $name);
+				$value = $field->localFormat;
 
-				if (method_exists($this, $getterName)) {
-					$value = $this->$getterName($value);
-				}
+				if ($value instanceof DateTime) {
+					$value = $value->format(DATE_ATOM);
 
-				if (is_numeric($value)) {
-					$value = doubleval($value);
+					if (config('app.timezone', 'UTC') === 'UTC') {
+						$value = preg_replace('/\+00:00$/', 'Z', $value);
+					}
 				}
 
 				$permitted[$name] = $value;
@@ -104,10 +107,15 @@ trait Serializable {
 		$class = new \ReflectionClass($className);
 		$methods = $class->getMethods(\ReflectionMethod::IS_PUBLIC);
 		$skipped[] = $className;
+		$docs = DocParser::get($this);
 
 		foreach ($methods as $method) {
+			if (starts_with($method->name, ['__'])) {
+				continue;
+			}
+
 			if ($method->class == $className && $method->getNumberOfParameters() === 0) {
-				if ($this->isColumnSerializable($method->name)) {
+				if ($this->isColumnSerializable($method->name) && $docs->hasField($method->name)) {
 					$returned = $method->invoke($this);
 
 					if (!(is_object($returned) && $this->isRelationship($returned))) {

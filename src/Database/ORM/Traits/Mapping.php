@@ -14,6 +14,9 @@ use Horizon\Database\ModelField;
 use Horizon\Database\ORM\DocParser;
 use Horizon\Database\ORM\Relationships\OneToOneRelationship;
 use Horizon\Database\ORM\Relationships\BelongsToOneRelationship;
+use Horizon\Database\QueryBuilder\Documentation\DeleteHelper;
+use Horizon\Database\QueryBuilder\Documentation\SelectHelper;
+use Horizon\Database\QueryBuilder\Documentation\UpdateHelper;
 
 trait Mapping {
 
@@ -57,10 +60,10 @@ trait Mapping {
 	 */
 	public function getTable() {
 		if (is_null($this->table)) {
-			$tableNameParts = explode('\\', strtolower(get_class($this)));
-			$tableName = array_pop($tableNameParts);
+			$tableName = last(explode('\\', get_class($this)));
+			$tableName = trim(strtolower(preg_replace('/([A-Z]+)/', '_$1', $tableName)), '_');
 
-			if (substr($tableName, 0, -1) != 's') {
+			if (substr($tableName, -1) != 's') {
 				$tableName .= 's';
 			}
 
@@ -73,7 +76,7 @@ trait Mapping {
 	/**
 	 * Gets the name of the primary key for this table.
 	 *
-	 * @return string
+	 * @return string|string[]
 	 */
 	public function getPrimaryKey() {
 		return $this->primaryKey;
@@ -85,10 +88,18 @@ trait Mapping {
 	 * @return mixed
 	 */
 	public function getPrimaryKeyValue() {
-		$keyName = $this->getPrimaryKey();
+		$key = $this->getPrimaryKey();
 
-		if (isset($this->rowFieldsCommitted[$keyName])) {
-			return $this->rowFieldsCommitted[$keyName]->remoteFormat;
+		if (is_array($key)) {
+			return array_map(function($name) {
+				if (isset($this->rowFieldsCommitted[$name])) {
+					return $this->rowFieldsCommitted[$name]->remoteFormat;
+				}
+			}, $key);
+		}
+
+		if (isset($this->rowFieldsCommitted[$key])) {
+			return $this->rowFieldsCommitted[$key]->remoteFormat;
 		}
 
 		return null;
@@ -108,12 +119,12 @@ trait Mapping {
 		}, $this->rowFieldsPending);
 
 		// Create a new row if there is no value for the primary key
-		if (is_null($keyValue)) {
+		if (!$this->hasPrimaryKey()) {
 			$builder = $connection->insert()->into($this->getTable())->values($changes);
 			$returned = $builder->exec();
 
 			// Save the new primary key value
-			if (!array_key_exists($keyName, $this->rowFieldsPending)) {
+			if (!is_array($keyName) && !array_key_exists($keyName, $this->rowFieldsPending)) {
 				$this->writeCommittedField($keyName, $returned);
 			}
 
@@ -138,10 +149,7 @@ trait Mapping {
 				}
 			}
 
-			$builder = $connection->update()->table($this->getTable())->values($changes);
-			$builder->where($keyName, '=', $keyValue);
-			$builder->exec();
-
+			$this->createUpdateQuery()->values($changes)->exec();
 			$this->emit('updated');
 		}
 
@@ -159,6 +167,105 @@ trait Mapping {
 	}
 
 	/**
+	 * Creates an `SELECT` query builder that matches this model's target connection and primary key.
+	 *
+	 * @return SelectHelper
+	 */
+	protected function createSelectQuery($keyValue = null) {
+		$connection = DB::connection($this->getConnection());
+		$builder = $connection->select()->from($this->getTable());
+
+		$key = $this->getPrimaryKey();
+		$keyValue = is_null($keyValue) ? $this->getPrimaryKeyValue() : $keyValue;
+
+		if (is_array($key)) {
+			if (!is_array($keyValue)) {
+				throw new Exception('Primary key is multiple columns but you passed a single value');
+			}
+
+			foreach ($key as $index => $keyName) {
+				$builder->where($keyName, '=', $keyValue[$index]);
+			}
+		}
+		else {
+			if (is_array($keyValue)) {
+				throw new Exception('Primary key is a single column but you passed an array of values');
+			}
+
+			$builder->where($key, '=', $keyValue);
+		}
+
+		return $builder;
+	}
+
+	/**
+	 * Creates an `UPDATE` query builder that matches this model's target connection and primary key.
+	 *
+	 * @return UpdateHelper
+	 */
+	protected function createUpdateQuery() {
+		$connection = DB::connection($this->getConnection());
+		$builder = $connection->update()->table($this->getTable());
+
+		$key = $this->getPrimaryKey();
+		$keyValue = $this->getPrimaryKeyValue();
+
+		if (is_array($key)) {
+			foreach ($key as $index => $keyName) {
+				$builder->where($keyName, '=', $keyValue[$index]);
+			}
+		}
+		else {
+			$builder->where($key, '=', $keyValue);
+		}
+
+		return $builder;
+	}
+
+	/**
+	 * Creates a `DELETE` query builder that matches this model's target connection and primary key.
+	 *
+	 * @return DeleteHelper
+	 */
+	protected function createDeleteQuery() {
+		$connection = DB::connection($this->getConnection());
+		$builder = $connection->delete()->from($this->getTable());
+
+		$key = $this->getPrimaryKey();
+		$keyValue = $this->getPrimaryKeyValue();
+
+		if (is_array($key)) {
+			foreach ($key as $index => $keyName) {
+				$builder->where($keyName, '=', $keyValue[$index]);
+			}
+		}
+		else {
+			$builder->where($key, '=', $keyValue);
+		}
+
+		return $builder;
+	}
+
+	/**
+	 * Returns true if this model has a primary key value.
+	 *
+	 * @return bool
+	 */
+	protected function hasPrimaryKey() {
+		$value = $this->getPrimaryKeyValue();
+
+		if (is_array($value)) {
+			foreach ($value as $keyValue) {
+				if (is_null($keyValue)) {
+					return false;
+				}
+			}
+		}
+
+		return !is_null($value);
+	}
+
+	/**
 	 * Deletes the row from the database, returning a copy of the data from before deletion.
 	 *
 	 * @return array
@@ -171,12 +278,7 @@ trait Mapping {
 				return $field->localFormat;
 			}, $this->rowFieldsCommitted);
 
-			$keyName = $this->getPrimaryKey();
-			$keyValue = $this->getPrimaryKeyValue();
-
-			$builder = \DB::connection($this->getConnection())->delete()->from($this->getTable());
-			$builder->where($keyName, '=', $keyValue);
-			$builder->exec();
+			$this->createDeleteQuery()->exec();
 		}
 
 		$this->emit('deleted');
@@ -302,7 +404,21 @@ trait Mapping {
 	 * @return bool
 	 */
 	public function equals(Model $object) {
-		return ($object->id === $this->id && $object->getTable() === $this->getTable());
+		if ($this === $object) {
+			return true;
+		}
+
+		$localTable = $this->getTable();
+		$localKey = serialize($this->getPrimaryKey());
+		$localValue = serialize($this->getPrimaryKeyValue());
+
+		$remoteTable = $object->getTable();
+		$remoteKey = serialize($object->getPrimaryKey());
+		$remoteValue = serialize($object->getPrimaryKeyValue());
+
+		return $localTable === $remoteTable &&
+			$localKey === $remoteKey &&
+			$localValue === $remoteValue;
 	}
 
 	/**
@@ -439,6 +555,15 @@ trait Mapping {
 			$this->getLocalFormat($fieldName, $value),
 			$this->getRemoteFormat($fieldName, $value)
 		);
+	}
+
+	/**
+	 * Returns the internal array of committed fields. This is an internal method, do not use!
+	 *
+	 * @return Field[]
+	 */
+	protected function getCommittedFields() {
+		return $this->rowFieldsCommitted;
 	}
 
 }

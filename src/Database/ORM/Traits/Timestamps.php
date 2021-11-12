@@ -32,16 +32,7 @@ trait Timestamps {
 	 * @return void
 	 */
 	public function refreshTimestamps() {
-		$keyName = $this->getPrimaryKey();
-		$keyValue = $this->getPrimaryKeyValue();
-
-		$row = \DB::connection($this->getConnection())
-			->select()
-			->columns('updated_at', 'created_at')
-			->from($this->getTable())
-			->where($keyName, '=', $keyValue)
-			->first();
-
+		$row = $this->createSelectQuery()->columns('updated_at', 'created_at')->first();
 		$this->writeCommittedField('updated_at', $row->updated_at);
 		$this->writeCommittedField('created_at', $row->created_at);
 	}

@@ -66,7 +66,7 @@ trait QueryBuilding {
 	/**
 	 * Gets a model instance by the primary key value.
 	 *
-	 * @param int $primaryKey
+	 * @param mixed $primaryKey
 	 * @return static
 	 */
 	public static function find($primaryKey) {
@@ -81,7 +81,7 @@ trait QueryBuilding {
 			return $cache;
 		}
 
-		$builder = DB::connection($o->getConnection())->select()->from($table)->where($keyName, '=', $primaryKey)->limit(1);
+		$builder = $o->createSelectQuery($primaryKey)->limit(1);
 		$builder->setModel(get_class($o));
 		$row = $builder->first();
 
@@ -97,7 +97,7 @@ trait QueryBuilding {
 	 * Gets a model instance by the primary key value. If not found, it raises an HttpResponseException with the
 	 * provided code (or default 404).
 	 *
-	 * @param int $primaryKey
+	 * @param mixed $primaryKey
 	 * @param int $code
 	 * @return static
 	 */
@@ -122,7 +122,6 @@ trait QueryBuilding {
 		$o = (new static);
 
 		$table = $o->getTable();
-		$keyName = $o->getPrimaryKey();
 
 		$builder = DB::connection($o->getConnection())->insert()->into($table)->values($values);
 		$id = $builder->exec();
