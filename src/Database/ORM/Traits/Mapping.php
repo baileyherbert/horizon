@@ -335,6 +335,23 @@ trait Mapping {
 	public function __set($fieldName, $value) {
 		$field = $this->getField($fieldName, $value);
 
+		// Check for a setter function
+		if (method_exists($this, $setterName = '__set' . str_replace('_', '', $fieldName))) {
+			$this->$setterName($field);
+		}
+
+		// Check for model relationships and update them
+		if ($value instanceof Model && method_exists($this, $fieldName)) {
+			$relationship = $this->$fieldName();
+
+			if ($relationship instanceof OneToOneRelationship || $relationship instanceof BelongsToOneRelationship) {
+				$relationship->set($value);
+				return;
+			}
+
+			throw new Exception(sprintf('Cannot indirectly update relationship for field %s', $fieldName));
+		}
+
 		// Skip if the same value is already committed
 		if (array_key_exists($fieldName, $this->rowFieldsCommitted)) {
 			if ($this->rowFieldsCommitted[$fieldName]->remoteFormat === $field->remoteFormat) {
@@ -352,23 +369,6 @@ trait Mapping {
 		// Delete a pending equalize operation for the same field
 		if (($index = array_search($fieldName, $this->rowFieldsPending)) !== false) {
 			unset($this->rowFieldsEqualize[$index]);
-		}
-
-		// Check for model relationships and update them
-		if ($value instanceof Model && method_exists($this, $fieldName)) {
-			$relationship = $this->$fieldName();
-
-			if ($relationship instanceof OneToOneRelationship || $relationship instanceof BelongsToOneRelationship) {
-				$relationship->set($value);
-				return;
-			}
-
-			throw new Exception(sprintf('Cannot indirectly update relationship for field %s', $fieldName));
-		}
-
-		// Check for a setter function
-		if (method_exists($this, $setterName = '__set' . str_replace('_', '', $fieldName))) {
-			$this->$setterName($field);
 		}
 
 		// Emit the changed event
@@ -447,96 +447,6 @@ trait Mapping {
 	}
 
 	/**
-	 * Converts the given value into the correct format for local usage.
-	 *
-	 * @param string $fieldName
-	 * @param mixed $value
-	 * @return mixed
-	 */
-	private function getLocalFormat($fieldName, $value) {
-		$parser = DocParser::get($this);
-		$type = $parser->getReadType($fieldName);
-
-		if (is_null($type)) {
-			throw new Exception(sprintf('Unknown field "%s"', $fieldName));
-		}
-
-		switch ($type) {
-			case 'DateTime': {
-				if ($value instanceof DateTime) return $value;
-				if (is_string($value)) return new DateTime($value);
-				if (is_int($value)) return new DateTime('@' . $value);
-
-				throw new Exception(sprintf(
-					'Failed to convert value of type %s into DateTime for field %s',
-					gettype($value),
-					$fieldName
-				));
-			}
-
-			case 'bool':
-			case 'boolean': {
-				if (is_bool($value)) return $value;
-				if (is_string($value)) return in_array(strtolower($value), ['true', '1']);
-				if (is_int($value)) return $value >= 1;
-
-				throw new Exception(sprintf(
-					'Failed to convert value of type %s into boolean for field %s',
-					gettype($value),
-					$fieldName
-				));
-			}
-		}
-
-		return $value;
-	}
-
-	/**
-	 * Converts the given value into the correct format for remote storage.
-	 *
-	 * @param string $fieldName
-	 * @param mixed $value
-	 * @return mixed
-	 */
-	private function getRemoteFormat($fieldName, $value) {
-		$parser = DocParser::get($this);
-		$type = $parser->getReadType($fieldName);
-
-		if (is_null($type)) {
-			throw new Exception(sprintf('Unknown field "%s"', $fieldName));
-		}
-
-		switch ($type) {
-			case 'DateTime': {
-				if ($value instanceof DateTime) return $value->format('Y-m-d H:i:s');
-				if (is_int($value)) return (new DateTime('@' . $value))->format('Y-m-d H:i:s');
-				if (is_string($value)) return $value;
-
-				throw new Exception(sprintf(
-					'Failed to convert value of type %s into a DATETIME string for field %s',
-					gettype($value),
-					$fieldName
-				));
-			}
-
-			case 'bool':
-			case 'boolean': {
-				if (is_string($value)) return in_array(strtolower($value), ['true', '1']) ? 1 : 0;
-				if (is_int($value)) return $value >= 1 ? 1 : 0;
-				if (is_bool($value)) return $value ? 1 : 0;
-
-				throw new Exception(sprintf(
-					'Failed to convert value of type %s into TINYINT for field %s',
-					gettype($value),
-					$fieldName
-				));
-			}
-		}
-
-		return $value;
-	}
-
-	/**
 	 * Converts the given value into a `Field` instance containing the remote and local values.
 	 *
 	 * @param string $fieldName
@@ -555,6 +465,114 @@ trait Mapping {
 			$this->getLocalFormat($fieldName, $value),
 			$this->getRemoteFormat($fieldName, $value)
 		);
+	}
+
+	/**
+	 * Converts the given value into the correct format for local usage.
+	 *
+	 * @param string $fieldName
+	 * @param mixed $value
+	 * @return mixed
+	 */
+	private function getLocalFormat($fieldName, $value) {
+		$parser = DocParser::get($this);
+		$type = $parser->getReadTypes($fieldName)[0];
+
+		if (is_null($type)) {
+			throw new Exception(sprintf('Unknown field "%s"', $fieldName));
+		}
+
+		switch ($type) {
+			case 'DateTime': {
+				if ($value instanceof DateTime) return $value;
+				if (is_string($value)) return new DateTime($value);
+				if (is_int($value)) return new DateTime('@' . $value);
+				if (is_null($value)) return $value;
+
+				throw new Exception(sprintf(
+					'Failed to convert value of type %s into DateTime for field %s',
+					gettype($value),
+					$fieldName
+				));
+			}
+
+			case 'bool':
+			case 'boolean': {
+				if (is_bool($value)) return $value;
+				if (is_string($value)) return in_array(strtolower($value), ['true', '1']);
+				if (is_int($value)) return $value >= 1;
+				if (is_null($value)) return $value;
+
+				throw new Exception(sprintf(
+					'Failed to convert value of type %s into boolean for field %s',
+					gettype($value),
+					$fieldName
+				));
+			}
+		}
+
+		// JSON
+		if ($type === 'object' || $type === 'array' || ends_with($type, '[]')) {
+			if (is_string($value)) {
+				return json_decode($value, $type !== 'object');
+			}
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Converts the given value into the correct format for remote storage.
+	 *
+	 * @param string $fieldName
+	 * @param mixed $value
+	 * @return mixed
+	 */
+	private function getRemoteFormat($fieldName, $value) {
+		$parser = DocParser::get($this);
+		$type = $parser->getReadTypes($fieldName)[0];
+
+		if (is_null($type)) {
+			throw new Exception(sprintf('Unknown field "%s"', $fieldName));
+		}
+
+		switch ($type) {
+			case 'DateTime': {
+				if ($value instanceof DateTime) return $value->format('Y-m-d H:i:s');
+				if (is_int($value)) return (new DateTime('@' . $value))->format('Y-m-d H:i:s');
+				if (is_string($value)) return $value;
+				if (is_null($value)) return $value;
+
+				throw new Exception(sprintf(
+					'Failed to convert value of type %s into a DATETIME string for field %s',
+					gettype($value),
+					$fieldName
+				));
+			}
+
+			case 'bool':
+			case 'boolean': {
+				if (is_string($value)) return in_array(strtolower($value), ['true', '1']) ? 1 : 0;
+				if (is_int($value)) return $value >= 1 ? 1 : 0;
+				if (is_bool($value)) return $value ? 1 : 0;
+				if (is_null($value)) return $value;
+
+				throw new Exception(sprintf(
+					'Failed to convert value of type %s into TINYINT for field %s',
+					gettype($value),
+					$fieldName
+				));
+			}
+		}
+
+		// JSON
+		if ($type === 'object' || $type === 'array' || ends_with($type, '[]')) {
+			if (is_object($value) || is_array($value)) {
+				return json_encode($value, JSON_UNESCAPED_SLASHES);
+			}
+		}
+
+		return $value;
 	}
 
 	/**

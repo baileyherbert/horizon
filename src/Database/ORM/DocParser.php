@@ -102,11 +102,11 @@ class DocParser {
 	 * @param string $fieldName
 	 * @return string
 	 */
-	public function getReadType($fieldName) {
+	public function getReadTypes($fieldName) {
 		$fieldName = strtolower($fieldName);
 
 		if (array_key_exists($fieldName, $this->readProperties)) {
-			return $this->readProperties[$fieldName][0];
+			return $this->readProperties[$fieldName];
 		}
 	}
 
