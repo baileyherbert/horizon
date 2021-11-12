@@ -6,6 +6,7 @@ use Horizon\Database\QueryBuilder;
 use Horizon\Database\QueryBuilder\StringBuilder;
 use Horizon\Support\Str;
 use Horizon\Database\Exception\QueryBuilderException;
+use Horizon\Database\QueryBuilder\ColumnReference;
 
 class Update implements CommandInterface {
 
@@ -98,6 +99,13 @@ class Update implements CommandInterface {
 		foreach ($this->values as $key => $value) {
 			if (is_array($value)) {
 				$compiled[] = sprintf('%s = %s', StringBuilder::formatColumnName($key), $this->compileFunction($value));
+			}
+			else if ($value instanceof ColumnReference) {
+				$compiled[] = sprintf(
+					'%s = %s',
+					StringBuilder::formatColumnName($key),
+					StringBuilder::formatColumnName($value->name)
+				);
 			}
 			else {
 				$compiled[] = sprintf('%s = ?', StringBuilder::formatColumnName($key));

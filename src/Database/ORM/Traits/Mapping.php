@@ -2,11 +2,16 @@
 
 namespace Horizon\Database\ORM\Traits;
 
-use Horizon\Database\Model;
+use DateTime;
+use DB;
+use Exception;
 
+use Horizon\Database\Model;
 use Horizon\Database\ORM\Relationship;
 use Horizon\Database\QueryBuilder;
 use Horizon\Database\Cache;
+use Horizon\Database\ModelField;
+use Horizon\Database\ORM\DocParser;
 use Horizon\Database\ORM\Relationships\OneToOneRelationship;
 use Horizon\Database\ORM\Relationships\BelongsToOneRelationship;
 
@@ -16,10 +21,27 @@ trait Mapping {
 
 	protected $table;
 	protected $primaryKey = 'id';
-	protected $incrementing = true;
-	protected $storage = array();
-	protected $changes = array();
-	protected $fixes = array();
+
+	/**
+	 * An array containing the fields that are committed to the database.
+	 *
+	 * @var ModelField[]
+	 */
+	private $rowFieldsCommitted = [];
+
+	/**
+	 * An array containing the fields that will be committed to the database on the next save.
+	 *
+	 * @var ModelField[]
+	 */
+	private $rowFieldsPending = [];
+
+	/**
+	 * An array containing the fields (as names) that should be set to themselves on the next save.
+	 *
+	 * @var string[]
+	 */
+	private $rowFieldsEqualize = [];
 
 	/**
 	 * Name of database connection to use for this model.
@@ -60,13 +82,13 @@ trait Mapping {
 	/**
 	 * Gets the value of the primary key in the row.
 	 *
-	 * @return int|null
+	 * @return mixed
 	 */
 	public function getPrimaryKeyValue() {
 		$keyName = $this->getPrimaryKey();
 
-		if (isset($this->storage[$keyName])) {
-			return $this->storage[$keyName];
+		if (isset($this->rowFieldsCommitted[$keyName])) {
+			return $this->rowFieldsCommitted[$keyName]->remoteFormat;
 		}
 
 		return null;
@@ -78,18 +100,21 @@ trait Mapping {
 	public function save() {
 		$keyName = $this->getPrimaryKey();
 		$keyValue = $this->getPrimaryKeyValue();
+		$connection = DB::connection($this->getConnection());
 
-		if (empty($this->changes)) {
-			return;
-		}
+		// Map the changes into their remote formats
+		$changes = array_map(function(ModelField $field) {
+			return $field->remoteFormat;
+		}, $this->rowFieldsPending);
 
+		// Create a new row if there is no value for the primary key
 		if (is_null($keyValue)) {
-			$builder = \DB::connection($this->getConnection())->insert()->into($this->getTable())->values($this->changes);
+			$builder = $connection->insert()->into($this->getTable())->values($changes);
 			$returned = $builder->exec();
 
-			// Save the new row id
-			if (!array_key_exists($keyName, $this->changes)) {
-				$this->changes[$keyName] = $returned;
+			// Save the new primary key value
+			if (!array_key_exists($keyName, $this->rowFieldsPending)) {
+				$this->writeCommittedField($keyName, $returned);
 			}
 
 			// Save the instance to cache
@@ -98,33 +123,39 @@ trait Mapping {
 			// Emit the inserted event
 			$this->emit('inserted', $returned);
 		}
-		else {
-			if (!empty($this->fixes)) {
-				foreach ($this->fixes as $key) {
-					if (!isset($this->changes[$key])) {
-						$this->changes[$key] = $this->storage[$key];
-					}
-				}
 
-				$this->fixes = array();
+		// Update an existing row
+		else {
+			// Skip if there are no pending changes
+			if (empty($this->rowFieldsPending)) {
+				return;
 			}
 
-			$builder = \DB::connection($this->getConnection())->update()->table($this->getTable())->values($this->changes);
+			// Set fields in the equalize store equal to themselves
+			if (!empty($this->rowFieldsEqualize)) {
+				foreach ($this->rowFieldsEqualize as $fieldName) {
+					$changes[$fieldName] = ref($fieldName);
+				}
+			}
+
+			$builder = $connection->update()->table($this->getTable())->values($changes);
 			$builder->where($keyName, '=', $keyValue);
 			$builder->exec();
 
 			$this->emit('updated');
 		}
 
-		foreach ($this->changes as $key => $value) {
-			$this->storage[$key] = $value;
+		// Commit all pending changes
+		foreach ($this->rowFieldsPending as $fieldName => $field) {
+			$this->writeCommittedField($fieldName, $field->remoteFormat);
 
 			// Emit a property-set event
-			$this->emit('property', $key, $value);
+			$this->emit('property', $fieldName, $field->localFormat);
 		}
 
-		$this->emit('saved', $this->changes);
-		$this->changes = array();
+		$this->emit('saved', $changes);
+		$this->rowFieldsPending = array();
+		$this->rowFieldsEqualize = array();
 	}
 
 	/**
@@ -133,89 +164,116 @@ trait Mapping {
 	 * @return array
 	 */
 	public function delete() {
-		if (is_null($this->getPrimaryKeyValue())) {
-			$this->emit('deleted');
-			$this->storage = array();
+		$oldData = null;
 
-			return;
+		if (!is_null($this->getPrimaryKeyValue())) {
+			$oldData = array_map(function(ModelField $field) {
+				return $field->localFormat;
+			}, $this->rowFieldsCommitted);
+
+			$keyName = $this->getPrimaryKey();
+			$keyValue = $this->getPrimaryKeyValue();
+
+			$builder = \DB::connection($this->getConnection())->delete()->from($this->getTable());
+			$builder->where($keyName, '=', $keyValue);
+			$builder->exec();
 		}
 
-		$oldData = $this->storage;
-
-		$keyName = $this->getPrimaryKey();
-		$keyValue = $this->getPrimaryKeyValue();
-
-		$builder = \DB::connection($this->getConnection())->delete()->from($this->getTable());
-		$builder->where($keyName, '=', $keyValue);
-		$builder->exec();
-
 		$this->emit('deleted');
-		$this->storage = array();
+		$this->rowFieldsCommitted = array();
+		$this->rowFieldsPending = array();
+		$this->rowFieldsEqualize = array();
 
 		return $oldData;
 	}
 
 	public function __isset($name) {
-		return (method_exists($this, $name) || array_key_exists($name, $this->storage));
+		return (method_exists($this, $name) || array_key_exists($name, $this->rowFieldsCommitted));
 	}
 
-	public function __get($name) {
-		if (method_exists($this, $name)) {
-			$relationship = $this->$name();
+	public function __get($fieldName) {
+		// Check for a corresponding method and return their values or relationships
+		if (method_exists($this, $fieldName)) {
+			$value = $this->$fieldName();
 
-			if ($relationship instanceof Relationship || $relationship instanceof QueryBuilder) {
-				return $relationship->get();
-			}
-		}
-
-		if (array_key_exists($name, $this->changes)) {
-			$getterName = '__get' . str_replace('_', '', $name);
-			$value = $this->changes[$name];
-
-			if (method_exists($this, $getterName)) {
-				$value = $this->$getterName($value);
+			if ($value instanceof Relationship || $value instanceof QueryBuilder) {
+				return $value->get();
 			}
 
 			return $value;
 		}
 
-		if (array_key_exists($name, $this->storage)) {
-			$getterName = '__get' . str_replace('_', '', $name);
-			$value = $this->storage[$name];
-
-			if (method_exists($this, $getterName)) {
-				$value = $this->$getterName($value);
-			}
-
-			return $value;
+		// Check for a field in the pending store
+		if (array_key_exists($fieldName, $this->rowFieldsPending)) {
+			$field = $this->rowFieldsPending[$fieldName];
 		}
 
-		return null;
+		// Check for a field in the committed store
+		else if (array_key_exists($fieldName, $this->rowFieldsCommitted)) {
+			$field = $this->rowFieldsCommitted[$fieldName];
+		}
+
+		// Check fields that are not found for validity
+		else {
+			if (!DocParser::get($this)->hasField($fieldName)) {
+				throw new Exception(sprintf('Unknown field "%s"', $fieldName));
+			}
+
+			return null;
+		}
+
+		// Run getter functions
+		if (method_exists($this, $getterName = '__get' . str_replace('_', '', $fieldName))) {
+			$this->$getterName($field);
+		}
+
+		return $field->localFormat;
 	}
 
-	public function __set($name, $value) {
-		$setterName = '__set' . str_replace('_', '', $name);
+	public function __set($fieldName, $value) {
+		$field = $this->getField($fieldName, $value);
 
-		if (array_key_exists($name, $this->storage)) {
-			if ($value === $this->__get($name)) {
+		// Skip if the same value is already committed
+		if (array_key_exists($fieldName, $this->rowFieldsCommitted)) {
+			if ($this->rowFieldsCommitted[$fieldName]->remoteFormat === $field->remoteFormat) {
 				return;
 			}
 		}
-		else if ($value instanceof Model && method_exists($this, $name)) {
-			$relationship = $this->$name();
+
+		// Skip if the same value is already pending
+		if (array_key_exists($fieldName, $this->rowFieldsPending)) {
+			if ($this->rowFieldsPending[$fieldName]->remoteFormat === $field->remoteFormat) {
+				return;
+			}
+		}
+
+		// Delete a pending equalize operation for the same field
+		if (($index = array_search($fieldName, $this->rowFieldsPending)) !== false) {
+			unset($this->rowFieldsEqualize[$index]);
+		}
+
+		// Check for model relationships and update them
+		if ($value instanceof Model && method_exists($this, $fieldName)) {
+			$relationship = $this->$fieldName();
 
 			if ($relationship instanceof OneToOneRelationship || $relationship instanceof BelongsToOneRelationship) {
 				$relationship->set($value);
 				return;
 			}
+
+			throw new Exception(sprintf('Cannot indirectly update relationship for field %s', $fieldName));
 		}
 
-		if (method_exists($this, $setterName)) {
-			$value = $this->$setterName($value);
+		// Check for a setter function
+		if (method_exists($this, $setterName = '__set' . str_replace('_', '', $fieldName))) {
+			$this->$setterName($field);
 		}
 
-		$this->emit('changed', $name, $value);
-		$this->changes[$name] = $value;
+		// Emit the changed event
+		$this->emit('changed', $fieldName, $field->localFormat);
+
+		// Save the new field to the pending store
+		$this->rowFieldsPending[$fieldName] = $field;
 	}
 
 	/**
@@ -245,6 +303,142 @@ trait Mapping {
 	 */
 	public function equals(Model $object) {
 		return ($object->id === $this->id && $object->getTable() === $this->getTable());
+	}
+
+	/**
+	 * Forcefully skips updates to the specified field by setting its value equal to itself. This is primarily useful
+	 * for auto-updating fields such as `updated_at` timestamps.
+	 *
+	 * @param string $fieldName
+	 * @return void
+	 */
+	public function skip($fieldName) {
+		$this->rowFieldsEqualize[] = $fieldName;
+	}
+
+	/**
+	 * Writes the value of the specified field to the model's committed store. This is an internal method.
+	 *
+	 * @param string $fieldName
+	 * @param string|int|double $value
+	 * @return void
+	 */
+	protected function writeCommittedField($fieldName, $value) {
+		$localFormat = $this->getLocalFormat($fieldName, $value);
+		$field = new ModelField(null, $localFormat, $value);
+
+		$this->rowFieldsCommitted[$fieldName] = $field;
+	}
+
+	/**
+	 * Converts the given value into the correct format for local usage.
+	 *
+	 * @param string $fieldName
+	 * @param mixed $value
+	 * @return mixed
+	 */
+	private function getLocalFormat($fieldName, $value) {
+		$parser = DocParser::get($this);
+		$type = $parser->getReadType($fieldName);
+
+		if (is_null($type)) {
+			throw new Exception(sprintf('Unknown field "%s"', $fieldName));
+		}
+
+		switch ($type) {
+			case 'DateTime': {
+				if ($value instanceof DateTime) return $value;
+				if (is_string($value)) return new DateTime($value);
+				if (is_int($value)) return new DateTime('@' . $value);
+
+				throw new Exception(sprintf(
+					'Failed to convert value of type %s into DateTime for field %s',
+					gettype($value),
+					$fieldName
+				));
+			}
+
+			case 'bool':
+			case 'boolean': {
+				if (is_bool($value)) return $value;
+				if (is_string($value)) return in_array(strtolower($value), ['true', '1']);
+				if (is_int($value)) return $value >= 1;
+
+				throw new Exception(sprintf(
+					'Failed to convert value of type %s into boolean for field %s',
+					gettype($value),
+					$fieldName
+				));
+			}
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Converts the given value into the correct format for remote storage.
+	 *
+	 * @param string $fieldName
+	 * @param mixed $value
+	 * @return mixed
+	 */
+	private function getRemoteFormat($fieldName, $value) {
+		$parser = DocParser::get($this);
+		$type = $parser->getReadType($fieldName);
+
+		if (is_null($type)) {
+			throw new Exception(sprintf('Unknown field "%s"', $fieldName));
+		}
+
+		switch ($type) {
+			case 'DateTime': {
+				if ($value instanceof DateTime) return $value->format('Y-m-d H:i:s');
+				if (is_int($value)) return (new DateTime('@' . $value))->format('Y-m-d H:i:s');
+				if (is_string($value)) return $value;
+
+				throw new Exception(sprintf(
+					'Failed to convert value of type %s into a DATETIME string for field %s',
+					gettype($value),
+					$fieldName
+				));
+			}
+
+			case 'bool':
+			case 'boolean': {
+				if (is_string($value)) return in_array(strtolower($value), ['true', '1']) ? 1 : 0;
+				if (is_int($value)) return $value >= 1 ? 1 : 0;
+				if (is_bool($value)) return $value ? 1 : 0;
+
+				throw new Exception(sprintf(
+					'Failed to convert value of type %s into TINYINT for field %s',
+					gettype($value),
+					$fieldName
+				));
+			}
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Converts the given value into a `Field` instance containing the remote and local values.
+	 *
+	 * @param string $fieldName
+	 * @param mixed $value
+	 * @return ModelField
+	 */
+	private function getField($fieldName, $value) {
+		$parser = DocParser::get($this);
+
+		if (!$parser->hasField($fieldName)) {
+			throw new Exception(sprintf('Unknown field "%s"', $fieldName));
+		}
+
+		return new ModelField(
+			$value,
+			$this->getLocalFormat($fieldName, $value),
+			$this->getRemoteFormat($fieldName, $value)
+		);
 	}
 
 }

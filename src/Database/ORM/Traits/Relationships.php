@@ -10,6 +10,14 @@ use Horizon\Database\QueryBuilder\StringBuilder;
 
 trait Relationships {
 
+	/**
+	 * This model has another derivative model.
+	 *
+	 * @param string $model
+	 * @param string $foreignKey
+	 * @param string $localKey
+	 * @return OneToOneRelationship
+	 */
 	protected function hasOne($model, $foreignKey = null, $localKey = null) {
 		if (is_null($localKey)) {
 			$localKey = $this->primaryKey;
@@ -22,6 +30,14 @@ trait Relationships {
 		return new OneToOneRelationship($this, $model, $foreignKey, $localKey);
 	}
 
+	/**
+	 * This model is derived from another model.
+	 *
+	 * @param string $model
+	 * @param string $localKey
+	 * @param string $parentKey
+	 * @return BelongsToOneRelationship
+	 */
 	protected function belongsTo($model, $localKey = null, $parentKey = null) {
 		$o = new $model;
 
@@ -37,6 +53,14 @@ trait Relationships {
 		return new BelongsToOneRelationship($this, $model, $parentKey, $localKey);
 	}
 
+	/**
+	 * This model has multiple derivative models.
+	 *
+	 * @param string $model
+	 * @param string $foreignKey
+	 * @param string $localKey
+	 * @return OneToManyRelationship
+	 */
 	protected function hasMany($model, $foreignKey = null, $localKey = null) {
 		if (is_null($localKey)) {
 			$localKey = $this->primaryKey;
@@ -49,6 +73,15 @@ trait Relationships {
 		return new OneToManyRelationship($this, $model, $foreignKey, $localKey);
 	}
 
+	/**
+	 * This model is associated with multiple models through a map table.
+	 *
+	 * @param string $model
+	 * @param string $mapTable
+	 * @param string $localKey
+	 * @param string $parentKey
+	 * @return BelongsToManyRelationship
+	 */
 	protected function belongsToMany($model, $mapTable = null, $localKey = null, $parentKey = null) {
 		if (is_null($localKey)) {
 			$localKey = StringBuilder::getSingularModelName($this) . '_' . $this->getPrimaryKey();
@@ -61,10 +94,6 @@ trait Relationships {
 		}
 
 		return new BelongsToManyRelationship($this, $model, $parentKey, $localKey, $mapTable);
-	}
-
-	protected static function has($relationship, $operator = '>', $count = 0) {
-
 	}
 
 }

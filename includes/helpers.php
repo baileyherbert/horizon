@@ -1,5 +1,6 @@
 <?php
 
+use Horizon\Database\QueryBuilder\ColumnReference;
 use Horizon\Support\Arr;
 use Horizon\Support\Container\Container;
 use Horizon\Support\Path;
@@ -1436,5 +1437,17 @@ if (!function_exists('timestamp_to_datetime')) {
 		}
 
 		return $date->format('Y-m-d H:i:s');
+	}
+}
+
+if (!function_exists('ref')) {
+	/**
+	 * Returns a reference to a database table field.
+	 *
+	 * @param string $fieldName
+	 * @return ColumnReference
+	 */
+	function ref($fieldName) {
+		return new ColumnReference($fieldName);
 	}
 }

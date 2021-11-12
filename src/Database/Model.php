@@ -21,7 +21,7 @@ class Model extends EventEmitter implements \JsonSerializable {
 	public function __construct($mapping = null) {
 		if (is_object($mapping)) {
 			foreach ($mapping as $column => $value) {
-				$this->storage[$column] = $value;
+				$this->writeCommittedField($column, $value);
 			}
 		}
 	}
