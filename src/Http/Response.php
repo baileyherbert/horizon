@@ -330,4 +330,13 @@ class Response extends SymfonyResponse {
 		return $context;
 	}
 
+	/**
+	 * Returns the length of the output.
+	 *
+	 * @return int
+	 */
+	public function getLength() {
+		return strlen($this->content);
+	}
+
 }

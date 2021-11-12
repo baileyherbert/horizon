@@ -314,7 +314,19 @@ class Kernel {
 		}
 
 		// Execute the controller
-		$route->execute($this->request, $this->response);
+		$result = $route->execute($this->request, $this->response);
+
+		// Send the returned response if applicable
+		if ($this->response->getLength() === 0 && $this->response->isSuccessful()) {
+			$this->response->writeLine(json_encode(
+				$result,
+				JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE
+			));
+
+			if (!$this->response->getHeader('content-type')) {
+				$this->response->setHeader('content-type', 'application/json');
+			}
+		}
 	}
 
 	/**
