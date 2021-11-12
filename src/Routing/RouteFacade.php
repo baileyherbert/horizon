@@ -201,6 +201,26 @@ class RouteFacade {
 	}
 
 	/**
+	 * Creates CRUD routes for a resource.
+	 *
+	 * @param string $uri
+	 * @param string $action
+	 * @param string $primaryKeyName
+	 * @param string|null $fallback
+	 * @return void
+	 */
+	public static function resource($uri, $action, $primaryKeyName = 'id', $fallback = null) {
+		$resourceName = trim(preg_replace("/[^a-zA-Z0-9_.-]+/", "_", $uri), '_');
+		$uri = rtrim($uri, '/');
+
+		static::get("{$uri}", "{$action}::index", $fallback)->name("{$resourceName}.index");
+		static::get("{$uri}/{{$primaryKeyName}}", "{$action}::show", $fallback)->name("{$resourceName}.show");
+		static::post("{$uri}", "{$action}::create", $fallback)->name("{$resourceName}.create");
+		static::put("{$uri}/{{$primaryKeyName}}", "{$action}::update", $fallback)->name("{$resourceName}.update");
+		static::delete("{$uri}/{{$primaryKeyName}}", "{$action}::delete", $fallback)->name("{$resourceName}.delete");
+	}
+
+	/**
 	 * Registers a new route with the router which applies to the provided methods.
 	 *
 	 * @param string[] $methods

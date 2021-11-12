@@ -21,11 +21,15 @@ class MakeControllerCommand extends Command {
 		$this->addOption('root', 'r', InputOption::VALUE_NONE, 'Uses the root source directory.');
 		$this->addOption('open', 'o', InputOption::VALUE_NONE, 'Opens the file with your default PHP editor.');
 
+		$this->addOption('get', null, InputOption::VALUE_NONE, 'Adds a GET route method.');
 		$this->addOption('post', null, InputOption::VALUE_NONE, 'Adds a POST route method.');
 		$this->addOption('delete', null, InputOption::VALUE_NONE, 'Adds a DELETE route method.');
 		$this->addOption('put', null, InputOption::VALUE_NONE, 'Adds a PUT route method.');
 		$this->addOption('patch', null, InputOption::VALUE_NONE, 'Adds a PATCH route method.');
 		$this->addOption('blank', null, InputOption::VALUE_NONE, 'Skips adding route methods.');
+
+		$this->addOption('resource', null, InputOption::VALUE_NONE, 'Adds resource route methods (CRUD).');
+		$this->addOption('crud', null, InputOption::VALUE_NONE, 'Alias for --resource.');
 	}
 
 	/**
@@ -59,6 +63,14 @@ class MakeControllerCommand extends Command {
 		if ($in->getOption('put')) $methods['put'] = true;
 		if ($in->getOption('patch')) $methods['patch'] = true;
 		if ($in->getOption('delete')) $methods['delete'] = true;
+		if ($in->getOption('resource') || $in->getOption('crud')) $methods = array_merge($methods, [
+			'get' => !!$in->getOption('get'),
+			'crud_index' => true,
+			'crud_show' => true,
+			'crud_create' => true,
+			'crud_update' => true,
+			'crud_delete' => true
+		]);
 
 		return $methods;
 	}
