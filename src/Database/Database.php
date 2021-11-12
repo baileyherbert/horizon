@@ -173,6 +173,7 @@ class Database extends EventEmitter {
 			return $returned;
 		}
 		catch (Exception $ex) {
+			$timeTaken = Profiler::stop('database:query');
 			$this->emit('query', $statement, $bindings, $timeTaken, $ex);
 			throw $ex;
 		}
