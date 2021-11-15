@@ -6,6 +6,7 @@ use DateTime;
 use Horizon\Database\Model;
 use Horizon\Database\ORM\DocParser;
 use Horizon\Database\ORM\Relationship;
+use ReflectionMethod;
 
 /**
  * Implements serialization into a model instance.
@@ -105,7 +106,7 @@ trait Serializable {
 		// Relationships
 		$className = get_class($this);
 		$class = new \ReflectionClass($className);
-		$methods = $class->getMethods(\ReflectionMethod::IS_PUBLIC);
+		$methods = $class->getMethods(ReflectionMethod::IS_PUBLIC | ReflectionMethod::IS_PROTECTED);
 		$skipped[] = $className;
 		$docs = DocParser::get($this);
 
@@ -114,11 +115,12 @@ trait Serializable {
 				continue;
 			}
 
-			if ($method->class == $className && $method->getNumberOfParameters() === 0) {
-				if ($this->isColumnSerializable($method->name) && $docs->hasField($method->name)) {
-					$returned = $method->invoke($this);
+			if ($method->class == $className && $method->getNumberOfRequiredParameters() === 0) {
+				if ($docs->hasField($method->name) && $this->isColumnSerializable($method->name)) {
+					$returned = call_user_func(array($this, $method->name));
 
 					if (!(is_object($returned) && $this->isRelationship($returned))) {
+						$permitted[$method->name] = $returned;
 						continue;
 					}
 
@@ -166,9 +168,9 @@ trait Serializable {
 		$methods = $class->getMethods(\ReflectionMethod::IS_PUBLIC | \ReflectionMethod::IS_PROTECTED);
 
 		foreach ($methods as $method) {
-			if (preg_match('/^serialize(\w+)$/i', $method->name, $matches)) {
-				$propName = $matches[1];
-				$fullName = 'serialize' . $propName;
+			if (preg_match('/^((?:__)?serialize(\w+))$/i', $method->name, $matches)) {
+				$fullName = $matches[1];
+				$propName = $matches[2];
 				$found = false;
 
 				foreach ($permitted as $i => $v) {
@@ -180,7 +182,7 @@ trait Serializable {
 				}
 
 				if (!$found) {
-					$propNameLower = lcfirst($propName);
+					$propNameLower = trim(strtolower(preg_replace('/([A-Z]+)/', '_$1', $propName)), '_');
 					$permitted[$propNameLower] = call_user_func(array($this, $fullName), $this, null);
 				}
 			}
