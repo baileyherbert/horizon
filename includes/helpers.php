@@ -1413,7 +1413,12 @@ if (!function_exists('datetime_to_timestamp')) {
 	 * @return int
 	 */
 	function datetime_to_timestamp($datetime, $timezone = null) {
-		$time = new DateTime($datetime, $timezone !== null ? new DateTimeZone($timezone) : null);
+		if ($timezone === null) {
+			$timezone = config('app.timezone');
+		}
+
+		$timezone = new DateTimeZone($timezone);
+		$time = new DateTime($datetime, $timezone);
 		return $time->getTimestamp();
 	}
 }
@@ -1432,10 +1437,11 @@ if (!function_exists('timestamp_to_datetime')) {
 	function timestamp_to_datetime($timestamp, $timezone = null) {
 		$date = DateTime::createFromFormat('U', $timestamp);
 
-		if ($timezone !== null) {
-			$date->setTimezone(new DateTimeZone($timezone));
+		if ($timezone === null) {
+			$timezone = config('app.timezone');
 		}
 
+		$date->setTimezone(new DateTimeZone($timezone));
 		return $date->format('Y-m-d H:i:s');
 	}
 }
