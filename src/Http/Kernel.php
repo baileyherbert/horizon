@@ -168,14 +168,16 @@ class Kernel {
 	 */
 	public function error($code, $message = null) {
 		if ($this->response->isJson()) {
-			$this->response->setContent(json_encode(
-				[
-					'status' => $code,
-					'error' => SymfonyResponse::$statusTexts[$code],
-					'message' => empty($message) ? 'No message available' : $message
-				],
-				JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE
-			));
+			if ($this->response->getLength() === 0) {
+				$this->response->setContent(json_encode(
+					[
+						'status' => $code,
+						'error' => SymfonyResponse::$statusTexts[$code],
+						'message' => empty($message) ? 'No message available' : $message
+					],
+					JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE
+				));
+			}
 		}
 		else {
 			$errorFilePaths = array(
@@ -354,7 +356,7 @@ class Kernel {
 		$result = $route->execute($this->request, $this->response);
 
 		// Send the returned response if applicable
-		if ($this->response->getLength() === 0 && $this->response->isSuccessful()) {
+		if ($this->response->getLength() === 0 && !empty($result)) {
 			$this->response->writeLine(json_encode(
 				$result,
 				JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE
