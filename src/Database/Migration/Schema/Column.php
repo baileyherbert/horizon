@@ -347,7 +347,7 @@ class Column {
 			$this->compileOnUpdate(),
 			$this->compileIncrements(),
 			$this->compileComment(),
-			(!is_null($this->placement) && $this->change) ? $this->placement : ''
+			(!is_null($this->placement)) ? $this->placement : ''
 		);
 	}
 
