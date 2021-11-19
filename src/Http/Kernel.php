@@ -213,9 +213,14 @@ class Kernel {
 	 */
 	private function executePipes($method) {
 		Profiler::start('router:pipes');
+		$requestMethod = $this->request->getMethod();
 
 		foreach (RouteLoader::getRouter()->getPipes($this->request) as $pipe) {
-			call_user_func([$pipe->getInstance(), $method . 'Execute'], $this->request(), $this->response());
+			$instance = $pipe->getInstance();
+
+			if (in_array($requestMethod, $instance->methods)) {
+				call_user_func([$instance, $method . 'Execute'], $this->request(), $this->response());
+			}
 		}
 
 		Profiler::stop('router:pipes');
