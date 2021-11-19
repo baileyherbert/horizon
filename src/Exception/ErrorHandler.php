@@ -22,7 +22,7 @@ class ErrorHandler implements ErrorHandlerInterface {
 	 * @return void
 	 */
 	public function http(HttpResponseException $ex) {
-		Application::kernel()->http()->error($ex->getCode());
+		Application::kernel()->http()->error($ex->getCode(), $ex->getMessage());
 	}
 
 	/**
@@ -34,6 +34,39 @@ class ErrorHandler implements ErrorHandlerInterface {
 	 * @return void
 	 */
 	public function render(HorizonError $error) {
+		if (response()->isJson()) {
+			$message = $error->getLabel() . ': ' . $error->getMessage();
+			$stackIndex = strpos($message, ' Stack trace: ');
+			$stack = [];
+
+			if ($stackIndex !== false) {
+				$trace = substr($message, $stackIndex + 14);
+				$stack = preg_split("/\r?\n/", $trace);
+				$message = substr($message, 0, $stackIndex);
+			}
+
+			$file = $error->getFile() . ':'. $error->getLine();
+			$messageFile = ' in ' . $file;
+
+			if (ends_with($message, $messageFile)) {
+				$message = substr($message, 0, -strlen($messageFile));
+			}
+
+			response()->setStatusCode(500);
+			response()->setContent(json_encode(
+				[
+					'status' => 500,
+					'error' => 'Internal Server Error',
+					'message' => $message,
+					'file' => $file,
+					'stack' => $stack
+				],
+				JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE
+			));
+
+			Application::kernel()->http()->close(true);
+		}
+
 		$message = !$this->useHtml() ? "%s: %s in %s on line %d\n"
 						: "<strong>%s</strong>: %s in <strong>%s</strong> on line <strong>%d</strong> <br>\n";
 

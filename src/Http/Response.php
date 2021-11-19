@@ -42,14 +42,14 @@ class Response extends SymfonyResponse {
 	 * @param string $value
 	 */
 	public function setHeader($key, $value) {
-		$this->headers->set($key, $value);
+		return $this->headers->set($key, $value);
 	}
 
 	/**
 	 * Gets the value of a header in the response.
 	 */
 	public function getHeader($key, $default = null) {
-		$this->headers->get($key, $default);
+		return $this->headers->get($key, $default);
 	}
 
 	/**
@@ -337,6 +337,16 @@ class Response extends SymfonyResponse {
 	 */
 	public function getLength() {
 		return strlen($this->content);
+	}
+
+	/**
+	 * Returns `true` if the current response is JSON (based on headers).
+	 *
+	 * @return bool
+	 */
+	public function isJson() {
+		$contentType = $this->headers->get('content-type', 'text/html');
+		return starts_with($contentType, 'application/json', true);
 	}
 
 }

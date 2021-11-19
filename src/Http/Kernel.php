@@ -17,6 +17,7 @@ use Horizon\Foundation\Framework;
 use Horizon\Routing\ExceptionHandlerDispatcher;
 use Horizon\Routing\RouteLoader;
 use Horizon\Support\Str;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 /**
  * Kernel for HTTP, controllers, middleware, and everything in between.
@@ -163,27 +164,40 @@ class Kernel {
 	 * Renders an error page.
 	 *
 	 * @param int $code
+	 * @param string|null $message
 	 */
-	public function error($code) {
-		$errorFilePaths = array(
-			Application::paths()->errors($code . '.html'),
-			Framework::path('resources/errors/' . $code . '.html')
-		);
+	public function error($code, $message = null) {
+		if ($this->response->isJson()) {
+			$this->response->setContent(json_encode(
+				[
+					'status' => $code,
+					'error' => SymfonyResponse::$statusTexts[$code],
+					'message' => empty($message) ? 'No message available' : $message
+				],
+				JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE
+			));
+		}
+		else {
+			$errorFilePaths = array(
+				Application::paths()->errors($code . '.html'),
+				Framework::path('resources/errors/' . $code . '.html')
+			);
 
-		foreach ($errorFilePaths as $path) {
-			if (file_exists($path)) {
-				if (is_null($this->response)) {
-					$this->createResponse();
+			foreach ($errorFilePaths as $path) {
+				if (file_exists($path)) {
+					if (is_null($this->response)) {
+						$this->createResponse();
+					}
+
+					$requestPath = (isset($this->realPath)) ? $this->realPath : $this->request->path();
+
+					$contents = file_get_contents($path);
+					$contents = str_replace('{{ path }}', $requestPath, $contents);
+
+					$this->response->setContent($contents);
+
+					break;
 				}
-
-				$requestPath = (isset($this->realPath)) ? $this->realPath : $this->request->path();
-
-				$contents = file_get_contents($path);
-				$contents = str_replace('{{ path }}', $requestPath, $contents);
-
-				$this->response->setContent($contents);
-
-				break;
 			}
 		}
 
