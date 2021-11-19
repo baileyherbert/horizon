@@ -69,7 +69,9 @@ class Kernel {
 		Profiler::start('kernel:http');
 
 		// Find a matching route
+		$this->executePipes('before');
 		$route = $this->route = $this->match();
+		$this->executePipes('after');
 
 		// If the route was found, execute it
 		if ($route) {
@@ -187,6 +189,22 @@ class Kernel {
 
 		$this->response->setStatusCode($code);
 		$this->close(true);
+	}
+
+	/**
+	 * Executes pipes.
+	 *
+	 * @param string $method `before` or `after`
+	 * @return void
+	 */
+	private function executePipes($method) {
+		Profiler::start('router:pipes');
+
+		foreach (RouteLoader::getRouter()->getPipes($this->request) as $pipe) {
+			call_user_func([$pipe->getInstance(), $method . 'Execute'], $this->request(), $this->response());
+		}
+
+		Profiler::stop('router:pipes');
 	}
 
 	/**

@@ -9,6 +9,11 @@ use Horizon\Http\Exception\HttpResponseException;
 class ErrorMiddleware {
 
 	/**
+	 * @var string|null
+	 */
+	public static $customHandler;
+
+	/**
 	 * Handles a runtime error (a standard error that occurs while the page is running).
 	 *
 	 * @param int $severity
@@ -219,6 +224,10 @@ class ErrorMiddleware {
 	 */
 	public static function getErrorHandler() {
 		$errorHandler = config('errors.handler', 'Horizon\Exception\ErrorHandler');
+
+		if (isset(static::$customHandler)) {
+			$errorHandler = static::$customHandler;
+		}
 
 		// Ensure existence
 		if (!class_exists($errorHandler)) {

@@ -3,6 +3,7 @@
 namespace Horizon\Routing;
 
 use Closure;
+use Horizon\Foundation\Application;
 use Horizon\Http\Request;
 use Horizon\Routing\Route;
 use Horizon\Routing\RouteGroup;
@@ -27,6 +28,11 @@ class Router {
 	 * @var RouteGroup
 	 */
 	protected $currentGroup = null;
+
+	/**
+	 * @var RoutePipe[]
+	 */
+	protected $pipes = array();
 
 	/**
 	 * @var string[]
@@ -345,6 +351,20 @@ class Router {
 	}
 
 	/**
+	 * Creates a new pipe for the given prefix.
+	 *
+	 * @param string $prefix
+	 * @param string $className
+	 * @return RoutePipe
+	 */
+	public function createPipe($prefix, $className) {
+		$uri = $this->applyGroupProperty('prefix', $prefix);
+		$pipe = new RoutePipe($uri, $className);
+
+		return $this->pipes[] = $pipe;
+	}
+
+	/**
 	 * Registers a name prefix. If the second parameter is provided a closure, it creates a name group which applies
 	 * to all routes registered within that closure. Otherwise, the prefix applies to all routes defined thereafter,
 	 * in the current scope.
@@ -451,6 +471,24 @@ class Router {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Finds all pipes matching the given request.
+	 *
+	 * @return RoutePipe[]
+	 */
+	public function getPipes(Request $request) {
+		$matches = [];
+		$path = $request->path();
+
+		foreach ($this->pipes as $pipe) {
+			if (starts_with($path, $pipe->getUri())) {
+				$matches[] = $pipe;
+			}
+		}
+
+		return $matches;
 	}
 
 	/**

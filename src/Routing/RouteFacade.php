@@ -332,6 +332,17 @@ class RouteFacade {
 	}
 
 	/**
+	 * Registers a pipe that matches all requests starting with the given path prefix.
+	 *
+	 * @param string $prefix
+	 * @param string $pipe The full class name of the target pipe.
+	 * @return RoutePipe
+	 */
+	public static function pipe($prefix, $pipe) {
+		return static::router()->createPipe($prefix, $pipe);
+	}
+
+	/**
 	 * Registers a name prefix. If the second parameter is provided a closure, it creates a name group which applies
 	 * to all routes registered within that closure. Otherwise, the prefix applies to all routes defined thereafter,
 	 * in the current scope.
