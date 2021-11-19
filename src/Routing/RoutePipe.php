@@ -22,7 +22,7 @@ class RoutePipe {
 	 *
 	 * @param string $propName
 	 * @param mixed $value
-	 * @return void
+	 * @return $this
 	 */
 	public function set($propName, $value) {
 		if (property_exists($this->instance, $propName)) {
@@ -31,6 +31,8 @@ class RoutePipe {
 		else {
 			throw new Exception(sprintf('Pipe: %s::%s does not exist', $this->className, $propName));
 		}
+
+		return $this;
 	}
 
 	/**
@@ -38,7 +40,7 @@ class RoutePipe {
 	 *
 	 * @param string $propName
 	 * @param mixed $value
-	 * @return void
+	 * @return $this
 	 */
 	public function push($propName, $value) {
 		if (property_exists($this->instance, $propName)) {
@@ -56,6 +58,8 @@ class RoutePipe {
 		else {
 			throw new Exception(sprintf('Pipe: %s::%s does not exist', $this->className, $propName));
 		}
+
+		return $this;
 	}
 
 	/**
