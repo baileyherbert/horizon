@@ -356,7 +356,7 @@ class Kernel {
 		$result = $route->execute($this->request, $this->response);
 
 		// Send the returned response if applicable
-		if ($this->response->getLength() === 0 && !empty($result)) {
+		if ($this->response->getLength() === 0 && !is_null($result)) {
 			$this->response->writeLine(json_encode(
 				$result,
 				JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE
