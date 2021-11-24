@@ -39,6 +39,11 @@ class Database extends EventEmitter {
 	protected $kernel;
 
 	/**
+	 * @var DatabaseCache
+	 */
+	protected $cache;
+
+	/**
 	 * Constructs a new Database instance.
 	 *
 	 * @param array $config
@@ -47,6 +52,7 @@ class Database extends EventEmitter {
 		$this->kernel = Application::kernel()->database();
 		$this->config = $config;
 		$this->loggingEnabled = $config['query_logging'] == true;
+		$this->cache = new DatabaseCache($this);
 
 		$this->doQueryLog();
 		$this->loadDriver();
@@ -300,10 +306,13 @@ class Database extends EventEmitter {
 				'query' => $statement,
 				'prepared' => !empty($bindings),
 				'bindings' => $bindings,
-				'reused' => false,
 				'duration' => $millisTaken,
 				'exception' => $exception
 			);
+
+			if (count($this->log) > 512) {
+				array_shift($this->log);
+			}
 		});
 	}
 
@@ -327,6 +336,15 @@ class Database extends EventEmitter {
 		$offset = $date->format('P');
 
 		$this->driver->query("SET time_zone = '$offset';");
+	}
+
+	/**
+	 * Returns the cache manager for this database.
+	 *
+	 * @return DatabaseCache
+	 */
+	public function cache() {
+		return $this->cache;
 	}
 
 }

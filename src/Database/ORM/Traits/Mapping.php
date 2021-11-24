@@ -9,7 +9,6 @@ use Exception;
 use Horizon\Database\Model;
 use Horizon\Database\ORM\Relationship;
 use Horizon\Database\QueryBuilder;
-use Horizon\Database\Cache;
 use Horizon\Database\ModelField;
 use Horizon\Database\ORM\DocParser;
 use Horizon\Database\ORM\Relationships\OneToOneRelationship;
@@ -110,7 +109,6 @@ trait Mapping {
 	 */
 	public function save() {
 		$keyName = $this->getPrimaryKey();
-		$keyValue = $this->getPrimaryKeyValue();
 		$connection = DB::connection($this->getConnection());
 
 		// Map the changes into their remote formats
@@ -129,7 +127,7 @@ trait Mapping {
 			}
 
 			// Save the instance to cache
-			Cache::setModelInstance($this, $this, $returned);
+			$connection->getDatabase()->cache()->saveModelInstance($this);
 
 			// Emit the inserted event
 			$this->emit('inserted', $returned);
@@ -299,7 +297,16 @@ trait Mapping {
 			$value = $this->$fieldName();
 
 			if ($value instanceof Relationship || $value instanceof QueryBuilder) {
-				return $value->get();
+				$cache = DB::connection($this->getConnection())->cache();
+
+				if ($cache->hasRelationship($this, $fieldName)) {
+					return $cache->getRelationship($this, $fieldName);
+				}
+
+				$result = $value->get();
+				$cache->saveRelationship($this, $fieldName, $result);
+
+				return $result;
 			}
 
 			return $value;
@@ -439,11 +446,15 @@ trait Mapping {
 	 * @param string|int|double $value
 	 * @return void
 	 */
-	protected function writeCommittedField($fieldName, $value) {
+	private function writeCommittedField($fieldName, $value) {
 		$localFormat = $this->getLocalFormat($fieldName, $value);
 		$field = new ModelField(null, $localFormat, $value);
 
 		$this->rowFieldsCommitted[$fieldName] = $field;
+
+		if ($fieldName === $this->getPrimaryKey()) {
+			DB::connection($this->getConnection())->getDatabase()->cache()->saveModelInstance($this);
+		}
 	}
 
 	/**
@@ -580,7 +591,7 @@ trait Mapping {
 	 *
 	 * @return Field[]
 	 */
-	protected function getCommittedFields() {
+	private function getCommittedFields() {
 		return $this->rowFieldsCommitted;
 	}
 

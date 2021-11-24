@@ -125,6 +125,15 @@ class DatabaseConnection {
 	}
 
 	/**
+	 * Gets the cache manager for this database.
+	 *
+	 * @return DatabaseCache
+	 */
+	public function cache() {
+		return $this->getDatabase()->cache();
+	}
+
+	/**
 	 * Starts a transaction.
 	 *
 	 * @return bool

@@ -269,14 +269,27 @@ class QueryBuilder {
 	 */
 	protected function mapToModels(&$results) {
 		$models = array();
-		$modelClass = $this->model;
+		$className = $this->model;
 
-		if (is_null($modelClass)) {
+		if (is_null($className)) {
 			return $results;
 		}
 
+		// Find the primary key name
+		$o = new $className;
+		$primaryKeyName = $o->getPrimaryKey();
+
 		foreach ($results as $result) {
-			$models[] = new $modelClass($result);
+			if (property_exists($result, $primaryKeyName)) {
+				$keyValue = $result->{$primaryKeyName};
+
+				if ($cached = $this->database->cache()->getModelInstance($className, $keyValue)) {
+					$models[] = $cached;
+					continue;
+				}
+			}
+
+			$models[] = new $className($result);
 		}
 
 		return $models;

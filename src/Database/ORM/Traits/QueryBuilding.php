@@ -5,7 +5,6 @@ namespace Horizon\Database\ORM\Traits;
 use DB;
 use Horizon\Database\QueryBuilder\Documentation\SelectHelper;
 use Horizon\Http\Exception\HttpResponseException;
-use Horizon\Database\Cache;
 
 trait QueryBuilding {
 
@@ -72,10 +71,8 @@ trait QueryBuilding {
 	public static function find($primaryKey) {
 		$o = (new static);
 
-		$table = $o->getTable();
-		$keyName = $o->getPrimaryKey();
-
-		$cache = Cache::getModelInstance($o, $primaryKey);
+		$connection = DB::connection($o->getConnection());
+		$cache = $connection->cache()->getModelInstance(get_class($o), $primaryKey);
 
 		if (!is_null($cache)) {
 			return $cache;
@@ -87,7 +84,7 @@ trait QueryBuilding {
 
 		// Cache the new model instance
 		if (!is_null($row)) {
-			Cache::setModelInstance($o, $row);
+			$connection->cache()->saveModelInstance($row);
 		}
 
 		return $row;
