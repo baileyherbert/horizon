@@ -37,4 +37,15 @@ trait Timestamps {
 		$this->writeCommittedField('created_at', $row->created_at);
 	}
 
+	/**
+	 * Bumps the `updated_at` column to the current time.
+	 *
+	 * @return void
+	 */
+	public function bumpTimestamp() {
+		$this->createUpdateQuery()->values([
+			'updated_at' => 'NOW()'
+		])->exec();
+	}
+
 }
