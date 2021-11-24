@@ -353,6 +353,8 @@ trait Mapping {
 
 			if ($relationship instanceof OneToOneRelationship || $relationship instanceof BelongsToOneRelationship) {
 				$relationship->set($value);
+				$cache = DB::connection($this->getConnection())->cache();
+				$cache->clearRelationship($this, $fieldName);
 				return;
 			}
 
