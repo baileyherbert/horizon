@@ -280,12 +280,28 @@ class QueryBuilder {
 		$primaryKeyName = $o->getPrimaryKey();
 
 		foreach ($results as $result) {
-			if (property_exists($result, $primaryKeyName)) {
-				$keyValue = $result->{$primaryKeyName};
+			if (is_string($primaryKeyName)) {
+				if (property_exists($result, $primaryKeyName)) {
+					$keyValue = $result->{$primaryKeyName};
 
-				if ($cached = $this->database->cache()->getModelInstance($className, $keyValue)) {
-					$models[] = $cached;
-					continue;
+					if ($cached = $this->database->cache()->getModelInstance($className, $keyValue)) {
+						$models[] = $cached;
+						continue;
+					}
+				}
+			}
+			else if (is_array($primaryKeyName)) {
+				$keyValues = array_map(function($keyName) use ($result) {
+					if (property_exists($result, $keyName)) {
+						return $result->{$keyName};
+					}
+				}, $primaryKeyName);
+
+				if (!in_array(null, $keyValues)) {
+					if ($cached = $this->database->cache()->getModelInstance($className, $keyValues)) {
+						$models[] = $cached;
+						continue;
+					}
 				}
 			}
 
