@@ -24,6 +24,32 @@ class Model extends EventEmitter implements \JsonSerializable {
 				$this->writeCommittedField($column, $value);
 			}
 		}
+
+		$this->init();
+
+		if (is_object($mapping)) {
+			$this->initWithData();
+		}
+	}
+
+	/**
+	 * Override this method to initialize the model. This is called automatically when the model is instantiated, even
+	 * if the model has no data.
+	 *
+	 * @return void
+	 */
+	protected function init() {
+
+	}
+
+	/**
+	 * Override this method to initialize the model when data is available. This will be invoked from the constructor
+	 * if the model has data, or it will be invoked when the model is created.
+	 *
+	 * @return void
+	 */
+	protected function initWithData() {
+
 	}
 
 	/**

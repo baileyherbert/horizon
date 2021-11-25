@@ -131,6 +131,9 @@ trait Mapping {
 
 			// Emit the inserted event
 			$this->emit('inserted', $returned);
+
+			// Initialize with data
+			$this->initWithData();
 		}
 
 		// Update an existing row
