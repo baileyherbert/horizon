@@ -35,7 +35,8 @@ class HorizonExtension extends ViewExtension {
 			'link' => 'link',
 			'asset' => 'asset',
 			'json' => 'json',
-			'component' => 'component'
+			'component' => 'component',
+			'cache_key' => 'cache_key'
 		);
 	}
 
@@ -52,6 +53,20 @@ class HorizonExtension extends ViewExtension {
 				'html'
 			)
 		));
+	}
+
+	protected function twigCacheKey() {
+		return new Twig_SimpleFunction('cache_key', function () {
+			if (is_mode('production')) {
+				$hostname = env('hostname');
+				$env = substr(hash('sha256', $hostname), 0, 7);
+
+				return $env;
+			}
+			else {
+				return '';
+			}
+		});
 	}
 
 	protected function twigLang() {
