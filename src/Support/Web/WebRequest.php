@@ -459,7 +459,7 @@ class WebRequest {
      * @param callback $headerFunction
      * @return array
      */
-    protected function calculateOptions($userOptions = [], $method, $headerFunction) {
+    protected function calculateOptions($userOptions, $method, $headerFunction) {
         $options = $this->getOptionsArray();
 
         // Add the request method
