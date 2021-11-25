@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "baileyherbert/ace",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/baileyherbert/ace.git",
-                "reference": "bb1f5a6d0f9248547da98a09717440875eaad7d3"
+                "reference": "7d42957e0ef45fc0488a12ed9195f2433351e183"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/baileyherbert/ace/zipball/bb1f5a6d0f9248547da98a09717440875eaad7d3",
-                "reference": "bb1f5a6d0f9248547da98a09717440875eaad7d3",
+                "url": "https://api.github.com/repos/baileyherbert/ace/zipball/7d42957e0ef45fc0488a12ed9195f2433351e183",
+                "reference": "7d42957e0ef45fc0488a12ed9195f2433351e183",
                 "shasum": ""
             },
             "require": {
@@ -43,7 +43,7 @@
                 "issues": "https://github.com/baileyherbert/horizon/issues",
                 "source": "https://github.com/baileyherbert/horizon"
             },
-            "time": "2021-11-09T10:23:16+00:00"
+            "time": "2021-11-25T22:45:35+00:00"
         },
         {
             "name": "baileyherbert/twig-compat",
@@ -2074,16 +2074,16 @@
         },
         {
             "name": "sebastian/exporter",
-            "version": "3.1.3",
+            "version": "3.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/exporter.git",
-                "reference": "6b853149eab67d4da22291d36f5b0631c0fd856e"
+                "reference": "0c32ea2e40dbf59de29f3b49bf375176ce7dd8db"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/exporter/zipball/6b853149eab67d4da22291d36f5b0631c0fd856e",
-                "reference": "6b853149eab67d4da22291d36f5b0631c0fd856e",
+                "url": "https://api.github.com/repos/sebastianbergmann/exporter/zipball/0c32ea2e40dbf59de29f3b49bf375176ce7dd8db",
+                "reference": "0c32ea2e40dbf59de29f3b49bf375176ce7dd8db",
                 "shasum": ""
             },
             "require": {
@@ -2092,7 +2092,7 @@
             },
             "require-dev": {
                 "ext-mbstring": "*",
-                "phpunit/phpunit": "^6.0"
+                "phpunit/phpunit": "^8.5"
             },
             "type": "library",
             "extra": {
@@ -2139,7 +2139,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/exporter/issues",
-                "source": "https://github.com/sebastianbergmann/exporter/tree/3.1.3"
+                "source": "https://github.com/sebastianbergmann/exporter/tree/3.1.4"
             },
             "funding": [
                 {
@@ -2147,7 +2147,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-11-30T07:47:53+00:00"
+            "time": "2021-11-11T13:51:24+00:00"
         },
         {
             "name": "sebastian/global-state",
