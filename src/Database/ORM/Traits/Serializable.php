@@ -89,7 +89,7 @@ trait Serializable {
 		// Columns
 		foreach ($storage as $name => $field) {
 			if ($this->isColumnSerializable($name)) {
-				$value = $field->localFormat;
+				$value = $this->{$name};
 
 				if ($value instanceof DateTime) {
 					$value = $value->format(DATE_ATOM);
