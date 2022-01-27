@@ -31,7 +31,8 @@ return [
 	 * default values based on the `app` directory.
 	 */
 	'paths' => [
-		'public' => 'public'
+		'public' => 'public',
+		'error_log' => is_mode('production') ? 'php://stderr' : 'error_log'
 	]
 
 ];
