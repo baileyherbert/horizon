@@ -89,15 +89,17 @@ class ErrorHandler implements ErrorHandlerInterface {
 		$logFile = ini_get('error_log');
 		$logDir = dirname($logFile);
 
-		// Do not attempt to write if the file cannot be created
-		if (!file_exists($logDir)) {
-			return;
-		}
+		// Always allow php:// paths
+		if (!starts_with($logFile, 'php://')) {
+			// Do not attempt to write if the file cannot be created
+			if (!file_exists($logDir)) {
+				return;
+			}
 
-		// Do not attempt to write if we don't have permissions to the file
-
-		if ((file_exists($logFile) && !is_writable($logFile)) || (!file_exists($logFile) && !is_writable($logDir))) {
-			return;
+			// Do not attempt to write if we don't have permissions to the file
+			if ((file_exists($logFile) && !is_writable($logFile)) || (!file_exists($logFile) && !is_writable($logDir))) {
+				return;
+			}
 		}
 
 		// Generate the message

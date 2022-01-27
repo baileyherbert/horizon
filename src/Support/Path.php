@@ -21,7 +21,12 @@ class Path {
 				$segment = substr($segment, 1);
 			}
 
-			if (empty($segment)) {
+			if (substr($segment, 0, 4) === 'php:') {
+				$path = $segment;
+				continue;
+			}
+
+			if (!is_string($segment) || strlen($segment) == 0) {
 				continue;
 			}
 
@@ -90,7 +95,11 @@ class Path {
 			$i++;
 		}
 
-		return implode(DIRECTORY_SEPARATOR, $parts);
+		return str_replace(
+			'php:' . DIRECTORY_SEPARATOR,
+			'php://',
+			implode(DIRECTORY_SEPARATOR, $parts)
+		);
 	}
 
 	/**
