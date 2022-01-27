@@ -1,4 +1,5 @@
 /.env
 /app/private
+/app/cache
 /vendor
 error_log
