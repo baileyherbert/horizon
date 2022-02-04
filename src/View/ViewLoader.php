@@ -74,18 +74,20 @@ class ViewLoader {
 	 * @return string[]
 	 */
 	private function getFiles($dir, &$results = array()) {
-		$files = scandir($dir);
+		if (file_exists($dir)) {
+			$files = scandir($dir);
 
-		foreach ($files as $key => $value) {
-			$path = realpath($dir . DIRECTORY_SEPARATOR . $value);
+			foreach ($files as $key => $value) {
+				$path = realpath($dir . DIRECTORY_SEPARATOR . $value);
 
-			if (!is_dir($path)) {
-				if (ends_with($path, ['.blade.php', '.twig', '.html'])) {
-					$results[] = $path;
+				if (!is_dir($path)) {
+					if (ends_with($path, ['.blade.php', '.twig', '.html'])) {
+						$results[] = $path;
+					}
 				}
-			}
-			else if ($value != "." && $value != "..") {
-				$this->getFiles($path, $results);
+				else if ($value != "." && $value != "..") {
+					$this->getFiles($path, $results);
+				}
 			}
 		}
 
