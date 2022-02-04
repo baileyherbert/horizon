@@ -140,6 +140,17 @@ class Blueprint {
 	}
 
 	/**
+	 * Create a new string column on the table with a fixed length of 36.
+	 *
+	 * @param string $column
+	 * @return Column
+	 */
+	public function uuid($column) {
+		$length = 36;
+		return $this->addColumn('string', $column, compact('length'));
+	}
+
+	/**
 	 * Create a new text column on the table.
 	 *
 	 * @param string $column
