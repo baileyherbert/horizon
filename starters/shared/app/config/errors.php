@@ -26,7 +26,7 @@ return [
 	 * - 4 => Shows errors, warnings.
 	 * - 5 => Shows errors.
 	 */
-	'display_sensitivity' => env('display_errors_level', 3),
+	'display_sensitivity' => env('display_errors_level', 4),
 
 	/**
 	 * Sets whether errors should be logged to the `error_log` file.
@@ -42,7 +42,7 @@ return [
 	 * - 4 => Shows errors, warnings.
 	 * - 5 => Shows errors.
 	 */
-	'log_sensitivity' => env('error_logging_level', 3),
+	'log_sensitivity' => env('error_logging_level', 4),
 
 	/**
 	 * Sets the severity level at which errors should be reported.
