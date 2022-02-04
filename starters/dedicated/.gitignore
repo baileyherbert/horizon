@@ -3,6 +3,6 @@
 /.vscode/
 /.idea/
 /app/cache/
-/app/error_log
 /.env
 /.env.php
+error_log
