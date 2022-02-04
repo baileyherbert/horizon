@@ -23,7 +23,7 @@ class RouteAction {
 				return $action;
 			}
 
-			if (get_class($action[0])) {
+			if (!is_string($action[0]) && get_class($action[0])) {
 				$action[0] = get_class($action[0]);
 			}
 
