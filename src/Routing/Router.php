@@ -505,7 +505,7 @@ class Router {
 		$this->currentGroup = $group;
 
 		// Execute closure
-		$callback();
+		$callback($group);
 
 		// Restore the original group
 		$this->currentGroup = $originalGroup;

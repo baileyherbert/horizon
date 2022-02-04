@@ -242,6 +242,10 @@ class Route {
 			return $this->defaults[$key];
 		}
 
+		if (isset($this->group) && isset($this->group->defaults[$key])) {
+			return $this->group->defaults[$key];
+		}
+
 		return $default;
 	}
 
@@ -391,11 +395,12 @@ class Route {
 		}
 
 		if (!isset($this->parameters[$key])) {
-			if (!isset($this->defaults[$key])) {
+			$localDefault = $this->getDefault($key);
+			if (!isset($localDefault)) {
 				return $default;
 			}
 
-			return $this->defaults[$key];
+			return $localDefault;
 		}
 
 		return $this->parameters[$key];

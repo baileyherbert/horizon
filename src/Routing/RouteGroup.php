@@ -19,6 +19,16 @@ class RouteGroup {
 	protected $parent;
 
 	/**
+	 * @var array
+	 */
+	public $defaults = array();
+
+	/**
+	 * @var array
+	 */
+	public $wheres = array();
+
+	/**
 	 * Constructs a new RouteGroup instance.
 	 *
 	 * @param array $properties
@@ -210,6 +220,35 @@ class RouteGroup {
 		}
 
 		return $this->parent ? $this->parent->getExceptionHandler() : null;
+	}
+
+	/**
+	 * Stores a default value in the route group.
+	 *
+	 * @param string $key
+	 * @param mixed $value
+	 * @return RouteGroup $this
+	 */
+	public function defaults($key, $value) {
+		$this->defaults[$key] = $value;
+		return $this;
+	}
+
+	/**
+	 * Set a regular expression requirement on the route group.
+	 *
+	 * @param array|string $name
+	 * @param string $expression
+	 * @return RouteGroup $this
+	 */
+	public function where($name, $expression = null) {
+		$parsed = is_array($name) ? $name : array($name => $expression);
+
+		foreach ($parsed as $name => $expression) {
+			$this->wheres[$name] = $expression;
+		}
+
+		return $this;
 	}
 
 }
