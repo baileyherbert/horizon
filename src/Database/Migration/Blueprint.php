@@ -170,6 +170,46 @@ class Blueprint {
 	}
 
 	/**
+	 * Create a new tiny blob column on the table (255 bytes).
+	 *
+	 * @param string $column
+	 * @return Column
+	 */
+	public function tinyBlob($column) {
+		return $this->addColumn('tinyBlob', $column);
+	}
+
+	/**
+	 * Create a new blob column on the table (64 KiB).
+	 *
+	 * @param string $column
+	 * @return Column
+	 */
+	public function blob($column) {
+		return $this->addColumn('blob', $column);
+	}
+
+	/**
+	 * Create a new medium blob column on the table (16 MiB).
+	 *
+	 * @param string $column
+	 * @return Column
+	 */
+	public function mediumBlob($column) {
+		return $this->addColumn('mediumBlob', $column);
+	}
+
+	/**
+	 * Create a new long blob column on the table (4 GiB).
+	 *
+	 * @param string $column
+	 * @return Column
+	 */
+	public function longBlob($column) {
+		return $this->addColumn('longBlob', $column);
+	}
+
+	/**
 	 * Create a new integer (4-byte) column on the table.
 	 *
 	 * @param string $column
