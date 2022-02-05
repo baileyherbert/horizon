@@ -107,7 +107,20 @@ class HorizonExtension extends ViewExtension {
 				return $relativePath;
 			}
 
-			return $handler->getPublicAssetPath($relativePath, $extensionId);
+			$uri = $handler->getPublicAssetPath($relativePath, $extensionId);
+
+			if (is_mode('production')) {
+				$token = env('version', env('hostname', ''));
+
+				if (!empty($token)) {
+					$hash = hash('sha256', $token);
+					$version = substr($hash, 0, 6) . substr($hash, -2);
+
+					$uri .= (str_contains($uri, '?') ? '&' : '?') . 'v=' . $version;
+				}
+			}
+
+			return $uri;
 		});
 	}
 
