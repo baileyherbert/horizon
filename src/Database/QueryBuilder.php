@@ -228,7 +228,7 @@ class QueryBuilder {
 		$results = $this->database->query($this->compile(), $this->getParameters());
 		$row = array_shift($results);
 
-		return $row->{'COUNT(*)'};
+		return intval($row->{'COUNT(*)'});
 	}
 
 	/**
