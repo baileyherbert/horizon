@@ -154,7 +154,7 @@ class StringBuilder {
 
 		sort($names);
 
-		return implode('_', $names);
+		return implode('_to_', $names);
 	}
 
 	/**
