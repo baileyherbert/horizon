@@ -387,29 +387,37 @@ class Kernel {
 		$rootPath = Application::root();
 		$requestUri = $_SERVER['REQUEST_URI'];
 		$queryString = '';
-
-		if (strpos($requestUri, '?') !== false) {
-			$queryString = substr($requestUri, strpos($requestUri, '?'));
-			$requestUri = substr($requestUri, 0, strpos($requestUri, '?'));
-		}
-
-		$root = Path::parse(str_replace('\\', '/', $rootPath));
-		$uri = Path::parse($requestUri);
 		$shifted = '';
 
-		for ($i = count($uri) - 1; $i >= 0; $i--) {
-			$node = $uri[$i];
+		if (is_string(env('BASEDIR'))) {
+			$_SERVER['SUBDIRECTORY'] = trim(env('BASEDIR'), '/');
+			$this->subdirectory = $_SERVER['SUBDIRECTORY'];
 
-			if ($node->directory) {
-				if (!empty($root) && $root[count($root) - 1]->name == $node->name) {
-					$shifted = '/' . $node->name . $shifted;
-					array_pop($root);
+			return;
+		}
+		else {
+			if (strpos($requestUri, '?') !== false) {
+				$queryString = substr($requestUri, strpos($requestUri, '?'));
+				$requestUri = substr($requestUri, 0, strpos($requestUri, '?'));
+			}
+
+			$root = Path::parse(str_replace('\\', '/', $rootPath));
+			$uri = Path::parse($requestUri);
+
+			for ($i = count($uri) - 1; $i >= 0; $i--) {
+				$node = $uri[$i];
+
+				if ($node->directory) {
+					if (!empty($root) && $root[count($root) - 1]->name == $node->name) {
+						$shifted = '/' . $node->name . $shifted;
+						array_pop($root);
+					}
 				}
 			}
-		}
 
-		$_SERVER['SUBDIRECTORY'] = trim($shifted, '/');
-		$this->subdirectory = $_SERVER['SUBDIRECTORY'];
+			$_SERVER['SUBDIRECTORY'] = trim($shifted, '/');
+			$this->subdirectory = $_SERVER['SUBDIRECTORY'];
+		}
 
 		$newRequestUri = $requestUri;
 		$newRequestUri = substr($newRequestUri, strlen($shifted));
