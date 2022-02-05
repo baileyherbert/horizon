@@ -65,6 +65,9 @@ class BladeExtension extends ViewExtension {
 			new Twig_SimpleFunction('csrf_token', 'csrf_token'),
 			new Twig_SimpleFunction('session', 'session'),
 			new Twig_SimpleFunction('config', 'config'),
+			new Twig_SimpleFunction('env', 'env'),
+			new Twig_SimpleFunction('session', 'session'),
+			new Twig_SimpleFunction('request', 'request'),
 
 			new Twig_SimpleFunction('rand', 'rand'),
 			new Twig_SimpleFunction('md5', 'md5'),
@@ -82,7 +85,7 @@ class BladeExtension extends ViewExtension {
 			new Twig_SimpleFunction('str_repeat', 'str_repeat'),
 			new Twig_SimpleFunction('str_word_count', 'str_word_count'),
 			new Twig_SimpleFunction('strpos', 'strpos'),
-			new Twig_SimpleFunction('stripos', 'stripos')
+			new Twig_SimpleFunction('stripos', 'stripos'),
 		);
 	}
 

@@ -36,7 +36,9 @@ class HorizonExtension extends ViewExtension {
 			'asset' => 'asset',
 			'json' => 'json',
 			'component' => 'component',
-			'cache_key' => 'cache_key'
+			'cache_key' => 'cache_key',
+			'env' => 'env',
+			'session' => 'session'
 		);
 	}
 
