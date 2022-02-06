@@ -60,6 +60,11 @@ class Select implements CommandInterface {
 	protected $offset;
 
 	/**
+	 * @var string
+	 */
+	protected $for = '';
+
+	/**
 	 * @var array
 	 */
 	protected $compiledParameters = array();
@@ -88,7 +93,8 @@ class Select implements CommandInterface {
 			$this->compileTables(),
 			$this->compileWheres(),
 			$this->compileOrderBy(),
-			$this->compileLimit()
+			$this->compileLimit(),
+			$this->for
 		) . ';';
 	}
 
@@ -523,6 +529,26 @@ class Select implements CommandInterface {
 	 */
 	public function offset($start) {
 		$this->offset = $start;
+		return $this;
+	}
+
+	/**
+	 * Locks the selected rows with `FOR UPDATE`.
+	 *
+	 * @return $this
+	 */
+	public function forUpdate() {
+		$this->for = 'FOR UPDATE';
+		return $this;
+	}
+
+	/**
+	 * Locks the selected rows with `FOR SHARE`.
+	 *
+	 * @return $this
+	 */
+	public function forShare() {
+		$this->for = 'FOR SHARE';
 		return $this;
 	}
 

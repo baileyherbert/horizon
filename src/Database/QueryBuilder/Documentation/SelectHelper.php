@@ -24,6 +24,9 @@ use Horizon\Database\Model;
  *
  * @method $this orderBy(string $column, string $direction) Orders the results.
  *
+ * @method $this forUpdate() Locks selected rows from being read or written to.
+ * @method $this forShare() Locks selected rows from being written to.
+ *
  * @method string compile() Gets the query as a prepared string.
  * @method array getParameters() Gets an array of parameter values for prepared statements.
  * @method $this setModel(string $model) Overrides the model to use for the results.
