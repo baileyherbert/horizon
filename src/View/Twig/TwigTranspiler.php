@@ -201,6 +201,7 @@ class TwigTranspiler {
 			$char = $arguments[$i];
 			$insertCharacter = $char;
 			$previous = ($i > 0) ? $arguments[$i - 1] : null;
+			$next = ($i + 1 < $length) ? $arguments[$i + 1] : null;
 
 			if ($char === '\\') {
 				$disableString = !$disableString;
@@ -218,6 +219,11 @@ class TwigTranspiler {
 					$inString = false;
 					$stringCharacter = false;
 				}
+			}
+
+			if (!$inString && $char === ':' && $next === '+') {
+				$insertCharacter = '+';
+				$i++;
 			}
 
 			if (!$inString && $char === '+') {
@@ -312,6 +318,11 @@ class TwigTranspiler {
 			if ($inBrackets && !$inString) {
 				if ($char === '$') {
 					$insertCharacter = '';
+				}
+
+				if ($char === ':' && $next === '+') {
+					$insertCharacter = '+';
+					$i++;
 				}
 
 				if ($char === '+') {
