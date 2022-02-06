@@ -2,7 +2,6 @@
 
 namespace Horizon\Http\Cookie\Drivers;
 
-use Exception;
 use Horizon\Foundation\Framework;
 use Horizon\Http\Cookie\Session;
 use Horizon\Exception\HorizonException;
@@ -42,8 +41,20 @@ class CookieDriver implements DriverInterface {
 	private function startSession() {
 		if (session_status() == PHP_SESSION_NONE) {
 			if (!headers_sent()) {
+				$lifetime = config('session.lifetime');
+				$options = [];
+
+				if (is_int($lifetime)) {
+					$options['gc_maxlifetime'] = $lifetime;
+				}
+
 				@session_name(config('session.name'));
-				session_start();
+				$result = @session_start($options);
+
+				if (!$result) {
+					@setcookie(config('session.name'), null, -1, '/');
+					throw new HorizonException(0x0004, 'Failed to initialize session');
+				}
 			}
 			else {
 				if (!Framework::environment('test')) {

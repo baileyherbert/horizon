@@ -22,6 +22,7 @@ class MakeMigrationCommand extends Command {
 		$this->setDescription('Makes a new migration file');
 		$this->addArgument('name', InputArgument::REQUIRED, 'The name of the migration.' );
 		$this->addOption('open', 'o', InputOption::VALUE_NONE, 'Opens the file with your default PHP editor.');
+		$this->addOption('template', 't', InputOption::VALUE_OPTIONAL, 'Creates a migration from a template.');
 	}
 
 	/**
@@ -45,7 +46,12 @@ class MakeMigrationCommand extends Command {
 			throw new RuntimeException('File conflict: ' . $filePath);
 		}
 
-		$result = file_put_contents($filePath, $this->getTemplate([
+		$template = null;
+		if ($in->getOption('template')) {
+			$template = $in->getOption('template');
+		}
+
+		$result = file_put_contents($filePath, $this->getTemplate($template, [
 			'timestamp' => $timestamp,
 			'description' => 'Describe the migration.'
 		]));
@@ -83,8 +89,17 @@ class MakeMigrationCommand extends Command {
 	 * @param array $context
 	 * @return string
 	 */
-	protected function getTemplate($context) {
-		$path = Path::join(Framework::path('resources/ace/make/migration.twig'));
+	protected function getTemplate($name = null, $context) {
+		$target = 'resources/ace/make/' . (
+			$name !== null ? ('migrations/' . $name) : 'migration'
+		) . '.twig';
+
+		$path = Path::join(Framework::path($target));
+
+		if (!file_exists($path)) {
+			throw new RuntimeException('Unknown template "' . $name . '"');
+		}
+
 		$view = new Template($path, $context);
         return $view->render();
 	}

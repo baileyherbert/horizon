@@ -1,0 +1,31 @@
+<?php
+
+use Horizon\Database\Migration;
+use Horizon\Database\Migration\Schema;
+use Horizon\Database\Migration\Blueprint;
+
+/**
+ * Creates the table for storing session cookies.
+ */
+class Migration_{{ $timestamp }} extends Migration {
+
+	/**
+	 * Run the migration.
+	 */
+	public function up() {
+		Schema::create('@sessions', function(Blueprint $table) {
+			$table->string('id', 128)->primary();
+			$table->timestamp('created_at')->useCurrent();
+			$table->timestamp('expires_at')->index();
+			$table->blob('data');
+		});
+	}
+
+	/**
+	 * Revert the migration.
+	 */
+	public function down() {
+		Schema::drop('@sessions');
+	}
+
+}

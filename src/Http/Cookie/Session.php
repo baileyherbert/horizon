@@ -3,12 +3,12 @@
 namespace Horizon\Http\Cookie;
 
 use Horizon\Exception\HorizonException;
-use Horizon\Http\Cookie\Drivers\CookieDriver;
+use Horizon\Http\Cookie\Drivers\DriverInterface;
 
 class Session {
 
 	/**
-	 * @var CookieDriver
+	 * @var DriverInterface
 	 */
 	private $driver;
 
