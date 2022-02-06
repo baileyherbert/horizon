@@ -705,7 +705,7 @@ class Blueprint {
 	 * @return string
 	 */
 	protected function createIndexName($type, array $columns) {
-		$index = strtolower($this->table . '_' . implode('_', $columns) . '_' . $type);
+		$index = strtolower(implode('_', $columns) . '_' . $type);
 		return str_replace(array('-', '.'), '_', $index);
 	}
 	/**
