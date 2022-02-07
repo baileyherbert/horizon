@@ -5,6 +5,7 @@ namespace Horizon\Database\Migration;
 use Horizon\Database\Exception\MigrationException;
 use Horizon\Database\Migration\Schema\Column;
 use Horizon\Database\Migration\Schema\Command;
+use Horizon\Database\Migration\Schema\ForeignCommand;
 use Horizon\Database\Migration\Schema\Grammar;
 
 /**
@@ -610,10 +611,17 @@ class Blueprint {
 	 *
 	 * @param string|array $columns
 	 * @param string $name
-	 * @return Command
+	 * @return ForeignCommand
 	 */
 	public function foreign($columns, $name = null) {
-		return $this->indexCommand('foreign', $columns, $name);
+		$columns = (array)$columns;
+		$algorithm = null;
+		$index = $name ?: ($this->table . '_' . $this->createIndexName('foreign', $columns));
+
+		$command = new ForeignCommand('foreign', compact('index', 'columns', 'algorithm'), $this);
+		$this->commands[] = $command;
+
+		return $command;
 	}
 
 	/**

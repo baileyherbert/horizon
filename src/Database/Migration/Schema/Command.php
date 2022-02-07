@@ -17,12 +17,12 @@ class Command {
 	/**
 	 * @var array
 	 */
-	private $parameters;
+	protected $parameters;
 
 	/**
 	 * @var Blueprint
 	 */
-	private $table;
+	protected $table;
 
 	/**
 	 * Creates a command.
@@ -42,7 +42,7 @@ class Command {
 	 *
 	 * @return bool
 	 */
-	private function isIndex() {
+	protected function isIndex() {
 		return ($this->name == 'primary' || $this->name == 'foreign' || $this->name == 'index' || $this->name == 'unique');
 	}
 
@@ -51,7 +51,7 @@ class Command {
 	 *
 	 * @return bool
 	 */
-	private function isDropIndex() {
+	protected function isDropIndex() {
 		return ($this->name == 'dropPrimary' || $this->name == 'dropForeign' || $this->name == 'dropIndex' || $this->name == 'dropUnique');
 	}
 
@@ -73,7 +73,7 @@ class Command {
 	 *
 	 * @return string
 	 */
-	private function compileIndex() {
+	protected function compileIndex() {
 		$indexName = array_get($this->parameters, 'index');
 		$columns = array_get($this->parameters, 'columns');
 
@@ -90,7 +90,7 @@ class Command {
 	 *
 	 * @return string
 	 */
-	private function compileDropIndex() {
+	protected function compileDropIndex() {
 		$indexName = array_get($this->parameters, 'index');
 
 		return str_join(
@@ -105,7 +105,7 @@ class Command {
 	 *
 	 * @return string
 	 */
-	private function compileDropColumn() {
+	protected function compileDropColumn() {
 		$columns = array_get($this->parameters, 'columns', array());
 		$statements = array();
 
