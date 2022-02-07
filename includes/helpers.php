@@ -1,6 +1,8 @@
 <?php
 
 use Horizon\Database\QueryBuilder\ColumnReference;
+use Horizon\Database\QueryBuilder\RawReference;
+use Horizon\Database\QueryBuilder\StringBuilder;
 use Horizon\Support\Arr;
 use Horizon\Support\Container\Container;
 use Horizon\Support\Path;
@@ -1450,10 +1452,40 @@ if (!function_exists('ref')) {
 	/**
 	 * Returns a reference to a database table field.
 	 *
+	 * @deprecated Use `db_ref()`
 	 * @param string $fieldName
 	 * @return ColumnReference
 	 */
 	function ref($fieldName) {
 		return new ColumnReference($fieldName);
+	}
+}
+
+if (!function_exists('db_ref')) {
+	/**
+	 * Returns a reference to a database table field.
+	 *
+	 * @param string $fieldName
+	 * @return RawReference
+	 */
+	function db_ref($fieldName) {
+		return new RawReference(StringBuilder::formatColumnName($fieldName));
+	}
+}
+
+if (!function_exists('db_verbatim')) {
+	/**
+	 * Returns a raw reference which embeds the given expression in the query without modification.
+	 *
+	 * You can pass multiple arguments and they will be joined together as strings with spaces between them. For
+	 * example, to increment a column, you could use `db_verbatim(db_ref('column'), '+1')`.
+	 *
+	 * Note that the returned object can be converted into a string so chaining is possible.
+	 *
+	 * @param string $value,...
+	 * @return RawReference
+	 */
+	function db_verbatim() {
+		return new RawReference(Str::join(func_get_args()));
 	}
 }

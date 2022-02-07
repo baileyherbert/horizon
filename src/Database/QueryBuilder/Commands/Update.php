@@ -7,6 +7,7 @@ use Horizon\Database\QueryBuilder\StringBuilder;
 use Horizon\Support\Str;
 use Horizon\Database\Exception\QueryBuilderException;
 use Horizon\Database\QueryBuilder\ColumnReference;
+use Horizon\Database\QueryBuilder\RawReference;
 
 class Update implements CommandInterface {
 
@@ -105,6 +106,13 @@ class Update implements CommandInterface {
 					'%s = %s',
 					StringBuilder::formatColumnName($key),
 					StringBuilder::formatColumnName($value->name)
+				);
+			}
+			else if ($value instanceof RawReference) {
+				$compiled[] = sprintf(
+					'%s = %s',
+					StringBuilder::formatColumnName($key),
+					$value->value
 				);
 			}
 			else {
