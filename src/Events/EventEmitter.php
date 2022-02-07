@@ -65,6 +65,8 @@ class EventEmitter {
 				unset($this->hooks[$channel][$i]);
 			}
 		}
+
+		$this->hooks[$channel] = array_values($this->hooks[$channel]);
 	}
 
 	/**
@@ -127,6 +129,7 @@ class EventEmitter {
 		// Remove the index if found
 		if ($index >= 0) {
 			unset($this->hooks[$channel][$index]);
+			$this->hooks[$channel] = array_values($this->hooks[$channel]);
 		}
 	}
 
