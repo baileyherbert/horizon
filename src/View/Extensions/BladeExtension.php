@@ -55,8 +55,13 @@ class BladeExtension extends ViewExtension {
 			new Twig_SimpleFunction('array_first', 'array_first'),
 			new Twig_SimpleFunction('array_last', 'array_last'),
 			new Twig_SimpleFunction('array_random', 'array_random'),
+			new Twig_SimpleFunction('array_keys', 'array_keys'),
+			new Twig_SimpleFunction('array_values', 'array_values'),
+			new Twig_SimpleFunction('in_array', 'in_array'),
+			new Twig_SimpleFunction('range', 'range'),
 			new Twig_SimpleFunction('head', 'head'),
 			new Twig_SimpleFunction('last', 'last'),
+			new Twig_SimpleFunction('count', 'count'),
 
 			new Twig_SimpleFunction('abort', 'abort'),
 			new Twig_SimpleFunction('bcrypt', 'bcrypt'),
@@ -72,6 +77,7 @@ class BladeExtension extends ViewExtension {
 			new Twig_SimpleFunction('rand', 'rand'),
 			new Twig_SimpleFunction('md5', 'md5'),
 			new Twig_SimpleFunction('sha1', 'sha1'),
+			new Twig_SimpleFunction('hash', 'hash'),
 			new Twig_SimpleFunction('trim', 'trim'),
 			new Twig_SimpleFunction('ltrim', 'ltrim'),
 			new Twig_SimpleFunction('rtrim', 'rtrim'),
@@ -82,10 +88,18 @@ class BladeExtension extends ViewExtension {
 			new Twig_SimpleFunction('ucfirst', 'ucfirst'),
 			new Twig_SimpleFunction('ucwords', 'ucwords'),
 			new Twig_SimpleFunction('sprintf', 'sprintf'),
+			new Twig_SimpleFunction('str_replace', 'str_replace'),
 			new Twig_SimpleFunction('str_repeat', 'str_repeat'),
 			new Twig_SimpleFunction('str_word_count', 'str_word_count'),
 			new Twig_SimpleFunction('strpos', 'strpos'),
 			new Twig_SimpleFunction('stripos', 'stripos'),
+			new Twig_SimpleFunction('wordwrap', 'wordwrap'),
+
+			new Twig_SimpleFunction('date', 'date'),
+			new Twig_SimpleFunction('date_diff', 'date_diff'),
+			new Twig_SimpleFunction('date_format', 'date_format'),
+			new Twig_SimpleFunction('time', 'time'),
+			new Twig_SimpleFunction('microtime', 'microtime'),
 		);
 	}
 
