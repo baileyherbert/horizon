@@ -53,7 +53,7 @@ class BelongsToOneRelationship extends Relationship {
 	public function attach($model) {
 		$id = (is_object($model)) ? $model->getPrimaryKeyValue() : $model;
 
-		if (!is_numeric($id) && !is_null($id)) {
+		if (is_null($id) || is_object($id)) {
 			throw new DatabaseException('ORM: Cannot bind because the model type is not supported.');
 		}
 
