@@ -23,7 +23,7 @@ class RouteCompiler {
 		$uri = preg_replace('/\{(\w+?)\?\}/', '{$1}', $this->route->uri());
 
 		$group = $this->route->group();
-		$wheres = isset($group) ? array_merge($group->wheres, $this->route->wheres) : $this->route->wheres;
+		$wheres = isset($group) ? array_merge($group->getWheres(), $this->route->wheres) : $this->route->wheres;
 
 		return (
 			new SymfonyRoute($uri, $optionals, $wheres, array('utf8' => true), $this->route->getDomain() ?: '')

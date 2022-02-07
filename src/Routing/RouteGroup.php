@@ -26,7 +26,7 @@ class RouteGroup {
 	/**
 	 * @var array
 	 */
-	public $wheres = array();
+	protected $wheres = array();
 
 	/**
 	 * Constructs a new RouteGroup instance.
@@ -249,6 +249,21 @@ class RouteGroup {
 		}
 
 		return $this;
+	}
+
+	/**
+	 * Returns the 'where' expressions for this route group and its parents.
+	 *
+	 * @return string[]
+	 */
+	public function getWheres() {
+		$arrays = [$this->wheres];
+
+		if ($this->parent) {
+			array_unshift($arrays, $this->parent->getWheres());
+		}
+
+		return call_user_func_array('array_merge', $arrays);
 	}
 
 }
