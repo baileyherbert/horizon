@@ -148,7 +148,9 @@ class Blueprint {
 	 */
 	public function uuid($column) {
 		$length = 36;
-		return $this->addColumn('string', $column, compact('length'));
+		return $this->addColumn('char', $column, compact('length'))
+			->charset('ascii')
+			->collation('ascii_general_ci');
 	}
 
 	/**
