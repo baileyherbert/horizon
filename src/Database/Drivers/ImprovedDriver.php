@@ -47,13 +47,18 @@ class ImprovedDriver implements DriverInterface {
 			return;
 		}
 
-		Profiler::start('database:connect', 'mysqli');
-		$config = $this->database->getConfig();
-		$port = isset($config['port']) ? (int)$config['port'] : 3306;
-		$handle = @new mysqli($config['host'], $config['username'], $config['password'], $config['database'], $port);
+		try {
+			Profiler::start('database:connect', 'mysqli');
+			$config = $this->database->getConfig();
+			$port = isset($config['port']) ? (int)$config['port'] : 3306;
+			$handle = @new mysqli($config['host'], $config['username'], $config['password'], $config['database'], $port);
 
-		if ($handle->connect_error) {
-			throw new DatabaseDriverException(sprintf('Failed to connect to database: %s', $handle->connect_error), $handle->connect_errno);
+			if ($handle->connect_error) {
+				throw new DatabaseDriverException(sprintf('Failed to connect to database: %s', $handle->connect_error), $handle->connect_errno);
+			}
+		}
+		catch (\Throwable $err) {
+			throw new DatabaseDriverException(sprintf('Failed to connect to database: %s', $err->getMessage()), $err->getCode(), $err);
 		}
 
 		// Save the handle and status
@@ -91,7 +96,12 @@ class ImprovedDriver implements DriverInterface {
 			return $this->prepared($statement, $bindings);
 		}
 
-		$query = $this->handle->query($statement);
+		try {
+			$query = $this->handle->query($statement);
+		}
+		catch (\Throwable $err) {
+			throw new DatabaseException(sprintf('Query error: %s', $err->getMessage()), $err->getCode(), $err);
+		}
 
 		if ($query === false) {
 			throw new DatabaseException(sprintf('Query error: %s', $this->handle->error));
@@ -124,33 +134,40 @@ class ImprovedDriver implements DriverInterface {
 	 * @throws DatabaseException on error
 	 */
 	protected function prepared($statement, array &$bindings = array()) {
-		if ($p = $this->handle->prepare($statement)) {
-			$types = StringBuilder::generateTypes($bindings);
-			$parameters = array($types);
+		try {
+			if ($p = $this->handle->prepare($statement)) {
+				$types = StringBuilder::generateTypes($bindings);
+				$parameters = array($types);
 
-			// Get references to the parameters
-			foreach ($bindings as $key => $value) {
-				$parameters[] = &$bindings[$key];
+				// Get references to the parameters
+				foreach ($bindings as $key => $value) {
+					$parameters[] = &$bindings[$key];
+				}
+
+				// Bind the parameters
+				call_user_func_array(array($p, 'bind_param'), $parameters);
+
+				// Execute the query
+				$p->execute();
+
+				// Handle errors
+				if ($p->error) {
+					throw new DatabaseException(sprintf('Prepared statement errored: %s', $p->error));
+				}
+
+				$returnValue = $this->getPreparedResults($p, $statement);
+				$p->close();
+
+				return $returnValue;
 			}
-
-			// Bind the parameters
-			call_user_func_array(array($p, 'bind_param'), $parameters);
-
-			// Execute the query
-			$p->execute();
-
-			// Handle errors
-			if ($p->error) {
-				throw new DatabaseException(sprintf('Prepared statement errored: %s', $p->error));
+			else {
+				throw new DatabaseException(sprintf('Prepared statement failed: %s', $this->handle->error));
 			}
-
-			$returnValue = $this->getPreparedResults($p, $statement);
-			$p->close();
-
-			return $returnValue;
 		}
-		else {
-			throw new DatabaseException(sprintf('Prepared statement failed: %s', $this->handle->error));
+		catch (\Throwable $err) {
+			throw new DatabaseException(
+				sprintf('Prepared statement failed: %s', $err->getMessage()), $err->getCode(), $err
+			);
 		}
 	}
 
@@ -164,8 +181,13 @@ class ImprovedDriver implements DriverInterface {
 	 * @throws DatabaseException on error
 	 */
 	public function validate($statement) {
-		if (!$this->handle->prepare($statement)) {
-			throw new DatabaseException($this->handle->error);
+		try {
+			if (!$this->handle->prepare($statement)) {
+				throw new DatabaseException($this->handle->error);
+			}
+		}
+		catch (\Throwable $err) {
+			throw new DatabaseException($err->getMessage(), $err->getCode(), $err);
 		}
 	}
 
