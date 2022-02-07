@@ -139,18 +139,11 @@ class StringBuilder {
 	 * @param string $plural
 	 * @return string
 	 */
-	public static function generateMappingTableName($model, $relatedModel) {
-		$names = array($model, $relatedModel);
-
-		foreach ($names as $i => $value) {
-			$model = strtolower(substr(strrchr($value, '\\'), 1));
-
-			if (substr($model, -1) == 's') {
-				$model = substr($model, 0, -1);
-			}
-
-			$names[$i] = $model;
-		}
+	public static function generateMappingTableName($tableName, $relatedTableName) {
+		$names = array(
+			$tableName,
+			$relatedTableName,
+		);
 
 		sort($names);
 

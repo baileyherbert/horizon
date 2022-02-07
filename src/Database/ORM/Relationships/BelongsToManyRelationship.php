@@ -19,7 +19,7 @@ class BelongsToManyRelationship extends Relationship {
 		$foreignModel = new $foreignModelName;
 
 		if (is_null($mapTable)) {
-			$mapTable = StringBuilder::generateMappingTableName(get_class($model), $foreignModelName);
+			$mapTable = StringBuilder::generateMappingTableName($model->getTable(), $foreignModel->getTable());
 		}
 
 		$this->model = $model;
