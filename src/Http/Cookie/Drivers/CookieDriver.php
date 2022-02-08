@@ -413,4 +413,42 @@ class CookieDriver implements DriverInterface {
 		$_SESSION[$this->token . '_sectoken'] = bin2hex(\phpseclib\Crypt\Random::string(16));
 	}
 
+	/**
+	 * Returns information about a key.
+	 *
+	 * @param string $key
+	 * @return array
+	 */
+	public function stat($key) {
+		if (array_key_exists($key, $_SESSION[$this->token])) {
+			return [
+				'type' => 'persistent',
+				'size' => $this->sizeof($_SESSION[$this->token][$key])
+			];
+		}
+
+		if (array_key_exists($key, $_SESSION[$this->token . '_flash'])) {
+			return [
+				'type' => 'flash',
+				'size' => $this->sizeof($_SESSION[$this->token . '_flash'][$key])
+			];
+		}
+
+		if (array_key_exists($key, $this->sessionData)) {
+			return [
+				'type' => 'temporary',
+				'size' => $this->sizeof($this->sessionData[$key])
+			];
+		}
+
+		return [
+			'type' => 'unknown',
+			'size' => 0
+		];
+	}
+
+	private function sizeof($value) {
+		return strlen($this->encrypt($this->serialize($value)));
+	}
+
 }

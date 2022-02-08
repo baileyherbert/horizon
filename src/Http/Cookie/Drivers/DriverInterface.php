@@ -115,4 +115,15 @@ interface DriverInterface {
 	 */
 	public function renew();
 
+	/**
+	 * Returns an array containing the following about the specified key.
+
+	 *   - `type` (string)
+	 *   - `size` (int)
+	 *
+	 * @param string $key
+	 * @return array
+	 */
+	public function stat($key);
+
 }

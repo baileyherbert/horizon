@@ -333,6 +333,45 @@ class DatabaseDriver implements DriverInterface {
 	}
 
 	/**
+	 * Returns information about a key.
+	 *
+	 * @param string $key
+	 * @return array
+	 */
+	public function stat($key) {
+		if (array_key_exists($key, $this->sessionDataRemote)) {
+			$x = $this->sessionDataRemote[$key];
+			return [
+				'type' => 'persistent',
+				'size' => strlen($this->sessionDataRemote[$key])
+			];
+		}
+
+		if (array_key_exists($key, $this->currentFlashData)) {
+			return [
+				'type' => 'flash',
+				'size' => strlen($this->currentFlashData[$key])
+			];
+		}
+
+		if (array_key_exists($key, $this->sessionData)) {
+			return [
+				'type' => 'temporary',
+				'size' => $this->sizeof($this->sessionData[$key])
+			];
+		}
+
+		return [
+			'type' => 'unknown',
+			'size' => 0
+		];
+	}
+
+	private function sizeof($value) {
+		return strlen($this->encrypt($this->serialize($value)));
+	}
+
+	/**
 	 * Checks whether session encryption is currently enabled.
 	 *
 	 * @return bool
