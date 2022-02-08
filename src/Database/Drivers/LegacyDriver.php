@@ -6,7 +6,6 @@ use Exception;
 use Horizon\Database\Database;
 use Horizon\Database\Exception\DatabaseDriverException;
 use Horizon\Database\Exception\DatabaseException;
-use Horizon\Support\Profiler;
 use Horizon\Support\Str;
 
 class LegacyDriver implements DriverInterface {
@@ -45,7 +44,6 @@ class LegacyDriver implements DriverInterface {
 			return;
 		}
 
-		Profiler::start('database:connect', 'mysql');
 		$config = $this->database->getConfig();
 		$port = isset($config['port']) ? $config['port'] : 3306;
 		$host = $config['host'] . ':' . $port;
@@ -73,8 +71,6 @@ class LegacyDriver implements DriverInterface {
 		if (config('database.send_timezone', true)) {
 			$this->database->setTimezone();
 		}
-
-		Profiler::stop('database:connect');
 	}
 
 	/**

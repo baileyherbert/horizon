@@ -2,169 +2,117 @@
 
 namespace Horizon\Support;
 
+use Horizon\Support\Profiler\ProfilerAsset;
+use Horizon\Support\Profiler\ProfilerAssetGroup;
+use Horizon\Support\Profiler\ProfilerEvent;
+
+/**
+ * This class is used to track the performance and timeline of the application throughout its lifecycle.
+ *
+ * @package Horizon\Support
+ */
 class Profiler {
 
-	protected static $records = array();
-	protected static $active = array();
-	protected static $totals = array();
+	/**
+	 * The time at which the application was started.
+	 *
+	 * @var float|null
+	 */
+	private static $startTime;
 
 	/**
-	 * Starts a timer for the specified profile name.
-	 *
-	 * @param string $profile
-	 * @param mixed $data Optional data to attach to the profile.
+	 * @var ProfilerEvent[]
 	 */
-	public static function start($profile, $data = null) {
-		if (!isset(static::$active[$profile])) {
-			static::$active[$profile] = array(
-				'start' => static::getTime(),
-				'end' => null
-			);
+	private static $events = [];
 
-			if (!is_null($data)) {
-				static::$active[$profile]['data'] = $data;
-			}
+	/**
+	 * @var ProfilerAssetGroup[]
+	 */
+	private static $assetGroups = [];
 
-			if (!isset(static::$records[$profile])) {
-				static::$records[$profile] = array();
-			}
-
-			if (!isset(static::$totals[$profile])) {
-				static::$totals[$profile] = 0;
-			}
+	/**
+	 * Records an event on the timeline at the current time.
+	 *
+	 * @param string $description A brief description of the event.
+	 * @param mixed|null $extraInformation Optional information associated with the event.
+	 * @return ProfilerEvent
+	 */
+	public static function record($description, $extraInformation = null) {
+		if (!isset(static::$startTime)) {
+			static::$startTime = microtime(true);
 		}
+
+		$timestamp = microtime(true) - static::$startTime;
+		$event = new ProfilerEvent($description, $extraInformation, $timestamp);
+
+		return static::$events[] = $event;
 	}
 
 	/**
-	 * Tests the execution time of the given `$fn` callable under the specified profile name.
+	 * Records the load duration of an asset.
 	 *
-	 * @param string $profile
-	 * @param callable $fn
-	 * @return float
+	 * @param string $groupName The name of the asset group (such as `database` or `views`).
+	 * @param string $description The asset name or description.
+	 * @param float|callback $duration The number of seconds it took for the asset to load, or a function to time.
+	 * @return ProfilerAsset
 	 */
-	public static function test($profile, $fn) {
-		static::start($profile);
-		$fn();
-		return static::stop($profile);
+	public static function recordAsset($groupName, $description, $duration) {
+		if (!isset(static::$assetGroups[$groupName])) {
+			static::$assetGroups[$groupName] = new ProfilerAssetGroup();
+		}
+
+		if (is_callable($duration)) {
+			$startTime = microtime(true);
+			$duration();
+			$duration = microtime(true) - $startTime;
+		}
+
+		$asset = new ProfilerAsset($description, $duration);
+
+		$group = static::$assetGroups[$groupName];
+		$group->addAsset($asset);
+
+		return $asset;
 	}
 
 	/**
-	 * Stops a timer for the specified profile name and returns the total time taken for this run alone.
+	 * Returns all events recorded in the profiler.
 	 *
-	 * @param string $profile
-	 * @return float
+	 * @return ProfilerEvent[]
 	 */
-	public static function stop($profile) {
-		if (!isset(static::$active[$profile])) {
-			return;
-		}
-
-		// Get the start and end time
-		$startTime = static::$active[$profile]['start'];
-		$endTime = static::getTime();
-		$timeTaken = $endTime - $startTime;
-
-		// Store the end time
-		static::$active[$profile]['end'] = $endTime;
-		static::$active[$profile]['duration'] = $timeTaken;
-
-		// Record the profile results
-		static::$records[$profile][] = static::$active[$profile];
-		static::$totals[$profile] += static::$active[$profile]['duration'];
-
-		// Remove the profile
-		unset(static::$active[$profile]);
-
-		// Return the time taken
-		return $timeTaken;
+	public static function getEvents() {
+		return static::$events;
 	}
 
 	/**
-	 * Gets the total time taken so far for a profile. If there isn't any data available for the profile, this will
-	 * return `0`.
+	 * Returns all asset groups in the profiler.
 	 *
-	 * @param string $profileName
-	 * @return float
+	 * @return ProfilerAssetGroup[]
 	 */
-	public static function time($profileName) {
-		$total = 0;
-
-		// Add historical totals
-		if (isset(static::$totals[$profileName])) {
-			$total += static::$totals[$profileName];
-		}
-
-		// Add totals from currently-active profiles
-		if (isset(static::$active[$profileName])) {
-			$profile = static::$active[$profileName];
-			$total += static::getTime() - $profile['start'];
-		}
-
-		return $total;
+	public static function getAssetGroups() {
+		return static::$assetGroups;
 	}
 
 	/**
-	 * Gets the current time in microseconds.
+	 * Returns the specified asset group or creates it if needed.
+	 *
+	 * @return ProfilerAssetGroup
+	 */
+	public static function getAssetGroup($groupName) {
+		if (!isset(static::$assetGroups[$groupName])) {
+			static::$assetGroups[$groupName] = new ProfilerAssetGroup();
+		}
+
+		return static::$assetGroups[$groupName];
+	}
+
+	/**
+	 * Returns the number of seconds that the app has been running.
 	 *
 	 * @return float
 	 */
-	protected static function getTime() {
-		return microtime(true);
-	}
-
-	/**
-	 * Returns an array of profiles in the order that they started.
-	 *
-	 * @return array
-	 */
-	public static function getWaterfall() {
-		$waterfall = array();
-
-		// Add historical records
-		foreach (static::$records as $name => $profiles) {
-			foreach ($profiles as $profile) {
-				$waterfall[] = array_merge(array(
-					'profile' => $name,
-					'duration' => 0
-				), $profile);
-			}
-		}
-
-		// Add active records
-		foreach (static::$active as $name => $profile) {
-			$waterfall[] = array_merge(array(
-				'profile' => $name,
-				'duration' => static::getTime() - $profile['start']
-			), $profile);
-		}
-
-		// Sort the waterfall by start time
-		usort($waterfall, function($a, $b) {
-			if ($a['start'] === $b['start']) return 0;
-			return $a['start'] > $b['start'];
-		});
-
-		return $waterfall;
-	}
-
-	/**
-	 * Returns an associative array, where the keys are the profile names, and the values are the total times.
-	 *
-	 * @param bool $includeActive If set to `true`, the total times reported in the array will include pending profiles.
-	 * @return array
-	 */
-	public static function getTotalTimes($includeActive = true) {
-		$totals = static::$totals;
-
-		// Add active profiles
-		if ($includeActive) {
-			foreach (static::$active as $name => $profile) {
-				$totals[$name] += static::getTime() - $profile['start'];
-			}
-		}
-
-		arsort($totals);
-		return $totals;
+	public static function getRunTime() {
+		return microtime(true) - static::$startTime;
 	}
 
 }

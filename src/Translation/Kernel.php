@@ -3,6 +3,7 @@
 namespace Horizon\Translation;
 
 use Horizon\Foundation\Application;
+use Horizon\Support\Profiler;
 
 /**
  * Kernel for translation files.
@@ -18,6 +19,8 @@ class Kernel {
 	 * Starts the translation kernel.
 	 */
 	public function boot() {
+		Profiler::record('Boot translation kernel');
+
 		$this->bucket = new LanguageBucket();
 
 		foreach (Application::collect('Horizon\Translation\Language') as $language) {

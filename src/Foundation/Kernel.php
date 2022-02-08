@@ -8,11 +8,11 @@ use Horizon\Foundation\Services\Autoloader;
 use Horizon\Routing\Kernel as RoutingKernel;
 use Horizon\Http\Kernel as HttpKernel;
 use Horizon\Database\Kernel as DatabaseKernel;
-use Horizon\Support\Profiler;
 use Horizon\Support\Services\ServiceProvider;
 use Horizon\Translation\Kernel as TranslationKernel;
 use Horizon\Extension\Kernel as ExtensionKernel;
 use Horizon\Foundation\Services\Environment;
+use Horizon\Support\Profiler;
 use Horizon\View\Kernel as ViewKernel;
 
 /**
@@ -49,9 +49,6 @@ class Kernel {
 		if (!env('ROOT')) {
 			throw new ExceptionKernel('Missing the ROOT path environment variable');
 		}
-
-		// Start profiling
-		Profiler::start('kernel');
 
 		// Start the error handler
 		$this->exception()->boot();
@@ -136,6 +133,8 @@ class Kernel {
 	private function autoload() {
 		$namespaces = config('autoloader.namespaces');
 
+		Profiler::record('Mount autoloaders', array_values($namespaces));
+
 		if (!isset($namespaces)) {
 			echo "Horizon could not locate the config directory!";
 			exit(1);
@@ -186,7 +185,8 @@ class Kernel {
 	 * @throws \Horizon\Exception\HorizonException
 	 */
 	private function loadProviders() {
-		Profiler::start('services:load');
+		Profiler::record('Mount service providers');
+
 		$providers = Application::config('providers', array());
 
 		foreach ($providers as $className) {
@@ -198,8 +198,6 @@ class Kernel {
 				}
 			}
 		}
-
-		Profiler::stop('services:load');
 	}
 
 	/**

@@ -5,7 +5,6 @@ namespace Horizon\Database\Drivers;
 use Horizon\Database\Database;
 use Horizon\Database\Exception\DatabaseDriverException;
 use Horizon\Database\Exception\DatabaseException;
-use Horizon\Support\Profiler;
 use Horizon\Support\Str;
 
 use PDO;
@@ -47,8 +46,6 @@ class PdoDriver implements DriverInterface {
 			return;
 		}
 
-		Profiler::start('database:connect', 'pdo');
-
 		try {
 			$config = $this->database->getConfig();
 			$port = isset($config['port']) ? (int)$config['port'] : 3306;
@@ -87,8 +84,6 @@ class PdoDriver implements DriverInterface {
 		if (config('database.send_timezone', true)) {
 			$this->database->setTimezone();
 		}
-
-		Profiler::stop('database:connect');
 	}
 
 	/**

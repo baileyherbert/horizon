@@ -3,6 +3,7 @@
 namespace Horizon\Exception;
 
 use Horizon\Foundation\Application;
+use Horizon\Support\Profiler;
 
 /**
  * Kernel for exceptions and error handling.
@@ -27,6 +28,8 @@ class Kernel {
 	 * Calls the init method on the error handler.
 	 */
 	public function init() {
+		Profiler::record('Boot error handler');
+
 		$handler = ErrorMiddleware::getErrorHandler();
 		if (method_exists($handler, 'init')) {
 			$handler->init();

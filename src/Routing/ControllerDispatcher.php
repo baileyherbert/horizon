@@ -8,6 +8,7 @@ use Horizon\Http\Request;
 use Horizon\Http\Response;
 use Horizon\Http\Exception\HttpResponseException;
 use Horizon\Support\Container\BoundCallable;
+use Horizon\Support\Profiler;
 
 class ControllerDispatcher {
 
@@ -53,6 +54,9 @@ class ControllerDispatcher {
 		}
 
 		if (is_callable($action)) {
+			$actionName = is_array($action) ? (get_class($action[0]) . '::' . $action[1]) : (is_string($action) ? $action : '(anonymous)');
+			Profiler::record('Initialize controller: ' . $actionName);
+
 			$this->init($action);
 
 			if (!$this->response->isHalted()) {
@@ -60,6 +64,7 @@ class ControllerDispatcher {
 				$callable = $this->createBoundCallable($action);
 
 				// Run the callable
+				Profiler::record('Execute controller: ' . $actionName);
 				return $callable->execute();
 			}
 		}

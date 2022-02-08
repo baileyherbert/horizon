@@ -64,7 +64,9 @@ class Database extends EventEmitter {
 	 * @throws DatabaseException when no drivers are supported.
 	 */
 	protected function loadDriver() {
+		$event = Profiler::record('Initialize database driver');
 		$this->driver = $this->getBestDriver();
+		$event->extraInformation = get_class($this->driver);
 
 		if (is_null($this->driver)) {
 			throw new DatabaseException('Failed to start database because no supported extensions were found');
@@ -153,14 +155,14 @@ class Database extends EventEmitter {
 	 * @return array|int|bool
 	 */
 	public function query($statement, array $bindings = array()) {
-		// Start timing the query
-		Profiler::start('database:query', $statement);
-
 		try {
+			$startTime = microtime(true);
 			$returned = false;
 
 			$isSandboxMode = $this->kernel->sandboxMode();
 			$isValidationMode = $this->kernel->validationMode();
+
+			Profiler::record('Database query: ' . $statement, $bindings);
 
 			// Run the query on the driver
 			if (!$isSandboxMode && !$isValidationMode) {
@@ -171,7 +173,7 @@ class Database extends EventEmitter {
 			}
 
 			// Stop timing and get the number of milliseconds taken
-			$timeTaken = Profiler::stop('database:query');
+			$timeTaken = microtime(true) - $startTime;
 
 			// Emit
 			$this->emit('query', $statement, $bindings, $timeTaken);
@@ -179,7 +181,7 @@ class Database extends EventEmitter {
 			return $returned;
 		}
 		catch (Exception $ex) {
-			$timeTaken = Profiler::stop('database:query');
+			$timeTaken = microtime(true) - $startTime;
 			$this->emit('query', $statement, $bindings, $timeTaken, $ex);
 			throw $ex;
 		}
@@ -335,6 +337,7 @@ class Database extends EventEmitter {
 		$date = new DateTime('now', $timezone);
 		$offset = $date->format('P');
 
+		Profiler::record('Send database timezone', $offset);
 		$this->driver->query("SET time_zone = '$offset';");
 	}
 

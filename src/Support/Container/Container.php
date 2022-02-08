@@ -2,6 +2,7 @@
 
 namespace Horizon\Support\Container;
 
+use Horizon\Support\Profiler;
 use Horizon\Support\Services\ServiceObjectCollection;
 use Horizon\Support\Services\ServiceProvider;
 
@@ -70,6 +71,8 @@ class Container {
 	 * Boots the service providers registered in the container.
 	 */
 	public function boot() {
+		Profiler::record('Boot service providers');
+
 		foreach ($this->providers as $provider) {
 			if ($provider->isDeferred()) continue;
 			if (in_array($provider, static::$booted)) continue;

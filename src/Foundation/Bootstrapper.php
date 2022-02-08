@@ -5,6 +5,7 @@ namespace Horizon\Foundation;
 use Exception;
 use Horizon\Foundation\Services\Environment;
 use Horizon\Support\Path;
+use Horizon\Support\Profiler;
 
 /**
  * This class helps bootstrap the framework in various modes.
@@ -21,6 +22,11 @@ class Bootstrapper {
 	 * @return void
 	 */
 	public static function startWebApplication($mode, $baseDir = null) {
+		Profiler::record('Bootstrap web application', [
+			'mode' => $mode,
+			'basedir' => $baseDir
+		]);
+
 		Environment::set('ROOT', static::getRootPath($baseDir));
 		Environment::set('HORIZON_MODE', 'web');
 		Environment::set('ROUTING_MODE', $mode);
@@ -41,6 +47,10 @@ class Bootstrapper {
 			exit(1);
 		}
 
+		Profiler::record('Bootstrap console application', [
+			'basedir' => $baseDir
+		]);
+
 		Environment::set('ROOT', static::getRootPath($baseDir));
 		Environment::set('HORIZON_MODE', 'console');
 
@@ -54,6 +64,10 @@ class Bootstrapper {
 	 * @return void
 	 */
 	public static function startTest($baseDir = null) {
+		Profiler::record('Bootstrap test application', [
+			'basedir' => $baseDir
+		]);
+
 		Environment::set('ROOT', static::getRootPath($baseDir));
 		Environment::set('APP_MODE', 'development');
 	}

@@ -3,6 +3,7 @@
 namespace Horizon\View\Twig;
 
 use Horizon\Foundation\Application;
+use Horizon\Support\Profiler;
 use Twig_Loader_Filesystem;
 use Twig_Source;
 
@@ -30,6 +31,8 @@ class TwigFileLoader extends Twig_Loader_Filesystem {
 	 */
 	private $debugging = false;
 
+	public $transpileTime = 0;
+
 	/**
 	 * @param TwigLoader $loader
 	 */
@@ -40,6 +43,8 @@ class TwigFileLoader extends Twig_Loader_Filesystem {
 	}
 
 	public function getSourceContext($name) {
+		Profiler::record("Compile template: $name");
+
 		if (starts_with($name, '@component/')) {
 			$contents = Application::kernel()->view()->componentManager()->getFileContents($name);
 			$contents = $this->compileHorizonTags($contents, $name);
@@ -83,10 +88,13 @@ class TwigFileLoader extends Twig_Loader_Filesystem {
 	}
 
 	public function compileHorizonTags($text, $templateFileName) {
+		$start = microtime(true);
 		$transpiler = new TwigTranspiler($this);
 		$data = $transpiler->precompile($text, $templateFileName);
 		$this->debugging = $transpiler->isDebuggingEnabled();
+		$this->transpileTime = microtime(true) - $start;
 
+		Profiler::recordAsset('View transpilation', $templateFileName, $this->transpileTime);
 		return $data;
 	}
 

@@ -4,6 +4,7 @@ namespace Horizon\Extension;
 
 use Horizon\Foundation\Application;
 use Horizon\Foundation\Services\Autoloader;
+use Horizon\Support\Profiler;
 use Horizon\Support\Services\ServiceProvider;
 
 /**
@@ -25,6 +26,7 @@ class Kernel {
 	 * Boots the extension kernel.
 	 */
 	public function boot() {
+		Profiler::record('Boot extension kernel');
 		$this->resolve();
 	}
 

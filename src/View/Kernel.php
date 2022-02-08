@@ -3,6 +3,7 @@
 namespace Horizon\View;
 
 use Horizon\Foundation\Application;
+use Horizon\Support\Profiler;
 use Horizon\View\Component\Manager;
 
 /**
@@ -31,6 +32,8 @@ class Kernel {
 	 * Boots the kernel.
 	 */
 	public function boot() {
+		Profiler::record('Boot view kernel');
+
 		$this->viewLoaders = array_merge(
 			Application::collect('Horizon\View\ViewLoader')->all(),
 			Application::collect('Horizon\View\ComponentLoader')->all()

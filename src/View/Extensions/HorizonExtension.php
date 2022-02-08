@@ -3,8 +3,8 @@
 namespace Horizon\View\Extensions;
 
 use Horizon\Foundation\Application;
-use Twig_SimpleFunction;
 use Horizon\Support\Profiler;
+use Twig_SimpleFunction;
 use Horizon\View\ViewExtension;
 use Horizon\Support\Str;
 use Twig\TwigFilter;
@@ -84,7 +84,7 @@ class HorizonExtension extends ViewExtension {
 
 	protected function twigRuntime() {
 		return new Twig_SimpleFunction('runtime', function () {
-			return Profiler::time('kernel');
+			return Profiler::getRunTime();
 		});
 	}
 

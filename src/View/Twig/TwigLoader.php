@@ -8,6 +8,7 @@ use Twig_Extension;
 use Twig_Environment;
 use Horizon\Foundation\Framework;
 use Horizon\Support\Path;
+use Horizon\Support\Profiler;
 use Horizon\View\Template;
 
 class TwigLoader {
@@ -44,15 +45,20 @@ class TwigLoader {
 	 * @return string
 	 */
 	public function render() {
+		$startTime = microtime(true);
 		$output = $this->environment->render(
 			$this->template->getPath(),
 			$this->template->getContext()
 		);
 
+		$took = microtime(true) - $startTime - $this->loader->transpileTime;
+		Profiler::recordAsset('View render', $this->template->getPath(), $took);
+
 		if ($this->loader->isDebuggingEnabled()) {
 			$output = str_replace('&#!123;', '{', $output);
 			$output = str_replace('&#!125;', '}', $output);
 		}
+
 
 		return $output;
 	}
@@ -82,7 +88,7 @@ class TwigLoader {
 		// An array to store environment options
 		$options = array(
 			'cache' => $this->getCacheDirectory(),
-			'auto_reload' => true
+			'auto_reload' => config('app.view_cache_reload', true)
 		);
 
 		// Create the environment instance with the options

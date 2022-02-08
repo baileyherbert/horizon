@@ -2,8 +2,6 @@
 
 namespace Horizon\Routing;
 
-use Horizon\Support\Profiler;
-
 class RouteFile {
 
 	/**
@@ -11,7 +9,7 @@ class RouteFile {
 	 *
 	 * @var string
 	 */
-	private $path;
+	public $path;
 
 	/**
 	 * RouteFile constructor.
@@ -36,9 +34,7 @@ class RouteFile {
 	 */
 	public function load() {
 		if ($this->exists()) {
-			Profiler::start('router:require');
 			require $this->path;
-			Profiler::stop('router:require');
 		}
 	}
 

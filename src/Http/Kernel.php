@@ -10,12 +10,12 @@ use Horizon\Http\Exception\HttpResponseException;
 use Horizon\Routing\Route;
 use Horizon\Support\Container\BoundCallable;
 use Horizon\Support\Path;
-use Horizon\Support\Profiler;
 use Horizon\Foundation\Application;
 use Horizon\Console\ConsoleResponse;
 use Horizon\Foundation\Framework;
 use Horizon\Routing\ExceptionHandlerDispatcher;
 use Horizon\Routing\RouteLoader;
+use Horizon\Support\Profiler;
 use Horizon\Support\Str;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
@@ -53,6 +53,8 @@ class Kernel {
 	 * Boots the HTTP kernel.
 	 */
 	public function boot() {
+		Profiler::record('Boot http kernel');
+
 		$this->sendExposedHeader();
 		$this->detectSubdirectory();
 		$this->createRequest();
@@ -67,8 +69,6 @@ class Kernel {
 	 * @throws HorizonException
 	 */
 	public function execute($callback = null) {
-		Profiler::start('kernel:http');
-
 		// Find a matching route
 		$this->executePipes('before');
 		$route = $this->route = $this->match();
@@ -83,19 +83,13 @@ class Kernel {
 
 			try {
 				// Run middleware (beforeExecute)
-				Profiler::start('http:middleware');
 				$this->executeMiddleware($route, 'before');
-				Profiler::stop('http:middleware');
 
 				// Run the controller
-				Profiler::start('http:controller');
 				$this->executeController($route);
-				Profiler::stop('http:controller');
 
 				// Run middleware (afterExecute)
-				Profiler::start('http:middleware');
 				$this->executeMiddleware($route, 'after');
-				Profiler::stop('http:middleware');
 			}
 			catch (Exception $e) {
 				$this->handleException($e, $route);
@@ -103,7 +97,6 @@ class Kernel {
 		}
 
 		// Close
-		Profiler::stop('kernel:http');
 		$this->close();
 	}
 
@@ -152,9 +145,6 @@ class Kernel {
 		if (!$this->response->getContent() && $this->response->getStatusCode() != 200 && !$skipErrorPage) {
 			$this->error($this->response->getStatusCode());
 		}
-
-		// Stop profiling
-		Profiler::stop('kernel');
 
 		// Stop the kernel
 		Application::kernel()->shutdown();
@@ -214,18 +204,19 @@ class Kernel {
 	 * @return void
 	 */
 	private function executePipes($method) {
-		Profiler::start('router:pipes');
 		$requestMethod = $this->request->getMethod();
 
 		foreach (RouteLoader::getRouter()->getPipes($this->request) as $pipe) {
 			$instance = $pipe->getInstance();
 
 			if (in_array($requestMethod, $instance->methods)) {
+				Profiler::record("Execute pipe ($method): " . get_class($instance));
+
+				$start = microtime(true);
 				call_user_func([$instance, $method . 'Execute'], $this->request(), $this->response());
+				Profiler::recordAsset("Pipe ($method)", get_class($instance), microtime(true) - $start);
 			}
 		}
-
-		Profiler::stop('router:pipes');
 	}
 
 	/**
@@ -235,11 +226,13 @@ class Kernel {
 	 * @return Route|null|false
 	 */
 	private function match() {
-		Profiler::start('router:match');
+		$event = Profiler::record('Match http request to a route');
 		$route = RouteLoader::getRouter()->match($this->request);
 
 		// Show a 404 if not found
 		if (is_null($route)) {
+			$event->extraInformation = 'Not found';
+
 			if (!$this->tryDirectoryRedirect()) {
 				$this->handleException(new HttpResponseException(404));
 				return null;
@@ -249,8 +242,8 @@ class Kernel {
 		}
 
 		// Bind the route to the request
+		$event->extraInformation = 'Matched: ' . $route->uri();
 		$this->request->bind($route);
-		Profiler::stop('router:match');
 		return $route;
 	}
 
@@ -301,8 +294,11 @@ class Kernel {
 		}
 
 		foreach ($middlewares as $middleware) {
+			$start = microtime(true);
 			$action = Str::parseCallback($middleware, $method . 'Execute');
 			$className = head($action);
+
+			Profiler::record("Execute middleware ($method): $className");
 
 			if (class_exists($className)) {
 				$callable = new BoundCallable($action, Application::container());
@@ -336,6 +332,8 @@ class Kernel {
 				throw new HorizonException(0x0006, sprintf('Middleware (%s)', $className));
 			}
 
+			Profiler::recordAsset("Middleware ($method)", $className, microtime(true) - $start);
+
 			if ($this->response->isHalted()) {
 				break;
 			}
@@ -357,6 +355,8 @@ class Kernel {
 
 		// Send the returned response if applicable
 		if ($this->response->getLength() === 0 && !is_null($result)) {
+			Profiler::record('Generate response from return value');
+
 			$this->response->writeLine(json_encode(
 				$result,
 				JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE
@@ -384,6 +384,8 @@ class Kernel {
 	 * Detects if the application is running in a subdirectory and saves relevant information.
 	 */
 	private function detectSubdirectory() {
+		$event = Profiler::record('Detect current subdirectory');
+
 		$rootPath = Application::root();
 		$requestUri = $_SERVER['REQUEST_URI'];
 		$queryString = '';
@@ -431,12 +433,14 @@ class Kernel {
 		}
 
 		$_SERVER['REQUEST_URI'] = $newRequestUri . $queryString;
+		$event->extraInformation = $this->subdirectory ?: 'No subdirectory';
 	}
 
 	/**
 	 * Creates the Request instance.
 	 */
 	private function createRequest() {
+		Profiler::record('Create request instance');
 		$this->request = Request::auto();
 	}
 
@@ -444,6 +448,7 @@ class Kernel {
 	 * Creates the Response instance.
 	 */
 	private function createResponse() {
+		Profiler::record('Create response instance');
 		$this->response = Application::environment() != 'console' ? new Response() : new ConsoleResponse();
 	}
 
@@ -458,6 +463,8 @@ class Kernel {
 		if (config('app.redirect_to_directories', true) === false) {
 			return false;
 		}
+
+		Profiler::record('Check for directory redirection');
 
 		if (substr($this->request->path(), -1) !== "/") {
 			$originalUri = $this->request->path();
