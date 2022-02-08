@@ -36,10 +36,19 @@ class BelongsToOneRelationship extends Relationship {
 			return null;
 		}
 
+		$connection = \DB::connection($this->model->getConnection());
+		$cache = $connection->cache()->getModelInstance($this->foreignModelName, $this->model->{$this->localKey});
+
+		if (!is_null($cache)) {
+			return $cache;
+		}
+
 		$results = $this->query->get();
 
 		if (isset($results[0])) {
-			return $results[0];
+			$instance = $results[0];
+			$connection->cache()->saveModelInstance($instance);
+			return $instance;
 		}
 	}
 
@@ -48,6 +57,8 @@ class BelongsToOneRelationship extends Relationship {
 		$foreignKey = $this->foreignKey;
 
 		$this->model->$localKey = $model->$foreignKey;
+		$this->model->save();
+		$this->clearCache();
 	}
 
 	public function attach($model) {
@@ -61,6 +72,7 @@ class BelongsToOneRelationship extends Relationship {
 		$query->values(array(($this->localKey) => $id));
 		$query->where($this->model->getPrimaryKey(), '=', $this->model->getPrimaryKeyValue());
 		$query->exec();
+		$this->clearCache();
 	}
 
 	public function detach() {
@@ -68,6 +80,12 @@ class BelongsToOneRelationship extends Relationship {
 		$query->values(array(($this->localKey) => null));
 		$query->where($this->model->getPrimaryKey(), '=', $this->model->getPrimaryKeyValue());
 		$query->exec();
+		$this->clearCache();
+	}
+
+	public function clearCache() {
+		$connection = \DB::connection($this->model->getConnection());
+		$connection->cache()->clearModelInstance($this->foreignModelName, $this->model->{$this->localKey});
 	}
 
 }

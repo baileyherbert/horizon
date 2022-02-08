@@ -14,6 +14,7 @@ class BelongsToManyRelationship extends Relationship {
 	protected $foreignKey;
 	protected $localKey;
 	protected $mapTable;
+	protected $cache;
 
 	public function __construct(Model $model, $foreignModelName, $foreignKey, $localKey, $mapTable = null) {
 		$foreignModel = new $foreignModelName;
@@ -37,7 +38,11 @@ class BelongsToManyRelationship extends Relationship {
 	}
 
 	public function get() {
-		return $this->query->get();
+		if ($this->cache) {
+			return $this->cache;
+		}
+
+		return $this->cache = $this->query->get();
 	}
 
 	public function attach($model) {
@@ -51,6 +56,7 @@ class BelongsToManyRelationship extends Relationship {
 		$query->values(array($this->foreignKey => $id, $this->localKey => $this->model->getPrimaryKeyValue()));
 
 		$query->exec();
+		$this->clearCache();
 	}
 
 	public function detach($model) {
@@ -65,6 +71,11 @@ class BelongsToManyRelationship extends Relationship {
 		$query->where($this->localKey, '=', $this->model->getPrimaryKeyValue());
 
 		$query->exec();
+		$this->clearCache();
+	}
+
+	public function clearCache() {
+		$this->cache = null;
 	}
 
 }

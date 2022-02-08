@@ -12,6 +12,8 @@ class OneToManyRelationship extends Relationship {
 	protected $foreignKey;
 	protected $localKey;
 	protected $foreignTableName;
+	protected $cache;
+	protected $cacheCount;
 
 	public function __construct(Model $model, $foreignModelName, $foreignKey, $localKey) {
 		$foreignModel = new $foreignModelName;
@@ -30,8 +32,11 @@ class OneToManyRelationship extends Relationship {
 	}
 
 	public function get() {
-		$results = $this->query->get();
-		return $results;
+		if ($this->cache) {
+			return $this->cache;
+		}
+
+		return $this->cache = $this->query->get();
 	}
 
 	public function first() {
@@ -40,7 +45,11 @@ class OneToManyRelationship extends Relationship {
 	}
 
 	public function count() {
-		return $this->query->count();
+		if ($this->cacheCount) {
+			return $this->cacheCount;
+		}
+
+		return $this->cacheCount = $this->query->count();
 	}
 
 	public function attach(Model $model) {
@@ -48,6 +57,7 @@ class OneToManyRelationship extends Relationship {
 
 		$model->$foreignKey = $this->model->{$this->localKey};
 		$model->save();
+		$this->clearCache();
 	}
 
 	public function detach($model) {
@@ -59,6 +69,12 @@ class OneToManyRelationship extends Relationship {
 		));
 		$query->limit(1);
 		$query->exec();
+		$this->clearCache();
+	}
+
+	public function clearCache() {
+		$this->cache = null;
+		$this->cacheCount = 0;
 	}
 
 }

@@ -31,10 +31,19 @@ class OneToOneRelationship extends Relationship {
 	}
 
 	public function get() {
+		$connection = \DB::connection($this->model->getConnection());
+		$cache = $connection->cache()->getModelInstance($this->foreignModelName, $this->model->{$this->localKey});
+
+		if (!is_null($cache)) {
+			return $cache;
+		}
+
 		$results = $this->query->get();
 
 		if (isset($results[0])) {
-			return $results[0];
+			$instance = $results[0];
+			$connection->cache()->saveModelInstance($instance);
+			return $instance;
 		}
 	}
 
@@ -44,6 +53,7 @@ class OneToOneRelationship extends Relationship {
 
 		$model->$foreignKey = $this->model->$localKey;
 		$model->save();
+		$this->clearCache();
 	}
 
 	public function attach(Model $model) {
@@ -51,6 +61,7 @@ class OneToOneRelationship extends Relationship {
 
 		$model->$foreignKey = $this->{$this->model->localKey};
 		$model->save();
+		$this->clearCache();
 	}
 
 	public function detach() {
@@ -61,6 +72,12 @@ class OneToOneRelationship extends Relationship {
 		$query->where($this->foreignKey, '=', $this->model->{$this->localKey});
 		$query->limit(1);
 		$query->exec();
+		$this->clearCache();
+	}
+
+	public function clearCache() {
+		$connection = \DB::connection($this->model->getConnection());
+		$connection->cache()->clearModelInstance($this->foreignModelName, $this->model->{$this->localKey});
 	}
 
 }
