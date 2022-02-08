@@ -100,6 +100,9 @@ class BladeExtension extends ViewExtension {
 			new Twig_SimpleFunction('date_format', 'date_format'),
 			new Twig_SimpleFunction('time', 'time'),
 			new Twig_SimpleFunction('microtime', 'microtime'),
+
+			new Twig_SimpleFunction('json_encode', 'json_encode'),
+			new Twig_SimpleFunction('json_decode', 'json_decode'),
 		);
 	}
 
