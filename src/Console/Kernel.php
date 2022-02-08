@@ -134,6 +134,11 @@ class Kernel {
 		$input = new ArrayInput($args);
 		$output = $output ?: new ConsoleOutput();
 
+		if (!isset($this->consoleApp)) {
+			$this->initConsoleApp();
+			$this->initCommands();
+		}
+
 		$this->consoleApp->setAutoExit(false);
 		$this->consoleApp->setCatchExceptions(false);
 		return $this->consoleApp->run($input, $output);
