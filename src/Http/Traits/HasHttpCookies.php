@@ -35,6 +35,15 @@ trait HasHttpCookies {
 	}
 
 	/**
+	 * Returns true if there is an active session and cookies will be sent to the client.
+	 *
+	 * @return bool
+	 */
+	public function hasSession() {
+		return isset($this->horizonSession);
+	}
+
+	/**
 	 *
 	 */
 	public function cookies() {
