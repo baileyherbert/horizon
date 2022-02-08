@@ -1,6 +1,0 @@
-INHERIT: mkdocs.yml
-theme:
-  features:
-    - navigation.tabs
-    - navigation.top
-    - navigation.tracking

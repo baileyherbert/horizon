@@ -8,6 +8,7 @@ theme:
   features:
     - navigation.tabs
     - navigation.top
+    - navigation.tracking
   palette:
     accent: orange
   icon:
