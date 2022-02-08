@@ -350,7 +350,7 @@ class DatabaseDriver implements DriverInterface {
 		if (array_key_exists($key, $this->currentFlashData)) {
 			return [
 				'type' => 'flash',
-				'size' => strlen($this->currentFlashData[$key])
+				'size' => $this->sizeof($this->currentFlashData[$key])
 			];
 		}
 
