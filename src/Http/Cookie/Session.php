@@ -4,6 +4,7 @@ namespace Horizon\Http\Cookie;
 
 use Horizon\Exception\HorizonException;
 use Horizon\Http\Cookie\Drivers\DriverInterface;
+use Horizon\Support\Profiler;
 
 class Session {
 
@@ -35,6 +36,7 @@ class Session {
 
 		// Get the driver class
 		$driver = $DRIVERS[$desiredDriver];
+		Profiler::record('Boot session driver', $driver);
 
 		// Throw an exception if the session driver is not found
 		if (!class_exists($driver)) {

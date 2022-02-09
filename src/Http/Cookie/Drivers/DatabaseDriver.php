@@ -9,6 +9,7 @@ use Horizon\Exception\HorizonException;
 use Horizon\Http\Cookie\CookieInitializationException;
 use Horizon\Http\Cookie\Drivers\Database\SessionCookieModel;
 use Horizon\Http\Cookie\Session;
+use Horizon\Support\Profiler;
 
 class DatabaseDriver implements DriverInterface {
 
@@ -63,6 +64,7 @@ class DatabaseDriver implements DriverInterface {
 		}
 
 		if ($this->model === null) {
+			Profiler::record('Create database session');
 			$this->createNewSession();
 		}
 	}
