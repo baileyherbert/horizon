@@ -5,7 +5,7 @@ namespace Horizon\View;
 use Horizon\Foundation\Application;
 use Horizon\Support\Profiler;
 use Horizon\View\Twig\TwigCacheLoader;
-use Horizon\View\Twig\TwigLoader;
+use Horizon\View\Twig\TwigRenderer;
 
 class Template {
 
@@ -58,7 +58,8 @@ class Template {
 	 * @return string
 	 */
 	public function render() {
-		$response = (new TwigLoader($this))->render();
+		$renderer = Application::kernel()->view()->getRenderer();
+		$response = $renderer->render($this);
 
 		if (!starts_with($this->templatePath, '@component/')) {
 			Application::kernel()->view()->setContext(array());
@@ -73,8 +74,13 @@ class Template {
 	 * @return string
 	 */
 	public function cache() {
-		$loader = new TwigCacheLoader($this);
-		$loader->cache();
+		$original = Application::kernel()->view()->getCacheForced();
+		Application::kernel()->view()->setCacheForced(true);
+
+		$renderer = Application::kernel()->view()->getRenderer();
+		$renderer->cache($this);
+
+		Application::kernel()->view()->setCacheForced($original);
 	}
 
 }

@@ -6,17 +6,10 @@ use Exception;
 use Horizon\Foundation\Application;
 use Twig_Extension;
 use Twig_Environment;
-use Horizon\Foundation\Framework;
-use Horizon\Support\Path;
 use Horizon\Support\Profiler;
 use Horizon\View\Template;
 
-class TwigLoader {
-
-	/**
-	 * @var Template
-	 */
-	protected $template;
+class TwigRenderer {
 
 	/**
 	 * @var TwigFileLoader
@@ -33,8 +26,7 @@ class TwigLoader {
 	 *
 	 * @param Template $template
 	 */
-	public function __construct(Template $template) {
-		$this->template = $template;
+	public function __construct() {
 		$this->loader = $this->createTwigLoader();
 		$this->environment = $this->createTwigEnvironment();
 	}
@@ -44,15 +36,17 @@ class TwigLoader {
 	 *
 	 * @return string
 	 */
-	public function render() {
+	public function render(Template $template) {
+		Profiler::record('Render template: ' . $template->getPath());
+
 		$startTime = microtime(true);
 		$output = $this->environment->render(
-			$this->template->getPath(),
-			$this->template->getContext()
+			$template->getPath(),
+			$template->getContext()
 		);
 
 		$took = microtime(true) - $startTime - $this->loader->transpileTime;
-		Profiler::recordAsset('View render', $this->template->getPath(), $took);
+		Profiler::recordAsset('View render', $template->getPath(), $took);
 
 		if ($this->loader->isDebuggingEnabled()) {
 			$output = str_replace('&#!123;', '{', $output);
@@ -68,8 +62,9 @@ class TwigLoader {
 	 *
 	 * @return string
 	 */
-	public function cache() {
-		$this->environment->loadTemplate($this->template->getPath());
+	public function cache(Template $template) {
+		Profiler::record('Render template (cache): ' . $template->getPath());
+		$this->environment->loadTemplate($template->getPath());
 	}
 
 	/**
@@ -78,13 +73,16 @@ class TwigLoader {
 	 * @return TwigFileLoader
 	 */
 	protected function createTwigLoader() {
-		return new TwigFileLoader($this);
+		Profiler::record('Initialize twig file loader');
+		return new TwigFileLoader();
 	}
 
 	/**
 	 * Creates the twig environment instance.
 	 */
 	protected function createTwigEnvironment() {
+		Profiler::record('Initialize twig environment');
+
 		// An array to store environment options
 		$options = array(
 			'cache' => $this->getCacheDirectory(),
@@ -118,7 +116,7 @@ class TwigLoader {
 	 * @return bool
 	 */
 	protected function isCacheEnabled() {
-		return config('app.view_cache', false);
+		return Application::kernel()->view()->getCacheEnabled();
 	}
 
 	/**

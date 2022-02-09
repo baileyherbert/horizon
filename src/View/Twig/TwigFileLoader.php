@@ -22,28 +22,18 @@ class TwigFileLoader extends Twig_Loader_Filesystem {
 	private $path;
 
 	/**
-	 * @var TwigLoader
-	 */
-	private $loader;
-
-	/**
 	 * @var bool
 	 */
 	private $debugging = false;
 
 	public $transpileTime = 0;
 
-	/**
-	 * @param TwigLoader $loader
-	 */
-	public function __construct(TwigLoader $loader) {
+	public function __construct() {
 		parent::__construct(array());
-
-		$this->loader = $loader;
 	}
 
 	public function getSourceContext($name) {
-		Profiler::record("Compile template: $name");
+		Profiler::record("Compile view from source: $name");
 
 		if (starts_with($name, '@component/')) {
 			$contents = Application::kernel()->view()->componentManager()->getFileContents($name);

@@ -5,6 +5,7 @@ namespace Horizon\View;
 use Horizon\Foundation\Application;
 use Horizon\Support\Profiler;
 use Horizon\View\Component\Manager;
+use Horizon\View\Twig\TwigRenderer;
 
 /**
  * Kernel for views.
@@ -27,6 +28,20 @@ class Kernel {
 	 * @var Manager
 	 */
 	private $componentManager;
+
+	/**
+	 * The instance to use for rendering or `null` if not yet instantiated.
+	 *
+	 * @var TwigRenderer|null
+	 */
+	private $renderer;
+
+	/**
+	 * Whether or not caching is currently forced.
+	 *
+	 * @var false
+	 */
+	private $cacheForced = false;
 
 	/**
 	 * Boots the kernel.
@@ -98,6 +113,48 @@ class Kernel {
 	 */
 	public function getLoaders() {
 		return array_values($this->viewLoaders);
+	}
+
+	/**
+	 * Returns the instance to use for rendering.
+	 *
+	 * @return TwigRenderer
+	 */
+	public function getRenderer() {
+		if (is_null($this->renderer)) {
+			$this->renderer = new TwigRenderer();
+		}
+
+		return $this->renderer;
+	}
+
+	/**
+	 * Returns true if caching is currently enabled.
+	 *
+	 * @return bool
+	 */
+	public function getCacheEnabled() {
+		return $this->cacheForced || config('app.view_cache', false);
+	}
+
+	/**
+	 * Returns true if caching is currently forced.
+	 *
+	 * @return bool
+	 */
+	public function getCacheForced() {
+		return $this->cacheForced;
+	}
+
+	/**
+	 * Sets the state value of cache enforcement. This will degrade performance and should generally be used within
+	 * build processes only.
+	 *
+	 * @param bool $state
+	 * @return void
+	 */
+	public function setCacheForced($state) {
+		$this->cacheForced = $state;
 	}
 
 }
