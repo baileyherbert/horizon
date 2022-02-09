@@ -3,6 +3,7 @@
 namespace Horizon\Foundation\Services;
 
 use Horizon\Support\Path;
+use Horizon\Support\Profiler;
 
 /**
  * Utility class which sets up core autoloading for the application and framework.
@@ -53,6 +54,7 @@ class Autoloader {
 		static::$started = true;
 
 		spl_autoload_register(function($className) {
+			$start = microtime(true);
 			$className = ltrim($className, '\\');
 
 			foreach (static::$map as $prefix => $mount) {
@@ -69,6 +71,8 @@ class Autoloader {
 					require $file;
 				}
 			}
+
+			Profiler::recordAsset('Autoloader resolution', null, microtime(true) - $start);
 		});
 	}
 

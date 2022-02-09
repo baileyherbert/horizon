@@ -5,6 +5,7 @@ namespace Horizon\Foundation\Services;
 use Horizon\Exception\HorizonException;
 use Horizon\Foundation\Application;
 use Horizon\Foundation\Framework;
+use Horizon\Support\Profiler;
 
 /**
  * Utility class which loads configuration.
@@ -70,7 +71,9 @@ class Configuration {
 	 * @return void
 	 */
 	public static function loadConfigurationFile($name) {
+		$start = microtime(true);
 		$path = Application::paths()->config($name . '.php');
+		$relative = Application::paths()->getRelative($path);
 
 		// Throw an exception if the file doesn't exist
 		if (!file_exists($path)) {
@@ -87,6 +90,10 @@ class Configuration {
 
 		// Store the array
 		self::$config[$name] = $config;
+
+		// Profiling
+		$took = microtime(true) - $start;
+		Profiler::recordAsset('Configuration files', $relative, $took);
 	}
 
 	/**

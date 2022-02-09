@@ -8,6 +8,7 @@ use Horizon\Support\Services\ServiceObjectCollection;
 use Horizon\Support\Services\ServiceProvider;
 use Horizon\Exception\HorizonException;
 use Horizon\Support\Path;
+use Horizon\Support\Profiler;
 
 /**
  * The base application class.
@@ -91,7 +92,9 @@ class Application {
 	 * @return void
 	 */
 	public static function register(ServiceProvider $provider) {
-		static::container()->register($provider);
+		Profiler::recordAsset('Service providers', get_class($provider), function() use ($provider) {
+			static::container()->register($provider);
+		});
 	}
 
 	/**

@@ -31,6 +31,13 @@ class Profiler {
 	private static $assetGroups = [];
 
 	/**
+	 * Whether profiling is enabled.
+	 *
+	 * @var bool|null
+	 */
+	private static $enabled;
+
+	/**
 	 * Records an event on the timeline at the current time.
 	 *
 	 * @param string $description A brief description of the event.
@@ -52,11 +59,19 @@ class Profiler {
 	 * Records the load duration of an asset.
 	 *
 	 * @param string $groupName The name of the asset group (such as `database` or `views`).
-	 * @param string $description The asset name or description.
+	 * @param string|null $description The asset name or description.
 	 * @param float|callback $duration The number of seconds it took for the asset to load, or a function to time.
 	 * @return ProfilerAsset
 	 */
 	public static function recordAsset($groupName, $description, $duration) {
+		if (!static::enabled()) {
+			if (is_callable($duration)) {
+				$duration();
+			}
+
+			return;
+		}
+
 		if (!isset(static::$assetGroups[$groupName])) {
 			static::$assetGroups[$groupName] = new ProfilerAssetGroup();
 		}
@@ -68,7 +83,6 @@ class Profiler {
 		}
 
 		$asset = new ProfilerAsset($description, $duration);
-
 		$group = static::$assetGroups[$groupName];
 		$group->addAsset($asset);
 
@@ -113,6 +127,19 @@ class Profiler {
 	 */
 	public static function getRunTime() {
 		return microtime(true) - static::$startTime;
+	}
+
+	/**
+	 * Returns whether profiling is currently enabled.
+	 *
+	 * @return bool
+	 */
+	public static function enabled() {
+		if (is_null(static::$enabled)) {
+			static::$enabled = env('PROFILING_ENABLED', is_mode('development'));
+		}
+
+		return static::$enabled;
 	}
 
 }

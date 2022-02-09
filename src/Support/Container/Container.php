@@ -74,11 +74,15 @@ class Container {
 		Profiler::record('Boot service providers');
 
 		foreach ($this->providers as $provider) {
+			$start = microtime(true);
+
 			if ($provider->isDeferred()) continue;
 			if (in_array($provider, static::$booted)) continue;
 
 			$provider->boot();
 			static::$booted[] = $provider;
+
+			Profiler::recordAsset('Service providers', get_class($provider), microtime(true) - $start);
 		}
 	}
 
@@ -90,6 +94,7 @@ class Container {
 	 * @return ServiceObjectCollection
 	 */
 	public function all($className, $args = null) {
+		$start = microtime(true);
 		$args = func_get_args();
 		$collection = null;
 
@@ -119,6 +124,7 @@ class Container {
 			$collection = new ServiceObjectCollection();
 		}
 
+		Profiler::recordAsset('Container resolution', null, microtime(true) - $start);
 		return $collection;
 	}
 
@@ -130,6 +136,7 @@ class Container {
 	 * @return object|null
 	 */
 	public function make($className, $args = null) {
+		$start = microtime(true);
 		$args = func_get_args();
 		$className = array_shift($args);
 
@@ -148,12 +155,14 @@ class Container {
 					$resolved = (array) $resolved;
 
 					if (!empty($resolved)) {
+						Profiler::recordAsset('Container resolution', null, microtime(true) - $start);
 						return head($resolved);
 					}
 				}
 			}
 		}
 
+		Profiler::recordAsset('Container resolution', null, microtime(true) - $start);
 		return null;
 	}
 

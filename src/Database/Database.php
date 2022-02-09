@@ -162,7 +162,9 @@ class Database extends EventEmitter {
 			$isSandboxMode = $this->kernel->sandboxMode();
 			$isValidationMode = $this->kernel->validationMode();
 
-			Profiler::record('Database query: ' . $statement, $bindings);
+			if ($this->loggingEnabled) {
+				Profiler::record('Database query: ' . $statement, $bindings);
+			}
 
 			// Run the query on the driver
 			if (!$isSandboxMode && !$isValidationMode) {
@@ -177,6 +179,7 @@ class Database extends EventEmitter {
 
 			// Emit
 			$this->emit('query', $statement, $bindings, $timeTaken);
+			Profiler::recordAsset('Database queries', null, $timeTaken);
 
 			return $returned;
 		}
