@@ -48,6 +48,15 @@ class HorizonError {
 	}
 
 	/**
+	 * Gets the original severity constant of the error.
+	 *
+	 * @return int
+	 */
+	public function getSeverity() {
+		return $this->severity;
+	}
+
+	/**
 	 * Gets the severity level of the error.
 	 *
 	 * @return int

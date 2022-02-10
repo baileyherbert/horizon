@@ -136,7 +136,7 @@ class ErrorMiddleware {
 	 */
 	public static function canReport(HorizonError $error) {
 		// Handle silence operator (@)
-		if (error_reporting() === 0 && config('errors.silent_reporting', false)) {
+		if (!(error_reporting() & $error->getSeverity())) {
 			if ($error->getLevel() < 5) {
 				return false;
 			}
@@ -164,7 +164,7 @@ class ErrorMiddleware {
 		}
 
 		// Handle silence operator (@)
-		if (error_reporting() === 0 && config('errors.silent_logging', true)) {
+		if (!(error_reporting() & $error->getSeverity())) {
 			if ($error->getLevel() < 5) {
 				return false;
 			}
@@ -192,7 +192,7 @@ class ErrorMiddleware {
 		}
 
 		// Handle silence operator (@)
-		if (error_reporting() === 0 && config('errors.silent_display', true)) {
+		if (!(error_reporting() & $error->getSeverity())) {
 			if ($error->getLevel() < 5) {
 				return false;
 			}
