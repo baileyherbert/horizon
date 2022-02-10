@@ -15,13 +15,17 @@ class Model extends EventEmitter implements \JsonSerializable {
 
 	/**
 	 * Constructs a new model object.
-	 *
-	 * @param object|null $mapping A database row as an object, to map this model instance to.
 	 */
-	public function __construct($mapping = null) {
-		if (is_object($mapping)) {
-			foreach ($mapping as $column => $value) {
-				$this->writeCommittedField($column, $value);
+	public function __construct() {
+		$mapping = null;
+
+		if (func_num_args() === 1) {
+			$mapping = func_get_arg(0);
+
+			if (is_object($mapping)) {
+				foreach ($mapping as $column => $value) {
+					$this->writeCommittedField($column, $value);
+				}
 			}
 		}
 
