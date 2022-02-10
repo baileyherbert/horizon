@@ -12,6 +12,7 @@ class CookieDriver implements DriverInterface {
 
 	private $sessionData = array();
 	private $currentFlashData = array();
+	private $allFlashData = array();
 	private $newFlashData = array();
 
 	private $token = null;
@@ -87,7 +88,7 @@ class CookieDriver implements DriverInterface {
 		try {
 			// Load flash data
 			foreach ($_SESSION[$this->token . '_flash'] as $key => $value) {
-				$this->currentFlashData[$key] = $this->unserialize($this->decrypt($value));
+				$this->currentFlashData[$key] = $this->allFlashData[$key] = $this->unserialize($this->decrypt($value));
 				$this->sessionData[$key] = $this->currentFlashData[$key];
 			}
 
@@ -340,6 +341,7 @@ class CookieDriver implements DriverInterface {
 	public function clear() {
 		$this->sessionData = array();
 		$this->currentFlashData = array();
+		$this->allFlashData = array();
 		$this->newFlashData = array();
 
 		$_SESSION[$this->token] = array();
@@ -355,6 +357,7 @@ class CookieDriver implements DriverInterface {
 	 */
 	public function flash($key, $value) {
 		$this->newFlashData[$key] = $value;
+		$this->allFlashData[$key] = $value;
 		$_SESSION[$this->token . '_flash'][$key] = $this->encrypt($this->serialize($value));
 	}
 
@@ -389,6 +392,15 @@ class CookieDriver implements DriverInterface {
 	 */
 	public function all() {
 		return $this->sessionData;
+	}
+
+	/**
+	 * Gets an array of all flash (temporary) payload keys.
+	 *
+	 * @return array
+	 */
+	public function temp() {
+		return $this->allFlashData;
 	}
 
 	/**

@@ -102,6 +102,13 @@ interface DriverInterface {
 	public function all();
 
 	/**
+	 * Gets an array of all flash (temporary) payload keys.
+	 *
+	 * @return array
+	 */
+	public function temp();
+
+	/**
 	 * Gets the current CSRF token.
 	 *
 	 * @return string

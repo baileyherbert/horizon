@@ -174,6 +174,15 @@ class Session {
 	}
 
 	/**
+	 * Gets an array of all flash (temporary) payload keys.
+	 *
+	 * @return array
+	 */
+	public function temp() {
+		return $this->driver->temp();
+	}
+
+	/**
 	 * Gets the current CSRF token.
 	 *
 	 * @return string

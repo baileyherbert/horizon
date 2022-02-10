@@ -312,6 +312,15 @@ class DatabaseDriver implements DriverInterface {
 	}
 
 	/**
+	 * Gets an array of all flash (temporary) payload keys.
+	 *
+	 * @return array
+	 */
+	public function temp() {
+		return $this->currentFlashData;
+	}
+
+	/**
 	 * Gets the current CSRF token.
 	 *
 	 * @return string
