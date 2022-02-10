@@ -23,7 +23,7 @@ COPY app/.docker/php.ini /usr/local/etc/php/
 # Install dependencies
 COPY composer.json composer.lock ./
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
-RUN composer install
+RUN composer install --no-dev --classmap-authoritative
 
 # Copy files
 ADD . ./
