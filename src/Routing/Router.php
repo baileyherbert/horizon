@@ -464,13 +464,19 @@ class Router {
 	 * @return Route|null
 	 */
 	public function match(Request $request) {
+		$match = null;
+
 		foreach ($this->routes as $route) {
 			if ($route->matches($request)) {
-				return $route;
+				if (!$route->isPassive()) {
+					return $route;
+				}
+
+				$match = $route;
 			}
 		}
 
-		return null;
+		return $match;
 	}
 
 	/**

@@ -60,6 +60,11 @@ class Route {
 	public $wheres = array();
 
 	/**
+	 * @var bool
+	 */
+	protected $passive = false;
+
+	/**
 	 * @var CompiledRoute
 	 */
 	protected $compiled;
@@ -346,6 +351,30 @@ class Route {
 		}
 
 		return $this->fallback;
+	}
+
+	/**
+	 * Marks the route as passive.
+	 *
+	 * Routes are normally assertive and will stop the matching process as soon as a match is found. However, passive
+	 * routes will not stop the matching process, allowing other routes to overtake them.
+	 *
+	 * @param bool $enabled
+	 * @return $this
+	 */
+	public function passive($enabled = true) {
+		$this->passive = $enabled;
+
+		return $this;
+	}
+
+	/**
+	 * Returns true if this route is passive.
+	 *
+	 * @return bool
+	 */
+	public function isPassive() {
+		return $this->passive;
 	}
 
 	/**
