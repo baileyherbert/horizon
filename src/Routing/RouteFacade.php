@@ -271,7 +271,7 @@ class RouteFacade {
 	 * @return Route
 	 */
 	public static function spa($prefix, $filePath) {
-		return static::router()->createSPARoute($prefix, $filePath);
+		return static::router()->createSPARoute($prefix, $filePath)->passive(true);
 	}
 
 	/**
