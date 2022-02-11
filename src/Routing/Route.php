@@ -3,6 +3,7 @@
 namespace Horizon\Routing;
 
 use Closure;
+use Exception;
 use Horizon\Support\Str;
 use Symfony\Component\Routing\CompiledRoute;
 use Horizon\Http\Request;
@@ -53,6 +54,11 @@ class Route {
 	 * @var array
 	 */
 	public $defaults = array();
+
+	/**
+	 * @var array
+	 */
+	private $options = array();
 
 	/**
 	 * @var array
@@ -224,7 +230,56 @@ class Route {
 	}
 
 	/**
-	 * Stores a default value in the route, typically used by controllers to load values from the route configuration.
+	 * Sets an option on the route. This is useful for sending options to controllers.
+	 *
+	 * @param string $key
+	 * @param mixed $value
+	 * @return Route $this
+	 */
+	public function setOption($key, $value) {
+		$this->options[$key] = $value;
+		return $this;
+	}
+
+	/**
+	 * Returns true if this route has the specified option.
+	 *
+	 * @param string $key
+	 * @return bool
+	 */
+	public function hasOption($key) {
+		if (array_key_exists($key, $this->options)) {
+			return true;
+		}
+
+		if (isset($this->group) && $this->group->hasOption($key)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Returns the value of the specified option on this route. These options can also be inherited from groups.
+	 *
+	 * @param string $key
+	 * @param mixed $default
+	 * @return mixed
+	 */
+	public function getOption($key, $default = null) {
+		if (array_key_exists($key, $this->options)) {
+			return $this->options[$key];
+		}
+
+		if (isset($this->group) && $this->group->hasOption($key)) {
+			return $this->group->getOption($key);
+		}
+
+		return $default;
+	}
+
+	/**
+	 * Stores a default value in the route.
 	 *
 	 * @param string $key
 	 * @param mixed $value

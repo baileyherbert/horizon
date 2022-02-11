@@ -2,6 +2,8 @@
 
 namespace Horizon\Routing;
 
+use Exception;
+
 class RouteGroup {
 
 	/**
@@ -22,6 +24,11 @@ class RouteGroup {
 	 * @var array
 	 */
 	public $defaults = array();
+
+	/**
+	 * @var array
+	 */
+	protected $options = array();
 
 	/**
 	 * @var array
@@ -220,6 +227,47 @@ class RouteGroup {
 		}
 
 		return $this->parent ? $this->parent->getExceptionHandler() : null;
+	}
+
+	/**
+	 * Sets an option on the group. This is useful for sending options to controllers.
+	 *
+	 * @param string $key
+	 * @param mixed $value
+	 * @return Route $this
+	 */
+	public function setOption($key, $value) {
+		$this->options[$key] = $value;
+		return $this;
+	}
+
+	/**
+	 * Returns true if this group has the specified option.
+	 *
+	 * @param string $key
+	 * @return bool
+	 */
+	public function hasOption($key) {
+		if (array_key_exists($key, $this->options)) {
+			return true;
+		}
+
+		return $this->parent ? $this->parent->hasOption($key) : false;
+	}
+
+	/**
+	 * Returns the value of the specified option on this route. These options can also be inherited from groups.
+	 *
+	 * @param string $key
+	 * @param mixed $default
+	 * @return mixed
+	 */
+	public function getOption($key, $default = null) {
+		if (array_key_exists($key, $this->options)) {
+			return $this->options[$key];
+		}
+
+		return $this->parent ? $this->parent->getOption($key, $default) : $default;
 	}
 
 	/**
