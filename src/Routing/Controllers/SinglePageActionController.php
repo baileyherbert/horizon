@@ -61,8 +61,11 @@ class SinglePageActionController extends Controller {
 			$http = new WebRequest($url);
 			$http->setTimeout(2);
 
+			$disallowedHeaders = ['if-none-match'];
 			foreach ($request->headers->all() as $header => $value) {
-				$http->setHeader($header, $value[0]);
+				if (!in_array(strtolower($header), $disallowedHeaders)) {
+					$http->setHeader($header, $value[0]);
+				}
 			}
 
 			$httpResponse = $http->get();
