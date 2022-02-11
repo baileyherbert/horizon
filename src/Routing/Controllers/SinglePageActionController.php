@@ -136,7 +136,7 @@ class SinglePageActionController extends Controller {
 		$uri = $request->route()->uri();
 		$uri = substr($uri, 0, strpos($uri, '{'));
 
-		$baseDir = Path::getRelative($request->path(), $uri, $_SERVER['SUBDIRECTORY']);
+		$baseDir = rtrim(Path::getRelative($request->path(), $uri, $_SERVER['SUBDIRECTORY']), '/');
 		$snippet = sprintf('<script>window.baseDir="%s"</script>', $baseDir);
 		return preg_replace('/^([ \t]*)(<script)/mi', "$1$snippet\n$1$2", $content);
 	}
