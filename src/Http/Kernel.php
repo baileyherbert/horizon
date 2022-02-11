@@ -241,6 +241,11 @@ class Kernel {
 			return false;
 		}
 
+		// Always try to match directories for passive routes
+		else if ($route->isPassive() && $this->tryDirectoryRedirect()) {
+			return false;
+		}
+
 		// Bind the route to the request
 		$event->extraInformation = 'Matched: ' . $route->uri();
 		$this->request->bind($route);
