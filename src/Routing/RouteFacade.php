@@ -270,12 +270,15 @@ class RouteFacade {
 	 * @param string $filePath
 	 * @param int|null $devServerPort
 	 *   Pass the port for the development server of your single page application to enable hot reloading.
+	 * @param string $baseDir
+	 *   The base directory for devserver requests, defaults to `/`.
 	 * @return Route
 	 */
-	public static function spa($prefix, $filePath, $devServerPort = null) {
+	public static function spa($prefix, $filePath, $devServerPort = null, $baseDir = '/') {
 		return static::router()->createSPARoute($prefix, $filePath)
 			->passive(true)
-			->setOption('devServerPort', $devServerPort);
+			->setOption('devServerPort', $devServerPort)
+			->setOption('baseDir', $baseDir);
 	}
 
 	/**

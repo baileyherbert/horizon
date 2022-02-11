@@ -13,11 +13,11 @@ use Horizon\Support\Web\WebRequestException;
 
 class SinglePageActionController extends Controller {
 
-	public function __invoke(Request $request, Response $response, $spaFilePath) {
+	public function __invoke(Request $request, Response $response, $spaFilePath, $suffix = '/') {
 		$devServerPort = $request->route()->getOption('devServerPort');
 
 		if (is_mode('development') && is_int($devServerPort)) {
-			if ($this->fetchDevServer($request, $response, $devServerPort)) {
+			if ($this->fetchDevServer($request, $response, $devServerPort, $suffix)) {
 				return;
 			}
 		}
@@ -54,9 +54,17 @@ class SinglePageActionController extends Controller {
 	 * @throws UnexpectedValueException
 	 * @throws WebRequestException
 	 */
-	private function fetchDevServer(Request $request, Response $response, $port) {
+	private function fetchDevServer(Request $request, Response $response, $port, $suffix) {
 		if ($this->testDevServerConnection($port)) {
-			$url = "http://127.0.0.1:{$port}" . $request->getRequestUri();
+			$baseDir = $request->route()->getOption('baseDir', '/');
+			$baseDir = '/' . ltrim($baseDir, '/');
+			$requestUri = '/' . ltrim($suffix, '/');
+
+			if (!starts_with($requestUri, $baseDir)) {
+				$requestUri = '/' . trim($baseDir, '/') . $requestUri;
+			}
+
+			$url = "http://127.0.0.1:{$port}" . $requestUri;
 
 			$http = new WebRequest($url);
 			$http->setTimeout(2);
