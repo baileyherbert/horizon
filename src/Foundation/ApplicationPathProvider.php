@@ -178,12 +178,16 @@ class ApplicationPathProvider {
 	 * Makes a path.
 	 *
 	 * @param string $defaultPath
-	 * @param string $relativePath
+	 * @param string|null $relativePath
 	 * @param string $customKey
 	 * @return string
 	 */
 	private function make($defaultPath, $relativePath, $customKey = null) {
 		$key = "$defaultPath:$relativePath";
+
+		if (is_null($relativePath)) {
+			$relativePath = '';
+		}
 
 		if (!isset($this->cache[$key])) {
 			$relativePath = ltrim($relativePath, '\\/');
