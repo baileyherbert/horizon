@@ -91,7 +91,7 @@ class SinglePageActionController extends Controller {
 
 				$response->write($content);
 
-				$disallowedHeaders = ['etag'];
+				$disallowedHeaders = ['etag', 'content-length'];
 				foreach ($httpResponse->getHeaders() as $header => $value) {
 					if (!in_array(strtolower($header), $disallowedHeaders)) {
 						$response->setHeader($header, $value);
@@ -137,8 +137,8 @@ class SinglePageActionController extends Controller {
 		$uri = substr($uri, 0, strpos($uri, '{'));
 
 		$baseDir = rtrim(Path::getRelative($request->path(), $uri, $_SERVER['SUBDIRECTORY']), '/');
-		$snippet = sprintf('<script>window.baseDir="%s"</script>', $baseDir);
-		return preg_replace('/^([ \t]*)(<script)/mi', "$1$snippet\n$1$2", $content);
+		$snippet = sprintf("<script>window.baseDir='%s'</script>", $baseDir);
+		return preg_replace('/^([ \t]*)(<script)/mi', "$1$snippet\n$1$2", $content, 1);
 	}
 
 }
