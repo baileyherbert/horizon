@@ -6,6 +6,7 @@ use Horizon\Foundation\Application;
 use Horizon\Http\Response;
 use Horizon\Http\Controller;
 use Horizon\Http\Request;
+use Horizon\Support\Path;
 use Horizon\Support\Web\WebRequest;
 use InvalidArgumentException;
 use UnexpectedValueException;
@@ -40,6 +41,7 @@ class SinglePageActionController extends Controller {
 			$value = preg_replace($expression, $replacement, $value);
 		}
 
+		$value = $this->injectBaseDir($value);
 		$response->write($value);
 	}
 
@@ -80,7 +82,14 @@ class SinglePageActionController extends Controller {
 			$httpResponseCode = $httpResponse->getStatusCode();
 
 			if (in_array($httpResponseCode, [200, 304])) {
-				$response->write($httpResponse->getBody());
+				$content = $httpResponse->getBody();
+				$contentType = $httpResponse->getHeader('content-type') ?: '';
+
+				if (starts_with($contentType, 'text/html', true)) {
+					$content = $this->injectBaseDir($content);
+				}
+
+				$response->write($content);
 
 				$disallowedHeaders = ['etag'];
 				foreach ($httpResponse->getHeaders() as $header => $value) {
@@ -114,6 +123,22 @@ class SinglePageActionController extends Controller {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Injects a script with the basedir into the content.
+	 *
+	 * @param string $content
+	 * @return string
+	 */
+	private function injectBaseDir($content) {
+		$request = request();
+		$uri = $request->route()->uri();
+		$uri = substr($uri, 0, strpos($uri, '{'));
+
+		$baseDir = Path::getRelative($request->path(), $uri, $_SERVER['SUBDIRECTORY']);
+		$snippet = sprintf('<script>window.baseDir="%s"</script>', $baseDir);
+		return preg_replace('/^([ \t]*)(<script)/mi', "$1$snippet\n$1$2", $content);
 	}
 
 }
