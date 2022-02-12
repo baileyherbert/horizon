@@ -493,7 +493,7 @@ class Kernel {
 			$route = RouteLoader::getRouter()->match($this->request);
 
 			// Redirect to the new uri
-			if (!is_null($route)) {
+			if (!is_null($route) && substr($route->uri(), -1) === '/') {
 				$this->response->redirect($this->request->getRequestUri(), 302);
 				$this->close();
 
