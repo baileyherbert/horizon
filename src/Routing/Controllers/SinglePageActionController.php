@@ -41,7 +41,7 @@ class SinglePageActionController extends Controller {
 			$value = preg_replace($expression, $replacement, $value);
 		}
 
-		$value = $this->injectBaseDir($value);
+		$value = $this->injectScript($value);
 		$response->write($value);
 	}
 
@@ -67,6 +67,7 @@ class SinglePageActionController extends Controller {
 			}
 
 			$url = "http://127.0.0.1:{$port}" . $requestUri;
+			$response->setHeader('X-Effective-URL', $url);
 
 			$http = new WebRequest($url);
 			$http->setTimeout(2);
@@ -86,7 +87,7 @@ class SinglePageActionController extends Controller {
 				$contentType = $httpResponse->getHeader('content-type') ?: '';
 
 				if (starts_with($contentType, 'text/html', true)) {
-					$content = $this->injectBaseDir($content);
+					$content = $this->injectScript($content);
 				}
 
 				$response->write($content);
@@ -131,13 +132,20 @@ class SinglePageActionController extends Controller {
 	 * @param string $content
 	 * @return string
 	 */
-	private function injectBaseDir($content) {
+	private function injectScript($content) {
 		$request = request();
 		$uri = $request->route()->uri();
 		$uri = substr($uri, 0, strpos($uri, '{'));
 
 		$baseDir = rtrim(Path::getRelative($request->path(), $uri, $_SERVER['SUBDIRECTORY']), '/');
-		$snippet = sprintf("<script>window.baseDir='%s'</script>", $baseDir);
+		$csrf = '';
+
+		if (request()->route()->getOption('csrf')) {
+			$token = csrf_token();
+			$csrf = "window.csrfToken='$token';";
+		}
+
+		$snippet = sprintf("<script>window.baseDir='%s';$csrf</script>", $baseDir);
 		return preg_replace('/^([ \t]*)(<script)/mi', "$1$snippet\n$1$2", $content, 1);
 	}
 
