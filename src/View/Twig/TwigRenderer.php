@@ -108,22 +108,24 @@ class TwigRenderer {
 		// Add the request instance
 		$this->environment->addGlobal('request', request());
 
-		// Add inputs
-		$this->environment->addGlobal('get', request()->query->all());
-		$this->environment->addGlobal('post', request()->request->all());
-		$this->environment->addGlobal('input', request()->query->all() + request()->request->all());
+		if (request()) {
+			// Add inputs
+			$this->environment->addGlobal('get', request()->query->all());
+			$this->environment->addGlobal('post', request()->request->all());
+			$this->environment->addGlobal('input', request()->query->all() + request()->request->all());
 
-		// Add sessions
-		$session = [];
-		$flash = [];
+			// Add sessions
+			$session = [];
+			$flash = [];
 
-		if (request()->hasSession()) {
-			$session = session()->all();
-			$flash = session()->temp();
+			if (request()->hasSession()) {
+				$session = session()->all();
+				$flash = session()->temp();
+			}
+
+			$this->environment->addGlobal('session', $session);
+			$this->environment->addGlobal('flash', $flash);
 		}
-
-		$this->environment->addGlobal('session', $session);
-		$this->environment->addGlobal('flash', $flash);
 	}
 
 	/**
