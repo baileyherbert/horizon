@@ -89,6 +89,7 @@ class BladeExtension extends ViewExtension {
 			new Twig_SimpleFunction('strlen', 'strlen'),
 			new Twig_SimpleFunction('substr', 'substr'),
 			new Twig_SimpleFunction('ucfirst', 'ucfirst'),
+			new Twig_SimpleFunction('lcfirst', 'lcfirst'),
 			new Twig_SimpleFunction('ucwords', 'ucwords'),
 			new Twig_SimpleFunction('sprintf', 'sprintf'),
 			new Twig_SimpleFunction('str_replace', 'str_replace'),
