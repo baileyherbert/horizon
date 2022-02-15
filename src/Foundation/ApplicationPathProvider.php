@@ -98,6 +98,16 @@ class ApplicationPathProvider {
 	}
 
 	/**
+	 * Returns an absolute path to the `embeds` directory.
+	 *
+	 * @param string $path
+	 * @return string
+	 */
+	public function embeds($path = '') {
+		return $this->make('app/embeds', $path, 'embeds');
+	}
+
+	/**
 	 * Returns an absolute path to the `components` directory.
 	 *
 	 * @param string $path

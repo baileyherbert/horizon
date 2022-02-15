@@ -3,6 +3,9 @@
 namespace Horizon\View\Extensions;
 
 use Exception;
+use Horizon\Foundation\Application;
+use Horizon\View\Twig\TwigTranspiler;
+use Horizon\View\ViewException;
 use Horizon\View\ViewExtension;
 use Twig_SimpleFunction;
 
@@ -203,6 +206,21 @@ class BladeExtension extends ViewExtension {
 			'endforelse' => array($this, 'transpileEnd'),
 			'endsection' => array($this, 'transpileEnd'),
 			'endif' => array($this, 'transpileEnd'),
+
+			'embed' => function($args) {
+				if (!preg_match('/^[\'"]([^<>:;,?"*]+)[\'"]$/', $args, $matches)) {
+					throw new ViewException(sprintf('Invalid argument at @embed(%s)', $args));
+				}
+
+				$fileName = $matches[1];
+				$path = Application::paths()->embeds($fileName);
+
+				if (!file_exists($path)) {
+					throw new ViewException(sprintf('Embed %s was not found', $path));
+				}
+
+				return file_get_contents($path);
+			}
 		);
 	}
 
