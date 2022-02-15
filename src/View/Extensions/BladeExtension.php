@@ -107,6 +107,8 @@ class BladeExtension extends ViewExtension {
 
 			new Twig_SimpleFunction('json_encode', 'json_encode'),
 			new Twig_SimpleFunction('json_decode', 'json_decode'),
+			new Twig_SimpleFunction('base64_encode', 'base64_encode'),
+			new Twig_SimpleFunction('base64_decode', 'base64_decode'),
 		);
 	}
 
