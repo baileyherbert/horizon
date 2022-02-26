@@ -90,12 +90,13 @@ class PdoDriver implements DriverInterface {
 	 * Executes a query on the database server and returns the results.
 	 *
 	 * @param string $statement
-	 * @param array $bindings
+	 * @param array|null $bindings
+	 * @param callable|null $rowFunction
 	 * @return int|object|bool
 	 *
 	 * @throws DatabaseException on error
 	 */
-	public function query($statement, $bindings = null) {
+	public function query($statement, $bindings = null, $rowFunction = null) {
 		$this->connect();
 
 		$statement = trim($statement);
@@ -118,6 +119,17 @@ class PdoDriver implements DriverInterface {
 			if (Str::startsWith(strtolower($statement), 'alter ')) return true;
 
 			return $query;
+		}
+
+		if ($rowFunction) {
+			$numRows = 0;
+
+			while ($row = $query->fetch(PDO::FETCH_OBJ)) {
+				$rowFunction($row);
+				$numRows++;
+			}
+
+			return $numRows;
 		}
 
 		return $query->fetchAll(PDO::FETCH_OBJ);

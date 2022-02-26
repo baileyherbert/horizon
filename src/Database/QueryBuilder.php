@@ -213,6 +213,16 @@ class QueryBuilder {
 	}
 
 	/**
+	 * Executes the given callback for each row.
+	 *
+	 * @param callable $callback
+	 * @return void
+	 */
+	public function each($callback) {
+		return $this->database->query($this->compile(), $this->getParameters(), $callback);
+	}
+
+	/**
 	 * Runs the query and returns the number of rows.
 	 *
 	 * @return int

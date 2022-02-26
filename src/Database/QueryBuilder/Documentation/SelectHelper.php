@@ -33,6 +33,7 @@ use Horizon\Database\Model;
  *
  * @method object|int|bool exec() Executes the query.
  * @method object[]|Model[] get() Fetches all rows in the query as objects, or models if configured.
+ * @method void each(callable $callback) Selects rows one by one and executes the given callback for each.
  * @method object|Model first() Fetches the first row in the query as an object, or a model if configured.
  * @method int count() Sets the column to COUNT(*), executes the query, and returns the rows.
  */

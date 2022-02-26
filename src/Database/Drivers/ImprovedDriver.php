@@ -74,12 +74,13 @@ class ImprovedDriver implements DriverInterface {
 	 * Executes a query on the database server and returns the results.
 	 *
 	 * @param string $statement
-	 * @param array $bindings
+	 * @param array|null $bindings
+	 * @param callable|null $rowFunction
 	 * @return int|object|bool
 	 *
 	 * @throws DatabaseException on error
 	 */
-	public function query($statement, $bindings = null) {
+	public function query($statement, $bindings = null, $rowFunction = null) {
 		$this->connect();
 
 		$statement = trim($statement);
@@ -103,12 +104,19 @@ class ImprovedDriver implements DriverInterface {
 		}
 
 		$rows = array();
+		$numRows = 0;
 
 		while ($row = $query->fetch_object()) {
-			$rows[] = $row;
+			if ($rowFunction) {
+				$rowFunction($row);
+				$numRows++;
+			}
+			else {
+				$rows[] = $row;
+			}
 		}
 
-		return $rows;
+		return $rowFunction ? $numRows : $rows;
 	}
 
 	/**

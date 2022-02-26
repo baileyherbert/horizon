@@ -151,10 +151,11 @@ class Database extends EventEmitter {
 	 * Executes a query.
 	 *
 	 * @param string $statement
-	 * @param array $bindings
+	 * @param array|null $bindings
+	 * @param callable|null $rowFunction
 	 * @return array|int|bool
 	 */
-	public function query($statement, array $bindings = array()) {
+	public function query($statement, array $bindings = array(), $rowFunction = null) {
 		try {
 			$startTime = microtime(true);
 			$returned = false;
@@ -168,7 +169,7 @@ class Database extends EventEmitter {
 
 			// Run the query on the driver
 			if (!$isSandboxMode && !$isValidationMode) {
-				$returned = $this->driver->query($statement, $bindings);
+				$returned = $this->driver->query($statement, $bindings, $rowFunction);
 			}
 			else if ($isValidationMode) {
 				$this->driver->validate($statement);
