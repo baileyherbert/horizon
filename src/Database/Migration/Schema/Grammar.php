@@ -141,7 +141,7 @@ class Grammar {
 	 * @return bool
 	 */
 	public static function isVariableLength($type) {
-		return ($type == 'char' || $type == 'string');
+		return ($type == 'char' || $type == 'string' || $type == 'varbinary');
 	}
 
 	/**
@@ -183,7 +183,7 @@ class Grammar {
 	 */
 	public static function getColumns() {
 		static $columns = array(
-			'textual' => array('char', 'string', 'text', 'mediumText', 'longText', 'binary', 'json'),
+			'textual' => array('char', 'string', 'text', 'mediumText', 'longText', 'binary', 'varbinary', 'json'),
 			'numeric' => array('integer', 'tinyInteger', 'smallInteger', 'mediumInteger', 'bigInteger', 'float', 'double', 'decimal', 'boolean'),
 			'date' => array('date', 'dateTime', 'time', 'timestamp', 'year')
 		);
@@ -208,6 +208,7 @@ class Grammar {
 			'mediumBlob' => 'MEDIUMBLOB',
 			'longBlob' => 'LONGBLOB',
 			'binary' => 'BINARY',
+			'varbinary' => 'VARBINARY',
 			'json' => 'JSON',
 			'integer' => 'INT',
 			'tinyInteger' => 'TINYINT',
