@@ -173,7 +173,14 @@ class Kernel {
 			}
 		}
 
-		$this->consoleApp->renderException($ex, $this->output);
+		$this->output->writeln(sprintf('<error>  %s: %s  </>', basename(get_class($ex)), $ex->getMessage()));
+		$this->output->writeln(sprintf('<error>  @ %s:%d  </>', $ex->getFile(), $ex->getLine()));
+
+		foreach ($ex->getTrace() as $index => $row) {
+			$this->output->writeln(sprintf('  %d %s:%d - %s()', $index + 1, $row['file'], $row['line'], $row['function']));
+		}
+
+		// $this->consoleApp->renderException($ex, $this->output);
 		abort($this->getExitCodeForThrowable($ex));
 	}
 
