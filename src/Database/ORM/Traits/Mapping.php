@@ -499,6 +499,7 @@ trait Mapping {
 		}
 
 		switch ($type) {
+			case '\DateTime':
 			case 'DateTime': {
 				if ($value instanceof DateTime) return $value;
 				if (is_string($value)) return new DateTime($value);
@@ -553,6 +554,7 @@ trait Mapping {
 		}
 
 		switch ($type) {
+			case '\DateTime':
 			case 'DateTime': {
 				if ($value instanceof DateTime) return $value->format('Y-m-d H:i:s');
 				if (is_int($value)) return (new DateTime('@' . $value))->format('Y-m-d H:i:s');
