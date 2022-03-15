@@ -374,6 +374,17 @@ class Column {
 			$type .= sprintf('(%d)', $this->parameters['length']);
 		}
 
+		// Add enum values
+		else if ($this->type === 'enum') {
+			$compiled = array();
+
+			foreach ($this->parameters['values'] as $value) {
+				$compiled[] = Grammar::compileString($value);
+			}
+
+			$type .= '(' . implode(', ', $compiled) . ')';
+		}
+
 		// Add the unsigned attribute
 		if (isset($this->parameters['unsigned']) && $this->parameters['unsigned']) {
 			$type .= ' UNSIGNED';

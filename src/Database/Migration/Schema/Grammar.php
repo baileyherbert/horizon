@@ -183,7 +183,7 @@ class Grammar {
 	 */
 	public static function getColumns() {
 		static $columns = array(
-			'textual' => array('char', 'string', 'text', 'mediumText', 'longText', 'binary', 'varbinary', 'json'),
+			'textual' => array('char', 'string', 'text', 'mediumText', 'enum', 'longText', 'binary', 'varbinary', 'json'),
 			'numeric' => array('integer', 'tinyInteger', 'smallInteger', 'mediumInteger', 'bigInteger', 'float', 'double', 'decimal', 'boolean'),
 			'date' => array('date', 'dateTime', 'time', 'timestamp', 'year')
 		);
@@ -203,6 +203,7 @@ class Grammar {
 			'text' => 'TEXT',
 			'mediumText' => 'MEDIUMTEXT',
 			'longText' => 'LONGTEXT',
+			'enum' => 'ENUM',
 			'tinyBlob' => 'TINYBLOB',
 			'blob' => 'BLOB',
 			'mediumBlob' => 'MEDIUMBLOB',

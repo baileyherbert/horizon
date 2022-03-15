@@ -184,6 +184,17 @@ class Blueprint {
 	}
 
 	/**
+	 * Create a new enum column on the table with the specified values.
+	 *
+	 * @param string $column
+	 * @param string[] $values
+	 * @return Column
+	 */
+	public function enum($column, array $values) {
+		return $this->addColumn('enum', $column, compact('values'));
+	}
+
+	/**
 	 * Create a new tiny blob column on the table (255 bytes).
 	 *
 	 * @param string $column
