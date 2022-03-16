@@ -162,10 +162,7 @@ class ControllerDispatcher {
 			}
 
 			$callable = new $className();
-
-			if ($methodName == '%') {
-				$methodName = strtolower($this->request->getMethod());
-			}
+			$methodName = str_replace('%', $this->request->getMethod(), $methodName);
 
 			if (!method_exists($callable, $methodName)) {
 				throw new HttpResponseException(404);
