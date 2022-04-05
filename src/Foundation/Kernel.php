@@ -116,7 +116,6 @@ class Kernel {
 	 * @return void
 	 */
 	public function shutdown($code = 0) {
-		$this->database()->close();
 		exit($code);
 	}
 
