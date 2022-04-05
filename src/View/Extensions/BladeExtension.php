@@ -186,7 +186,7 @@ class BladeExtension extends ViewExtension {
 				}
 
 				// Next, extract the value
-				$variableValue = trim(substr($args, $offset));
+				$variableValue = $this->transpileBrackets(trim(substr($args, $offset)));
 
 				return "{% set {$variableName} = {$variableValue} %}";
 			},
