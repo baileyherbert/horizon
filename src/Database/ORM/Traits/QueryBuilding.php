@@ -3,6 +3,7 @@
 namespace Horizon\Database\ORM\Traits;
 
 use DB;
+use Horizon\Database\QueryBuilder\Documentation\DeleteHelper;
 use Horizon\Database\QueryBuilder\Documentation\SelectHelper;
 use Horizon\Http\Exception\HttpResponseException;
 
@@ -48,6 +49,19 @@ trait QueryBuilding {
 
 		$builder = DB::connection($o->getConnection())->select()->from($o->getTable());
 		$builder->setModel(get_class($o));
+
+		return $builder;
+	}
+
+	/**
+	 * Creates a `DELETE` query builder for the model.
+	 *
+	 * @return DeleteHelper
+	 */
+	public static function deleteFrom() {
+		$o = (new static);
+
+		$builder = DB::connection($o->getConnection())->delete()->from($o->getTable());
 
 		return $builder;
 	}
