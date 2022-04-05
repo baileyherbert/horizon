@@ -69,8 +69,7 @@ class Kernel {
 
 	private function initCommands() {
 		$commands = config('console.commands', array());
-
-		$commands = array_merge($commands, array(
+		$developmentCommands = is_mode('development') ? [
 			'build' => 'Horizon\Ace\Commands\Core\BuildCommand',
 			'make:command' => 'Horizon\Ace\Commands\Make\MakeCommandCommand',
 			'make:component' => 'Horizon\Ace\Commands\Make\MakeComponentCommand',
@@ -79,6 +78,11 @@ class Kernel {
 			'make:migration' => 'Horizon\Ace\Commands\Make\MakeMigrationCommand',
 			'make:model' => 'Horizon\Ace\Commands\Make\MakeModelCommand',
 			'make:view' => 'Horizon\Ace\Commands\Make\MakeViewCommand',
+		] : [];
+
+		$productionCommands = is_mode('production') ? [] : [];
+
+		$commands = array_merge($commands, $developmentCommands, $productionCommands, array(
 			'migration:fresh' => 'Horizon\Ace\Commands\Migrations\MigrationFreshCommand',
 			'migration:rollback' => 'Horizon\Ace\Commands\Migrations\MigrationRollbackCommand',
 			'migration:run' => 'Horizon\Ace\Commands\Migrations\MigrationRunCommand',
