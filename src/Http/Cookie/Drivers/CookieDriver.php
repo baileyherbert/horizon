@@ -39,14 +39,35 @@ class CookieDriver implements DriverInterface {
 	/**
 	 * Starts the session if output has not already been sent to the client.
 	 */
-	private function startSession() {
+	protected function startSession() {
 		if (session_status() == PHP_SESSION_NONE) {
 			if (!headers_sent()) {
-				$lifetime = config('session.lifetime');
 				$options = [];
+				$allowedOptions = [
+					'cookie_lifetime',
+					'gc_lifetime',
+					'use_strict_mode'
+				];
 
-				if (is_int($lifetime)) {
-					$options['gc_maxlifetime'] = $lifetime;
+				// SID security starting on PHP 7.1+
+				if (version_compare(PHP_VERSION, '7.1.0') >= 0) {
+					$options['sid_length'] = config('session.sid_length', 128);
+					$options['sid_bits_per_character'] = config('session.sid_bits_per_character', 6);
+				}
+
+				// Set options from user configuration
+				foreach ($allowedOptions as $optionName) {
+					$configName = 'session.' . $optionName;
+					$configValue = config($configName);
+
+					if (isset($configValue)) {
+						$options[$optionName] = $configValue;
+					}
+				}
+
+				// Default to strict mode
+				if (!isset($options['use_strict_mode'])) {
+					$options['use_strict_mode'] = 1;
 				}
 
 				@session_name(config('session.name'));
