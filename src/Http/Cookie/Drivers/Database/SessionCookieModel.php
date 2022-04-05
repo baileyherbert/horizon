@@ -11,8 +11,8 @@ use Horizon\Database\Model;
  *
  * @property DateTime $created_at
  *
- * @property-read DateTime $expires_at
- * @property-write DateTime|int $expires_at
+ * @property-read DateTime $updated_at
+ * @property-write DateTime|int $updated_at
  */
 class SessionCookieModel extends Model {
 
