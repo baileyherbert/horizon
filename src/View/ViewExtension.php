@@ -7,6 +7,7 @@ use Twig_Extension;
 use Twig_Extension_GlobalsInterface;
 use Horizon\Support\Str;
 use Horizon\View\Twig\TwigFileLoader;
+use Horizon\View\Twig\TwigTranspiler;
 
 class ViewExtension extends Twig_Extension implements Twig_Extension_GlobalsInterface {
 
@@ -66,6 +67,42 @@ class ViewExtension extends Twig_Extension implements Twig_Extension_GlobalsInte
 	 */
 	public function getTranspilers() {
 		return array();
+	}
+
+	/**
+	 * Returns the twig loader that invoked this extension.
+	 *
+	 * @return TwigFileLoader
+	 */
+	protected function loader() {
+		return $this->loader;
+	}
+
+	/**
+	 * Transpiles the given string as raw template text.
+	 *
+	 * @return string
+	 */
+	protected function transpileText($string) {
+		return $this->loader->getTranspiler()->precompile($string);
+	}
+
+	/**
+	 * Transpiles the given string as text wrapped inside double brackets (`{{ }}`).
+	 *
+	 * @return string
+	 */
+	protected function transpileBrackets($string) {
+		return $this->loader->getTranspiler()->precompileBrackets($string);
+	}
+
+	/**
+	 * Returns the transpiler.
+	 *
+	 * @return TwigTranspiler
+	 */
+	protected function transpiler() {
+		return $this->loader->getTranspiler();
 	}
 
 }

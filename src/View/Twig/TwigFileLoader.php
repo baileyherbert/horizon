@@ -26,10 +26,20 @@ class TwigFileLoader extends Twig_Loader_Filesystem {
 	 */
 	private $debugging = false;
 
+	/**
+	 * @var int
+	 */
 	public $transpileTime = 0;
+
+	/**
+	 * @var TwigTranspiler
+	 */
+	private $transpiler;
 
 	public function __construct() {
 		parent::__construct(array());
+
+		$this->transpiler = new TwigTranspiler($this);
 	}
 
 	public function getSourceContext($name) {
@@ -79,9 +89,8 @@ class TwigFileLoader extends Twig_Loader_Filesystem {
 
 	public function compileHorizonTags($text, $templateFileName) {
 		$start = microtime(true);
-		$transpiler = new TwigTranspiler($this);
-		$data = $transpiler->precompile($text, $templateFileName);
-		$this->debugging = $transpiler->isDebuggingEnabled();
+		$data = $this->transpiler->precompile($text, $templateFileName);
+		$this->debugging = $this->transpiler->isDebuggingEnabled();
 		$this->transpileTime = microtime(true) - $start;
 
 		Profiler::recordAsset('View transpilation', $templateFileName, $this->transpileTime);
@@ -106,5 +115,14 @@ class TwigFileLoader extends Twig_Loader_Filesystem {
 		$key = str_replace('\\', '/', $key);
 		return $key;
     }
+
+	/**
+	 * Returns the transpiler instance used by this loader.
+	 *
+	 * @return TwigTranspiler
+	 */
+	public function getTranspiler() {
+		return $this->transpiler;
+	}
 
 }

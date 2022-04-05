@@ -22,11 +22,6 @@ class TwigTranspiler {
 	private $translateNamespaces = array();
 
 	/**
-	 * @var string
-	 */
-	private $templateFileName;
-
-	/**
 	 * @var bool
 	 */
 	private $debugging = false;
@@ -87,6 +82,16 @@ class TwigTranspiler {
 		}
 
 		return ltrim($translated);
+	}
+
+	/**
+	 * Prepares the string for the Twig compiler by precompiling it as if it were wrapped in `{{ }}`s.
+	 *
+	 * @param string $string
+	 * @return string
+	 */
+	public function precompileBrackets($string) {
+		return $this->compileVariables($string, true);
 	}
 
 	/**
@@ -246,11 +251,9 @@ class TwigTranspiler {
 		return $result;
 	}
 
-	protected function compileVariables($value) {
+	protected function compileVariables($value, $inBrackets = false) {
 		$result = '';
 		$i = 0;
-
-		$inBrackets = false;
 
 		$inString = false;
 		$disableString = false;

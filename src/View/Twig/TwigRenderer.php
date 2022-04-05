@@ -170,4 +170,13 @@ class TwigRenderer {
 		return $path;
 	}
 
+	/**
+	 * Returns the loader used by this renderer.
+	 *
+	 * @return TwigFileLoader
+	 */
+	public function getLoader() {
+		return $this->loader;
+	}
+
 }
