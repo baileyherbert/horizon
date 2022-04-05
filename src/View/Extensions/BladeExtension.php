@@ -74,6 +74,7 @@ class BladeExtension extends ViewExtension {
 			new Twig_SimpleFunction('session', 'session'),
 			new Twig_SimpleFunction('config', 'config'),
 			new Twig_SimpleFunction('env', 'env'),
+			new Twig_SimpleFunction('is_mode', 'is_mode'),
 			new Twig_SimpleFunction('session', 'session'),
 			new Twig_SimpleFunction('request', 'request'),
 
