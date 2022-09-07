@@ -29,5 +29,9 @@ RUN composer install --no-dev --classmap-authoritative
 ADD . ./
 
 # Build for production
+ENV APP_MODE=development
 RUN php vendor/bin/ace build
 RUN chmod -R 0555 app/cache
+
+# Run in production
+ENV APP_MODE=production
