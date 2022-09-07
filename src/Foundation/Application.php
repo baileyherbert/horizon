@@ -189,7 +189,7 @@ class Application {
 	 * @return string
 	 */
 	public static function mode() {
-		return env('APP_MODE');
+		return env('APP_MODE', 'development');
 	}
 
 	/**
