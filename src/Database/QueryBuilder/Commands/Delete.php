@@ -115,8 +115,22 @@ class Delete implements CommandInterface {
 				$compiled[] = sprintf('%s %s %s', $column, $operator, $this->compileFunction($where['function']));
 			}
 			else {
-				$compiled[] = sprintf('%s %s ?', $column, $operator);
-				$this->compiledParameters[] = $where['value'];
+				$value = $where['value'];
+
+				if ($where['reference']) {
+					$value = StringBuilder::formatColumnName($value);
+
+					$compiled[] = sprintf('%s %s %s', $column, $operator, $value);
+				}
+				else {
+					if (!is_null($value)) {
+						$compiled[] = sprintf('%s %s ?', $column, $operator);
+						$this->compiledParameters[] = $value;
+					}
+					else {
+						$compiled[] = sprintf('%s %s NULL', $column, $operator);
+					}
+				}
 			}
 
 			if ($this->getEnclosureEndingAt($i)) {
@@ -277,14 +291,14 @@ class Delete implements CommandInterface {
 	}
 
 	/**
-	 * Sets a condition rows must match to be deleted.
+	 * Sets a condition rows must match to be selected.
 	 *
 	 * @param string $column
 	 * @param string $operator
 	 * @param mixed $equals
 	 * @return $this
 	 */
-	public function where($column, $operator, $equals, $separator = 'AND') {
+	public function where($column, $operator, $equals, $separator = 'AND', $reference = false) {
 		$function = (is_array($equals)) ? $equals : null;
 
 		if (is_string($equals) && StringBuilder::isFunction($equals)) {
@@ -296,7 +310,8 @@ class Delete implements CommandInterface {
 			'operator' => $operator,
 			'value' => $equals,
 			'separator' => $separator,
-			'function' => $function
+			'function' => $function,
+			'reference' => $reference
 		);
 
 		return $this;
