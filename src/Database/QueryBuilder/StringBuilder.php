@@ -123,7 +123,8 @@ class StringBuilder {
 		$types = array();
 
 		foreach ($bindings as $value) {
-			if (is_numeric($value) && strpos($value, '.') === false) $types[] = 'i';
+			if (is_string($value)) $types[] = 's';
+			else if (is_numeric($value) && strpos($value, '.') === false) $types[] = 'i';
 			else if (is_numeric($value)) $types[] = 'd';
 			else $types[] = 's';
 		}
