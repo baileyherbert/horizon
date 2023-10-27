@@ -3,6 +3,7 @@
 namespace Horizon\Ace\Commands\Make;
 
 use Horizon\Ace\Util\FileGenerator;
+use Horizon\Ace\Util\FileOpener;
 use Horizon\Console\Command;
 use Horizon\Foundation\Application;
 use Symfony\Component\Console\Input\InputArgument;
@@ -38,7 +39,7 @@ class MakeCommandCommand extends Command {
 		$this->addCommandToConfig($generator->getFileName(), $generator->getClass(), $out);
 
 		if ($in->getOption('open')) {
-			exec('start ' . $generator->resolveClassPath());
+			FileOpener::open($generator->resolveClassPath());
 		}
 	}
 

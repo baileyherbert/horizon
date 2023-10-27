@@ -2,6 +2,7 @@
 
 namespace Horizon\Ace\Commands\Make;
 
+use Horizon\Ace\Util\FileOpener;
 use Horizon\Console\Command;
 use Horizon\Foundation\Application;
 use Horizon\Foundation\Framework;
@@ -63,7 +64,7 @@ class MakeMigrationCommand extends Command {
 		}
 
 		if ($in->getOption('open')) {
-			exec('start ' . $filePath);
+			FileOpener::open($filePath);
 		}
 	}
 
