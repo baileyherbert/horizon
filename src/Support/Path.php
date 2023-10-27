@@ -111,6 +111,8 @@ class Path {
 	 * @return string
 	 */
 	public static function basename($fileName, $extension = null) {
+		$fileName = str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $fileName);
+
 		return basename($fileName, $extension);
 	}
 
@@ -121,6 +123,7 @@ class Path {
 	 * @return string
 	 */
 	public static function dirname($fileName) {
+		$fileName = str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $fileName);
 		return dirname($fileName);
 	}
 

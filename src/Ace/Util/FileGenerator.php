@@ -115,7 +115,7 @@ class FileGenerator {
 	 */
 	public function getClassName() {
 		$path = $this->getClass();
-		return Path::basename($path);
+		return str_replace('/', '\\', Path::basename($path));
 	}
 
 	/**
@@ -125,7 +125,7 @@ class FileGenerator {
 	 */
 	public function getClassNamespace() {
 		$path = $this->getClass();
-		return Path::dirname($path);
+		return str_replace('/', '\\', Path::dirname($path));
 	}
 
 	/**
