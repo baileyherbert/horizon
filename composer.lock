@@ -47,16 +47,16 @@
         },
         {
             "name": "baileyherbert/twig-compat",
-            "version": "v1.41.3",
+            "version": "v1.41.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/baileyherbert/twig-compat.git",
-                "reference": "fc6c4453b2c18800feb5d439cd8dc02d251d55d9"
+                "reference": "6827778af89b915053c2c7e55ac780628358e313"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/baileyherbert/twig-compat/zipball/fc6c4453b2c18800feb5d439cd8dc02d251d55d9",
-                "reference": "fc6c4453b2c18800feb5d439cd8dc02d251d55d9",
+                "url": "https://api.github.com/repos/baileyherbert/twig-compat/zipball/6827778af89b915053c2c7e55ac780628358e313",
+                "reference": "6827778af89b915053c2c7e55ac780628358e313",
                 "shasum": ""
             },
             "require": {
@@ -111,9 +111,9 @@
             ],
             "support": {
                 "issues": "https://github.com/baileyherbert/twig-compat/issues",
-                "source": "https://github.com/baileyherbert/twig-compat/tree/v1.41.3"
+                "source": "https://github.com/baileyherbert/twig-compat/tree/v1.41.4"
             },
-            "time": "2021-11-10T09:14:36+00:00"
+            "time": "2023-10-27T23:50:44+00:00"
         },
         {
             "name": "ircmaxell/password-compat",
