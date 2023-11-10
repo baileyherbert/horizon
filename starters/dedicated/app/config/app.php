@@ -27,6 +27,12 @@ return [
 	'view_cache' => is_mode('production'),
 
 	/**
+	 * Sets whether the framework should monitor template cache files for changes and automatically reload them. This
+	 * will only work if the `view_cache` option is enabled. Increases runtime, disable in production.
+	 */
+	'view_cache_reload' => is_mode('development'),
+
+	/**
 	 * Sets paths to various core parts of the application. Paths which are not specified here will use their
 	 * default values based on the `app` directory.
 	 */
