@@ -1,6 +1,16 @@
 :root > * {
 	--md-typeset-table-color: rgba(0, 0, 0, 0.09);
+}
+
+[data-md-color-scheme="default"] {
 	--md-code-hl-variable-color: rgba(0, 0, 0, 0.8);
+	--custom-highlight-title: #f0f0f0;
+	--custom-highlight-color: #444;
+}
+
+[data-md-color-scheme="slate"] {
+	--custom-highlight-title: #1a1b24;
+	--custom-highlight-color: #959595;
 }
 
 [data-md-color-scheme="default"] .md-header {
@@ -62,13 +72,13 @@ table tbody tr th code, table tbody tr td code {
 
 .highlight span.filename {
 	font-size: 0.8em;
-	color: #444;
+	color: var(--custom-highlight-color);
 	padding: 15px 23px 13px;
 	line-height: 1;
 
 	border-radius: 6px 6px 0 0;
 	border-bottom: 0.05rem solid rgba(0, 0, 0, 0.05);
-	background-color: #f0f0f0;
+	background-color: var(--custom-highlight-title);
 }
 
 .highlight pre code {
