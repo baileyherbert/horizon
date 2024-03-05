@@ -134,7 +134,11 @@ class WebResponse {
      * @return string|string[]|null
      */
     public function getHeader($name) {
-        return isset($this->headers[strtolower($name)]) ? $this->headers[strtolower($name)] : null;
+        $name = strtolower($name);
+
+        if (isset($this->headers[$name])) {
+            return $this->headers[$name];
+        }
     }
 
     /**
@@ -210,13 +214,13 @@ class WebResponse {
 
     /**
      * Returns the parsed data from the response in JSON format. If an error occurs during parsing, an `Exception` is
-     * thrown. Return value is associative.
+     * thrown. Return value is associative unless `false` is passed as the sole argument.
      *
      * @return mixed
      * @throws Exception
      */
-    public function getJson() {
-        $parsed = @json_decode($this->getBody(), true);
+    public function getJson($associative = true) {
+        $parsed = @json_decode($this->getBody(), $associative);
 
         if (is_null($parsed)) {
             if (json_last_error() !== JSON_ERROR_NONE) {
@@ -273,11 +277,11 @@ class WebResponse {
     public function getUrl() {
         $url = $this->info[CURLINFO_EFFECTIVE_URL];
 
-        if (!$url) {
-            $lastTrace = count($this->trace) > 0 ? $this->trace[count($this->trace) - 1] : null;
+        if (!$url && !empty($this->traces)) {
+            $lastTrace = $this->traces[count($this->traces) - 1];
 
             if ($lastTrace) {
-                $url = $lastTrace['to'];
+                $url = $lastTrace->getUrl();
             }
         }
 
@@ -292,7 +296,9 @@ class WebResponse {
      * @return mixed
      */
     public function getInfo($info) {
-        return isset($this->info[$info]) ? $this->info[$info] : null;
+        if (isset($this->info[$info])) {
+            return $this->info[$info];
+        }
     }
 
     /**

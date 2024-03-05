@@ -10,16 +10,22 @@ class WebResponseCookie {
     protected $settings = [];
 
     public function __construct($definition) {
+        $definition = str_replace('.', 'QQleQPunT__', $definition);
         parse_str(strtr($definition, ['&' => '%26', '+' => '%2B', ';' => '&']), $cookie);
 
         foreach ($cookie as $key => $value) {
+            $key = str_replace('QQleQPunT__', '.', $key);
+
             $this->definition = $definition;
             $this->name = $key;
             $this->value = urldecode($value);
+
             break;
         }
 
         foreach ($cookie as $key => $value) {
+            $key = str_replace('QQleQPunT__', '.', $key);
+
             if ($key !== $this->name) {
                 $this->settings[strtolower($key)] = $value;
             }
@@ -73,7 +79,7 @@ class WebResponseCookie {
         $maxAge = $this->getMaxAge();
 
         if ($considerMaxAge && !is_null($maxAge)) return time() + $maxAge;
-        if (is_null($expires)) return;
+        if (is_null($expires)) return time() + 1800;
 
         return (($timestamp = @strtotime($expires)) !== false) ? $timestamp : null;
     }

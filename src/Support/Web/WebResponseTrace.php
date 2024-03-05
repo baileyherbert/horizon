@@ -9,7 +9,6 @@ class WebResponseTrace {
     protected $bytes;
 
     protected $ip;
-    protected $port;
 
     protected $totalTime;
     protected $connectTime;
@@ -31,7 +30,6 @@ class WebResponseTrace {
         $this->bytes = curl_getinfo($handle, CURLINFO_SIZE_DOWNLOAD);
 
         $this->ip = curl_getinfo($handle, CURLINFO_PRIMARY_IP);
-        $this->port = curl_getinfo($handle, CURLINFO_PRIMARY_PORT);
 
         $this->totalTime = curl_getinfo($handle, CURLINFO_TOTAL_TIME);
         $this->connectTime = curl_getinfo($handle, CURLINFO_CONNECT_TIME);
@@ -75,15 +73,6 @@ class WebResponseTrace {
      */
     public function getIp() {
         return $this->ip;
-    }
-
-    /**
-     * Returns the port of the remote server which we connected to.
-     *
-     * @return int
-     */
-    public function getPort() {
-        return $this->port;
     }
 
     /**

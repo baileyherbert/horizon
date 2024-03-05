@@ -53,7 +53,7 @@ class WebRequest {
      *
      * @var string
      */
-    protected $userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36';
+    protected $userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36';
 
     /**
      * A custom header function provided by the caller, if available.
@@ -61,6 +61,13 @@ class WebRequest {
      * @var mixed
      */
     protected $customHeaderFunction;
+
+    /**
+     * Internal body buffer for abstractions that use a WRITEFUNCTION.
+     *
+     * @var string|null
+     */
+    protected $bodyBuffer;
 
     /**
      * Constructs a new `WebRequest` instance for the given URL.
@@ -75,6 +82,23 @@ class WebRequest {
         $this->setOption(CURLOPT_MAXREDIRS, 5);
         $this->setOption(CURLOPT_ENCODING, '');
         $this->setOption(CURLOPT_CAINFO, Framework::path('resources/ca-bundle.crt'));
+
+        // Determine the current curl version
+        $curl_version = curl_version();
+
+        // Prefer HTTP/2 where available (will fall back to HTTP/1.1 if not)
+        if (version_compare($curl_version['version'], '7.33.0', '>=')) {
+            if (defined('CURL_VERSION_HTTP2') && ($curl_version['features'] & constant('CURL_VERSION_HTTP2')) !== 0) {
+                $this->setOption(CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2_0);
+            }
+        }
+    }
+
+    /**
+     * Returns the current version of the WebRequest library.
+     */
+    public static function version() {
+        return '1.0.0';
     }
 
     /**
@@ -278,6 +302,20 @@ class WebRequest {
     }
 
     /**
+     * Sets whether or not to follow redirects.
+     *
+     * @param bool $follow
+     * @param int $redirects The maximum number of redirects to follow (optional).
+     */
+    public function setFollowRedirects($follow, $redirects = null) {
+        $this->setOption(CURLOPT_FOLLOWLOCATION, $follow);
+
+        if (!is_null($redirects)) {
+            $this->setMaxRedirects($redirects);
+        }
+    }
+
+    /**
      * Executes this request with the `GET`  request method and returns the response.
      *
      * @return WebResponse
@@ -312,7 +350,9 @@ class WebRequest {
         }
 
         // If the format is anything else, set the content type directly
-        else $headers['content-type'] = $format;
+        else {
+            $headers['content-type'] = $format;
+        }
 
         // Perform the request
         return $this->execute('post', [ CURLOPT_POSTFIELDS => $fields ], $headers);
@@ -348,18 +388,25 @@ class WebRequest {
 
         // Perform requests in a loop until we're done
         while (true) {
+            $this->bodyBuffer = null;
+
             $handle = $this->createHandle($uri, $options, $headers);
             $body = @curl_exec($handle);
             $traces[] = new WebResponseTrace($uri, $handle);
 
             // Handle client errors
             if (curl_errno($handle) > 0) {
-                throw new WebRequestException($this, curl_error($handle), curl_errno($handle));
+                throw new WebRequestException($this, curl_strerror(curl_errno($handle)), curl_errno($handle));
             }
 
             // Follow redirections if configured to do so
             if ($isFollowing) {
                 $location = isset($responseHeaders['location']) ? $responseHeaders['location'] : null;
+
+                // Fix for a rare bug -- if multiple locations are provided, choose the last
+                if (is_array($location)) {
+                    $location = $location[count($location) - 1];
+                }
 
                 // If $redirect is not null, then the page wants to redirect
                 if (!is_null($location)) {
@@ -385,11 +432,13 @@ class WebRequest {
             // Calculate total time
             $totalTime = (microtime(true) - $startTime);
 
-            // Return the response instance
-            if (isset($options[CURLOPT_WRITEFUNCTION])) {
-                return;
+            // Return internal body
+            if ($body === true && isset($this->bodyBuffer)) {
+                $body = $this->bodyBuffer;
+                unset($this->bodyBuffer);
             }
 
+            // Return the response instance
             return new WebResponse($this, $handle, $responseHeaders, $body, $totalTime, $traces, $httpVersion, $httpMessage);
         }
     }
@@ -402,7 +451,15 @@ class WebRequest {
      * @param array $headers
      */
     protected function createHandle($uri, $options, $headers) {
+        if (!function_exists('curl_init')) {
+            throw new \Exception('cURL is not available on this server');
+        }
+
         $ch = curl_init($uri);
+
+        if ($ch === false) {
+            throw new \Exception('Failed to initialize cURL');
+        }
 
         // Set the options
         curl_setopt_array($ch, $options);
@@ -531,7 +588,6 @@ class WebRequest {
 
                     if ($this->customHeaderFunction) {
                         $callable = $this->customHeaderFunction;
-
                         $callable(self::HEADER_STATUS, (int) preg_replace('/[^0-9]/', '', $httpMessage), null);
                     }
                 }
@@ -586,6 +642,7 @@ class WebRequest {
      */
     public function copy() {
         $request = new WebRequest($this->uri);
+
         $request->setOptions($this->options);
         $request->setUserAgent($this->userAgent);
         $request->setReferer($this->referer);
