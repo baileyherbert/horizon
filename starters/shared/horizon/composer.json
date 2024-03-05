@@ -1,5 +1,5 @@
 {
     "require": {
-		"baileyherbert/horizon": "dev-master"
+		"baileyherbert/horizon": "^1.0.0"
 	}
 }

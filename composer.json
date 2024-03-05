@@ -14,7 +14,7 @@
         }
     ],
     "scripts": {
-        "docs": "mkdocs build --config-file=mkdocs.insiders.yml"
+        "docs": "mkdocs build --config-file=mkdocs.yml"
     },
     "autoload": {
         "psr-4": {
