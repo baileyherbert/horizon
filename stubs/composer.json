@@ -1,0 +1,13 @@
+{
+    "name": "baileyherbert/horizon",
+    "description": "Framework for building distributed web applications that need to work on most servers.",
+    "license": "MIT",
+    "require-dev": {
+        "phpunit/phpunit": "^5"
+    },
+    "config": {
+        "platform": {
+            "php": "5.6.0"
+        }
+    }
+}

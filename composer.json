@@ -6,13 +6,13 @@
         "issues": "https://github.com/baileyherbert/horizon/issues",
         "source": "https://github.com/baileyherbert/horizon"
     },
-	"authors": [
-		{
-			"name": "Bailey Herbert",
-			"email": "hello@bailey.sh",
-			"homepage": "https://bailey.sh/"
-		}
-	],
+    "authors": [
+        {
+            "name": "Bailey Herbert",
+            "email": "hello@bailey.sh",
+            "homepage": "https://bailey.sh/"
+        }
+    ],
     "scripts": {
         "docs": "mkdocs build --config-file=mkdocs.insiders.yml"
     },
@@ -33,23 +33,23 @@
         "symfony/polyfill-php55": "~1.19.0",
         "baileyherbert/twig-compat": "~1.41.0",
         "phpseclib/phpseclib": "^2.0",
-        "myclabs/deep-copy": "~1.6.1",
         "symfony/polyfill-mbstring": "~1.19.0",
         "paragonie/random_compat": "^2.0",
         "symfony/polyfill-iconv": "~1.19.0",
         "baileyherbert/ace": "^1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^6"
+        "symfony/phpunit-bridge": "^5.2.12"
     },
-	"archive": {
-		"exclude": [
-			"/starters"
-		]
-	},
+    "archive": {
+        "exclude": [
+            "/starters",
+            "/stubs"
+        ]
+    },
     "config": {
         "platform": {
-            "php": "7.0.8"
+            "php": "5.6.0"
         }
     }
 }

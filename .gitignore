@@ -4,3 +4,5 @@ Thumbs.db
 /vendor/
 /.vs
 /.idea
+/.phpunit.result*
+/stubs/vendor
