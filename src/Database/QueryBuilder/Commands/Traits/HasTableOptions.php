@@ -9,7 +9,7 @@ trait HasTableOptions {
 	/**
 	 * @var string[]
 	 */
-	protected $options = array();
+	protected $tableOptions = array();
 
 	/**
 	 * Compiles table options.
@@ -19,11 +19,20 @@ trait HasTableOptions {
 	protected function compileOptions() {
 		$compiled = array();
 
-		foreach ($this->options as $option => $value) {
+		foreach ($this->tableOptions as $option => $value) {
 			$compiled[] = $option . ' = ' . $value;
 		}
 
 		return Str::join($compiled);
+	}
+
+	/**
+	 * Returns table options.
+	 *
+	 * @return mixed
+	 */
+	protected function getOptions() {
+		return $this->tableOptions;
 	}
 
 	/**
@@ -33,7 +42,7 @@ trait HasTableOptions {
 	 * @return $this
 	 */
 	public function engine($name) {
-		$this->options['ENGINE'] = $name;
+		$this->tableOptions['ENGINE'] = $name;
 		return $this;
 	}
 
@@ -44,7 +53,7 @@ trait HasTableOptions {
 	 * @return $this
 	 */
 	public function charset($charset) {
-		$this->options['CHARACTER SET'] = $charset;
+		$this->tableOptions['CHARACTER SET'] = $charset;
 		return $this;
 	}
 
@@ -55,7 +64,7 @@ trait HasTableOptions {
 	 * @return $this
 	 */
 	public function collate($collate) {
-		$this->options['COLLATE'] = $collate;
+		$this->tableOptions['COLLATE'] = $collate;
 		return $this;
 	}
 
@@ -67,7 +76,7 @@ trait HasTableOptions {
 	 * @return $this
 	 */
 	public function opt($name, $value) {
-		$this->options[strtoupper($name)] = $value;
+		$this->tableOptions[strtoupper($name)] = $value;
 		return $this;
 	}
 

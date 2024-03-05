@@ -27,11 +27,6 @@ class Alter implements CommandInterface {
 	protected $statements = array();
 
 	/**
-	 * @var array
-	 */
-	protected $options = array();
-
-	/**
 	 * Constructs a new ALTER command.
 	 *
 	 * @param QueryBuilder $builder
@@ -48,7 +43,7 @@ class Alter implements CommandInterface {
 	public function compile() {
 		$statements = $this->statements;
 
-		foreach ($this->options as $option => $value) {
+		foreach ($this->getOptions() as $option => $value) {
 			$statements[] = $option . ' = ' . $value;
 		}
 
@@ -271,18 +266,6 @@ class Alter implements CommandInterface {
 	 */
 	public function rename($newTableName) {
 		$this->statements[] = 'RENAME ' . StringBuilder::formatTableName($this->builder->getPrefix() . $newTableName);
-		return $this;
-	}
-
-	/**
-	 * Sets a manual table option.
-	 *
-	 * @param string $name
-	 * @param string $value
-	 * @return $this
-	 */
-	public function opt($name, $value) {
-		$this->options[strtoupper($name)] = $value;
 		return $this;
 	}
 
