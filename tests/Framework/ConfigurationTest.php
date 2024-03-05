@@ -10,8 +10,7 @@ class ConfigurationTest extends TestCase
     {
         $this->assertNotNull(config('app.timezone'));
         $this->assertNull(config('session.does.not.exist'));
-
-        $this->assertInternalType('array', config('session'));
+        $this->assertTrue(is_array(config('session')));
     }
 
 }
