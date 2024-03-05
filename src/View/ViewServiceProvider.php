@@ -15,7 +15,7 @@ class ViewServiceProvider extends ServiceProvider {
 
 	public function register() {
 		$this->bind('Horizon\View\ViewLoader', function() {
-			return new ViewLoader(Application::paths()->views());
+			return new ViewLoader(Application::paths()->viewsDir());
 		});
 
 		$this->bind('Horizon\View\ViewExtension', function(TwigFileLoader $loader) {
@@ -29,7 +29,7 @@ class ViewServiceProvider extends ServiceProvider {
 		});
 
 		$this->bind('Horizon\View\ComponentLoader', function() {
-			return new ComponentLoader(Application::paths()->components());
+			return new ComponentLoader(Application::paths()->componentsDir());
 		});
 	}
 
@@ -92,7 +92,7 @@ class ViewServiceProvider extends ServiceProvider {
 	 */
 	protected function getExtensionDirectories() {
 		return array(
-			'App\View\Extensions' => Application::paths()->src('View/Extensions'),
+			'App\View\Extensions' => Application::paths()->srcDir('View/Extensions'),
 			'Horizon\View\Extensions' => Framework::path('src/View/Extensions')
 		);
 	}

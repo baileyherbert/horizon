@@ -84,7 +84,7 @@ class RouteLoader {
 	 */
 	public static function getLastDirectory() {
 		if (is_null(static::$currentDirectory)) {
-			return Application::paths()->routes();
+			return Application::paths()->routesDir();
 		}
 
 		return static::$currentDirectory;

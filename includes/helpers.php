@@ -1224,7 +1224,7 @@ if (!function_exists('config_path')) {
 	 * @return string
 	 */
 	function config_path() {
-		return Application::paths()->config();
+		return Application::paths()->configDir();
 	}
 }
 
@@ -1235,7 +1235,7 @@ if (!function_exists('public_path')) {
 	 * @return string
 	 */
 	function public_path() {
-		return Application::paths()->public();
+		return Application::paths()->publicDir();
 	}
 }
 

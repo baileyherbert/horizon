@@ -217,7 +217,7 @@ class BladeExtension extends ViewExtension {
 				}
 
 				$fileName = $matches[1];
-				$path = Application::paths()->embeds($fileName);
+				$path = Application::paths()->embedsDir($fileName);
 
 				if (!file_exists($path)) {
 					throw new ViewException(sprintf('Embed %s was not found', $path));

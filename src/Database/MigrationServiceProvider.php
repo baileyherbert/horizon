@@ -14,7 +14,7 @@ class MigrationServiceProvider extends ServiceProvider {
 
 	public function register() {
 		$this->bind('Horizon\Database\Migration', function() {
-			$path = Application::paths()->migrations();
+			$path = Application::paths()->migrationsDir();
 			$migrations = [];
 
 			if (is_dir($path)) {

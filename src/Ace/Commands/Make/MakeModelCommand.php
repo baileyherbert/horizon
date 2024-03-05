@@ -30,7 +30,7 @@ class MakeModelCommand extends Command {
 	protected function execute(InputInterface $in, OutputInterface $out) {
 		$generator = new FileGenerator($in->getArgument('name'));
 		$generator->namespace = $in->getOption('root') ? 'App' : 'App/Database/Models';
-		$generator->baseDir = Application::paths()->src($in->getOption('root') ? '' : 'Database/Models');
+		$generator->baseDir = Application::paths()->srcDir($in->getOption('root') ? '' : 'Database/Models');
 
 		$generator->assertClassName(['Model']);
 		$generator->renderClassFile('make/model', [

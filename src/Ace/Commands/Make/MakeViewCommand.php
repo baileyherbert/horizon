@@ -31,7 +31,7 @@ class MakeViewCommand extends Command {
 	 */
 	protected function execute(InputInterface $in, OutputInterface $out) {
 		$generator = new FileGenerator($in->getArgument('name'));
-		$generator->baseDir = Application::paths()->views();
+		$generator->baseDir = Application::paths()->viewsDir();
 		$generator->extension = 'twig';
 		$generator->writeFile($this->getSchematic($in->getArgument('schematic')), $out);
 

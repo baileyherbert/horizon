@@ -385,7 +385,7 @@ class RouteFacade {
 	 * @param Closure|array|string $action
 	 * @return Route
 	 */
-	public static function catch($action) {
+	public static function catch2($action) {
 		return static::router()->setExceptionHandler($action);
 	}
 

@@ -64,7 +64,7 @@ class Application {
 	 */
 	public static function lock() {
 		if (is_null(static::$composerLock)) {
-			if (is_file($path = Path::resolve(static::paths()->vendor(), '../composer.lock'))) {
+			if (is_file($path = Path::resolve(static::paths()->vendorDir(), '../composer.lock'))) {
 				static::$composerLock = json_decode(file_get_contents($path));
 			}
 		}
@@ -132,7 +132,7 @@ class Application {
 	 * @return string
 	 */
 	public static function root($relative = '') {
-		return static::paths()->root($relative);
+		return static::paths()->rootDir($relative);
 	}
 
 	/**

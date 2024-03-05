@@ -29,7 +29,7 @@ class MakeMiddlewareCommand extends Command {
 	protected function execute(InputInterface $in, OutputInterface $out) {
 		$generator = new FileGenerator($in->getArgument('name'));
 		$generator->namespace = $in->getOption('root') ? 'App' : 'App/Http/Middleware';
-		$generator->baseDir = Application::paths()->src($in->getOption('root') ? '' : 'Http/Middleware');
+		$generator->baseDir = Application::paths()->srcDir($in->getOption('root') ? '' : 'Http/Middleware');
 		$generator->classNameSuffix = 'Middleware';
 
 		$generator->assertClassName(['Middleware', 'Request', 'Response']);

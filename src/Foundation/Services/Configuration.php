@@ -72,7 +72,7 @@ class Configuration {
 	 */
 	public static function loadConfigurationFile($name) {
 		$start = microtime(true);
-		$path = Application::paths()->config($name . '.php');
+		$path = Application::paths()->configDir($name . '.php');
 		$relative = Application::paths()->getRelative($path);
 
 		// Throw an exception if the file doesn't exist

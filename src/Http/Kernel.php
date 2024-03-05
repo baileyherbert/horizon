@@ -171,7 +171,7 @@ class Kernel {
 		}
 		else {
 			$errorFilePaths = array(
-				Application::paths()->errors($code . '.html'),
+				Application::paths()->errorsDir($code . '.html'),
 				Framework::path('resources/errors/' . $code . '.html')
 			);
 

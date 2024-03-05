@@ -53,7 +53,7 @@ class BuildCommand extends Command {
 	 * @return string
 	 */
 	protected function getCachePath() {
-		return Application::paths()->cache();
+		return Application::paths()->cacheDir();
 	}
 
 	/**

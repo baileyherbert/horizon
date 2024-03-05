@@ -57,7 +57,7 @@ class MakeComponentCommand extends Command {
 	 */
 	protected function getNameGenerator(InputInterface $in) {
 		$path = new FileGenerator($in->getArgument('name'));
-		$path->baseDir = Application::paths()->components();
+		$path->baseDir = Application::paths()->componentsDir();
 		$path->extension = 'twig';
 
 		return $path;
@@ -81,7 +81,7 @@ class MakeComponentCommand extends Command {
 
 			$path = new FileGenerator($name);
 			$path->namespace = $in->getOption('root') ? 'App' : 'App/View/Components';
-			$path->baseDir = Application::paths()->src($in->getOption('root') ? '' : 'View/Components');
+			$path->baseDir = Application::paths()->srcDir($in->getOption('root') ? '' : 'View/Components');
 			$path->classNameSuffix = 'Component';
 
 			return $path;

@@ -39,7 +39,7 @@ class MakeControllerCommand extends Command {
 	protected function execute(InputInterface $in, OutputInterface $out) {
 		$generator = new FileGenerator($in->getArgument('name'));
 		$generator->namespace = $in->getOption('root') ? 'App' : 'App/Http/Controllers';
-		$generator->baseDir = Application::paths()->src($in->getOption('root') ? '' : 'Http/Controllers');
+		$generator->baseDir = Application::paths()->srcDir($in->getOption('root') ? '' : 'Http/Controllers');
 		$generator->classNameSuffix = 'Controller';
 
 		$generator->assertClassName(['Controller', 'Request', 'Response']);

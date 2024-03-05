@@ -15,7 +15,7 @@ class TranslationServiceProvider extends ServiceProvider {
 
 	public function register() {
 		$this->bind('Horizon\Translation\Language', function() {
-			$translationsPath = Application::paths()->translations();
+			$translationsPath = Application::paths()->translationsDir();
 			if (!file_exists($translationsPath)) return;
 
 			$dirIterator = new RecursiveDirectoryIterator($translationsPath);

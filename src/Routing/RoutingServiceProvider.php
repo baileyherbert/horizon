@@ -12,7 +12,7 @@ class RoutingServiceProvider extends ServiceProvider {
 
 	public function register() {
 		$this->bind('Horizon\Routing\RouteFile', function() {
-			return new RouteFile(Application::paths()->routes('web.php'));
+			return new RouteFile(Application::paths()->routesDir('web.php'));
 		});
 	}
 

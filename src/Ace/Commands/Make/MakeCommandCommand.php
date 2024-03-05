@@ -29,7 +29,7 @@ class MakeCommandCommand extends Command {
 	protected function execute(InputInterface $in, OutputInterface $out) {
 		$generator = new FileGenerator($in->getArgument('name'));
 		$generator->namespace = $in->getOption('root') ? 'App' : 'App/Console/Commands';
-		$generator->baseDir = Application::paths()->src($in->getOption('root') ? '' : 'Console/Commands');
+		$generator->baseDir = Application::paths()->srcDir($in->getOption('root') ? '' : 'Console/Commands');
 		$generator->classNameSuffix = 'Command';
 		$generator->enableColonNamespacing = true;
 
@@ -53,7 +53,7 @@ class MakeCommandCommand extends Command {
 	 * @return void
 	 */
 	private function addCommandToConfig($commandName, $className, OutputInterface $out) {
-		$configPath = Application::paths()->config('console.php');
+		$configPath = Application::paths()->configDir('console.php');
 		$content = file_get_contents($configPath);
 		$expression = "/^([\t ]*)(['\"])commands(?:['\"]) => (?:array\(|\[) *([^\]\)]*)[\]\)](,?)/ms";
 

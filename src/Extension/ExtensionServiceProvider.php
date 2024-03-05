@@ -18,7 +18,7 @@ class ExtensionServiceProvider extends ServiceProvider {
 
 	public function register() {
 		$this->bind('Horizon\Extension\Extension', function() {
-			$extensionsDir = Application::paths()->extensions();
+			$extensionsDir = Application::paths()->extensionsDir();
 			if (!file_exists($extensionsDir)) return null;
 
 			$dir = new DirectoryIterator($extensionsDir);

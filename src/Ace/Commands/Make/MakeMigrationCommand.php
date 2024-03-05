@@ -33,7 +33,7 @@ class MakeMigrationCommand extends Command {
 		$name = $this->getNormalizedName($in->getArgument('name'));
 		$timestamp = time();
 
-		$migrationsDirPath = Application::paths()->migrations();
+		$migrationsDirPath = Application::paths()->migrationsDir();
 
 		$fileName = "{$timestamp}_{$name}.php";
 		$filePath = Path::resolve($migrationsDirPath, $fileName);

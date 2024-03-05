@@ -33,7 +33,7 @@ class ApplicationPathProvider {
 	 * @param string $path
 	 * @return string
 	 */
-	public function config($path = '') {
+	public function configDir($path = '') {
 		return $this->make(env('CONFIG', 'app/config'), $path);
 	}
 
@@ -53,7 +53,7 @@ class ApplicationPathProvider {
 	 * @param string $path
 	 * @return string
 	 */
-	public function routes($path = '') {
+	public function routesDir($path = '') {
 		return $this->make('app/routes', $path, 'routes');
 	}
 
@@ -63,7 +63,7 @@ class ApplicationPathProvider {
 	 * @param string $path
 	 * @return string
 	 */
-	public function public($path = '') {
+	public function publicDir($path = '') {
 		return $this->make('app/public', $path, 'public');
 	}
 
@@ -73,7 +73,7 @@ class ApplicationPathProvider {
 	 * @param string $path
 	 * @return string
 	 */
-	public function errors($path = '') {
+	public function errorsDir($path = '') {
 		return $this->make('app/errors', $path, 'errors');
 	}
 
@@ -83,7 +83,7 @@ class ApplicationPathProvider {
 	 * @param string $path
 	 * @return string
 	 */
-	public function vendor($path = '') {
+	public function vendorDir($path = '') {
 		return $this->make('vendor', $path, 'vendor');
 	}
 
@@ -93,7 +93,7 @@ class ApplicationPathProvider {
 	 * @param string $path
 	 * @return string
 	 */
-	public function views($path = '') {
+	public function viewsDir($path = '') {
 		return $this->make('app/views', $path, 'views');
 	}
 
@@ -103,7 +103,7 @@ class ApplicationPathProvider {
 	 * @param string $path
 	 * @return string
 	 */
-	public function embeds($path = '') {
+	public function embedsDir($path = '') {
 		return $this->make('app/embeds', $path, 'embeds');
 	}
 
@@ -113,7 +113,7 @@ class ApplicationPathProvider {
 	 * @param string $path
 	 * @return string
 	 */
-	public function components($path = '') {
+	public function componentsDir($path = '') {
 		return $this->make('app/components', $path, 'components');
 	}
 
@@ -123,7 +123,7 @@ class ApplicationPathProvider {
 	 * @param string $path
 	 * @return string
 	 */
-	public function cache($path = '') {
+	public function cacheDir($path = '') {
 		return $this->make('app/cache', $path, 'cache');
 	}
 
@@ -133,7 +133,7 @@ class ApplicationPathProvider {
 	 * @param string $path
 	 * @return string
 	 */
-	public function translations($path = '') {
+	public function translationsDir($path = '') {
 		return $this->make('app/translations', $path, 'translations');
 	}
 
@@ -143,7 +143,7 @@ class ApplicationPathProvider {
 	 * @param string $path
 	 * @return string
 	 */
-	public function src($path = '') {
+	public function srcDir($path = '') {
 		return $this->make('app/src', $path, 'src');
 	}
 
@@ -153,7 +153,7 @@ class ApplicationPathProvider {
 	 * @param string $path
 	 * @return string
 	 */
-	public function extensions($path = '') {
+	public function extensionsDir($path = '') {
 		return $this->make('extensions', $path, 'extensions');
 	}
 
@@ -163,7 +163,7 @@ class ApplicationPathProvider {
 	 * @param string $path
 	 * @return string
 	 */
-	public function migrations($path = '') {
+	public function migrationsDir($path = '') {
 		return $this->make('app/database/migrations', $path, 'migrations');
 	}
 
@@ -173,7 +173,7 @@ class ApplicationPathProvider {
 	 * @param string $path
 	 * @return string
 	 */
-	public function root($path = '') {
+	public function rootDir($path = '') {
 		$key = 'root:' . $path;
 
 		if (!isset($this->cache[$key])) {

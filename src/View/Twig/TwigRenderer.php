@@ -155,7 +155,7 @@ class TwigRenderer {
 	 * @return string|false
 	 */
 	protected function getCacheDirectory() {
-		$path = Application::paths()->cache();
+		$path = Application::paths()->cacheDir();
 
 		if (!$this->isCacheEnabled()) {
 			return false;

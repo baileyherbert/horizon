@@ -145,7 +145,7 @@ class Environment {
 	 */
 	private static function getProcessData() {
 		if (!static::$processLoaded) {
-			foreach (getenv() as $key => $value) {
+			foreach ($_ENV as $key => $value) {
 				static::$processData[strtolower($key)] = $value;
 			}
 
