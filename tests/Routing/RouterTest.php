@@ -40,7 +40,9 @@ class RouterTest extends TestCase
 
         $this->assertEquals('/', $route->uri());
         $this->assertEquals($methods, $route->methods());
-        $this->assertEquals('Response', $route->action()());
+
+        $action = $route->action();
+        $this->assertEquals('Response', $action());
         $this->assertEquals('Response', $route->execute());
     }
 
