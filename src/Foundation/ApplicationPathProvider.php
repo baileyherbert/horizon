@@ -2,7 +2,6 @@
 
 namespace Horizon\Foundation;
 
-use Exception;
 use Horizon\Support\Path;
 
 /**

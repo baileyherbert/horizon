@@ -5,7 +5,6 @@ use Horizon\Database\QueryBuilder\RawReference;
 use Horizon\Database\QueryBuilder\StringBuilder;
 use Horizon\Support\Arr;
 use Horizon\Support\Container\Container;
-use Horizon\Support\Path;
 use Horizon\Support\Str;
 use Horizon\Foundation\Application;
 use Horizon\Encryption\FastEncrypt;
@@ -1445,19 +1444,6 @@ if (!function_exists('timestamp_to_datetime')) {
 
 		$date->setTimezone(new DateTimeZone($timezone));
 		return $date->format('Y-m-d H:i:s');
-	}
-}
-
-if (!function_exists('ref')) {
-	/**
-	 * Returns a reference to a database table field.
-	 *
-	 * @deprecated Use `db_ref()`
-	 * @param string $fieldName
-	 * @return ColumnReference
-	 */
-	function ref($fieldName) {
-		return new ColumnReference($fieldName);
 	}
 }
 

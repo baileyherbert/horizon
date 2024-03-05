@@ -4,7 +4,6 @@ namespace Horizon\Foundation\Services;
 
 use Horizon\Exception\HorizonException;
 use Horizon\Foundation\Application;
-use Horizon\Foundation\Framework;
 use Horizon\Support\Profiler;
 
 /**

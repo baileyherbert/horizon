@@ -3,14 +3,12 @@
 namespace Horizon\Routing;
 
 use Closure;
-use Horizon\Foundation\Application;
 use Horizon\Http\Request;
 use Horizon\Routing\Route;
 use Horizon\Routing\RouteGroup;
 use Horizon\Routing\Controllers\ViewActionController;
 use Horizon\Routing\Controllers\RedirectActionController;
 use Horizon\Routing\Controllers\SinglePageActionController;
-use Horizon\Routing\Controllers\TcpProxyController;
 
 class Router {
 

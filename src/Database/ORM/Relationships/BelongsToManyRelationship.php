@@ -11,6 +11,7 @@ class BelongsToManyRelationship extends Relationship {
 
 	protected $model;
 	protected $foreignModelName;
+	protected $foreignTableName;
 	protected $foreignKey;
 	protected $localKey;
 	protected $mapTable;

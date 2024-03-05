@@ -4,7 +4,6 @@ namespace Horizon\View\Extensions;
 
 use Exception;
 use Horizon\Foundation\Application;
-use Horizon\View\Twig\TwigTranspiler;
 use Horizon\View\ViewException;
 use Horizon\View\ViewExtension;
 use Twig_SimpleFunction;

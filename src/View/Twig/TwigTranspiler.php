@@ -67,8 +67,6 @@ class TwigTranspiler {
 	 * @return string
 	 */
 	public function precompile($value, $templateFileName = null) {
-		$this->templateFileName = $templateFileName;
-
 		$value = $this->correctWhitespace($value);
 		$value = $this->compileTags($value);
 		$value = $this->compileStatements($value);

@@ -11,7 +11,6 @@ use Horizon\Database\Migration\SchemaRecorder;
 use Horizon\Database\Migration\SchemaRecorderBucket;
 use Horizon\Database\Migration\SchemaStatement;
 use Horizon\Foundation\Application;
-use Horizon\Foundation\Framework;
 use Horizon\Support\Path;
 use JsonSerializable;
 

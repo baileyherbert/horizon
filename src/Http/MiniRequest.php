@@ -4,6 +4,8 @@ namespace Horizon\Http;
 
 class MiniRequest extends Request {
 
+	private $simpleUri;
+
 	/**
 	 * Constructs a new Request instance.
 	 *

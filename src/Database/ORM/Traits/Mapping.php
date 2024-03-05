@@ -146,7 +146,7 @@ trait Mapping {
 			// Set fields in the equalize store equal to themselves
 			if (!empty($this->rowFieldsEqualize)) {
 				foreach ($this->rowFieldsEqualize as $fieldName) {
-					$changes[$fieldName] = ref($fieldName);
+					$changes[$fieldName] = db_ref($fieldName);
 				}
 			}
 

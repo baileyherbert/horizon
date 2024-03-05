@@ -13,12 +13,14 @@ class Str {
 	 * @var array
 	 */
 	protected static $snakeCache = array();
+
 	/**
 	 * The cache of camel-cased words.
 	 *
 	 * @var array
 	 */
 	protected static $camelCache = array();
+
 	/**
 	 * The cache of studly-cased words.
 	 *

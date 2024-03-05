@@ -199,29 +199,6 @@ class Response extends SymfonyResponse {
 	}
 
 	/**
-	 * Alias for `setContext()`
-	 *
-	 * @deprecated Please use `setContext()` instead.
-	 * @param string $key
-	 * @param string $value
-	 * @return void
-	 */
-	public function with($key, $value) {
-		return $this->setContext($key, $value);
-	}
-
-	/**
-	 * Alias for `removeContext()`
-	 *
-	 * @deprecated Please use `removeContext()` instead.
-	 * @param string $key
-	 * @return void
-	 */
-	public function without($key) {
-		return $this->removeContext($key);
-	}
-
-	/**
 	 * Renders a view to the response.
 	 *
 	 * @param string $templateName

@@ -88,10 +88,10 @@ $response->halt();
 Responses can store context variables which are exposed to views during rendering. For example, if you store the context
 variable `user`, your view can accesss it using `{{ user }}`.
 
-To store a context variable, we use the `with()` method.
+To store a context variable, we use the `setContext()` method.
 
 ```php
-$response->with('user', 'john.doe');
+$response->setContext('user', 'john.doe');
 ```
 
 !!! note

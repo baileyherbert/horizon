@@ -10,6 +10,12 @@ use Horizon\Http\Cookie\CookieInitializationException;
 
 class CookieDriver implements DriverInterface {
 
+	/**
+	 * The session driver.
+	 * @var Session
+	 */
+	private $session = null;
+
 	private $sessionData = array();
 	private $currentFlashData = array();
 	private $allFlashData = array();

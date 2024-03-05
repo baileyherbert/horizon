@@ -69,7 +69,7 @@ class ServiceObjectCollection implements ArrayAccess, Countable, IteratorAggrega
 
 	/**
 	 * Retrieves an external iterator.
-	 * @return \ArrayIterator
+	 * @return \Traversable
 	 */
 	public function getIterator() {
 		return new ArrayIterator($this->items);

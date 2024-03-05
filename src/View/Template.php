@@ -3,9 +3,6 @@
 namespace Horizon\View;
 
 use Horizon\Foundation\Application;
-use Horizon\Support\Profiler;
-use Horizon\View\Twig\TwigCacheLoader;
-use Horizon\View\Twig\TwigRenderer;
 
 class Template {
 
