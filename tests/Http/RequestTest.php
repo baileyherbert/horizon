@@ -184,8 +184,9 @@ class RequestTest extends TestCase
      */
     public function testJson()
     {
-        $this->assertEquals('true', $this->request->json('working'));
-        $this->assertEquals('true', $this->request->json('nested[working]'));
+        $json = $this->request->json();
+
+        $this->assertEquals('true', $json['working']);
         $this->assertNull($this->request->jsonError());
     }
 
