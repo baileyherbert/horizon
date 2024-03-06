@@ -47,7 +47,7 @@ Horizon was built to work just about anywhere. A critical part of this goal was 
 - Horizon **requires** one of the following extensions when using databases.
     1. `pdo_mysql`
     2. `mysqli`
-    3. `mysql_nd`
+    3. `mysqlnd`
     4. `mysql`
 
 ### Recommendations
