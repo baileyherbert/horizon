@@ -4,8 +4,8 @@
 
 <p align="center">
   <a href="https://github.com/baileyherbert/horizon" target="_blank" rel="noopener noreferrer">github</a> &nbsp;/&nbsp;
-  <a href="https://docs.bailey.sh/horizon/" target="_blank" rel="noopener noreferrer">documentation</a> &nbsp;/&nbsp;
-  <a href="https://github.com/baileyherbert/horizon/issues" target="_blank" rel="noopener noreferrer">issues</a>
+  <a href="https://packagist.org/packages/baileyherbert/horizon" target="_blank" rel="noopener noreferrer">packagist</a> &nbsp;/&nbsp;
+  <a href="https://docs.bailey.sh/horizon/latest/" target="_blank" rel="noopener noreferrer">documentation</a>
 </p>
 
 <h1 align="center">Horizon Framework</h1>

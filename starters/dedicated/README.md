@@ -33,5 +33,5 @@ that your virtual host is configured to serve from the `public` directory.
 
 Check out the following links for more information.
 
-- Documentation: https://bailey.sh/packages/horizon/docs/
+- Documentation: https://docs.bailey.sh/horizon/latest/
 - Repository: https://github.com/baileyherbert/horizon

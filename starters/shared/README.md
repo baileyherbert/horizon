@@ -32,5 +32,5 @@ archive into the directory on their server where they would like the application
 
 Check out the following links for more information.
 
-- Documentation: https://bailey.sh/packages/horizon/docs/
+- Documentation: https://docs.bailey.sh/horizon/latest/
 - Repository: https://github.com/baileyherbert/horizon
