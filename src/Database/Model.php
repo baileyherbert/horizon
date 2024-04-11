@@ -2,6 +2,7 @@
 
 namespace Horizon\Database;
 
+use Horizon\Database\ORM\DocParser;
 use Horizon\Events\EventEmitter;
 
 /**
@@ -24,7 +25,11 @@ class Model extends EventEmitter implements \JsonSerializable {
 
 			if (is_object($mapping)) {
 				foreach ($mapping as $column => $value) {
-					$this->writeCommittedField($column, $value);
+					$parser = DocParser::get($this);
+
+					if ($parser->hasField($column)) {
+						$this->writeCommittedField($column, $value);
+					}
 				}
 			}
 		}

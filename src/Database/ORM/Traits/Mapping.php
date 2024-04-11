@@ -492,11 +492,13 @@ trait Mapping {
 	 */
 	private function getLocalFormat($fieldName, $value) {
 		$parser = DocParser::get($this);
-		$type = $parser->getReadTypes($fieldName)[0];
+		$type = $parser->getReadTypes($fieldName);
 
-		if (is_null($type)) {
+		if (is_null($type) || is_null($type[0])) {
 			throw new Exception(sprintf('Unknown field "%s"', $fieldName));
 		}
+
+		$type = $type[0];
 
 		switch ($type) {
 			case '\DateTime':
