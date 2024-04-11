@@ -8,12 +8,17 @@ use Horizon\Database\Model;
  * @method $this columns(string $name) Sets the columns to select.
  * @method $this from(string $tableName) Sets the table to select from.
  *
+ * @method $this join(string $type, string|null $tableName, string|null $tableAlias, string|null $leftColumn, string|null $rightColumn) Creates a JOIN.
+ * @method $this innerJoin(string|null $tableName, string|null $tableAlias, string|null $leftColumn, string|null $rightColumn) Creates an INNER JOIN.
+ * @method $this leftJoin(string|null $tableName, string|null $tableAlias, string $leftColumn, string $rightColumn) Creates a LEFT JOIN.
+ * @method $this rightJoin(string|null $tableName, string|null $tableAlias, string $leftColumn, string $rightColumn) Creates a RIGHT JOIN.
+ *
  * @method $this distinct() Sets the distinct condition.
  *
  * @method $this where(string $column, string $operator, mixed $equals) Creates a match condition.
  * @method $this orWhere(string $column, string $operator, mixed $equals) Creates a match condition.
  * @method $this andWhere(string $column, string $operator, mixed $equals) Creates a match condition.
- * @method $this whereMatch(string $column, string $against, string $mode) Creates a full-text match condition.
+ * @method $this whereMatch(string $column, string $against, string|null $mode, string|null $separator) Creates a full-text match condition.
  *
  * @method $this enclose(callable $callback) Encloses statements in parenthesis.
  * @method $this andEnclose(callable $callback) Encloses statements in parenthesis.
@@ -23,6 +28,8 @@ use Horizon\Database\Model;
  * @method $this offset(int $offset) Offsets the results by the specified number of rows.
  *
  * @method $this orderBy(string $column, string $direction) Orders the results.
+ * @method $this orderByMatch(string $direction, int|null $index) Orders the results by a relevancy score from a `whereMatch` statement.
+ * @method $this orderByMatches(string $direction, string|null $verb) Orders the results by a combination of relevancy scores from all `whereMatch` statements, using the `GREATEST` verb by default.
  *
  * @method $this forUpdate() Locks selected rows from being read or written to.
  * @method $this forShare() Locks selected rows from being written to.

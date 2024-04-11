@@ -2,6 +2,7 @@
 
 namespace Horizon\Database\QueryBuilder\Commands;
 
+use Exception;
 use Horizon\Database\QueryBuilder;
 use Horizon\Database\QueryBuilder\StringBuilder;
 use Horizon\Support\Str;
@@ -20,6 +21,11 @@ class Select implements CommandInterface {
 	protected $tables = array();
 
 	/**
+	 * @var array The tables to join.
+	 */
+	protected $joins = array();
+
+	/**
 	 * @var string[] The columns to select.
 	 */
 	protected $columns = array();
@@ -30,9 +36,9 @@ class Select implements CommandInterface {
 	protected $wheres = array();
 
 	/**
-	 * @var array|null A fulltext search to calculate the relevancy score with.
+	 * @var array Fulltext searches to calculate the relevancy scores with.
 	 */
-	protected $scoreColumn = null;
+	protected $scoreColumns = array();
 
 	/**
 	 * @var array Positions of parenthesis in the where statements.
@@ -91,6 +97,7 @@ class Select implements CommandInterface {
 			$this->compileCommand(),
 			$this->compileColumns(),
 			$this->compileTables(),
+			$this->compileJoins(),
 			$this->compileWheres(),
 			$this->compileOrderBy(),
 			$this->compileLimit(),
@@ -119,12 +126,6 @@ class Select implements CommandInterface {
 			$compiled[] = StringBuilder::formatColumnName($name);
 		}
 
-		if (!is_null($this->scoreColumn)) {
-			$where = $this->scoreColumn;
-
-			$compiled[] = sprintf('MATCH(%s) AGAINST (%s IN %s MODE) as score', $where['column'], StringBuilder::formatFulltextValue($where['against']), $where['mode']);
-		}
-
 		return implode(', ', $compiled);
 	}
 
@@ -151,21 +152,143 @@ class Select implements CommandInterface {
 	/**
 	 * @return string
 	 */
+	protected function compileJoins() {
+		$compiled = array();
+
+		foreach ($this->joins as $join) {
+			$compiled[] = $join['type'] . ' JOIN';
+			$compiled[] = StringBuilder::formatTableName($join['tableName']);
+			$alias = $join['tableAlias'];
+
+			if (is_null($alias)) {
+				$alias = $join['tableName'];
+			}
+
+			$compiled[] = StringBuilder::formatTableName($alias);
+
+			if (!is_null($join['leftColumn'])) {
+				$columnLeft = StringBuilder::formatColumnName($join['leftColumn']);
+				$columnRight = StringBuilder::formatColumnName($join['rightColumn']);
+
+				$compiled[] = sprintf('ON %s = %s', $columnLeft, $columnRight);
+			}
+		}
+
+		return implode(' ', $compiled);
+	}
+
+	/**
+	 * Joins another table into the query.
+	 *
+	 * @param string $type The join type (such as `INNER` or `LEFT`).
+	 * @param string|null $tableName The name of the table to join.
+	 * @param string|null $tableAlias The alias to use for the table. If not specified, defaults to the table name itself.
+	 * @param string|null $leftColumn The left column to use for the ON equality condition, in the format `table.column`.
+	 * @param string|null $rightColumn The right column to use for the ON equality condition, in the format `table.column`.
+	 * @return $this
+	 */
+	public function join($type, $tableName, $tableAlias = null, $leftColumn = null, $rightColumn = null) {
+		if (is_null($leftColumn) != is_null($rightColumn)) {
+			throw new Exception('Cannot create a join statement because one column is null when both columns must be either null or specified');
+		}
+
+		$this->joins[] = array(
+			'type' => $type,
+			'tableName' => $tableName,
+			'tableAlias' => $tableAlias,
+			'leftColumn' => $leftColumn,
+			'rightColumn' => $rightColumn
+		);
+
+		return $this;
+	}
+
+	/**
+	 * Joins another table into the query with an `INNER JOIN` statement.
+	 *
+	 * @param string $tableName The name of the table to join.
+	 * @param string|null $tableAlias The alias to use for the table. If not specified, defaults to the table name itself.
+	 * @param string|null $leftColumn The left column to use for the ON equality condition, in the format `table.column`.
+	 * @param string|null $rightColumn The right column to use for the ON equality condition, in the format `table.column`.
+	 * @return $this
+	 */
+	public function innerJoin($tableName, $tableAlias = null, $leftColumn = null, $rightColumn = null) {
+		if (is_null($leftColumn) != is_null($rightColumn)) {
+			throw new Exception('Cannot create an INNER JOIN statement because one column is null when both columns must be either null or specified');
+		}
+
+		$this->joins[] = array(
+			'type' => 'INNER',
+			'tableName' => $tableName,
+			'tableAlias' => $tableAlias,
+			'leftColumn' => $leftColumn,
+			'rightColumn' => $rightColumn
+		);
+
+		return $this;
+	}
+
+	/**
+	 * Joins another table into the query with a `LEFT JOIN` statement.
+	 *
+	 * @param string $tableName The name of the table to join.
+	 * @param string|null $tableAlias The alias to use for the table. If not specified, defaults to the table name itself.
+	 * @param string $leftColumn The left column to use for the ON equality condition, in the format `table.column`.
+	 * @param string $rightColumn The right column to use for the ON equality condition, in the format `table.column`.
+	 * @return $this
+	 */
+	public function leftJoin($tableName, $tableAlias = null, $leftColumn = null, $rightColumn = null) {
+		if (is_null($leftColumn) || is_null($rightColumn)) {
+			throw new Exception('Cannot create a LEFT JOIN statement because one or more columns in the condition are null');
+		}
+
+		$this->joins[] = array(
+			'type' => 'LEFT',
+			'tableName' => $tableName,
+			'tableAlias' => $tableAlias,
+			'leftColumn' => $leftColumn,
+			'rightColumn' => $rightColumn
+		);
+
+		return $this;
+	}
+
+	/**
+	 * Joins another table into the query with a `RIGHT JOIN` statement.
+	 *
+	 * @param string $tableName The name of the table to join.
+	 * @param string|null $tableAlias The alias to use for the table. If not specified, defaults to the table name itself.
+	 * @param string $leftColumn The left column to use for the ON equality condition, in the format `table.column`.
+	 * @param string $rightColumn The right column to use for the ON equality condition, in the format `table.column`.
+	 * @return $this
+	 */
+	public function rightJoin($tableName, $tableAlias = null, $leftColumn = null, $rightColumn = null) {
+		if (is_null($leftColumn) || is_null($rightColumn)) {
+			throw new Exception('Cannot create a RIGHT JOIN statement because one or more columns in the condition are null');
+		}
+
+		$this->joins[] = array(
+			'type' => 'RIGHT',
+			'tableName' => $tableName,
+			'tableAlias' => $tableAlias,
+			'leftColumn' => $leftColumn,
+			'rightColumn' => $rightColumn
+		);
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
 	protected function compileWheres() {
 		if (empty($this->wheres)) {
 			return '';
 		}
 
 		$compiled = array('WHERE');
-
 		foreach ($this->wheres as $i => $where) {
-			if (isset($where['fulltext'])) {
-				$compiled[] = sprintf('MATCH(%s) AGAINST (%s IN %s MODE)', $where['column'], StringBuilder::formatFulltextValue($where['against']), $where['mode']);
-				continue;
-			}
-
 			$column = StringBuilder::formatColumnName($where['column']);
-			$operator = StringBuilder::formatOperator($where['operator']);
 			$separator = $where['separator'];
 			$startEnclosure = $this->getEnclosureStartingAt($i);
 
@@ -181,6 +304,21 @@ class Select implements CommandInterface {
 					$compiled[] = '(';
 				}
 			}
+
+			if (isset($where['fulltext'])) {
+				$compiled[] = sprintf('MATCH(%s) AGAINST (%s IN %s MODE)', StringBuilder::formatColumnName($where['column']), '?', $where['mode']);
+				$this->compiledParameters[] = $where['against'];
+
+				if ($this->getEnclosureEndingAt($i)) {
+					for ($x = 0; $x < $this->getNumEnclosuresEndingAt($i); $x++) {
+						$compiled[] = ')';
+					}
+				}
+
+				continue;
+			}
+
+			$operator = StringBuilder::formatOperator($where['operator']);
 
 			if (isset($where['function'])) {
 				$compiled[] = sprintf('%s %s %s', $column, $operator, $this->compileFunction($where['function']));
@@ -251,6 +389,53 @@ class Select implements CommandInterface {
 		}
 
 		foreach ($this->orders as $order) {
+			if (isset($order['match'])) {
+				$scoreColumn = null;
+
+				if (isset($order['index'])) {
+					$index = intval($order['index']);
+					$scoreColumn = $this->scoreColumns[$index];
+				}
+				else {
+					$scoreColumn = $this->scoreColumns[0];
+				}
+
+				$compiled[] = sprintf(
+					'(MATCH(%s) AGAINST (%s IN %s MODE)) %s',
+					StringBuilder::formatColumnName($scoreColumn['column']),
+					'?',
+					$scoreColumn['mode'],
+					StringBuilder::formatOperator($order['direction'])
+				);
+				$this->compiledParameters[] = $scoreColumn['against'];
+
+				continue;
+			}
+
+			if (isset($order['matches'])) {
+				$scores = array();
+
+				foreach ($this->scoreColumns as $where) {
+					$scores[] = sprintf(
+						'MATCH(%s) AGAINST (%s IN %s MODE)',
+						StringBuilder::formatColumnName($where['column']),
+						'?',
+						$where['mode']
+					);
+
+					$this->compiledParameters[] = $where['against'];
+				}
+
+				$compiled[] = sprintf(
+					'%s(%s) %s',
+					StringBuilder::formatOperator($order['verb']),
+					implode(', ', $scores),
+					StringBuilder::formatOperator($order['direction'])
+				);
+
+				continue;
+			}
+
 			$compiled[] = sprintf(
 				'%s %s',
 				StringBuilder::formatColumnName($order['column']),
@@ -453,7 +638,7 @@ class Select implements CommandInterface {
 			'reference' => false
 		);
 
-		$this->scoreColumn = $this->wheres[count($this->wheres) - 1];
+		$this->scoreColumns[] = $this->wheres[count($this->wheres) - 1];
 
 		return $this;
 	}
@@ -588,6 +773,22 @@ class Select implements CommandInterface {
 		}
 
 		return $this;
+	}
+
+	public function orderByMatch($direction = 'ASC', $index = null) {
+		$this->orders[] = array(
+			'match' => true,
+			'index' => $index,
+			'direction' => $direction
+		);
+	}
+
+	public function orderByMatches($direction = 'ASC', $verb = 'GREATEST') {
+		$this->orders[] = array(
+			'matches' => true,
+			'verb' => $verb,
+			'direction' => $direction
+		);
 	}
 
 }
